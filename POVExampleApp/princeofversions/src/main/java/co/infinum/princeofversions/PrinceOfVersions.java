@@ -2,7 +2,9 @@ package co.infinum.princeofversions;
 
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
 import co.infinum.princeofversions.exceptions.UrlNotSetException;
+import co.infinum.princeofversions.helpers.POVFactoryHelper;
 import co.infinum.princeofversions.interfaces.UpdateChecker;
+import co.infinum.princeofversions.mvp.presenter.POVPresenter;
 import co.infinum.princeofversions.mvp.view.POVView;
 
 /**
@@ -10,22 +12,22 @@ import co.infinum.princeofversions.mvp.view.POVView;
  */
 public class PrinceOfVersions implements UpdateChecker, POVView {
 
-    private static String url;
+    private String url;
 
-    public void setup(String url) {
-        this.url = url;
-    }
+    private POVPresenter presenter;
 
     @Override
     public void checkForUpdates(UpdaterCallback uc, String url) {
         if (url == null) {
             try {
-                throw new UrlNotSetException("Url that points to a remote server isnt set");
+                throw new UrlNotSetException("Url that points to a remote server isn't set");
             } catch (UrlNotSetException e) {
                 e.printStackTrace();
             }
         } else {
-            //presenter
+            this.url = url;
+            presenter = POVFactoryHelper.getPresenter(this);
+            presenter.checkForUpdates();
         }
     }
 
