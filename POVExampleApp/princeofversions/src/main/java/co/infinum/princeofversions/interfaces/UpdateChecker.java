@@ -7,5 +7,5 @@ import co.infinum.princeofversions.callbacks.UpdaterCallback;
  */
 public interface UpdateChecker {
 
-    void checkForUpdates(UpdaterCallback uc, String url);
+    void checkForUpdates(String url, UpdaterCallback uc);
 }
