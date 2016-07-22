@@ -18,7 +18,33 @@ import co.infinum.princeofversions.network.NetworkLoaderFactory;
 import co.infinum.princeofversions.threading.ThreadVersionVerifier;
 
 /**
- * Created by stefano on 08/07/16.
+ * <p>This class represents main entry point for using library.</p>
+ * <p>Most common way to create instance of this class should be using constructor with two arguments,
+ * providing application context Context and callback class UpdaterCallback with methods for accepting result of update check.</p>
+ * <p>There are two forms of checkForUpdates method: default one with one argument of type String and more powerful one which accepts
+ * LoaderFactory factory interface for creating loader of type UpdateConfigLoader. That way it is possible to use library with custom
+ * implementation of loader, for configuring library to load update resource from file, string or on some other way.
+ * Default method use NetworkLoaderFactory, eg. String argument represents url from which update resource will be downloaded.</p>
+ * <p>Also, library has cancel option for stopping loading and check process. If checking is cancelled no result will be returned
+ * to callback.</p>
+ *
+ * <p>There is code for most common usage of this library
+ * <pre>
+ *     UpdateChecker updater = new DefaultUpdater(context, callback);
+ *     LoaderFactory loaderFactory = new NetworkLoaderFactory("http://example.com/some/update.json");
+ *     updater.checkForUpdates(loaderFactory); // starts checking for updates via NetworkLoader
+ * </pre></p>
+ *
+ * <p>Example of using library with custom loader follows bellow:
+ * <pre>
+ *     UpdateChecker updater = new DefaultUpdater(context, callback);
+ *     LoaderFactory loaderFactory = new FileLoaderFactory("path/to/file");
+ *     updater.checkForUpdates(loaderFactory); // starts checking for updates via custom loader
+ * </pre></p>
+ *
+ * <p><b>Be aware, when implementing custom loader factory always return new instance of custom loader in newInstance method!</b>
+ * This is important because of cancel functionality. There is no way once cancelled loader became uncancelled, so to support
+ * correct cancel functionality always provide new instance of loader.</p>
  */
 public class DefaultUpdater implements UpdateChecker, POVView {
 
