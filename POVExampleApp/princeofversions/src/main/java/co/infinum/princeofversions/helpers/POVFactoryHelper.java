@@ -1,5 +1,8 @@
 package co.infinum.princeofversions.helpers;
 
+import co.infinum.princeofversions.UpdateConfigLoader;
+import co.infinum.princeofversions.interfaces.IVersionVerifier;
+import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.mvp.interactor.impl.POVInteractorImpl;
 import co.infinum.princeofversions.mvp.presenter.POVPresenter;
 import co.infinum.princeofversions.mvp.presenter.impl.POVPresenterImpl;
@@ -10,8 +13,24 @@ import co.infinum.princeofversions.mvp.view.POVView;
  */
 public class POVFactoryHelper {
 
-    public static POVPresenter getPresenter(POVView view) {
-        return new POVPresenterImpl(view, new POVInteractorImpl());
+    private static POVFactoryHelper instance;
+
+    public static POVFactoryHelper getInstance() {
+        if (instance == null) {
+            instance = new POVFactoryHelper();
+        }
+        return instance;
+    }
+
+    private POVFactoryHelper() {}
+
+    public POVPresenter getPresenter(POVView view, UpdateConfigLoader loader, VersionVerifierProvider provider,
+                                     VersionRepository repository) {
+        return new POVPresenterImpl(view, new POVInteractorImpl(provider.get(), loader), repository);
+    }
+
+    public interface VersionVerifierProvider {
+        IVersionVerifier get();
     }
 
 }

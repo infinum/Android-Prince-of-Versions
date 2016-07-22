@@ -6,4 +6,6 @@ package co.infinum.princeofversions.mvp.presenter;
 public interface POVPresenter {
 
     void checkForUpdates();
+
+    void onCancel();
 }

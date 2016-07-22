@@ -5,5 +5,11 @@ package co.infinum.princeofversions.mvp.view;
  */
 public interface POVView {
 
-    void onUpdatesChecked();
+    void notifyMandatoryUpdate(String version);
+
+    void notifyOptionalUpdate(String version);
+
+    void notifyNoUpdate();
+
+    void notifyError(String error);
 }
