@@ -1,9 +1,8 @@
 package co.infinum.princeofversions.interfaces;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.network.VersionVerifierListener;
 
-public interface IVersionVerifier {
+public interface VersionVerifier {
 
     void verify(UpdateConfigLoader loader, VersionVerifierListener listener);
 

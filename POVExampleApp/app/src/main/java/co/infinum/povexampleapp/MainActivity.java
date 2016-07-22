@@ -11,14 +11,17 @@ import java.io.IOException;
 
 import co.infinum.princeofversions.DefaultUpdater;
 import co.infinum.princeofversions.LoaderFactory;
+import co.infinum.princeofversions.LoaderValidationException;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
+import co.infinum.princeofversions.common.ErrorCode;
+import co.infinum.princeofversions.interfaces.UpdateChecker;
 import co.infinum.princeofversions.network.NetworkLoaderFactory;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = "exampleappActivityMain";
-    private DefaultUpdater updater;
+    private UpdateChecker updater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String error) {
+            public void onError(@ErrorCode int error) {
                 Log.d(TAG, "Error: " + error);
                 toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
             }
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void validate() throws ValidationException {
+                            public void validate() throws LoaderValidationException {
                                 instance.validate();
                             }
                         };

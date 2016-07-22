@@ -1,5 +1,7 @@
 package co.infinum.princeofversions.callbacks;
 
+import co.infinum.princeofversions.common.ErrorCode;
+
 /**
  * Created by stefano on 08/07/16.
  */
@@ -9,5 +11,5 @@ public interface UpdaterCallback {
 
     void onNoUpdate();
 
-    void onError(String error);
+    void onError(@ErrorCode int error);
 }

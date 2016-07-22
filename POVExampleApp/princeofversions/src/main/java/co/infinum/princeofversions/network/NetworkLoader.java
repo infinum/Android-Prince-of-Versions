@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import co.infinum.princeofversions.LoaderValidationException;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.exceptions.UrlNotSetException;
 import co.infinum.princeofversions.helpers.StreamIO;
@@ -58,7 +59,7 @@ public class NetworkLoader implements UpdateConfigLoader {
     }
 
     @Override
-    public void validate() throws ValidationException {
+    public void validate() throws LoaderValidationException {
         if (url == null) {
             throw new UrlNotSetException("Url is not set.");
         }

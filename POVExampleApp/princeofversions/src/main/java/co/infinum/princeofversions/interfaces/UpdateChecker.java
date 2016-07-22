@@ -9,5 +9,7 @@ public interface UpdateChecker {
 
     void checkForUpdates(LoaderFactory factory);
 
+    void checkForUpdates(String url);
+
     void cancel();
 }

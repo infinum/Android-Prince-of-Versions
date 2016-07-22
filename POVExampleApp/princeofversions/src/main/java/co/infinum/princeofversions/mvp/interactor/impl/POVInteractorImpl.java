@@ -1,21 +1,22 @@
 package co.infinum.princeofversions.mvp.interactor.impl;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
+import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
-import co.infinum.princeofversions.interfaces.IVersionVerifier;
+import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.mvp.interactor.POVInteractor;
 import co.infinum.princeofversions.mvp.interactor.listeners.POVInteractorListener;
-import co.infinum.princeofversions.network.VersionVerifierListener;
+import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 
 /**
  * Created by stefano on 08/07/16.
  */
 public class POVInteractorImpl implements POVInteractor {
 
-    private IVersionVerifier versionVerifier;
+    private VersionVerifier versionVerifier;
     private UpdateConfigLoader loader;
 
-    public POVInteractorImpl(IVersionVerifier versionVerifier, UpdateConfigLoader loader) {
+    public POVInteractorImpl(VersionVerifier versionVerifier, UpdateConfigLoader loader) {
         this.versionVerifier = versionVerifier;
         this.loader = loader;
     }
@@ -35,7 +36,7 @@ public class POVInteractorImpl implements POVInteractor {
             }
 
             @Override
-            public void versionUnavailable(String error) {
+            public void versionUnavailable(@ErrorCode int error) {
                 listener.onError(error);
             }
         });

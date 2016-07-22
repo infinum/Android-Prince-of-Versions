@@ -1,7 +1,7 @@
 package co.infinum.princeofversions.helpers;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.interfaces.IVersionVerifier;
+import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.mvp.interactor.impl.POVInteractorImpl;
 import co.infinum.princeofversions.mvp.presenter.POVPresenter;
@@ -30,7 +30,7 @@ public class POVFactoryHelper {
     }
 
     public interface VersionVerifierProvider {
-        IVersionVerifier get();
+        VersionVerifier get();
     }
 
 }

@@ -4,15 +4,17 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
+import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.helpers.ContextHelper;
 import co.infinum.princeofversions.helpers.POVFactoryHelper;
 import co.infinum.princeofversions.helpers.PrefsVersionRepository;
 import co.infinum.princeofversions.helpers.parsers.JSONVersionConfigParser;
-import co.infinum.princeofversions.interfaces.IVersionVerifier;
+import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.UpdateChecker;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.mvp.presenter.POVPresenter;
 import co.infinum.princeofversions.mvp.view.POVView;
+import co.infinum.princeofversions.network.NetworkLoaderFactory;
 import co.infinum.princeofversions.threading.ThreadVersionVerifier;
 
 /**
@@ -31,7 +33,7 @@ public class DefaultUpdater implements UpdateChecker, POVView {
     public DefaultUpdater(final Context context, final UpdaterCallback callback) {
         this(context, callback, new POVFactoryHelper.VersionVerifierProvider() {
             @Override
-            public IVersionVerifier get() {
+            public VersionVerifier get() {
                 try {
                     return new ThreadVersionVerifier(new JSONVersionConfigParser(ContextHelper.getAppVersion(context)));
                 } catch (PackageManager.NameNotFoundException e) {
@@ -48,7 +50,7 @@ public class DefaultUpdater implements UpdateChecker, POVView {
     public DefaultUpdater(final Context context, final UpdaterCallback callback, VersionRepository repository) {
         this(context, callback, new POVFactoryHelper.VersionVerifierProvider() {
             @Override
-            public IVersionVerifier get() {
+            public VersionVerifier get() {
                 try {
                     return new ThreadVersionVerifier(new JSONVersionConfigParser(ContextHelper.getAppVersion(context)));
                 } catch (PackageManager.NameNotFoundException e) {
@@ -64,6 +66,17 @@ public class DefaultUpdater implements UpdateChecker, POVView {
         this.callback = callback;
         this.factory = factory;
         this.repository = repository;
+        validateDependenciesAndThrowIllegalArgumentIfNotValid();
+    }
+
+    private void validateDependenciesAndThrowIllegalArgumentIfNotValid() {
+        if (this.callback == null) {
+            throw new IllegalArgumentException("Callback is null.");
+        } else if (this.factory == null) {
+            throw new IllegalArgumentException("Factory is null.");
+        } else if (this.repository == null) {
+            throw new IllegalArgumentException("Repository is null.");
+        }
     }
 
     @Override
@@ -71,11 +84,16 @@ public class DefaultUpdater implements UpdateChecker, POVView {
         UpdateConfigLoader loader = loaderFactory.newInstance();
         try {
             loader.validate();
-        } catch (UpdateConfigLoader.ValidationException e) {
+        } catch (LoaderValidationException e) {
             throw new IllegalArgumentException(e);
         }
         presenter = POVFactoryHelper.getInstance().getPresenter(this, loader, factory, repository);
         presenter.checkForUpdates();
+    }
+
+    @Override
+    public void checkForUpdates(String url) {
+        checkForUpdates(new NetworkLoaderFactory(url));
     }
 
     @Override
@@ -101,7 +119,7 @@ public class DefaultUpdater implements UpdateChecker, POVView {
     }
 
     @Override
-    public void notifyError(String error) {
+    public void notifyError(@ErrorCode int error) {
         callback.onError(error);
     }
 }

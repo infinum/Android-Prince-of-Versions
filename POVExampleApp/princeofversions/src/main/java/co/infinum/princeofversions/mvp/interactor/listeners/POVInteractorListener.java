@@ -1,5 +1,6 @@
 package co.infinum.princeofversions.mvp.interactor.listeners;
 
+import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 
 public interface POVInteractorListener {
@@ -10,6 +11,6 @@ public interface POVInteractorListener {
 
     public void onNoUpdateAvailable(VersionContext version);
 
-    public void onError(String error);
+    public void onError(@ErrorCode int error);
 
 }

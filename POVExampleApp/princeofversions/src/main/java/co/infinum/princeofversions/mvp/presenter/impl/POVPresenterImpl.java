@@ -1,5 +1,6 @@
 package co.infinum.princeofversions.mvp.presenter.impl;
 
+import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.mvp.interactor.POVInteractor;
@@ -56,7 +57,7 @@ public class POVPresenterImpl implements POVPresenter {
             }
 
             @Override
-            public void onError(String error) {
+            public void onError(@ErrorCode int error) {
                 view.notifyError(error);
             }
         });

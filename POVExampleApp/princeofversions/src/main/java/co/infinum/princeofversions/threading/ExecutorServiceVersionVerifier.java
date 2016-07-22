@@ -12,19 +12,20 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
+import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
-import co.infinum.princeofversions.interfaces.IVersionVerifier;
-import co.infinum.princeofversions.network.VersionVerifierListener;
+import co.infinum.princeofversions.interfaces.VersionVerifier;
+import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 
-public class ExecutorServiceVersionVerifier implements IVersionVerifier {
+public class ExecutorServiceVersionVerifier implements VersionVerifier {
 
     private static final String TAG = "threadexec";
     public static final long DEFAULT_TIMEOUT_SECONDS = 60;
 
     private VersionConfigParser parser;
 
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
     private Future<Void> future;
 
     public ExecutorServiceVersionVerifier(VersionConfigParser parser) {
@@ -43,11 +44,16 @@ public class ExecutorServiceVersionVerifier implements IVersionVerifier {
 
             ifTaskIsCancelledThrowInterrupt();
             listener.versionAvailable(version);
-        } catch (IOException | VersionConfigParser.ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            listener.versionUnavailable(e.getMessage());
+            listener.versionUnavailable(ErrorCode.LOAD_ERROR);
+        } catch (VersionConfigParser.ParseException e) {
+            e.printStackTrace();
+            listener.versionUnavailable(ErrorCode.WRONG_VERSION);
         } catch (CancellationException | InterruptedException e) {
             // someone cancelled the task
+        } catch (Throwable e) {
+            listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR);
         } finally {
             if (response != null) {
                 try {

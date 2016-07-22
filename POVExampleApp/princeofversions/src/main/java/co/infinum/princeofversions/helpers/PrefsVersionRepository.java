@@ -8,7 +8,7 @@ import co.infinum.princeofversions.interfaces.VersionRepository;
 
 public class PrefsVersionRepository implements VersionRepository {
 
-    public static final String LAST_VERSION_KEY = "princeofversions.LastNotifiedVersion";
+    protected static String LAST_VERSION_KEY = "princeofversions.LastNotifiedVersion";
 
     private Context context;
 
