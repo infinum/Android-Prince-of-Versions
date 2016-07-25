@@ -22,12 +22,10 @@ import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.exceptions.ParseException;
 import co.infinum.princeofversions.helpers.ContextHelper;
+import co.infinum.princeofversions.helpers.parsers.ParserFactory;
 import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
 import co.infinum.princeofversions.interfaces.UpdateChecker;
-import co.infinum.princeofversions.interfaces.VersionVerifier;
-import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
 import co.infinum.princeofversions.network.NetworkLoaderFactory;
-import co.infinum.princeofversions.threading.ThreadVersionVerifier;
 
 public class CustomParserExample extends BaseExampleActivity {
 
@@ -44,7 +42,7 @@ public class CustomParserExample extends BaseExampleActivity {
         ButterKnife.bind(this);
 
         /*  create new instance of updater associated with application context   */
-        updater = new DefaultUpdater(this, versionVerifierFactory);
+        updater = new DefaultUpdater(this, DefaultUpdater.createDefaultVersionVerifierFactory(parserFactory));
         /*  create specific loader factory for loading from internet    */
         loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/7shyuaWu");
     }
@@ -110,33 +108,30 @@ public class CustomParserExample extends BaseExampleActivity {
         }
     };
 
-    private VersionVerifierFactory versionVerifierFactory = new VersionVerifierFactory() {
+    private ParserFactory parserFactory = new ParserFactory() {
         @Override
-        public VersionVerifier newInstance() {
-            return new ThreadVersionVerifier(
-                    new VersionConfigParser() {
-
-                        @Override
-                        public VersionContext parse(String content) throws ParseException {
-                            try {
-                                VersionContext.Version appVersion = ContextHelper.getAppVersion(CustomParserExample.this);
-                                Version current = Version.valueOf(appVersion.getVersionString());
-                                VersionContext.Version minVersion = new VersionContext.Version(
-                                        new JSONObject(content).getString("minimum__version"));
-                                Version minimum = Version.valueOf(minVersion.getVersionString());
-                                VersionContext vc = new VersionContext(
-                                        appVersion,
-                                        minVersion,
-                                        current.lessThan(minimum)
-                                );
-                                return vc;
-                            } catch (PackageManager.NameNotFoundException | JSONException e) {
-                                Log.d(TAG, content);
-                                throw new ParseException(e);
-                            }
-                        }
+        public VersionConfigParser newInstance() {
+            return new VersionConfigParser() {
+                @Override
+                public VersionContext parse(String content) throws ParseException {
+                    try {
+                        VersionContext.Version appVersion = ContextHelper.getAppVersion(CustomParserExample.this);
+                        Version current = Version.valueOf(appVersion.getVersionString());
+                        VersionContext.Version minVersion = new VersionContext.Version(
+                                new JSONObject(content).getString("minimum__version"));
+                        Version minimum = Version.valueOf(minVersion.getVersionString());
+                        VersionContext vc = new VersionContext(
+                                appVersion,
+                                minVersion,
+                                current.lessThan(minimum)
+                        );
+                        return vc;
+                    } catch (PackageManager.NameNotFoundException | JSONException e) {
+                        Log.d(TAG, content);
+                        throw new ParseException(e);
                     }
-            );
+                }
+            };
         }
     };
 

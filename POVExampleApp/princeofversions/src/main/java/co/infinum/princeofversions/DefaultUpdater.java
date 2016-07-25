@@ -9,13 +9,15 @@ import co.infinum.princeofversions.helpers.ContextHelper;
 import co.infinum.princeofversions.helpers.POVFactoryHelper;
 import co.infinum.princeofversions.helpers.PrefsVersionRepository;
 import co.infinum.princeofversions.helpers.parsers.JSONVersionConfigParser;
+import co.infinum.princeofversions.helpers.parsers.ParserFactory;
+import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
 import co.infinum.princeofversions.interfaces.UpdateChecker;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
 import co.infinum.princeofversions.mvp.presenter.POVPresenter;
 import co.infinum.princeofversions.network.NetworkLoaderFactory;
-import co.infinum.princeofversions.threading.ThreadVersionVerifier;
+import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
 
 /**
  * This class represents main entry point for using library.
@@ -75,16 +77,24 @@ public class DefaultUpdater implements UpdateChecker {
      * @param context Context of associated application.
      */
     public DefaultUpdater(@NonNull final Context context) {
-        this(context, new VersionVerifierFactory() {
+        this(context, createDefaultVersionVerifierFactory(new ParserFactory() {
             @Override
-            public VersionVerifier newInstance() {
+            public VersionConfigParser newInstance() {
                 try {
-                    return new ThreadVersionVerifier(new JSONVersionConfigParser(ContextHelper.getAppVersion(context)));
+                    return new JSONVersionConfigParser(ContextHelper.getAppVersion(context));
                 } catch (PackageManager.NameNotFoundException e) {
                     throw new IllegalArgumentException("Current version not available.");
                 }
             }
-        });
+        }));
+    }
+
+    /**
+     * Creates a new instance of updater for application associated with provided context using custom parser implementation.
+     * @param context Context of associated application.
+     */
+    public DefaultUpdater(@NonNull final Context context, ParserFactory parserFactory) {
+        this(context, createDefaultVersionVerifierFactory(parserFactory));
     }
 
     /**
@@ -108,16 +118,16 @@ public class DefaultUpdater implements UpdateChecker {
      * @param repository Custom implementation of repository for persisting library data.
      */
     public DefaultUpdater(@NonNull final Context context, VersionRepository repository) {
-        this(context, new VersionVerifierFactory() {
+        this(context, createDefaultVersionVerifierFactory(new ParserFactory() {
             @Override
-            public VersionVerifier newInstance() {
+            public VersionConfigParser newInstance() {
                 try {
-                    return new ThreadVersionVerifier(new JSONVersionConfigParser(ContextHelper.getAppVersion(context)));
+                    return new JSONVersionConfigParser(ContextHelper.getAppVersion(context));
                 } catch (PackageManager.NameNotFoundException e) {
                     throw new IllegalArgumentException("Current version not available.");
                 }
             }
-        }, repository);
+        }), repository);
     }
 
     /**
@@ -181,6 +191,19 @@ public class DefaultUpdater implements UpdateChecker {
     @Override
     public PrinceOfVersionsContext checkForUpdates(String url, UpdaterCallback callback) {
         return checkForUpdates(new NetworkLoaderFactory(url), callback);
+    }
+
+    public static VersionVerifier createDefaultVersionVerifier(ParserFactory factory) {
+        return new ExecutorServiceVersionVerifier(factory.newInstance());
+    }
+
+    public static VersionVerifierFactory createDefaultVersionVerifierFactory(final ParserFactory factory) {
+        return new VersionVerifierFactory() {
+            @Override
+            public VersionVerifier newInstance() {
+                return createDefaultVersionVerifier(factory);
+            }
+        };
     }
 
 }
