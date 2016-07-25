@@ -10,9 +10,10 @@ import co.infinum.princeofversions.mvp.view.POVView;
  * <p>
  *     Through instance of this class it is available to check if update check associated with this calling context finished and cancel
  *     it if not.
- *     If update check finished, eg. if this context is marked as consumed there is no way to cancel notifying result anymore. Result is
- *     notified or is just being notified. Cancel option is available until class set its consumed flag. Class will set consumed flag
- *     when result is computed and ready for notify.
+ *     If update check finished, eg. if this context is marked as consumed there is no way to cancel notifying result anymore.
+ *     Context is marked as consumed if result is notified or is just being notified. Cancel option is available until class set its
+ *     consumed flag or until cancel is called. Class will set consumed flag when result is computed and ready for notify. Class will set
+ *     isCancelled flag after cancel is called.
  * </p>
  */
 public class PrinceOfVersionsContext implements POVView {
@@ -32,6 +33,12 @@ public class PrinceOfVersionsContext implements POVView {
      * true if result is computed, false otherwise.
      */
     private boolean isConsumed = false;
+
+    /**
+     * Cancel flag.
+     * true if cancel is called, false otherwise.
+     */
+    private boolean isCancelled = false;
 
     /**
      * Creates a new calling context with user defined callback for notifying result.
@@ -61,6 +68,7 @@ public class PrinceOfVersionsContext implements POVView {
     public void cancel() {
         if (presenter != null && !isConsumed()) {
             presenter.onCancel();
+            isCancelled = true;
         }
     }
 
@@ -74,6 +82,17 @@ public class PrinceOfVersionsContext implements POVView {
      */
     public boolean isConsumed() {
         return isConsumed;
+    }
+
+    /**
+     * Provides isCancelled flag for this calling context.
+     * <p>
+     *     Context is marked as cancelled when cancel method is called.
+     * </p>
+     * @return true if context is cancelled, false otherwise.
+     */
+    public boolean isCancelled() {
+        return isCancelled;
     }
 
     @Override

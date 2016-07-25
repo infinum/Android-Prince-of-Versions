@@ -9,4 +9,13 @@
     <string name="btn_cancel">Cancel</string>
     <string name="btn_cancel_test">Test cancel</string>
     <string name="replace">Stopping current request and replacing it with new one...</string>
+    <string name="pastebin_login">Enter credentials to login on Pastebin</string>
+    <string name="pastebin_username">Enter username...</string>
+    <string name="pastebin_password">Enter password...</string>
+    <string name="pastebin_button">Login and check for updates</string>
+    <string name="pastebin_url">Enter sample URL</string>
+    <string name="pastebin_url_part">http://pastebin.com/raw/</string>
+    <string name="open_common_usage">Common usage example</string>
+    <string name="open_network_with_login">Custom network loader with login</string>
+    <string name="open_custom_parser">Custom parser example</string>
 </resources>

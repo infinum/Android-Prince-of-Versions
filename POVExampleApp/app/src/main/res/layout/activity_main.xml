@@ -12,27 +12,21 @@
         tools:context="co.infinum.povexampleapp.MainActivity">
 
     <Button
-            android:id="@+id/btnCheck"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/btn_new_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    <LinearLayout
+            android:id="@+id/btn_open_common_usage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
-        <Button
-                android:id="@+id/btnCancelTest"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/btn_cancel_test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        <Button
-                android:id="@+id/btnCancel"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/btn_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:text="@string/open_common_usage"/>
+
+    <Button
+            android:id="@+id/btn_open_network_with_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_network_with_login"/>
+
+    <Button
+            android:id="@+id/btn_open_custom_parser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_custom_parser"/>
 
 </LinearLayout>

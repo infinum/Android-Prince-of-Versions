@@ -7,15 +7,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import co.infinum.princeofversions.BaseLoader;
 import co.infinum.princeofversions.LoaderValidationException;
-import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.exceptions.UrlNotSetException;
 import co.infinum.princeofversions.helpers.StreamIO;
 
 /**
  * Represents a concrete loader that load resource from network using provided URL.
  */
-public class NetworkLoader implements UpdateConfigLoader {
+public class NetworkLoader extends BaseLoader {
 
     /**
      * Default request timeout in seconds.
@@ -117,21 +117,6 @@ public class NetworkLoader implements UpdateConfigLoader {
         }
     }
 
-    /**
-     * Checks if loading is cancelled and throwing interrupt if it is.
-     * @throws InterruptedException if loading is cancelled.
-     */
-    private void ifTaskIsCancelledThrowInterrupt() throws InterruptedException {
-        if (cancelled) {
-            throw new InterruptedException();
-        }
-    }
-
-    @Override
-    public void cancel() {
-        this.cancelled = true;
-    }
-
     @Override
     public void validate() throws LoaderValidationException {
         if (url == null) {
@@ -143,7 +128,7 @@ public class NetworkLoader implements UpdateConfigLoader {
      * Closing http connection.
      * @param conn Http connection.
      */
-    private void close(HttpURLConnection conn) {
+    protected void close(HttpURLConnection conn) {
         if (conn != null) {
             try {
                 conn.disconnect();
