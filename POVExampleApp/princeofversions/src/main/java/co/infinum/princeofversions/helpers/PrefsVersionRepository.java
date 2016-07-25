@@ -6,12 +6,25 @@ import android.preference.PreferenceManager;
 
 import co.infinum.princeofversions.interfaces.VersionRepository;
 
+/**
+ * This class represents repository for persisting library data in SharedPreferences.
+ */
 public class PrefsVersionRepository implements VersionRepository {
 
+    /**
+     * Key that represents last notified version.
+     */
     protected static String LAST_VERSION_KEY = "princeofversions.LastNotifiedVersion";
 
+    /**
+     * Current application context.
+     */
     private Context context;
 
+    /**
+     * Creates a new repository from current application context.
+     * @param context Current application context.
+     */
     public PrefsVersionRepository(Context context) {
         this.context = context;
     }
@@ -31,6 +44,10 @@ public class PrefsVersionRepository implements VersionRepository {
         getPrefs().edit().putString(LAST_VERSION_KEY, version).commit();
     }
 
+    /**
+     * Utility method for getting shared preferences object.
+     * @return SharedPreferences associated with current application.
+     */
     private SharedPreferences getPrefs() {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }

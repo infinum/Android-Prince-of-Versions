@@ -3,6 +3,8 @@ package co.infinum.princeofversions.helpers;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import co.infinum.princeofversions.common.VersionContext;
+
 /**
  * Created by stefano on 19/07/16.
  */
@@ -18,11 +20,14 @@ public class ContextHelper {
         ContextHelper.context = context;
     }
 
-    public static String getAppVersion(Context context) throws PackageManager.NameNotFoundException {
-        return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+    public static VersionContext.Version getAppVersion(Context context) throws PackageManager.NameNotFoundException {
+        return new VersionContext.Version(
+                context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName,
+                context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode
+        );
     }
 
-    public static String getAppVersion() throws PackageManager.NameNotFoundException {
+    public static VersionContext.Version getAppVersion() throws PackageManager.NameNotFoundException {
         return getAppVersion(getContext());
     }
 }

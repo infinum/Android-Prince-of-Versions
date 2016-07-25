@@ -27,6 +27,7 @@ import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 public class InteractorTest {
 
     private VersionVerifier versionVerifier;
+
     private UpdateConfigLoader loader;
 
     @Before
@@ -37,8 +38,10 @@ public class InteractorTest {
 
     @Test
     public void testMandatoryUpdate() {
-        final VersionContext versionContext = new VersionContext("2.0.0", new VersionContext.Version("3.0.0", "1"), true, new VersionContext
-                .UpdateContext(new VersionContext.Version("3.0.1", "2"), "ONCE"), true);
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0.0", 0),
+                new VersionContext.Version("3.0.0", 1), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), true);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -59,9 +62,10 @@ public class InteractorTest {
 
     @Test
     public void testOptionalUpdate() {
-        final VersionContext versionContext = new VersionContext("3.0.0", new VersionContext.Version("2.0.0", "1"), false, new
-                VersionContext
-                        .UpdateContext(new VersionContext.Version("3.0.1", "2"), "ONCE"), true);
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("3.0.0", 0),
+                new VersionContext.Version("2.0.0", 1), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), true);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -82,9 +86,10 @@ public class InteractorTest {
 
     @Test
     public void testNoUpdate() {
-        final VersionContext versionContext = new VersionContext("4.0.0", new VersionContext.Version("2.0.0", "1"), false, new
-                VersionContext
-                        .UpdateContext(new VersionContext.Version("3.0.1", "2"), "ONCE"), false);
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("4.0.0"),
+                new VersionContext.Version("2.0.0", 1), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), false);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -105,8 +110,10 @@ public class InteractorTest {
 
     @Test
     public void testError() {
-        final VersionContext versionContext = new VersionContext("2.0.0", new VersionContext.Version("3.0.0", "1"), true, new VersionContext
-                .UpdateContext(new VersionContext.Version("3.0.1", "2"), "ONCE"), true);
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0.0"),
+                new VersionContext.Version("3.0.0", 1), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), true);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {

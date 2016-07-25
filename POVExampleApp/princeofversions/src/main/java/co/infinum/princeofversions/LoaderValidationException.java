@@ -1,9 +1,11 @@
 package co.infinum.princeofversions;
 
+/**
+ * Represents exception thrown if validation error occurred while validating loader.
+ */
 public class LoaderValidationException extends Exception {
 
-    public LoaderValidationException() {
-    }
+    public LoaderValidationException() {}
 
     public LoaderValidationException(String message) {
         super(message);

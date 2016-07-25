@@ -12,6 +12,7 @@ import butterknife.OnClick;
 import co.infinum.princeofversions.DefaultUpdater;
 import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.LoaderValidationException;
+import co.infinum.princeofversions.PrinceOfVersionsContext;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
 import co.infinum.princeofversions.common.ErrorCode;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private UpdateChecker updater;
     private LoaderFactory loaderFactory;
+    private PrinceOfVersionsContext povContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,26 +33,47 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        updater = new DefaultUpdater(MainActivity.this, defaultCallback);
+        /*  create new instance of updater associated with application context   */
+        updater = new DefaultUpdater(MainActivity.this);
+        /*  create specific loader factory for loading from internet    */
         loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/41N8stUD");
-
     }
 
     @OnClick(R.id.btnCheck)
     public void onCheckClick() {
-        updater.checkForUpdates(loaderFactory);
+        /*  call check for updates for start checking and remember return value if you need cancel option    */
+        PrinceOfVersionsContext context = updater.checkForUpdates(loaderFactory, defaultCallback);
+        replacePOVContext(context);
     }
 
     @OnClick(R.id.btnCancelTest)
     public void onCancelTestClick() {
-        updater.checkForUpdates(slowLoaderFactory);
+        /*  same call as few lines higher, but using another loader, this one is very slow loader  */
+        PrinceOfVersionsContext context = updater.checkForUpdates(slowLoaderFactory, defaultCallback);
+        replacePOVContext(context);
     }
 
     @OnClick(R.id.btnCancel)
     public void onCancelClick() {
-        updater.cancel();
+        PrinceOfVersionsContext context;
+        /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
+        if (povContext != null && !povContext.isConsumed()) {
+            povContext.cancel();
+        }
     }
 
+    private void replacePOVContext(PrinceOfVersionsContext povContext) {
+        /*  started new checking, kill current one if not dead and remember new context */
+        if (this.povContext != null && !this.povContext.isConsumed()) {
+            toastIt(getString(R.string.replace), Toast.LENGTH_SHORT);
+            this.povContext.cancel();
+        }
+        this.povContext = povContext;
+    }
+
+    /**
+     * This factory creates a very slow loader, just to give us enough time to invoke cancel option.
+     */
     private LoaderFactory slowLoaderFactory = new LoaderFactory() {
         @Override
         public UpdateConfigLoader newInstance() {
@@ -77,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Callback definition for accepting updater's result. Just toast it result.
+     */
     private UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
         public void onNewUpdate(String version, boolean isMandatory) {

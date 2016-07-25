@@ -8,4 +8,5 @@
     <string name="update_error">Error occurred: %s</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_cancel_test">Test cancel</string>
+    <string name="replace">Stopping current request and replacing it with new one...</string>
 </resources>
