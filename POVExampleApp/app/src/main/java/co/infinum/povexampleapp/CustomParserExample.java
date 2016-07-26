@@ -41,10 +41,16 @@ public class CustomParserExample extends BaseExampleActivity {
         setContentView(R.layout.activity_common_usage);
         ButterKnife.bind(this);
 
-        /*  create new instance of updater associated with application context   */
-        updater = new DefaultUpdater(this, DefaultUpdater.createDefaultVersionVerifierFactory(parserFactory));
+        /*  create new instance of updater associated with application context using custom parser factory   */
+        updater = new DefaultUpdater(this, parserFactory);
         /*  create specific loader factory for loading from internet    */
         loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/7shyuaWu");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        onCancelClick();
     }
 
     @OnClick(R.id.btnCheck)
@@ -63,7 +69,6 @@ public class CustomParserExample extends BaseExampleActivity {
 
     @OnClick(R.id.btnCancel)
     public void onCancelClick() {
-        PrinceOfVersionsContext context;
         /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
         if (povContext != null && !povContext.isConsumed()) {
             povContext.cancel();
@@ -80,7 +85,7 @@ public class CustomParserExample extends BaseExampleActivity {
     }
 
     /**
-     * This factory creates a very slow loader, just to give us enough time to invoke cancel option.
+     * This factory creates a very slow loader, just to give you enough time to invoke cancel option.
      */
     private LoaderFactory slowLoaderFactory = new LoaderFactory() {
         @Override
@@ -108,17 +113,24 @@ public class CustomParserExample extends BaseExampleActivity {
         }
     };
 
+    /**
+     * Custom parser factory, used for parsing in special format.
+     * Custom parser is defined for JSON object containing only one key: minimum__version.
+     */
     private ParserFactory parserFactory = new ParserFactory() {
         @Override
         public VersionConfigParser newInstance() {
             return new VersionConfigParser() {
+
+                public static final String MINIMUM__VERSION = "minimum__version";
+
                 @Override
                 public VersionContext parse(String content) throws ParseException {
                     try {
                         VersionContext.Version appVersion = ContextHelper.getAppVersion(CustomParserExample.this);
                         Version current = Version.valueOf(appVersion.getVersionString());
                         VersionContext.Version minVersion = new VersionContext.Version(
-                                new JSONObject(content).getString("minimum__version"));
+                                new JSONObject(content).getString(MINIMUM__VERSION));
                         Version minimum = Version.valueOf(minVersion.getVersionString());
                         VersionContext vc = new VersionContext(
                                 appVersion,

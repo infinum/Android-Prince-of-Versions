@@ -131,6 +131,17 @@ public class DefaultUpdater implements UpdateChecker {
     }
 
     /**
+     * Creates a new instance of updater for application associated with provided context using custom implementation of parser and custom
+     * implementation of VersionRepository for persisting library data.
+     * @param context Context of associated application.
+     * @param parserFactory Factory for creating custom parser for parsing loaded content.
+     * @param repository Custom implementation of repository for persisting library data.
+     */
+    public DefaultUpdater(@NonNull final Context context, ParserFactory parserFactory, VersionRepository repository) {
+        this(context, createDefaultVersionVerifierFactory(parserFactory), repository);
+    }
+
+    /**
      * Creates a new instance of updater for application associated with provided context using custom implementation of
      * VersionVerifierFactory and VersionRepository.
      * <p>
@@ -193,10 +204,20 @@ public class DefaultUpdater implements UpdateChecker {
         return checkForUpdates(new NetworkLoaderFactory(url), callback);
     }
 
+    /**
+     * Utility method for creating default version verifier using given factory for creating concrete parser.
+     * @param factory Factory for creating concrete parser.
+     * @return New instance of VersionVerifier class.
+     */
     public static VersionVerifier createDefaultVersionVerifier(ParserFactory factory) {
         return new ExecutorServiceVersionVerifier(factory.newInstance());
     }
 
+    /**
+     * Utility method for creating default version verifier factory using given parser factory.
+     * @param factory Factory for creating concrete parser.
+     * @return New instance of VersionVerifierFactory class.
+     */
     public static VersionVerifierFactory createDefaultVersionVerifierFactory(final ParserFactory factory) {
         return new VersionVerifierFactory() {
             @Override

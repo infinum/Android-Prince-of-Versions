@@ -54,14 +54,17 @@ public class NetworkWithLoginExample extends BaseExampleActivity {
         setContentView(R.layout.activity_network_with_login);
         ButterKnife.bind(this);
 
+        /*  create new instance of updater associated with application context  */
         updater = new DefaultUpdater(this);
     }
 
     @OnClick(R.id.btn_pastebin)
     public void onLoginAndCheckClick() {
+        /*  use updater with custom loader factory to check for updates from private pastebin file  */
         updater.checkForUpdates(loaderFactory, defaultCallback);
     }
 
+    /*  Create new specific factory for creating loader */
     private LoaderFactory loaderFactory = new LoaderFactory() {
 
         @Override
@@ -76,6 +79,15 @@ public class NetworkWithLoginExample extends BaseExampleActivity {
 
     };
 
+    /**
+     * Creates custom loader. Loader loads update configuration from private pastebin file using provided username and password to log in
+     * into Pastebin account where private file is stored.
+     * @param loginUrl URL for getting and posting to login page.
+     * @param contentUrl URL for fetching content.
+     * @param username Account username.
+     * @param password Account password.
+     * @return New instance of loader for loading from private Pastebin file.
+     */
     private UpdateConfigLoader createLoader(final String loginUrl, final String contentUrl, final String username, final String password) {
         return new BaseLoader() {
 

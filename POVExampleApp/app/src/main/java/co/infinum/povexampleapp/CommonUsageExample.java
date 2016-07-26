@@ -35,6 +35,12 @@ public class CommonUsageExample extends BaseExampleActivity {
         loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/41N8stUD");
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        onCancelClick();
+    }
+
     @OnClick(R.id.btnCheck)
     public void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
@@ -52,7 +58,6 @@ public class CommonUsageExample extends BaseExampleActivity {
 
     @OnClick(R.id.btnCancel)
     public void onCancelClick() {
-        PrinceOfVersionsContext context;
         /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
         if (povContext != null && !povContext.isConsumed()) {
             povContext.cancel();
@@ -69,7 +74,7 @@ public class CommonUsageExample extends BaseExampleActivity {
     }
 
     /**
-     * This factory creates a very slow loader, just to give us enough time to invoke cancel option.
+     * This factory creates a very slow loader, just to give you enough time to invoke cancel option.
      */
     private LoaderFactory slowLoaderFactory = new LoaderFactory() {
         @Override
