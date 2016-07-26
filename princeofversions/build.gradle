@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: './quality.gradle'
 
 android {
     compileSdkVersion 24
@@ -17,9 +18,7 @@ android {
         }
     }
     sourceSets { main { resources.srcDirs = ['src/main/resources', 'src/test/resources/'] } }
-    testOptions {
-        unitTests.returnDefaultValues = true
-    }
+
 }
 
 dependencies {
