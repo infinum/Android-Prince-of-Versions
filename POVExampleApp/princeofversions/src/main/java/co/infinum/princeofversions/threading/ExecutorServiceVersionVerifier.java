@@ -1,7 +1,5 @@
 package co.infinum.princeofversions.threading;
 
-import android.util.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
@@ -67,12 +65,10 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
      * @param loader Loads update configuration.
      * @param listener Callback for notifying results.
      */
-    private void getVersion(UpdateConfigLoader loader, VersionVerifierListener listener) {
+    protected void getVersion(UpdateConfigLoader loader, VersionVerifierListener listener) {
         InputStream response = null;
         try {
             String content = loader.load();
-
-            Log.e(TAG, content);
 
             ifTaskIsCancelledThrowInterrupt();
             VersionContext version = parser.parse(content);
@@ -80,10 +76,8 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
             ifTaskIsCancelledThrowInterrupt();
             listener.versionAvailable(version);
         } catch (IOException e) {
-            e.printStackTrace();
             listener.versionUnavailable(ErrorCode.LOAD_ERROR);
         } catch (ParseException e) {
-            e.printStackTrace();
             listener.versionUnavailable(ErrorCode.WRONG_VERSION);
         } catch (CancellationException | InterruptedException e) {
             // someone cancelled the task

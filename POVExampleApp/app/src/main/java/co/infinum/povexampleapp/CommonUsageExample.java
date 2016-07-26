@@ -13,6 +13,7 @@ import co.infinum.princeofversions.LoaderValidationException;
 import co.infinum.princeofversions.PrinceOfVersionsContext;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.interfaces.UpdateChecker;
+import co.infinum.princeofversions.network.NetworkLoader;
 import co.infinum.princeofversions.network.NetworkLoaderFactory;
 
 public class CommonUsageExample extends BaseExampleActivity {
@@ -33,6 +34,12 @@ public class CommonUsageExample extends BaseExampleActivity {
         updater = new DefaultUpdater(this);
         /*  create specific loader factory for loading from internet    */
         loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/41N8stUD");
+        loaderFactory = new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new NetworkLoader("https://httpbin.org/basic-auth/pero/pass", "pero", "pass");
+            }
+        };
     }
 
     @Override
