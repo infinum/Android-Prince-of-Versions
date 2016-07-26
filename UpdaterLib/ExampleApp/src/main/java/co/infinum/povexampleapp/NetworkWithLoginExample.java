@@ -27,11 +27,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.infinum.princeofversions.BaseLoader;
-import co.infinum.princeofversions.DefaultUpdater;
 import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.LoaderValidationException;
+import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.interfaces.UpdateChecker;
 
 public class NetworkWithLoginExample extends BaseExampleActivity {
 
@@ -46,7 +45,7 @@ public class NetworkWithLoginExample extends BaseExampleActivity {
     @Bind(R.id.pastebin_url)
     protected EditText urlView;
 
-    private UpdateChecker updater;
+    private PrinceOfVersions updater;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +54,7 @@ public class NetworkWithLoginExample extends BaseExampleActivity {
         ButterKnife.bind(this);
 
         /*  create new instance of updater associated with application context  */
-        updater = new DefaultUpdater(this);
+        updater = new PrinceOfVersions(this);
     }
 
     @OnClick(R.id.btn_pastebin)

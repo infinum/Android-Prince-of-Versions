@@ -16,7 +16,7 @@ import android.os.Build;
 import java.io.IOException;
 
 import co.infinum.princeofversions.BuildConfig;
-import co.infinum.princeofversions.DefaultUpdater;
+import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.LoaderValidationException;
 import co.infinum.princeofversions.UpdateConfigLoader;
@@ -68,7 +68,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingValidContentNoNotification() throws PackageManager.NameNotFoundException {
         Context context = setupContext("2.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -84,7 +84,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingValidContentNotificationAlways() throws PackageManager.NameNotFoundException {
         Context context = setupContext("2.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -100,7 +100,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingValidContentOnlyMinVersion() throws PackageManager.NameNotFoundException {
         Context context = setupContext("2.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -116,7 +116,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingValidContentWithoutCodes() throws PackageManager.NameNotFoundException {
         Context context = setupContext("2.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -132,7 +132,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndLessThanOptional() throws PackageManager.NameNotFoundException {
         Context context = setupContext("2.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -148,7 +148,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingContentJSONWhenCurrentIsLessThanMinAndLessThanOptional() throws PackageManager.NameNotFoundException {
         Context context = setupContext("1.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -164,7 +164,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingContentJSONWhenCurrentIsEqualToMinAndLessThanOptional() throws PackageManager.NameNotFoundException {
         Context context = setupContext("1.2.3", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -180,7 +180,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptional() throws PackageManager.NameNotFoundException {
         Context context = setupContext("2.4.5", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -196,7 +196,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptional() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -212,7 +212,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingInvalidContentWithInvalidVersion() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -228,7 +228,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingInvalidContentNoAndroidKey() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -244,7 +244,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingInvalidContentNoJSON() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -260,7 +260,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingInvalidContentNoMinVersion() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -276,7 +276,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingInvalidContentOptionalNoMinVersion() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -292,7 +292,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingValidContentWithAlwaysNotification() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -308,7 +308,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingValidContentWithOnlyMinVersion() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -326,7 +326,7 @@ public class PrinceOfVersionsTest {
         Context context = setupContext("2.0.0", 12345);
         VersionRepository repo = Mockito.mock(VersionRepository.class);
         Mockito.when(repo.getLastVersionName(Mockito.anyString())).thenReturn("2.4.5");
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repo);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repo);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {
@@ -342,7 +342,7 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingWhenCurrentAppVersionIsInvalid() throws PackageManager.NameNotFoundException {
         Context context = setupContext("2.0", 12345);
-        DefaultUpdater updater = new DefaultUpdater(context, provider, repository);
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
         updater.checkForUpdates(new LoaderFactory() {
             @Override
             public UpdateConfigLoader newInstance() {

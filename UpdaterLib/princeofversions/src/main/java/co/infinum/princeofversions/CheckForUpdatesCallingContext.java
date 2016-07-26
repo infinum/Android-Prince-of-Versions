@@ -16,7 +16,7 @@ import co.infinum.princeofversions.mvp.view.POVView;
  *     isCancelled flag after cancel is called.
  * </p>
  */
-public class PrinceOfVersionsContext implements POVView {
+public class CheckForUpdatesCallingContext implements POVView {
 
     /**
      * Presenter instance associated with this calling context.
@@ -44,7 +44,7 @@ public class PrinceOfVersionsContext implements POVView {
      * Creates a new calling context with user defined callback for notifying result.
      * @param callback User defined callback for notifying result.
      */
-    PrinceOfVersionsContext(UpdaterCallback callback) {
+    CheckForUpdatesCallingContext(UpdaterCallback callback) {
         this.callback = callback;
     }
 
@@ -53,7 +53,7 @@ public class PrinceOfVersionsContext implements POVView {
      * @param presenter Presenter.
      * @return this.
      */
-    PrinceOfVersionsContext setPresenter(POVPresenter presenter) {
+    CheckForUpdatesCallingContext setPresenter(POVPresenter presenter) {
         this.presenter = presenter;
         return this;
     }

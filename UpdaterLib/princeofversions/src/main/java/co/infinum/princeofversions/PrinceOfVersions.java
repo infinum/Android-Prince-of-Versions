@@ -11,7 +11,6 @@ import co.infinum.princeofversions.helpers.PrefsVersionRepository;
 import co.infinum.princeofversions.helpers.parsers.JSONVersionConfigParser;
 import co.infinum.princeofversions.helpers.parsers.ParserFactory;
 import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
-import co.infinum.princeofversions.interfaces.UpdateChecker;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
@@ -60,7 +59,7 @@ import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
  *     cancel functionality always provide new instance of loader.
  * </p>
  */
-public class DefaultUpdater implements UpdateChecker {
+public class PrinceOfVersions {
 
     /**
      * Factory for creating VersionVerifier instance.
@@ -76,7 +75,7 @@ public class DefaultUpdater implements UpdateChecker {
      * Creates a new instance of updater for application associated with provided context.
      * @param context Context of associated application.
      */
-    public DefaultUpdater(@NonNull final Context context) {
+    public PrinceOfVersions(@NonNull final Context context) {
         this(context, createDefaultVersionVerifierFactory(new ParserFactory() {
             @Override
             public VersionConfigParser newInstance() {
@@ -93,7 +92,7 @@ public class DefaultUpdater implements UpdateChecker {
      * Creates a new instance of updater for application associated with provided context using custom parser implementation.
      * @param context Context of associated application.
      */
-    public DefaultUpdater(@NonNull final Context context, ParserFactory parserFactory) {
+    public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory) {
         this(context, createDefaultVersionVerifierFactory(parserFactory));
     }
 
@@ -107,7 +106,7 @@ public class DefaultUpdater implements UpdateChecker {
      * @param context Context of associated application.
      * @param factory Custom factory for creating VersionVerifier instances.
      */
-    public DefaultUpdater(@NonNull final Context context, VersionVerifierFactory factory) {
+    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory) {
         this(context, factory, new PrefsVersionRepository(context));
     }
 
@@ -117,7 +116,7 @@ public class DefaultUpdater implements UpdateChecker {
      * @param context Context of associated application.
      * @param repository Custom implementation of repository for persisting library data.
      */
-    public DefaultUpdater(@NonNull final Context context, VersionRepository repository) {
+    public PrinceOfVersions(@NonNull final Context context, VersionRepository repository) {
         this(context, createDefaultVersionVerifierFactory(new ParserFactory() {
             @Override
             public VersionConfigParser newInstance() {
@@ -137,7 +136,7 @@ public class DefaultUpdater implements UpdateChecker {
      * @param parserFactory Factory for creating custom parser for parsing loaded content.
      * @param repository Custom implementation of repository for persisting library data.
      */
-    public DefaultUpdater(@NonNull final Context context, ParserFactory parserFactory, VersionRepository repository) {
+    public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory, VersionRepository repository) {
         this(context, createDefaultVersionVerifierFactory(parserFactory), repository);
     }
 
@@ -154,8 +153,8 @@ public class DefaultUpdater implements UpdateChecker {
      * @param factory Custom factory for creating VersionVerifier instances.
      * @param repository Custom implementation of repository for persisting library data.
      */
-    public DefaultUpdater(@NonNull final Context context, VersionVerifierFactory factory,
-                          VersionRepository repository) {
+    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory,
+                            VersionRepository repository) {
         ContextHelper.setContext(context);
         this.factory = factory;
         this.repository = repository;
@@ -174,15 +173,26 @@ public class DefaultUpdater implements UpdateChecker {
         }
     }
 
-    @Override
-    public PrinceOfVersionsContext checkForUpdates(LoaderFactory loaderFactory, UpdaterCallback callback) {
+    /**
+     * Method checks for updates from resource provided by given LoaderFactory and notifies UpdaterCallback if there is some update
+     * available or not. Object returned from method represents calling context through is available to check if update check was
+     * notified or cancel update checking if not.
+     * <p>
+     *     After creating new loader from LoaderFactory its validate method is called which throws exception if loader is invalid.
+     * </p>
+     * @param loaderFactory Representation of custom resource loader.
+     * @param callback Callback for notifying update check result.
+     * @return Calling context representing this concrete update check.
+     * @throws IllegalArgumentException if newly created loader is invalid.
+     */
+    public CheckForUpdatesCallingContext checkForUpdates(LoaderFactory loaderFactory, UpdaterCallback callback) {
         UpdateConfigLoader loader = loaderFactory.newInstance();
         try {
             loader.validate();
         } catch (LoaderValidationException e) {
             throw new IllegalArgumentException(e);
         }
-        PrinceOfVersionsContext povContext = new PrinceOfVersionsContext(callback);
+        CheckForUpdatesCallingContext povContext = new CheckForUpdatesCallingContext(callback);
         POVPresenter presenter = POVFactoryHelper.getInstance().getPresenter(povContext, loader, factory, repository);
         povContext.setPresenter(presenter);
         presenter.checkForUpdates();
@@ -199,8 +209,7 @@ public class DefaultUpdater implements UpdateChecker {
      * @return Calling context representing this concrete update check.
      * @throws IllegalArgumentException if resource locator is invalid.
      */
-    @Override
-    public PrinceOfVersionsContext checkForUpdates(String url, UpdaterCallback callback) {
+    public CheckForUpdatesCallingContext checkForUpdates(String url, UpdaterCallback callback) {
         return checkForUpdates(new NetworkLoaderFactory(url), callback);
     }
 
