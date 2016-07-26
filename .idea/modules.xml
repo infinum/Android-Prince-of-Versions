@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Android-Updater.iml" filepath="$PROJECT_DIR$/Android-Updater.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ExampleApp/ExampleApp.iml" filepath="$PROJECT_DIR$/ExampleApp/ExampleApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/princeofversions/princeofversions.iml" filepath="$PROJECT_DIR$/princeofversions/princeofversions.iml" />
+    </modules>
+  </component>
+</project>

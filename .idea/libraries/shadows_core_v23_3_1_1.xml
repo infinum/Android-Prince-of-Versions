@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="shadows-core-v23-3.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.robolectric/shadows-core-v23/3.1.1/aa8d5cf83d420c04b10e87ebf578549c5ee29ac/shadows-core-v23-3.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.robolectric/shadows-core-v23/3.1.1/106858f443793ba7667e2b3bff5afd3dfed84c1a/shadows-core-v23-3.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
