@@ -29,4 +29,10 @@
             android:layout_height="wrap_content"
             android:text="@string/open_custom_parser"/>
 
+    <Button
+            android:id="@+id/btn_open_stream_example"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/open_stream_example"/>
+
 </LinearLayout>

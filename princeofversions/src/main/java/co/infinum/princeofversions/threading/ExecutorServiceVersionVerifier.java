@@ -84,6 +84,7 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
         } catch (CancellationException | InterruptedException intentionalEmpty) { // NOPMD
             // someone cancelled the task
         } catch (Throwable e) {
+            e.printStackTrace();
             listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR);
         } finally {
             try {
@@ -109,6 +110,7 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
             public void run() {
                 try {
                     future.get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+                    future = null;
                 } catch (Exception ignorable) { // NOPMD
                     // future is cancelled or timed out or thread is interrupted => anyway, just return
                 }
@@ -121,7 +123,9 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
     @Override
     public void cancel() {
         try {
-            future.cancel(true);
+            if (future != null) {
+                future.cancel(true);
+            }
         } catch (CancellationException ignorable) { // NOPMD
             // ignorable exception
         }
@@ -133,7 +137,7 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
      * @throws InterruptedException if loading is cancelled.
      */
     private void ifTaskIsCancelledThrowInterrupt() {
-        if (future.isCancelled()) {
+        if (future != null && future.isCancelled()) {
             throw new CancellationException();
         }
     }

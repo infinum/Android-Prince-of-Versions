@@ -1,13 +1,6 @@
 package co.infinum.povexampleapp;
 
-import com.github.zafarkhaja.semver.Version;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -16,19 +9,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.infinum.princeofversions.CheckForUpdatesCallingContext;
 import co.infinum.princeofversions.LoaderFactory;
-import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.common.VersionContext;
-import co.infinum.princeofversions.exceptions.ParseException;
-import co.infinum.princeofversions.helpers.ContextHelper;
-import co.infinum.princeofversions.helpers.parsers.ParserFactory;
-import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
-import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
+import co.infinum.princeofversions.exceptions.LoaderValidationException;
+import co.infinum.princeofversions.loaders.StreamLoader;
 
-public class CustomParserExample extends BaseExampleActivity {
+public class StreamLoaderExample extends BaseExampleActivity {
 
-    public static final String TAG = "POV_CUSTOM_PARSER";
+    public static final String TAG = "POV_STREAM_USAGE";
 
     private PrinceOfVersions updater;
     private LoaderFactory loaderFactory;
@@ -40,15 +28,21 @@ public class CustomParserExample extends BaseExampleActivity {
         setContentView(R.layout.activity_common_usage);
         ButterKnife.bind(this);
 
-        /*  create new instance of updater associated with application context using custom parser factory   */
-        updater = new PrinceOfVersions(this, parserFactory);
-        /*  create specific loader factory for loading from internet    */
-        loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/7shyuaWu");
+        /*  create new instance of updater associated with application context   */
+        updater = new PrinceOfVersions(this);
+        /*  create specific loader factory for loading from stream    */
+        loaderFactory = new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                // create new stream for every read
+                return new StreamLoader(getResources().openRawResource(R.raw.update));
+            }
+        };
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         onCancelClick();
     }
 
@@ -61,7 +55,8 @@ public class CustomParserExample extends BaseExampleActivity {
 
     @OnClick(R.id.btnCancelTest)
     public void onCancelTestClick() {
-        /*  same call as few lines higher, but using another loader, this one is very slow loader  */
+        /*  same call as few lines higher, but using another loader, this one is very slow loader just to demonstrate cancel
+        functionality. */
         CheckForUpdatesCallingContext context = updater.checkForUpdates(slowLoaderFactory, defaultCallback);
         replacePOVContext(context);
     }
@@ -107,40 +102,6 @@ public class CustomParserExample extends BaseExampleActivity {
                 @Override
                 public void validate() throws LoaderValidationException {
                     instance.validate();
-                }
-            };
-        }
-    };
-
-    /**
-     * Custom parser factory, used for parsing in special format.
-     * Custom parser is defined for JSON object containing only one key: minimum__version.
-     */
-    private ParserFactory parserFactory = new ParserFactory() {
-        @Override
-        public VersionConfigParser newInstance() {
-            return new VersionConfigParser() {
-
-                public static final String MINIMUM__VERSION = "minimum__version";
-
-                @Override
-                public VersionContext parse(String content) throws ParseException {
-                    try {
-                        VersionContext.Version appVersion = ContextHelper.getAppVersion(CustomParserExample.this);
-                        Version current = Version.valueOf(appVersion.getVersionString());
-                        VersionContext.Version minVersion = new VersionContext.Version(
-                                new JSONObject(content).getString(MINIMUM__VERSION));
-                        Version minimum = Version.valueOf(minVersion.getVersionString());
-                        VersionContext vc = new VersionContext(
-                                appVersion,
-                                minVersion,
-                                current.lessThan(minimum)
-                        );
-                        return vc;
-                    } catch (PackageManager.NameNotFoundException | JSONException e) {
-                        Log.d(TAG, content);
-                        throw new ParseException(e);
-                    }
                 }
             };
         }

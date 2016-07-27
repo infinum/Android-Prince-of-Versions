@@ -12,7 +12,7 @@ import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.network.NetworkLoaderFactory;
+import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
 
 public class CommonUsageExample extends BaseExampleActivity {
 
@@ -71,6 +71,28 @@ public class CommonUsageExample extends BaseExampleActivity {
         }
         this.povContext = povContext;
     }
+
+    private LoaderFactory fileLoaderFactory = new LoaderFactory() {
+        @Override
+        public UpdateConfigLoader newInstance() {
+            return new UpdateConfigLoader() {
+                @Override
+                public String load() throws IOException, InterruptedException {
+                    return null;
+                }
+
+                @Override
+                public void cancel() {
+
+                }
+
+                @Override
+                public void validate() throws LoaderValidationException {
+
+                }
+            };
+        }
+    };
 
     /**
      * This factory creates a very slow loader, just to give you enough time to invoke cancel option.

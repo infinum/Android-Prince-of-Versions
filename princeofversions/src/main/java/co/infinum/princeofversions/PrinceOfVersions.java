@@ -16,7 +16,7 @@ import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
 import co.infinum.princeofversions.mvp.presenter.POVPresenter;
-import co.infinum.princeofversions.network.NetworkLoaderFactory;
+import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
 import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
 
 /**

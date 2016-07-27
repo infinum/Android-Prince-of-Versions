@@ -1,7 +1,8 @@
-package co.infinum.princeofversions.network;
+package co.infinum.princeofversions.loaders.factories;
 
 import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.UpdateConfigLoader;
+import co.infinum.princeofversions.loaders.NetworkLoader;
 
 /**
  * Class creates specific network loader.

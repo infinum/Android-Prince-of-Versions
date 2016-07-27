@@ -1,4 +1,4 @@
-package co.infinum.princeofversions.network;
+package co.infinum.princeofversions.loaders;
 
 import android.util.Base64;
 

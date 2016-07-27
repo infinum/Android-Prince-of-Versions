@@ -5,6 +5,4 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-    <!--    ignore checks in example application    -->
-    <suppress files="ExampleApp/.+\.java" checks="[a-zA-Z0-9]*"/>
 </suppressions>

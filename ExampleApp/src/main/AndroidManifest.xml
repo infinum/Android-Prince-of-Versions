@@ -19,6 +19,7 @@
         <activity android:name=".NetworkWithLoginExample"/>
         <activity android:name=".CommonUsageExample"/>
         <activity android:name=".CustomParserExample"/>
+        <activity android:name=".StreamLoaderExample"/>
     </application>
 
 </manifest>

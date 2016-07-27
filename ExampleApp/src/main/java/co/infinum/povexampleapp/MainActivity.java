@@ -31,4 +31,9 @@ public class MainActivity extends AppCompatActivity {
     public void onCustomParserClick() {
         startActivity(new Intent(this, CustomParserExample.class));
     }
+
+    @OnClick(R.id.btn_open_stream_example)
+    public void onStreamLoaderClick() {
+        startActivity(new Intent(this, StreamLoaderExample.class));
+    }
 }
