@@ -36,6 +36,7 @@ public class ThreadVersionVerifier implements VersionVerifier {
 
     /**
      * Creates a new instance of verifier with parser provided through argument.
+     *
      * @param parser Update configuration resource parser.
      */
     public ThreadVersionVerifier(VersionConfigParser parser) {
@@ -44,7 +45,8 @@ public class ThreadVersionVerifier implements VersionVerifier {
 
     /**
      * Method loads version using given loader and notify result of version parsing and computation to given callback.
-     * @param loader Loads update configuration.
+     *
+     * @param loader   Loads update configuration.
      * @param listener Callback for notifying results.
      */
     protected void getVersion(UpdateConfigLoader loader, VersionVerifierListener listener) {
@@ -86,6 +88,7 @@ public class ThreadVersionVerifier implements VersionVerifier {
 
     /**
      * Checks if loading is cancelled and throwing interrupt if it is.
+     *
      * @throws InterruptedException if loading is cancelled.
      */
     private void ifTaskIsCancelledThrowInterrupt() throws InterruptedException {

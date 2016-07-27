@@ -8,6 +8,7 @@ public interface VersionVerifierFactory {
 
     /**
      * Method provides <b>new</b> instance of specific VersionVerifier.
+     *
      * @return <b>New</b> instance of specific VersionVerifier.
      */
     VersionVerifier newInstance();

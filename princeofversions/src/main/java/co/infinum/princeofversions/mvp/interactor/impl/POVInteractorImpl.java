@@ -4,9 +4,9 @@ import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
+import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 import co.infinum.princeofversions.mvp.interactor.POVInteractor;
 import co.infinum.princeofversions.mvp.interactor.listeners.POVInteractorListener;
-import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 
 /**
  * Created by stefano on 08/07/16.
@@ -14,6 +14,7 @@ import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 public class POVInteractorImpl implements POVInteractor {
 
     private VersionVerifier versionVerifier;
+
     private UpdateConfigLoader loader;
 
     public POVInteractorImpl(VersionVerifier versionVerifier, UpdateConfigLoader loader) {

@@ -14,7 +14,9 @@ import co.infinum.princeofversions.mvp.view.POVView;
 public class POVPresenterImpl implements POVPresenter {
 
     private POVView view;
+
     private POVInteractor interactor;
+
     private VersionRepository repository;
 
     public POVPresenterImpl(POVView view, POVInteractor interactor, VersionRepository repository) {

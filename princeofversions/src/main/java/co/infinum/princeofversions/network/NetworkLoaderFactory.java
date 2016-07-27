@@ -15,7 +15,6 @@ public class NetworkLoaderFactory implements LoaderFactory {
 
     /**
      * Creates a new factory based on provided resource locator.
-     * @param url
      */
     public NetworkLoaderFactory(String url) {
         this.url = url;

@@ -15,18 +15,19 @@ public @interface ErrorCode {
     /**
      * Describes error appeared while parsing version string. Parse error while be thrown if version does not follow
      * <a href="http://semver.org/">semver</a> specification.
+     *
      * @see <a href="http://semver.org/">http://semver.org</a>
      */
-    public static final int WRONG_VERSION = 0;
+    int WRONG_VERSION = 0;
 
     /**
      * Describes error appeared while loading update configuration resource.
      */
-    public static final int LOAD_ERROR = 1;
+    int LOAD_ERROR = 1;
 
     /**
      * Describes generic error not happened while parsing versions or loading resource.
      */
-    public static final int UNKNOWN_ERROR = 2;
+    int UNKNOWN_ERROR = 2;
 
 }

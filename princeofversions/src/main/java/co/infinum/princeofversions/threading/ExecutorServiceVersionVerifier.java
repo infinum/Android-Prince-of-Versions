@@ -30,22 +30,22 @@ import co.infinum.princeofversions.interfaces.VersionVerifierListener;
  */
 public class ExecutorServiceVersionVerifier implements VersionVerifier {
 
-    private static final String TAG = "threadexec";
-
     /**
      * Default timeout for computing result.
      */
     public static final long DEFAULT_TIMEOUT_SECONDS = 60;
 
-    /**
-     * Parser used for parsing loaded update configuration resource.
-     */
-    private VersionConfigParser parser;
+    private static final String TAG = "threadexec";
 
     /**
      * Thread pool, contains only one thread.
      */
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    /**
+     * Parser used for parsing loaded update configuration resource.
+     */
+    private VersionConfigParser parser;
 
     /**
      * This instance associated task for computation.
@@ -54,6 +54,7 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
 
     /**
      * Creates a new instance of verifier with parser provided through argument.
+     *
      * @param parser Update configuration resource parser.
      */
     public ExecutorServiceVersionVerifier(VersionConfigParser parser) {
@@ -62,7 +63,8 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
 
     /**
      * Method loads version using given loader and notify result of version parsing and computation to given callback.
-     * @param loader Loads update configuration.
+     *
+     * @param loader   Loads update configuration.
      * @param listener Callback for notifying results.
      */
     protected void getVersion(UpdateConfigLoader loader, VersionVerifierListener listener) {
@@ -84,10 +86,10 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
         } catch (Throwable e) {
             listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR);
         } finally {
-            if (response != null) {
-                try {
-                    response.close();
-                } catch (Exception ignorable) {}
+            try {
+                response.close();
+            } catch (Exception ignorable) {
+                // ignorable exception
             }
         }
     }
@@ -107,7 +109,7 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
             public void run() {
                 try {
                     future.get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-                } catch (Exception ignore) {
+                } catch (Exception ignorable) {
                     // future is cancelled or timed out or thread is interrupted => anyway, just return
                 }
             }
@@ -121,12 +123,13 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
         try {
             future.cancel(true);
         } catch (CancellationException ignorable) {
-            ignorable.printStackTrace();
+            // ignorable exception
         }
     }
 
     /**
      * Checks if loading is cancelled and throwing interrupt if it is.
+     *
      * @throws InterruptedException if loading is cancelled.
      */
     private void ifTaskIsCancelledThrowInterrupt() {

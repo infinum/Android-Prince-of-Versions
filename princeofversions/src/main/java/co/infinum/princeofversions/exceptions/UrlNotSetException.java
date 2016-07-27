@@ -1,7 +1,5 @@
 package co.infinum.princeofversions.exceptions;
 
-import co.infinum.princeofversions.LoaderValidationException;
-
 /**
  * Created by stefano on 08/07/16.
  */

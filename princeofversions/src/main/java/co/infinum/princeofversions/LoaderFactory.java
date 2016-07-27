@@ -7,6 +7,7 @@ public interface LoaderFactory {
 
     /**
      * Method provides <b>new</b> instance of specific UpdateConfigLoader loader.
+     *
      * @return <b>New</b> instance of specific loader.
      */
     UpdateConfigLoader newInstance();

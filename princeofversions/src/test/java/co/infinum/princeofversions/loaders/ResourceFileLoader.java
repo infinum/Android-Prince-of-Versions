@@ -3,7 +3,7 @@ package co.infinum.princeofversions.loaders;
 import java.io.IOException;
 
 import co.infinum.princeofversions.BaseLoader;
-import co.infinum.princeofversions.LoaderValidationException;
+import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.util.ResourceUtils;
 
 public class ResourceFileLoader extends BaseLoader {

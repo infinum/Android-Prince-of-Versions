@@ -12,6 +12,10 @@ public class ContextHelper {
 
     private static Context context;
 
+    private ContextHelper() {
+
+    }
+
     public static Context getContext() {
         return context;
     }

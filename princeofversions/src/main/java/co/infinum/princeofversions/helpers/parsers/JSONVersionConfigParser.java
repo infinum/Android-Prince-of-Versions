@@ -13,25 +13,25 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * <p>After parsing JSON content, class creates VersionContext holder instance from it.</p>
  * Content must contain at least minimum version as string, but optionally optional update version and notification type can be provided.
  * <p>
- *     Valid content is represented as one JSON object that contains key <i>android</i>. Value from <i>android</i> key is another JSON
- *     object. Android object can contain keys as follow:
- *     <ul>
- *         <li><i>minimum__version</i></li>
- *         <li><i>minimum_version_code</i></li>
- *         <li><i>optional_update</i></li>
- *     </ul>.
- *     Minimum version value is represented as string, minimum version code as integer and optional update is JSON object with following
- *     keys:
- *     <ul>
- *         <li><i>version</i></li>
- *         <li><i>version_code</i></li>
- *         <li><i>notification_type</i></li>
- *     </ul>.
- *     Again, version value is represented as string, version_code as integer and notification_type is string with one of following values:
- *     <ul>
- *         <li><i>ALWAYS</i></li>
- *         <li><i>ONCE</i></li>
- *     </ul>
+ * Valid content is represented as one JSON object that contains key <i>android</i>. Value from <i>android</i> key is another JSON
+ * object. Android object can contain keys as follow:
+ * <ul>
+ * <li><i>minimum__version</i></li>
+ * <li><i>minimum_version_code</i></li>
+ * <li><i>optional_update</i></li>
+ * </ul>.
+ * Minimum version value is represented as string, minimum version code as integer and optional update is JSON object with following
+ * keys:
+ * <ul>
+ * <li><i>version</i></li>
+ * <li><i>version_code</i></li>
+ * <li><i>notification_type</i></li>
+ * </ul>.
+ * Again, version value is represented as string, version_code as integer and notification_type is string with one of following values:
+ * <ul>
+ * <li><i>ALWAYS</i></li>
+ * <li><i>ONCE</i></li>
+ * </ul>
  * </p>
  * <p>Minimum valid JSON content is available bellow:</p>
  * <pre>
@@ -55,6 +55,7 @@ import co.infinum.princeofversions.exceptions.ParseException;
  *      }
  *  }
  * </pre>
+ *
  * @see <a href="http://www.json.org/">JSON</a>
  */
 public class JSONVersionConfigParser implements VersionConfigParser {
@@ -101,6 +102,7 @@ public class JSONVersionConfigParser implements VersionConfigParser {
 
     /**
      * Creates a new instance of parser providing current application version as argument.
+     *
      * @param currentVersion Current application version.
      */
     public JSONVersionConfigParser(VersionContext.Version currentVersion) {
@@ -120,6 +122,7 @@ public class JSONVersionConfigParser implements VersionConfigParser {
 
     /**
      * Starts parsing from root JSON object representing update configuration content.
+     *
      * @param data Root object from configuration.
      * @return VersionContext holder containing all parsed data.
      * @throws JSONException if error while parsing JSON occurred.

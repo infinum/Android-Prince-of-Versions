@@ -10,14 +10,16 @@ public interface VersionVerifierListener {
 
     /**
      * Method is called when versions are loaded and computed.
+     *
      * @param version Computed set of versions. Current, minimum and optionally optional update.
      */
-    public void versionAvailable(VersionContext version);
+    void versionAvailable(VersionContext version);
 
     /**
      * Method is called when error occurred on loading or computing versions.
+     *
      * @param error ErrorCode describing error occurred.
      */
-    public void versionUnavailable(@ErrorCode int error);
+    void versionUnavailable(@ErrorCode int error);
 
 }

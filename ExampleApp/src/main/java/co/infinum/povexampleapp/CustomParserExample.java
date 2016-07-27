@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.infinum.princeofversions.CheckForUpdatesCallingContext;
 import co.infinum.princeofversions.LoaderFactory;
-import co.infinum.princeofversions.LoaderValidationException;
+import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.common.VersionContext;

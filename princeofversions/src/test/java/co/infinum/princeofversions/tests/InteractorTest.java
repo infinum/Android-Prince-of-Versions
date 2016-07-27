@@ -17,10 +17,10 @@ import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
+import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 import co.infinum.princeofversions.mvp.interactor.POVInteractor;
 import co.infinum.princeofversions.mvp.interactor.impl.POVInteractorImpl;
 import co.infinum.princeofversions.mvp.interactor.listeners.POVInteractorListener;
-import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)

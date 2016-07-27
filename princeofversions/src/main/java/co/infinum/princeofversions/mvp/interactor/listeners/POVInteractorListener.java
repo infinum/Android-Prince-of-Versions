@@ -5,12 +5,12 @@ import co.infinum.princeofversions.common.VersionContext;
 
 public interface POVInteractorListener {
 
-    public void onUpdateAvailable(VersionContext version);
+    void onUpdateAvailable(VersionContext version);
 
-    public void onMandatoryUpdateAvailable(VersionContext version);
+    void onMandatoryUpdateAvailable(VersionContext version);
 
-    public void onNoUpdateAvailable(VersionContext version);
+    void onNoUpdateAvailable(VersionContext version);
 
-    public void onError(@ErrorCode int error);
+    void onError(@ErrorCode int error);
 
 }

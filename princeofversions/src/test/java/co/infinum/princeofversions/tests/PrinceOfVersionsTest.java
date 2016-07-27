@@ -1,6 +1,5 @@
 package co.infinum.princeofversions.tests;
 
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,12 +12,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-import java.io.IOException;
-
 import co.infinum.princeofversions.BuildConfig;
-import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.LoaderFactory;
-import co.infinum.princeofversions.LoaderValidationException;
+import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
 import co.infinum.princeofversions.common.ErrorCode;
@@ -43,8 +39,7 @@ public class PrinceOfVersionsTest {
     private VersionRepository repository;
 
     @Before
-    public void setUp() throws PackageManager.NameNotFoundException, LoaderValidationException, IOException, InterruptedException,
-            JSONException {
+    public void setUp() {
         callback = Mockito.mock(UpdaterCallback.class);
         provider = Mockito.mock(VersionVerifierFactory.class);
         repository = Mockito.mock(VersionRepository.class);

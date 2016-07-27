@@ -8,12 +8,12 @@ import co.infinum.princeofversions.mvp.view.POVView;
 /**
  * This class represents calling context for specific update check.
  * <p>
- *     Through instance of this class it is available to check if update check associated with this calling context finished and cancel
- *     it if not.
- *     If update check finished, eg. if this context is marked as consumed there is no way to cancel notifying result anymore.
- *     Context is marked as consumed if result is notified or is just being notified. Cancel option is available until class set its
- *     consumed flag or until cancel is called. Class will set consumed flag when result is computed and ready for notify. Class will set
- *     isCancelled flag after cancel is called.
+ * Through instance of this class it is available to check if update check associated with this calling context finished and cancel
+ * it if not.
+ * If update check finished, eg. if this context is marked as consumed there is no way to cancel notifying result anymore.
+ * Context is marked as consumed if result is notified or is just being notified. Cancel option is available until class set its
+ * consumed flag or until cancel is called. Class will set consumed flag when result is computed and ready for notify. Class will set
+ * isCancelled flag after cancel is called.
  * </p>
  */
 public class CheckForUpdatesCallingContext implements POVView {
@@ -42,6 +42,7 @@ public class CheckForUpdatesCallingContext implements POVView {
 
     /**
      * Creates a new calling context with user defined callback for notifying result.
+     *
      * @param callback User defined callback for notifying result.
      */
     CheckForUpdatesCallingContext(UpdaterCallback callback) {
@@ -50,6 +51,7 @@ public class CheckForUpdatesCallingContext implements POVView {
 
     /**
      * Method sets presenter instance.
+     *
      * @param presenter Presenter.
      * @return this.
      */
@@ -61,8 +63,8 @@ public class CheckForUpdatesCallingContext implements POVView {
     /**
      * Provides cancel functionality of calling context.
      * <p>
-     *     Computation can be cancelled anytime until it is computed.
-     *     After computation is done and result is ready cancel option is no longer available, eg. this method has no effect then.
+     * Computation can be cancelled anytime until it is computed.
+     * After computation is done and result is ready cancel option is no longer available, eg. this method has no effect then.
      * </p>
      */
     public void cancel() {
@@ -75,9 +77,10 @@ public class CheckForUpdatesCallingContext implements POVView {
     /**
      * Provides consumed flag for this calling context.
      * <p>
-     *     Context is consumed when all computation is done and result is ready for notifying.
-     *     If context is consumed cancel option has no effect anymore and result is provided through callback.
+     * Context is consumed when all computation is done and result is ready for notifying.
+     * If context is consumed cancel option has no effect anymore and result is provided through callback.
      * </p>
+     *
      * @return true if context is already consumed, false otherwise.
      */
     public boolean isConsumed() {
@@ -87,8 +90,9 @@ public class CheckForUpdatesCallingContext implements POVView {
     /**
      * Provides isCancelled flag for this calling context.
      * <p>
-     *     Context is marked as cancelled when cancel method is called.
+     * Context is marked as cancelled when cancel method is called.
      * </p>
+     *
      * @return true if context is cancelled, false otherwise.
      */
     public boolean isCancelled() {

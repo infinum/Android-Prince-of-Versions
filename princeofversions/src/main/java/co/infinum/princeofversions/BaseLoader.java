@@ -6,6 +6,7 @@ public abstract class BaseLoader implements UpdateConfigLoader {
 
     /**
      * Checks if loading is cancelled and throwing interrupt if it is.
+     *
      * @throws InterruptedException if loading is cancelled.
      */
     protected void ifTaskIsCancelledThrowInterrupt() throws InterruptedException {

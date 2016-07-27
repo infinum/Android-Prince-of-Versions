@@ -15,6 +15,9 @@ public class POVFactoryHelper {
 
     private static POVFactoryHelper instance;
 
+    private POVFactoryHelper() {
+    }
+
     public static POVFactoryHelper getInstance() {
         if (instance == null) {
             instance = new POVFactoryHelper();
@@ -22,13 +25,12 @@ public class POVFactoryHelper {
         return instance;
     }
 
-    private POVFactoryHelper() {}
-
     /**
      * Creates POVPresenter for given view, loader, version factory and version repository.
-     * @param view View associated with presenter.
-     * @param loader Loader used for loading update configuration resource.
-     * @param factory Factory for creating class for verifying versions.
+     *
+     * @param view       View associated with presenter.
+     * @param loader     Loader used for loading update configuration resource.
+     * @param factory    Factory for creating class for verifying versions.
      * @param repository Repository for persisting library data.
      * @return New instance of POVPresenter.
      */

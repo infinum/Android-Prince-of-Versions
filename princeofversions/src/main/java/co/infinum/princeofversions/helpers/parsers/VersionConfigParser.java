@@ -11,10 +11,11 @@ public interface VersionConfigParser {
 
     /**
      * Method parse update configuration provided as string.
+     *
      * @param content Update configuration representation as string.
      * @return Holder of parsed and loaded version data.
      * @throws ParseException if some error occurred while parsing.
      */
-    public VersionContext parse(String content) throws ParseException;
+    VersionContext parse(String content) throws ParseException;
 
 }

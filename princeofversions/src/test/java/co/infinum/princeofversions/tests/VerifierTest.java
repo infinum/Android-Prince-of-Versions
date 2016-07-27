@@ -1,6 +1,5 @@
 package co.infinum.princeofversions.tests;
 
-import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,13 +15,13 @@ import android.test.mock.MockContext;
 import java.io.IOException;
 
 import co.infinum.princeofversions.BuildConfig;
-import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.LoaderFactory;
-import co.infinum.princeofversions.LoaderValidationException;
+import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
+import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
@@ -45,7 +44,7 @@ public class VerifierTest {
     private VersionRepository repository;
 
     @Before
-    public void setUp() throws LoaderValidationException, IOException, InterruptedException, JSONException {
+    public void setUp() throws LoaderValidationException, IOException, InterruptedException {
         callback = Mockito.mock(UpdaterCallback.class);
         loaderFactory = Mockito.mock(LoaderFactory.class);
         loader = Mockito.mock(UpdateConfigLoader.class);

@@ -44,7 +44,6 @@ task pmd(type: Pmd) {
 
     ruleSets = [
             'java-android',
-            'java-basic',
             'java-braces',
             'java-clone',
             'java-finalizers'

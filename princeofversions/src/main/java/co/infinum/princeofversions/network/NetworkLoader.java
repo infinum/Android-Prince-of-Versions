@@ -6,9 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import co.infinum.princeofversions.BaseLoader;
-import co.infinum.princeofversions.LoaderValidationException;
+import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.exceptions.UrlNotSetException;
 import co.infinum.princeofversions.helpers.StreamIO;
 
@@ -21,6 +22,8 @@ public class NetworkLoader extends BaseLoader {
      * Default request timeout in seconds.
      */
     public static final int DEFAULT_NETWORK_TIMEOUT_SECONDS = 60;
+
+    public static final int MILISECONDS_IN_SECOND = 1000;
 
     /**
      * Url representing the resource.
@@ -49,6 +52,7 @@ public class NetworkLoader extends BaseLoader {
 
     /**
      * Creates a new network loader using provided url.
+     *
      * @param url Resource locator.
      */
     public NetworkLoader(String url) {
@@ -57,7 +61,8 @@ public class NetworkLoader extends BaseLoader {
 
     /**
      * Creates a new network loader using url and custom network timeout.
-     * @param url Resource locator.
+     *
+     * @param url                   Resource locator.
      * @param networkTimeoutSeconds Custom network timeout.
      */
     public NetworkLoader(String url, int networkTimeoutSeconds) {
@@ -66,7 +71,8 @@ public class NetworkLoader extends BaseLoader {
 
     /**
      * Creates a new network loader using url, default network timeout and basic authentication parameters.
-     * @param url Resource locator.
+     *
+     * @param url      Resource locator.
      * @param username Basic authentication username.
      * @param password Basic authentication password.
      */
@@ -76,9 +82,10 @@ public class NetworkLoader extends BaseLoader {
 
     /**
      * Creates a new network loader using url, custom network timeout and basic authentication parameters.
-     * @param url Resource locator.
-     * @param username Basic authentication username.
-     * @param password Basic authentication password.
+     *
+     * @param url                   Resource locator.
+     * @param username              Basic authentication username.
+     * @param password              Basic authentication password.
      * @param networkTimeoutSeconds Custom network timeout.
      */
     public NetworkLoader(String url, String username, String password, int networkTimeoutSeconds) {
@@ -94,10 +101,10 @@ public class NetworkLoader extends BaseLoader {
         try {
             if (username != null && password != null) {
                 String credentials = username + ":" + password;
-                String basicAuth = "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
-                conn.setRequestProperty ("Authorization", basicAuth);
+                String basicAuth = "Basic " + Base64.encodeToString(credentials.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP);
+                conn.setRequestProperty("Authorization", basicAuth);
             }
-            conn.setConnectTimeout(networkTimeoutSeconds * 1000);
+            conn.setConnectTimeout(networkTimeoutSeconds * MILISECONDS_IN_SECOND);
             InputStream response = conn.getInputStream();
             ifTaskIsCancelledThrowInterrupt(); // if cancelled here no need to read stream at all
             String content = StreamIO.toString(response, new StreamIO.StreamLineFilter() {
@@ -126,13 +133,16 @@ public class NetworkLoader extends BaseLoader {
 
     /**
      * Closing http connection.
+     *
      * @param conn Http connection.
      */
     protected void close(HttpURLConnection conn) {
         if (conn != null) {
             try {
                 conn.disconnect();
-            } catch (Exception ignorable) {}
+            } catch (Exception ignorable) {
+                // ignorable exception
+            }
         }
     }
 }
