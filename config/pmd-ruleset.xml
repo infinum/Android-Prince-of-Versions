@@ -6,7 +6,4 @@
     <description>
         This ruleset checks my code for bad stuff
     </description>
-    <rule ref="rulesets/java/basic.xml">
-        <exclude name="EmptyCatchBlock"/>
-    </rule>
 </ruleset>

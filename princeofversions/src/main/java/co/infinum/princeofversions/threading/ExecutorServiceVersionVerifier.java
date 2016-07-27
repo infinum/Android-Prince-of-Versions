@@ -81,14 +81,14 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
             listener.versionUnavailable(ErrorCode.LOAD_ERROR);
         } catch (ParseException e) {
             listener.versionUnavailable(ErrorCode.WRONG_VERSION);
-        } catch (CancellationException | InterruptedException e) {
+        } catch (CancellationException | InterruptedException intentionalEmpty) { // NOPMD
             // someone cancelled the task
         } catch (Throwable e) {
             listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR);
         } finally {
             try {
                 response.close();
-            } catch (Exception ignorable) {
+            } catch (Exception ignorable) { // NOPMD
                 // ignorable exception
             }
         }
@@ -109,7 +109,7 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
             public void run() {
                 try {
                     future.get(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-                } catch (Exception ignorable) {
+                } catch (Exception ignorable) { // NOPMD
                     // future is cancelled or timed out or thread is interrupted => anyway, just return
                 }
             }
@@ -122,7 +122,7 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
     public void cancel() {
         try {
             future.cancel(true);
-        } catch (CancellationException ignorable) {
+        } catch (CancellationException ignorable) { // NOPMD
             // ignorable exception
         }
     }

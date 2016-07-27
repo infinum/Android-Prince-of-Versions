@@ -62,7 +62,7 @@ public class ThreadVersionVerifier implements VersionVerifier {
             listener.versionUnavailable(ErrorCode.LOAD_ERROR);
         } catch (ParseException e) {
             listener.versionUnavailable(ErrorCode.WRONG_VERSION);
-        } catch (CancellationException | InterruptedException e) {
+        } catch (CancellationException | InterruptedException e) { // NOPMD
             // someone cancelled the task
         } catch (Throwable e) {
             listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR);

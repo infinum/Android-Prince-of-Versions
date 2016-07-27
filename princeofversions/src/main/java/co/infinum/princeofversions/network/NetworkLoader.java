@@ -140,7 +140,7 @@ public class NetworkLoader extends BaseLoader {
         if (conn != null) {
             try {
                 conn.disconnect();
-            } catch (Exception ignorable) {
+            } catch (Exception ignorable) { // NOPMD
                 // ignorable exception
             }
         }

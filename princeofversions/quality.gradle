@@ -11,7 +11,7 @@ task checkstyle(type: Checkstyle) {
     ]
     source 'src'
     include '**/*.java'
-    exclude '**/gen/**'
+    exclude '**/gen/**', '**/test/**', '**/androidTest/**'
 
     classpath = files()
 }
@@ -44,6 +44,7 @@ task pmd(type: Pmd) {
 
     ruleSets = [
             'java-android',
+            'java-basic',
             'java-braces',
             'java-clone',
             'java-finalizers'
@@ -51,7 +52,7 @@ task pmd(type: Pmd) {
 
     source 'src'
     include '**/*.java'
-    exclude '**/gen/**'
+    exclude '**/gen/**', '**/test/**', '**/androidTest/**'
 
     reports {
         xml.enabled = false

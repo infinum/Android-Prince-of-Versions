@@ -119,7 +119,7 @@ public class StreamIO {
         }
         try {
             reader.close();
-        } catch (Exception ignorable) {
+        } catch (Exception ignorable) { // NOPMD
             // ignorable exception
         }
         return out.toString();
