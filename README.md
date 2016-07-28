@@ -1,7 +1,7 @@
 Prince of versions
 =================
 [![CircleCI](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master.svg?style=svg&circle-token=cb8ad23c030527474dd91da95b8f1f3b56fa0022)](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master)
-c
+
 Library checks for updates using configuration from some resource.
 
 Features
