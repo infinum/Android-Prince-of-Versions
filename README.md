@@ -17,6 +17,34 @@ Features
 
 ----------
 
+### Default parser and JSON file
+
+If you are using a default parser, version in JSON file has to follow (Semantic Versioning)[http://semver.org/] and the file has to look like this:
+
+```json
+{
+	ios: {
+		minimum_version: "1.2.3",
+		optional_update: {
+			version: "2.4.5",
+			notification_type: "ALWAYS"
+		}
+	},
+	android: {
+		minimum__version: "1.2.3",
+		minimum_version_code: 14235,
+		optional_update: {
+		version: "2.4.5",
+		version_code: 42354,
+		notification_type: "ONCE"
+		}
+	}
+}
+```
+
+Depending on <code>notification_type</code> property, the user can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you via <code>onNewUpdate(String version, boolean isMandatory)</code> method only once. Every other time the library will return <code>onNoUpdate</code> for that specific version.
+
+
 Examples
 -------------
 Full example application is available [here](ExampleApp).
