@@ -31,7 +31,7 @@ If you are using a default parser, version in JSON file has to follow [Semantic 
 		}
 	},
 	android: {
-		minimum__version: "1.2.3",
+		minimum_version: "1.2.3",
 		minimum_version_code: 14235,
 		optional_update: {
 			version: "2.4.5",
