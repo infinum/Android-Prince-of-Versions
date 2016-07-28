@@ -7,7 +7,7 @@
     }
   },
   "android": {
-    "minimum__version": "1.2.3",
+    "minimum_version": "1.2.3",
     "minimum_version_code": 14235,
     "optional_update": {
       "version": "2.4.5",

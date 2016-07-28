@@ -16,7 +16,7 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * Valid content is represented as one JSON object that contains key <i>android</i>. Value from <i>android</i> key is another JSON
  * object. Android object can contain keys as follow:
  * <ul>
- * <li><i>minimum__version</i></li>
+ * <li><i>minimum_version</i></li>
  * <li><i>minimum_version_code</i></li>
  * <li><i>optional_update</i></li>
  * </ul>.
@@ -37,7 +37,7 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * <pre>
  *  {
  *      "android": {
- *          "minimum__version": "1.2.3"
+ *          "minimum_version": "1.2.3"
  *      }
  *  }
  * </pre>
@@ -45,7 +45,7 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * <pre>
  *  {
  *      "android": {
- *          "minimum__version": "1.2.3",
+ *          "minimum_version": "1.2.3",
  *          "minimum_version_code": 14235,
  *          "optional_update": {
  *              "version": "2.4.5",
@@ -68,7 +68,7 @@ public class JSONVersionConfigParser implements VersionConfigParser {
     /**
      * Minimum version key
      */
-    public static final String MINIMUM__VERSION = "minimum__version";
+    public static final String MINIMUM_VERSION = "minimum_version";
 
     /**
      * Minimum version code key
@@ -130,7 +130,7 @@ public class JSONVersionConfigParser implements VersionConfigParser {
     public VersionContext parse(JSONObject data) throws JSONException {
         /*  mandatory */
         JSONObject android = data.getJSONObject(ANDROID);
-        String min = android.getString(MINIMUM__VERSION);
+        String min = android.getString(MINIMUM_VERSION);
         Version currentVersion = Version.valueOf(this.currentVersion.getVersionString());
         Version minVersion = Version.valueOf(min);
         VersionContext.Version minVersionContext = new VersionContext.Version(minVersion.toString());

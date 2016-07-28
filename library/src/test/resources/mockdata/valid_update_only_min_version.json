@@ -7,6 +7,6 @@
     }
   },
   "android": {
-    "minimum__version": "1.2.3"
+    "minimum_version": "1.2.3"
   }
 }

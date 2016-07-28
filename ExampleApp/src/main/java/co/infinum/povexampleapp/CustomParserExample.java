@@ -135,14 +135,14 @@ public class CustomParserExample extends AppCompatActivity {
 
     /**
      * Custom parser factory, used for parsing in special format.
-     * Custom parser is defined for JSON object containing only one key: minimum__version.
+     * Custom parser is defined for JSON object containing only one key: minimum_version.
      */
     private ParserFactory parserFactory = new ParserFactory() {
         @Override
         public VersionConfigParser newInstance() {
             return new VersionConfigParser() {
 
-                public static final String MINIMUM__VERSION = "minimum__version";
+                public static final String MINIMUM_VERSION = "minimum_version";
 
                 @Override
                 public VersionContext parse(String content) throws ParseException {
@@ -150,7 +150,7 @@ public class CustomParserExample extends AppCompatActivity {
                         VersionContext.Version appVersion = ContextHelper.getAppVersion(CustomParserExample.this);
                         Version current = Version.valueOf(appVersion.getVersionString());
                         VersionContext.Version minVersion = new VersionContext.Version(
-                                new JSONObject(content).getString(MINIMUM__VERSION));
+                                new JSONObject(content).getString(MINIMUM_VERSION));
                         Version minimum = Version.valueOf(minVersion.getVersionString());
                         VersionContext vc = new VersionContext(
                                 appVersion,
