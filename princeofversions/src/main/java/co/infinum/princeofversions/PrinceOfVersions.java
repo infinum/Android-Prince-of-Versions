@@ -219,14 +219,14 @@ public class PrinceOfVersions {
      * @return Calling context representing this concrete update check.
      * @throws IllegalArgumentException if newly created loader is invalid.
      */
-    public CheckForUpdatesCallingContext checkForUpdates(LoaderFactory loaderFactory, UpdaterCallback callback) {
+    public CheckForUpdates checkForUpdates(LoaderFactory loaderFactory, UpdaterCallback callback) {
         UpdateConfigLoader loader = loaderFactory.newInstance();
         try {
             loader.validate();
         } catch (LoaderValidationException e) {
             throw new IllegalArgumentException(e);
         }
-        CheckForUpdatesCallingContext povContext = new CheckForUpdatesCallingContext(callback);
+        CheckForUpdates povContext = new CheckForUpdates(callback);
         POVPresenter presenter = POVFactoryHelper.getInstance().getPresenter(povContext, loader, factory, repository);
         povContext.setPresenter(presenter);
         presenter.checkForUpdates();
@@ -244,7 +244,7 @@ public class PrinceOfVersions {
      * @return Calling context representing this concrete update check.
      * @throws IllegalArgumentException if resource locator is invalid.
      */
-    public CheckForUpdatesCallingContext checkForUpdates(String url, UpdaterCallback callback) {
+    public CheckForUpdates checkForUpdates(String url, UpdaterCallback callback) {
         return checkForUpdates(new NetworkLoaderFactory(url), callback);
     }
 

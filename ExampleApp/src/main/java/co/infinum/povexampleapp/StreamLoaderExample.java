@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-import co.infinum.princeofversions.CheckForUpdatesCallingContext;
+import co.infinum.princeofversions.CheckForUpdates;
 import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
@@ -21,7 +21,7 @@ public class StreamLoaderExample extends AppCompatActivity {
 
     private PrinceOfVersions updater;
     private LoaderFactory loaderFactory;
-    private CheckForUpdatesCallingContext povContext;
+    private CheckForUpdates povContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,14 +73,14 @@ public class StreamLoaderExample extends AppCompatActivity {
 
     public void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
-        CheckForUpdatesCallingContext context = updater.checkForUpdates(loaderFactory, defaultCallback);
+        CheckForUpdates context = updater.checkForUpdates(loaderFactory, defaultCallback);
         replacePOVContext(context);
     }
 
     public void onCancelTestClick() {
         /*  same call as few lines higher, but using another loader, this one is very slow loader just to demonstrate cancel
         functionality. */
-        CheckForUpdatesCallingContext context = updater.checkForUpdates(slowLoaderFactory, defaultCallback);
+        CheckForUpdates context = updater.checkForUpdates(slowLoaderFactory, defaultCallback);
         replacePOVContext(context);
     }
 
@@ -91,7 +91,7 @@ public class StreamLoaderExample extends AppCompatActivity {
         }
     }
 
-    private void replacePOVContext(CheckForUpdatesCallingContext povContext) {
+    private void replacePOVContext(CheckForUpdates povContext) {
         /*  started new checking, kill current one if not dead and remember new context */
         if (this.povContext != null && !this.povContext.isConsumed() && !this.povContext.isCancelled()) {
             toastIt(getString(R.string.replace), Toast.LENGTH_SHORT);
