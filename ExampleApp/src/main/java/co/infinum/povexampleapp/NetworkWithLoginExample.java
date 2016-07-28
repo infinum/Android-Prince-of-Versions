@@ -6,8 +6,12 @@ import org.jsoup.select.Elements;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -23,26 +27,22 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import co.infinum.princeofversions.BaseLoader;
 import co.infinum.princeofversions.LoaderFactory;
-import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
+import co.infinum.princeofversions.callbacks.UpdaterCallback;
+import co.infinum.princeofversions.common.ErrorCode;
+import co.infinum.princeofversions.exceptions.LoaderValidationException;
 
-public class NetworkWithLoginExample extends BaseExampleActivity {
+public class NetworkWithLoginExample extends AppCompatActivity {
 
     public static final String TAG = "POV_NETWORK_WITH_LOGIN";
 
-    @Bind(R.id.pastebin_username)
     protected EditText usernameView;
 
-    @Bind(R.id.pastebin_password)
     protected EditText passwordView;
 
-    @Bind(R.id.pastebin_url)
     protected EditText urlView;
 
     private PrinceOfVersions updater;
@@ -51,13 +51,25 @@ public class NetworkWithLoginExample extends BaseExampleActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network_with_login);
-        ButterKnife.bind(this);
+        initUI();
 
         /*  create new instance of updater associated with application context  */
         updater = new PrinceOfVersions(this);
     }
 
-    @OnClick(R.id.btn_pastebin)
+    private void initUI() {
+        Button btnPastebin = (Button) findViewById(R.id.btn_pastebin);
+        usernameView = (EditText) findViewById(R.id.pastebin_username);
+        passwordView = (EditText) findViewById(R.id.pastebin_password);
+        urlView = (EditText) findViewById(R.id.pastebin_url);
+        btnPastebin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onLoginAndCheckClick();
+            }
+        });
+    }
+
     public void onLoginAndCheckClick() {
         /*  use updater with custom loader factory to check for updates from private pastebin file  */
         updater.checkForUpdates(loaderFactory, defaultCallback);
@@ -198,6 +210,39 @@ public class NetworkWithLoginExample extends BaseExampleActivity {
                 }
             }
         };
+    }
+
+    protected UpdaterCallback defaultCallback = new UpdaterCallback() {
+        @Override
+        public void onNewUpdate(String version, boolean isMandatory) {
+            toastIt(
+                    getString(
+                            R.string.update_available_msg,
+                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
+                            version
+                    ),
+                    Toast.LENGTH_SHORT
+            );
+        }
+
+        @Override
+        public void onNoUpdate() {
+            toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
+        }
+
+        @Override
+        public void onError(@ErrorCode int error) {
+            toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
+        }
+    };
+
+    protected void toastIt(final String message, final int duration) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, duration).show();
+            }
+        });
     }
 
 }
