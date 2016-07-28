@@ -57,7 +57,10 @@ Full example application is available [here](ExampleApp).
 5. Optionally, to cancel update check, call <code>cancel</code> method on calling context provided by <code>checkForUpdates</code> method.
 
 
-#### Loading from stream
+#### Writing tests
+
+For testing purposes you can create your own LoaderFactory. For ease of use, StreamLoader object exists in the library. Here is an example of loading a JSON file from raw. 
+
 1. Create new instance of updater associated with application context.
 	```java
 	  PrinceOfVersions updater = new PrinceOfVersions(this);
