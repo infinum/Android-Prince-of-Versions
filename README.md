@@ -19,7 +19,7 @@ Features
 
 ### Default parser and JSON file
 
-If you are using a default parser, version in JSON file has to follow (Semantic Versioning)[http://semver.org/] and the file has to look like this:
+If you are using a default parser, version in JSON file has to follow [Semantic Versioning](http://semver.org/) and the file has to look like this:
 
 ```json
 {
@@ -34,9 +34,9 @@ If you are using a default parser, version in JSON file has to follow (Semantic 
 		minimum__version: "1.2.3",
 		minimum_version_code: 14235,
 		optional_update: {
-		version: "2.4.5",
-		version_code: 42354,
-		notification_type: "ONCE"
+			version: "2.4.5",
+			version_code: 42354,
+			notification_type: "ONCE"
 		}
 	}
 }
