@@ -1,7 +1,7 @@
 Android-Updater
 =================
 [![Circle CI](https://circleci.com/gh/infinum/Android-Updater.svg?style=svg&circle-token=cb8ad23c030527474dd91da95b8f1f3b56fa0022)](https://circleci.com/gh/infinum/Android-Updater)
-
+c
 Library checks for updates using configuration from some resource.
 
 Features
@@ -51,7 +51,7 @@ Full example application is available [here](ExampleApp).
 
 4. Use updater with previously created loader factory and callback. Call <code>checkForUpdates</code> method to start update check.
 	```java
-	  CheckForUpdatesCallingContext context = updater.checkForUpdates(loaderFactory, callback);
+	  CheckForUpdates context = updater.checkForUpdates(loaderFactory, callback);
 	```
 
 5. Optionally, to cancel update check, call <code>cancel</code> method on calling context provided by <code>checkForUpdates</code> method.
