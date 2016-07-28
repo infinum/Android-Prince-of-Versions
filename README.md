@@ -33,6 +33,21 @@ Full example application is available [here](ExampleApp).
 	```
 	
 3. Create concrete callback for result implementing <code>co.infinum.princeofversions.callbacks.UpdaterCallback</code> interface.
+	```java
+	UpdaterCallback callback = new UpdaterCallback() {
+	        @Override
+	        public void onNewUpdate(String version, boolean isMandatory) {
+	        }
+	
+	        @Override
+	        public void onNoUpdate() {
+	        }
+	
+	        @Override
+	        public void onError(@ErrorCode int error) {
+	        }
+	    };
+	```
 
 4. Use updater with previously created loader factory and callback. Call <code>checkForUpdates</code> method to start update check.
 	```java
