@@ -43,7 +43,7 @@ public class CustomParserExample extends AppCompatActivity {
         /*  create new instance of updater associated with application context using custom parser factory   */
         updater = new PrinceOfVersions(this, parserFactory);
         /*  create specific loader factory for loading from internet    */
-        loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/7shyuaWu");
+        loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/c4c4pPyn");
     }
 
     @Override
