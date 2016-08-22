@@ -23,20 +23,18 @@ If you are using a default parser, version in JSON file has to follow [Semantic 
 
 ```json
 {
-	ios: {
-		minimum_version: "1.2.3",
-		optional_update: {
-			version: "2.4.5",
-			notification_type: "ALWAYS"
+	"ios": {
+		"minimum_version": "1.2.3",
+		"optional_update": {
+			"version": "2.4.5",
+			"notification_type": "ALWAYS"
 		}
 	},
-	android: {
-		minimum_version: "1.2.3",
-		minimum_version_code: 14235,
-		optional_update: {
-			version: "2.4.5",
-			version_code: 42354,
-			notification_type: "ONCE"
+	"android": {
+		"minimum_version": "1.2.3",
+		"optional_update": {
+			"version": "2.4.5",
+			"notification_type": "ONCE"
 		}
 	}
 }
