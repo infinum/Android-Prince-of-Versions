@@ -20,7 +20,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets { main { resources.srcDirs = ['src/main/resources', 'src/test/resources/'] } }
+    sourceSets { main { resources.srcDirs = ['src/main/res“ources', 'src/test/resources/'] } }
 
 }
 
@@ -63,11 +63,11 @@ ext {
 group = publishedGroupId
 version = libraryVersion
 
-// Bintray
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
 bintray {
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
 
