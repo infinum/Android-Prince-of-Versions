@@ -36,12 +36,12 @@ dependencies {
 
 ext {
     bintrayRepo = 'android'
-    bintrayName = 'android-prince-of-versions'
+    bintrayName = 'prince-of-versions'
 
     userOrganization = 'infinum' // optional
     publishedGroupId = 'co.infinum'
-    libraryName = 'android-prince-of-versions'
-    artifact = 'android-prince-of-versions'     // Has to be same as your library module name
+    libraryName = 'prince-of-versions'
+    artifact = 'prince-of-versions'     // Has to be same as your library module name
 
     libraryDescription = 'Library checks for application updates using configuration from some resource.'
 
@@ -61,7 +61,7 @@ ext {
 }
 
 group = publishedGroupId
-
+version = libraryVersion
 
 // Bintray
 Properties properties = new Properties()
@@ -95,10 +95,6 @@ bintray {
         }
     }
 }
-
-
-
-
 
 install {
     repositories.mavenInstaller {
@@ -144,17 +140,7 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
 artifacts {
-    archives javadocJar
     archives sourcesJar
 }
 
