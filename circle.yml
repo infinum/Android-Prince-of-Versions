@@ -23,5 +23,5 @@ test:
    - ./gradlew assembleDebug check -PdisablePreDex
   post:
     # copy the build outputs to artifacts
-    - cp -r library/build/outputs $CIRCLE_ARTIFACTS
-    - cp -r library/build/reports $CIRCLE_ARTIFACTS
+    - cp -r prince-of-versions/build/outputs $CIRCLE_ARTIFACTS
+    - cp -r prince-of-versions/build/reports $CIRCLE_ARTIFACTS
