@@ -26,9 +26,7 @@ public class ContextHelper {
 
     public static VersionContext.Version getAppVersion(Context context) throws PackageManager.NameNotFoundException {
         return new VersionContext.Version(
-                context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName,
-                context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode
-        );
+                context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName);
     }
 
     public static VersionContext.Version getAppVersion() throws PackageManager.NameNotFoundException {

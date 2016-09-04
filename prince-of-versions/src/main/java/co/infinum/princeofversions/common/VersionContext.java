@@ -47,7 +47,7 @@ public class VersionContext {
      * @param isCurrentLessThanOptional Flag for setting if current version is less than optional.
      */
     public VersionContext(Version currentVersion, Version minimumVersion, boolean isCurrentLessThanMinimum, UpdateContext optionalUpdate,
-                          boolean isCurrentLessThanOptional) {
+            boolean isCurrentLessThanOptional) {
         this.currentVersion = currentVersion;
         this.minimumVersion = minimumVersion;
         this.optionalUpdate = optionalUpdate;
@@ -136,40 +136,20 @@ public class VersionContext {
      */
     public static class Version {
 
-        /**
-         * Default version code when creating holder without it.
-         */
-        public static final int DEFAULT_VERSION_CODE = 0;
 
         /**
          * String representation of version.
          */
         private String versionString;
 
-        /**
-         * Version code as integer.
-         */
-        private int versionCode;
 
         /**
-         * Creates a new holder for specific version from version string and code.
-         *
-         * @param versionString Version string.
-         * @param versionCode   Version code.
-         */
-        public Version(String versionString, int versionCode) {
-            this.versionString = versionString;
-            this.versionCode = versionCode;
-        }
-
-        /**
-         * Creates a new holder for specific version only from version string.
-         * Version code of this holder is set to DEFAULT_VERSION_CODE.
+         * Creates a new holder for specific version from version string.
          *
          * @param versionString Version string.
          */
         public Version(String versionString) {
-            this(versionString, DEFAULT_VERSION_CODE);
+            this.versionString = versionString;
         }
 
         /**
@@ -179,24 +159,6 @@ public class VersionContext {
          */
         public String getVersionString() {
             return versionString;
-        }
-
-        /**
-         * Provides version code of this holder.
-         *
-         * @return Version code.
-         */
-        public int getVersionCode() {
-            return versionCode;
-        }
-
-        /**
-         * Method sets version code of this holder.
-         *
-         * @param versionCode Version code.
-         */
-        public void setVersionCode(int versionCode) {
-            this.versionCode = versionCode;
         }
 
     }

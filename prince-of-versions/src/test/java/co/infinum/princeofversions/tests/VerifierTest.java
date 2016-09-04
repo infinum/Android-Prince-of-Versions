@@ -63,8 +63,8 @@ public class VerifierTest {
     public void testMandatoryUpdateAvailable() {
         final VersionContext versionContext = new VersionContext(
                 new VersionContext.Version("2.0.0"),
-                new VersionContext.Version("3.0.0", 1), true,
-                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), true);
+                new VersionContext.Version("3.0.0"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -86,8 +86,8 @@ public class VerifierTest {
     public void testOptionalUpdateAvailable() {
         final VersionContext versionContext = new VersionContext(
                 new VersionContext.Version("3.0.0"),
-                new VersionContext.Version("2.0.0", 1), false,
-                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), true);
+                new VersionContext.Version("2.0.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -109,8 +109,8 @@ public class VerifierTest {
     public void testNoUpdateAvailable() {
         final VersionContext versionContext = new VersionContext(
                 new VersionContext.Version("4.0.0"),
-                new VersionContext.Version("2.0.0", 1), false,
-                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), false);
+                new VersionContext.Version("2.0.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), false);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {

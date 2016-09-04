@@ -8,10 +8,8 @@
   },
   "no_android": {
     "minimum_version": "1.2.3",
-    "minimum_version_code": 14235,
     "optional_update": {
       "version": "2.4.5",
-      "version_code": 42354,
       "notification_type": "ONCE"
     }
   }
