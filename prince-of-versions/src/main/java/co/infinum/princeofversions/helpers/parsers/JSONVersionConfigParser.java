@@ -54,7 +54,7 @@ import co.infinum.princeofversions.exceptions.ParseException;
  *
  * @see <a href="http://www.json.org/">JSON</a>
  */
-public class JsonVersionConfigParser implements VersionConfigParser {
+public class JSONVersionConfigParser implements VersionConfigParser {
 
     /**
      * Android key
@@ -92,7 +92,7 @@ public class JsonVersionConfigParser implements VersionConfigParser {
      *
      * @param currentVersion Current application version.
      */
-    public JsonVersionConfigParser(VersionContext.Version currentVersion) {
+    public JSONVersionConfigParser(VersionContext.Version currentVersion) {
         this.currentVersion = currentVersion;
     }
 

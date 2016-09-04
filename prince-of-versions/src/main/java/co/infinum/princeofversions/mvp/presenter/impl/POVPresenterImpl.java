@@ -3,23 +3,23 @@ package co.infinum.princeofversions.mvp.presenter.impl;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionRepository;
-import co.infinum.princeofversions.mvp.interactor.PovInteractor;
-import co.infinum.princeofversions.mvp.interactor.listeners.PovInteractorListener;
-import co.infinum.princeofversions.mvp.presenter.PovPresenter;
-import co.infinum.princeofversions.mvp.view.PovView;
+import co.infinum.princeofversions.mvp.interactor.POVInteractor;
+import co.infinum.princeofversions.mvp.interactor.listeners.POVInteractorListener;
+import co.infinum.princeofversions.mvp.presenter.POVPresenter;
+import co.infinum.princeofversions.mvp.view.POVView;
 
 /**
  * Created by stefano on 08/07/16.
  */
-public class PovPresenterImpl implements PovPresenter {
+public class POVPresenterImpl implements POVPresenter {
 
-    private PovView view;
+    private POVView view;
 
-    private PovInteractor interactor;
+    private POVInteractor interactor;
 
     private VersionRepository repository;
 
-    public PovPresenterImpl(PovView view, PovInteractor interactor, VersionRepository repository) {
+    public POVPresenterImpl(POVView view, POVInteractor interactor, VersionRepository repository) {
         this.view = view;
         this.interactor = interactor;
         this.repository = repository;
@@ -32,7 +32,7 @@ public class PovPresenterImpl implements PovPresenter {
 
     @Override
     public void checkForUpdates() {
-        interactor.checkForUpdates(new PovInteractorListener() {
+        interactor.checkForUpdates(new POVInteractorListener() {
             @Override
             public void onUpdateAvailable(VersionContext version) {
                 // notify if there is no notification type or there was no notification before, or current version is not equal to last one.

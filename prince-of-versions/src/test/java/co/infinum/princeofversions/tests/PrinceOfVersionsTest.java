@@ -19,7 +19,7 @@ import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.helpers.ContextHelper;
-import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
+import co.infinum.princeofversions.helpers.parsers.JSONVersionConfigParser;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
@@ -54,7 +54,7 @@ public class PrinceOfVersionsTest {
         PackageInfo packageInfo = Mockito.mock(PackageInfo.class);
         packageInfo.versionName = versionName;
         Mockito.when(context.getPackageManager().getPackageInfo("name", 0)).thenReturn(packageInfo);
-        versionVerifier = new SingleThreadVersionVerifier(new JsonVersionConfigParser(ContextHelper.getAppVersion(context)));
+        versionVerifier = new SingleThreadVersionVerifier(new JSONVersionConfigParser(ContextHelper.getAppVersion(context)));
         Mockito.when(provider.newInstance()).thenReturn(versionVerifier);
         return context;
     }
