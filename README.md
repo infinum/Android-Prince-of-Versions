@@ -20,7 +20,7 @@ Features
 
 ### Default parser and JSON file
 
-If you are using a default parser, version in JSON file has to follow [Semantic Versioning](http://semver.org/) and the file has to look like this:
+If you are using a default parser, version in your application and the JSON file has to follow [Semantic Versioning](http://semver.org/).JSON file has to look like this:
 
 ```json
 {
@@ -78,11 +78,10 @@ Full example application is available [here](ExampleApp).
 
 4. Use updater with previously created loader factory and callback. Call <code>checkForUpdates</code> method to start update check.
 	```java
-	  CheckForUpdates context = updater.checkForUpdates(loaderFactory, callback);
+	  UpdaterResult result = updater.checkForUpdates(loaderFactory, callback);
 	```
 
-5. Optionally, to cancel update check, call <code>cancel</code> method on calling context provided by <code>checkForUpdates</code> method.
-
+5. To cancel update check, call <code>cancel</code> method on <code>UpdaterResult</code> object.
 
 #### Writing tests
 
