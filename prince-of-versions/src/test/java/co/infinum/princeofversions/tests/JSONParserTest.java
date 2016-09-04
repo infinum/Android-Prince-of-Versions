@@ -11,7 +11,7 @@ import android.os.Build;
 import co.infinum.princeofversions.BuildConfig;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.exceptions.ParseException;
-import co.infinum.princeofversions.helpers.parsers.JSONVersionConfigParser;
+import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
 import co.infinum.princeofversions.util.ResourceUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +27,7 @@ public class JSONParserTest {
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndLessThanOptional() {
         VersionContext.Version currentVersion = new VersionContext.Version("2.0.0");
         try {
-            JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
             VersionContext version = parser.parse(parsedResponseContent);
             assertEquals("Current version should be 2.0.0", "2.0.0", version.getCurrentVersion().getVersionString());
@@ -46,7 +46,7 @@ public class JSONParserTest {
     public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptional() {
         VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
         try {
-            JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
             VersionContext version = parser.parse(parsedResponseContent);
             assertEquals("Current version should be 1.0.0", "1.0.0", version.getCurrentVersion().getVersionString());
@@ -65,7 +65,7 @@ public class JSONParserTest {
     public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptional() {
         VersionContext.Version currentVersion = new VersionContext.Version("1.2.3");
         try {
-            JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
             VersionContext version = parser.parse(parsedResponseContent);
             assertEquals("Current version should be 1.2.3", "1.2.3", version.getCurrentVersion().getVersionString());
@@ -84,7 +84,7 @@ public class JSONParserTest {
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptional() {
         VersionContext.Version currentVersion = new VersionContext.Version("2.4.5");
         try {
-            JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
             VersionContext version = parser.parse(parsedResponseContent);
             assertEquals("Current version should be 2.4.5", "2.4.5", version.getCurrentVersion().getVersionString());
@@ -103,7 +103,7 @@ public class JSONParserTest {
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptional() {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
         try {
-            JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
             VersionContext version = parser.parse(parsedResponseContent);
             assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
@@ -121,42 +121,42 @@ public class JSONParserTest {
     @Test(expected = ParseException.class)
     public void testParsingInvalidContentWithInvalidVersion() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         parser.parse(ResourceUtils.readFromFile("invalid_update_invalid_version.json"));
     }
 
     @Test(expected = ParseException.class)
     public void testParsingInvalidContentNoAndroidKey() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         parser.parse(ResourceUtils.readFromFile("invalid_update_no_android.json"));
     }
 
     @Test(expected = ParseException.class)
     public void testParsingInvalidContentNoJSON() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         parser.parse(ResourceUtils.readFromFile("invalid_update_no_json.json"));
     }
 
     @Test(expected = ParseException.class)
     public void testParsingInvalidContentNoMinVersion() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         parser.parse(ResourceUtils.readFromFile("invalid_update_no_min_version.json"));
     }
 
     @Test(expected = ParseException.class)
     public void testParsingInvalidContentOptionalNoMinVersion() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         parser.parse(ResourceUtils.readFromFile("invalid_update_optional_without_version.json"));
     }
 
     @Test
     public void testParsingValidContentNoNotification() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_no_notification.json"));
         assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
         assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
@@ -170,7 +170,7 @@ public class JSONParserTest {
     @Test
     public void testParsingValidContentWithAlwaysNotification() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_notification_always.json"));
         assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
         assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
@@ -184,7 +184,7 @@ public class JSONParserTest {
     @Test
     public void testParsingValidContentWithOnlyMinVersion() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_only_min_version.json"));
         assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
         assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
@@ -194,7 +194,7 @@ public class JSONParserTest {
     @Test
     public void testParsingValidContentWithoutCodes() throws ParseException {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JSONVersionConfigParser parser = new JSONVersionConfigParser(currentVersion);
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_without_codes.json"));
         assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
         assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
