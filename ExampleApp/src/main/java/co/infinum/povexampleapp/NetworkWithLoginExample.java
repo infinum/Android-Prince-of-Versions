@@ -45,7 +45,46 @@ public class NetworkWithLoginExample extends AppCompatActivity {
 
     protected EditText urlView;
 
+    protected UpdaterCallback defaultCallback = new UpdaterCallback() {
+        @Override
+        public void onNewUpdate(String version, boolean isMandatory) {
+            toastIt(
+                    getString(
+                            R.string.update_available_msg,
+                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
+                            version
+                    ),
+                    Toast.LENGTH_SHORT
+            );
+        }
+
+        @Override
+        public void onNoUpdate() {
+            toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
+        }
+
+        @Override
+        public void onError(@ErrorCode int error) {
+            toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
+        }
+    };
+
     private PrinceOfVersions updater;
+
+    /*  Create new specific factory for creating loader */
+    private LoaderFactory loaderFactory = new LoaderFactory() {
+
+        @Override
+        public UpdateConfigLoader newInstance() {
+            return createLoader(
+                    "http://pastebin.com/login.php",
+                    urlView.getText().toString(),
+                    usernameView.getText().toString(),
+                    passwordView.getText().toString()
+            );
+        }
+
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,28 +114,14 @@ public class NetworkWithLoginExample extends AppCompatActivity {
         updater.checkForUpdates(loaderFactory, defaultCallback);
     }
 
-    /*  Create new specific factory for creating loader */
-    private LoaderFactory loaderFactory = new LoaderFactory() {
-
-        @Override
-        public UpdateConfigLoader newInstance() {
-            return createLoader(
-                    "http://pastebin.com/login.php",
-                    urlView.getText().toString(),
-                    usernameView.getText().toString(),
-                    passwordView.getText().toString()
-            );
-        }
-
-    };
-
     /**
      * Creates custom loader. Loader loads update configuration from private pastebin file using provided username and password to log in
      * into Pastebin account where private file is stored.
-     * @param loginUrl URL for getting and posting to login page.
+     *
+     * @param loginUrl   URL for getting and posting to login page.
      * @param contentUrl URL for fetching content.
-     * @param username Account username.
-     * @param password Account password.
+     * @param username   Account username.
+     * @param password   Account password.
      * @return New instance of loader for loading from private Pastebin file.
      */
     private UpdateConfigLoader createLoader(final String loginUrl, final String contentUrl, final String username, final String password) {
@@ -212,37 +237,8 @@ public class NetworkWithLoginExample extends AppCompatActivity {
         };
     }
 
-    protected UpdaterCallback defaultCallback = new UpdaterCallback() {
-        @Override
-        public void onNewUpdate(String version, boolean isMandatory) {
-            toastIt(
-                    getString(
-                            R.string.update_available_msg,
-                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
-                            version
-                    ),
-                    Toast.LENGTH_SHORT
-            );
-        }
-
-        @Override
-        public void onNoUpdate() {
-            toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
-        }
-
-        @Override
-        public void onError(@ErrorCode int error) {
-            toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
-        }
-    };
-
     protected void toastIt(final String message, final int duration) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, duration).show();
-            }
-        });
+        Toast.makeText(getApplicationContext(), message, duration).show();
     }
 
 }

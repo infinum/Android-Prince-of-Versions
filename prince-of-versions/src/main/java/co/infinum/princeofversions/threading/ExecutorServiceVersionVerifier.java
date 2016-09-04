@@ -1,5 +1,8 @@
 package co.infinum.princeofversions.threading;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
@@ -43,6 +46,12 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     /**
+     * Handler used to return callbacks on the main thread
+     */
+    private Handler handler = new Handler(Looper.getMainLooper());
+
+
+    /**
      * Parser used for parsing loaded update configuration resource.
      */
     private VersionConfigParser parser;
@@ -67,25 +76,30 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
      * @param loader   Loads update configuration.
      * @param listener Callback for notifying results.
      */
-    protected void getVersion(UpdateConfigLoader loader, VersionVerifierListener listener) {
+    protected void getVersion(UpdateConfigLoader loader, final VersionVerifierListener listener) {
         InputStream response = null;
         try {
             String content = loader.load();
 
             ifTaskIsCancelledThrowInterrupt();
-            VersionContext version = parser.parse(content);
+            final VersionContext version = parser.parse(content);
 
             ifTaskIsCancelledThrowInterrupt();
-            listener.versionAvailable(version);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.versionAvailable(version);
+                }
+            });
         } catch (IOException e) {
-            listener.versionUnavailable(ErrorCode.LOAD_ERROR);
+            onError(ErrorCode.LOAD_ERROR, listener);
         } catch (ParseException e) {
-            listener.versionUnavailable(ErrorCode.WRONG_VERSION);
+            onError(ErrorCode.WRONG_VERSION, listener);
         } catch (CancellationException | InterruptedException intentionalEmpty) { // NOPMD
             // someone cancelled the task
         } catch (Throwable e) {
             e.printStackTrace();
-            listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR);
+            onError(ErrorCode.UNKNOWN_ERROR, listener);
         } finally {
             try {
                 response.close();
@@ -93,6 +107,15 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
                 // ignorable exception
             }
         }
+    }
+
+    private void onError(@ErrorCode final int loadError, final VersionVerifierListener listener) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                listener.versionUnavailable(loadError);
+            }
+        });
     }
 
     @Override

@@ -30,9 +30,97 @@ import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
 
 public class CustomParserExample extends AppCompatActivity {
 
+    protected UpdaterCallback defaultCallback = new UpdaterCallback() {
+        @Override
+        public void onNewUpdate(String version, boolean isMandatory) {
+            toastIt(
+                    getString(
+                            R.string.update_available_msg,
+                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
+                            version
+                    ),
+                    Toast.LENGTH_SHORT
+            );
+        }
+
+        @Override
+        public void onNoUpdate() {
+            toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
+        }
+
+        @Override
+        public void onError(@ErrorCode int error) {
+            toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
+        }
+    };
+
     private PrinceOfVersions updater;
+
     private LoaderFactory loaderFactory;
+
     private CheckForUpdates povContext;
+
+    /**
+     * This factory creates a very slow loader, just to give you enough time to invoke cancel option.
+     */
+    private LoaderFactory slowLoaderFactory = new LoaderFactory() {
+        @Override
+        public UpdateConfigLoader newInstance() {
+
+            final UpdateConfigLoader instance = loaderFactory.newInstance();
+
+            return new UpdateConfigLoader() {
+                @Override
+                public String load() throws IOException, InterruptedException {
+                    Thread.sleep(2000);
+                    return instance.load();
+                }
+
+                @Override
+                public void cancel() {
+                    instance.cancel();
+                }
+
+                @Override
+                public void validate() throws LoaderValidationException {
+                    instance.validate();
+                }
+            };
+        }
+    };
+
+    /**
+     * Custom parser factory, used for parsing in special format.
+     * Custom parser is defined for JSON object containing only one key: minimum_version.
+     */
+    private ParserFactory parserFactory = new ParserFactory() {
+        @Override
+        public VersionConfigParser newInstance() {
+            return new VersionConfigParser() {
+
+                public static final String MINIMUM_VERSION = "minimum_version";
+
+                @Override
+                public VersionContext parse(String content) throws ParseException {
+                    try {
+                        VersionContext.Version appVersion = ContextHelper.getAppVersion(CustomParserExample.this);
+                        Version current = Version.valueOf(appVersion.getVersionString());
+                        VersionContext.Version minVersion = new VersionContext.Version(
+                                new JSONObject(content).getString(MINIMUM_VERSION));
+                        Version minimum = Version.valueOf(minVersion.getVersionString());
+                        VersionContext vc = new VersionContext(
+                                appVersion,
+                                minVersion,
+                                current.lessThan(minimum)
+                        );
+                        return vc;
+                    } catch (PackageManager.NameNotFoundException | JSONException e) {
+                        throw new ParseException(e);
+                    }
+                }
+            };
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,99 +192,8 @@ public class CustomParserExample extends AppCompatActivity {
         this.povContext = povContext;
     }
 
-    /**
-     * This factory creates a very slow loader, just to give you enough time to invoke cancel option.
-     */
-    private LoaderFactory slowLoaderFactory = new LoaderFactory() {
-        @Override
-        public UpdateConfigLoader newInstance() {
-
-            final UpdateConfigLoader instance = loaderFactory.newInstance();
-
-            return new UpdateConfigLoader() {
-                @Override
-                public String load() throws IOException, InterruptedException {
-                    Thread.sleep(2000);
-                    return instance.load();
-                }
-
-                @Override
-                public void cancel() {
-                    instance.cancel();
-                }
-
-                @Override
-                public void validate() throws LoaderValidationException {
-                    instance.validate();
-                }
-            };
-        }
-    };
-
-    /**
-     * Custom parser factory, used for parsing in special format.
-     * Custom parser is defined for JSON object containing only one key: minimum_version.
-     */
-    private ParserFactory parserFactory = new ParserFactory() {
-        @Override
-        public VersionConfigParser newInstance() {
-            return new VersionConfigParser() {
-
-                public static final String MINIMUM_VERSION = "minimum_version";
-
-                @Override
-                public VersionContext parse(String content) throws ParseException {
-                    try {
-                        VersionContext.Version appVersion = ContextHelper.getAppVersion(CustomParserExample.this);
-                        Version current = Version.valueOf(appVersion.getVersionString());
-                        VersionContext.Version minVersion = new VersionContext.Version(
-                                new JSONObject(content).getString(MINIMUM_VERSION));
-                        Version minimum = Version.valueOf(minVersion.getVersionString());
-                        VersionContext vc = new VersionContext(
-                                appVersion,
-                                minVersion,
-                                current.lessThan(minimum)
-                        );
-                        return vc;
-                    } catch (PackageManager.NameNotFoundException | JSONException e) {
-                        throw new ParseException(e);
-                    }
-                }
-            };
-        }
-    };
-
-    protected UpdaterCallback defaultCallback = new UpdaterCallback() {
-        @Override
-        public void onNewUpdate(String version, boolean isMandatory) {
-            toastIt(
-                    getString(
-                            R.string.update_available_msg,
-                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
-                            version
-                    ),
-                    Toast.LENGTH_SHORT
-            );
-        }
-
-        @Override
-        public void onNoUpdate() {
-            toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
-        }
-
-        @Override
-        public void onError(@ErrorCode int error) {
-            toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
-        }
-    };
-
     protected void toastIt(final String message, final int duration) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, duration).show();
-            }
-        });
+        Toast.makeText(getApplicationContext(), message, duration).show();
     }
 
 }
