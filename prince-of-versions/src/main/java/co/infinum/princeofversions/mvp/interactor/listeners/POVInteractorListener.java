@@ -3,7 +3,7 @@ package co.infinum.princeofversions.mvp.interactor.listeners;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 
-public interface PovInteractorListener {
+public interface POVInteractorListener {
 
     void onUpdateAvailable(VersionContext version);
 

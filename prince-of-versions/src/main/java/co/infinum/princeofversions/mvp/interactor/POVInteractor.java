@@ -1,13 +1,13 @@
 package co.infinum.princeofversions.mvp.interactor;
 
-import co.infinum.princeofversions.mvp.interactor.listeners.PovInteractorListener;
+import co.infinum.princeofversions.mvp.interactor.listeners.POVInteractorListener;
 
 /**
  * Created by stefano on 08/07/16.
  */
-public interface PovInteractor {
+public interface POVInteractor {
 
-    void checkForUpdates(PovInteractorListener listener);
+    void checkForUpdates(POVInteractorListener listener);
 
     void cancel();
 }
