@@ -7,15 +7,15 @@ import android.support.annotation.NonNull;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
 import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.helpers.ContextHelper;
-import co.infinum.princeofversions.helpers.POVFactoryHelper;
+import co.infinum.princeofversions.helpers.PovFactoryHelper;
 import co.infinum.princeofversions.helpers.PrefsVersionRepository;
-import co.infinum.princeofversions.helpers.parsers.JSONVersionConfigParser;
+import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
 import co.infinum.princeofversions.helpers.parsers.ParserFactory;
 import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
-import co.infinum.princeofversions.mvp.presenter.POVPresenter;
+import co.infinum.princeofversions.mvp.presenter.PovPresenter;
 import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
 import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
 
@@ -82,7 +82,7 @@ public class PrinceOfVersions {
             @Override
             public VersionConfigParser newInstance() {
                 try {
-                    return new JSONVersionConfigParser(ContextHelper.getAppVersion(context));
+                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context));
                 } catch (PackageManager.NameNotFoundException e) {
                     throw new IllegalArgumentException("Current version not available.");
                 }
@@ -126,7 +126,7 @@ public class PrinceOfVersions {
             @Override
             public VersionConfigParser newInstance() {
                 try {
-                    return new JSONVersionConfigParser(ContextHelper.getAppVersion(context));
+                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context));
                 } catch (PackageManager.NameNotFoundException e) {
                     throw new IllegalArgumentException("Current version not available.");
                 }
@@ -219,15 +219,15 @@ public class PrinceOfVersions {
      * @return Calling context representing this concrete update check.
      * @throws IllegalArgumentException if newly created loader is invalid.
      */
-    public CheckForUpdates checkForUpdates(LoaderFactory loaderFactory, UpdaterCallback callback) {
+    public UpdaterResult checkForUpdates(LoaderFactory loaderFactory, UpdaterCallback callback) {
         UpdateConfigLoader loader = loaderFactory.newInstance();
         try {
             loader.validate();
         } catch (LoaderValidationException e) {
             throw new IllegalArgumentException(e);
         }
-        CheckForUpdates povContext = new CheckForUpdates(callback);
-        POVPresenter presenter = POVFactoryHelper.getInstance().getPresenter(povContext, loader, factory, repository);
+        UpdaterResult povContext = new UpdaterResult(callback);
+        PovPresenter presenter = PovFactoryHelper.getInstance().getPresenter(povContext, loader, factory, repository);
         povContext.setPresenter(presenter);
         presenter.checkForUpdates();
         return povContext;
@@ -244,7 +244,7 @@ public class PrinceOfVersions {
      * @return Calling context representing this concrete update check.
      * @throws IllegalArgumentException if resource locator is invalid.
      */
-    public CheckForUpdates checkForUpdates(String url, UpdaterCallback callback) {
+    public UpdaterResult checkForUpdates(String url, UpdaterCallback callback) {
         return checkForUpdates(new NetworkLoaderFactory(url), callback);
     }
 

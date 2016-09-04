@@ -17,17 +17,15 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * object. Android object can contain keys as follow:
  * <ul>
  * <li><i>minimum_version</i></li>
- * <li><i>minimum_version_code</i></li>
  * <li><i>optional_update</i></li>
  * </ul>.
  * Minimum version value is represented as string, minimum version code as integer and optional update is JSON object with following
  * keys:
  * <ul>
  * <li><i>version</i></li>
- * <li><i>version_code</i></li>
  * <li><i>notification_type</i></li>
  * </ul>.
- * Again, version value is represented as string, version_code as integer and notification_type is string with one of following values:
+ * Again, version value is represented as string, and notification_type is string with one of following values:
  * <ul>
  * <li><i>ALWAYS</i></li>
  * <li><i>ONCE</i></li>
@@ -46,10 +44,8 @@ import co.infinum.princeofversions.exceptions.ParseException;
  *  {
  *      "android": {
  *          "minimum_version": "1.2.3",
- *          "minimum_version_code": 14235,
  *          "optional_update": {
  *              "version": "2.4.5",
- *              "version_code": 42354,
  *              "notification_type": "ONCE"
  *          }
  *      }
@@ -58,7 +54,7 @@ import co.infinum.princeofversions.exceptions.ParseException;
  *
  * @see <a href="http://www.json.org/">JSON</a>
  */
-public class JSONVersionConfigParser implements VersionConfigParser {
+public class JsonVersionConfigParser implements VersionConfigParser {
 
     /**
      * Android key
@@ -69,11 +65,6 @@ public class JSONVersionConfigParser implements VersionConfigParser {
      * Minimum version key
      */
     public static final String MINIMUM_VERSION = "minimum_version";
-
-    /**
-     * Minimum version code key
-     */
-    public static final String MINIMUM_VERSION_CODE = "minimum_version_code";
 
     /**
      * Optional update key
@@ -90,10 +81,6 @@ public class JSONVersionConfigParser implements VersionConfigParser {
      */
     public static final String VERSION = "version";
 
-    /**
-     * Optional update version code key
-     */
-    public static final String VERSION_CODE = "version_code";
 
     /**
      * Application version
@@ -105,7 +92,7 @@ public class JSONVersionConfigParser implements VersionConfigParser {
      *
      * @param currentVersion Current application version.
      */
-    public JSONVersionConfigParser(VersionContext.Version currentVersion) {
+    public JsonVersionConfigParser(VersionContext.Version currentVersion) {
         this.currentVersion = currentVersion;
     }
 
@@ -135,9 +122,7 @@ public class JSONVersionConfigParser implements VersionConfigParser {
         Version minVersion = Version.valueOf(min);
         VersionContext.Version minVersionContext = new VersionContext.Version(minVersion.toString());
 
-        if (android.has(MINIMUM_VERSION_CODE)) {
-            minVersionContext.setVersionCode(android.getInt(MINIMUM_VERSION_CODE));
-        }
+
         VersionContext versionContext = new VersionContext(
                 this.currentVersion,
                 minVersionContext,
@@ -151,9 +136,6 @@ public class JSONVersionConfigParser implements VersionConfigParser {
             Version updateVersion = Version.valueOf(update);
 
             VersionContext.Version updateVersionContext = new VersionContext.Version(updateVersion.toString());
-            if (updateObject.has(VERSION_CODE)) {
-                updateVersionContext.setVersionCode(updateObject.getInt(VERSION_CODE));
-            }
 
             VersionContext.UpdateContext updateContext = new VersionContext.UpdateContext(
                     updateVersionContext

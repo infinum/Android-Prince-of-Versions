@@ -2,8 +2,8 @@ package co.infinum.princeofversions;
 
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
 import co.infinum.princeofversions.common.ErrorCode;
-import co.infinum.princeofversions.mvp.presenter.POVPresenter;
-import co.infinum.princeofversions.mvp.view.POVView;
+import co.infinum.princeofversions.mvp.presenter.PovPresenter;
+import co.infinum.princeofversions.mvp.view.PovView;
 
 /**
  * This class represents calling context for specific update check.
@@ -16,12 +16,12 @@ import co.infinum.princeofversions.mvp.view.POVView;
  * isCancelled flag after cancel is called.
  * </p>
  */
-public class CheckForUpdates implements POVView {
+public class UpdaterResult implements PovView {
 
     /**
      * Presenter instance associated with this calling context.
      */
-    private POVPresenter presenter;
+    private PovPresenter presenter;
 
     /**
      * User provided callback for notifying result.
@@ -45,7 +45,7 @@ public class CheckForUpdates implements POVView {
      *
      * @param callback User defined callback for notifying result.
      */
-    CheckForUpdates(UpdaterCallback callback) {
+    UpdaterResult(UpdaterCallback callback) {
         this.callback = callback;
     }
 
@@ -55,7 +55,7 @@ public class CheckForUpdates implements POVView {
      * @param presenter Presenter.
      * @return this.
      */
-    CheckForUpdates setPresenter(POVPresenter presenter) {
+    UpdaterResult setPresenter(PovPresenter presenter) {
         this.presenter = presenter;
         return this;
     }

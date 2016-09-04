@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-import co.infinum.princeofversions.CheckForUpdates;
+import co.infinum.princeofversions.UpdaterResult;
 import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
@@ -58,7 +58,7 @@ public class CustomParserExample extends AppCompatActivity {
 
     private LoaderFactory loaderFactory;
 
-    private CheckForUpdates povContext;
+    private UpdaterResult povContext;
 
     /**
      * This factory creates a very slow loader, just to give you enough time to invoke cancel option.
@@ -166,13 +166,13 @@ public class CustomParserExample extends AppCompatActivity {
 
     public void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
-        CheckForUpdates context = updater.checkForUpdates(loaderFactory, defaultCallback);
+        UpdaterResult context = updater.checkForUpdates(loaderFactory, defaultCallback);
         replacePOVContext(context);
     }
 
     public void onCancelTestClick() {
         /*  same call as few lines higher, but using another loader, this one is very slow loader  */
-        CheckForUpdates context = updater.checkForUpdates(slowLoaderFactory, defaultCallback);
+        UpdaterResult context = updater.checkForUpdates(slowLoaderFactory, defaultCallback);
         replacePOVContext(context);
     }
 
@@ -183,7 +183,7 @@ public class CustomParserExample extends AppCompatActivity {
         }
     }
 
-    private void replacePOVContext(CheckForUpdates povContext) {
+    private void replacePOVContext(UpdaterResult povContext) {
         /*  started new checking, kill current one if not dead and remember new context */
         if (this.povContext != null && !this.povContext.isConsumed() && !this.povContext.isCancelled()) {
             toastIt(getString(R.string.replace), Toast.LENGTH_SHORT);

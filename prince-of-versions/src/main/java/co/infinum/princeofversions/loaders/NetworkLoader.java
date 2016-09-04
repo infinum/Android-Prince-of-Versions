@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 import co.infinum.princeofversions.BaseLoader;
 import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.exceptions.UrlNotSetException;
-import co.infinum.princeofversions.helpers.StreamIO;
+import co.infinum.princeofversions.helpers.StreamIo;
 
 /**
  * Represents a concrete loader that load resource from network using provided URL.
@@ -107,7 +107,7 @@ public class NetworkLoader extends BaseLoader {
             conn.setConnectTimeout(networkTimeoutSeconds * MILISECONDS_IN_SECOND);
             InputStream response = conn.getInputStream();
             ifTaskIsCancelledThrowInterrupt(); // if cancelled here no need to read stream at all
-            String content = StreamIO.toString(response, new StreamIO.StreamLineFilter() {
+            String content = StreamIo.toString(response, new StreamIo.StreamLineFilter() {
                 @Override
                 public Command apply(String line) {
                     if (cancelled) {

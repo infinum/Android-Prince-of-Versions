@@ -18,9 +18,9 @@ import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierListener;
-import co.infinum.princeofversions.mvp.interactor.POVInteractor;
-import co.infinum.princeofversions.mvp.interactor.impl.POVInteractorImpl;
-import co.infinum.princeofversions.mvp.interactor.listeners.POVInteractorListener;
+import co.infinum.princeofversions.mvp.interactor.PovInteractor;
+import co.infinum.princeofversions.mvp.interactor.impl.PovInteractorImpl;
+import co.infinum.princeofversions.mvp.interactor.listeners.PovInteractorListener;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
@@ -39,9 +39,9 @@ public class InteractorTest {
     @Test
     public void testMandatoryUpdate() {
         final VersionContext versionContext = new VersionContext(
-                new VersionContext.Version("2.0.0", 0),
-                new VersionContext.Version("3.0.0", 1), true,
-                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), true);
+                new VersionContext.Version("2.0.0"),
+                new VersionContext.Version("3.0.0"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -51,8 +51,8 @@ public class InteractorTest {
                 return null;
             }
         }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
-        POVInteractorListener listener = Mockito.mock(POVInteractorListener.class);
-        POVInteractor interactor = new POVInteractorImpl(versionVerifier, loader);
+        PovInteractorListener listener = Mockito.mock(PovInteractorListener.class);
+        PovInteractor interactor = new PovInteractorImpl(versionVerifier, loader);
         interactor.checkForUpdates(listener);
         Mockito.verify(listener, Mockito.times(1)).onMandatoryUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
@@ -63,9 +63,9 @@ public class InteractorTest {
     @Test
     public void testOptionalUpdate() {
         final VersionContext versionContext = new VersionContext(
-                new VersionContext.Version("3.0.0", 0),
-                new VersionContext.Version("2.0.0", 1), false,
-                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), true);
+                new VersionContext.Version("3.0.0"),
+                new VersionContext.Version("2.0.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -75,8 +75,8 @@ public class InteractorTest {
                 return null;
             }
         }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
-        POVInteractorListener listener = Mockito.mock(POVInteractorListener.class);
-        POVInteractor interactor = new POVInteractorImpl(versionVerifier, loader);
+        PovInteractorListener listener = Mockito.mock(PovInteractorListener.class);
+        PovInteractor interactor = new PovInteractorImpl(versionVerifier, loader);
         interactor.checkForUpdates(listener);
         Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(1)).onUpdateAvailable(versionContext);
@@ -88,8 +88,8 @@ public class InteractorTest {
     public void testNoUpdate() {
         final VersionContext versionContext = new VersionContext(
                 new VersionContext.Version("4.0.0"),
-                new VersionContext.Version("2.0.0", 1), false,
-                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), false);
+                new VersionContext.Version("2.0.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), false);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -99,8 +99,8 @@ public class InteractorTest {
                 return null;
             }
         }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
-        POVInteractorListener listener = Mockito.mock(POVInteractorListener.class);
-        POVInteractor interactor = new POVInteractorImpl(versionVerifier, loader);
+        PovInteractorListener listener = Mockito.mock(PovInteractorListener.class);
+        PovInteractor interactor = new PovInteractorImpl(versionVerifier, loader);
         interactor.checkForUpdates(listener);
         Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
@@ -112,8 +112,8 @@ public class InteractorTest {
     public void testError() {
         final VersionContext versionContext = new VersionContext(
                 new VersionContext.Version("2.0.0"),
-                new VersionContext.Version("3.0.0", 1), true,
-                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1", 2), "ONCE"), true);
+                new VersionContext.Version("3.0.0"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -123,8 +123,8 @@ public class InteractorTest {
                 return null;
             }
         }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
-        POVInteractorListener listener = Mockito.mock(POVInteractorListener.class);
-        POVInteractor interactor = new POVInteractorImpl(versionVerifier, loader);
+        PovInteractorListener listener = Mockito.mock(PovInteractorListener.class);
+        PovInteractor interactor = new PovInteractorImpl(versionVerifier, loader);
         interactor.checkForUpdates(listener);
         Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
