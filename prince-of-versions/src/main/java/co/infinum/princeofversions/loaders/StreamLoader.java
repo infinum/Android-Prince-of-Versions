@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.exceptions.LoaderValidationException;
-import co.infinum.princeofversions.helpers.StreamIO;
+import co.infinum.princeofversions.helpers.StreamIo;
 
 /**
  * Represents a concrete loader that load resource from stream.
@@ -33,7 +33,7 @@ public class StreamLoader implements UpdateConfigLoader {
 
     @Override
     public String load() throws IOException, InterruptedException {
-        String content = StreamIO.toString(is, new StreamIO.StreamLineFilter() {
+        String content = StreamIo.toString(is, new StreamIo.StreamLineFilter() {
             @Override
             public Command apply(String line) {
                 if (cancelled) {

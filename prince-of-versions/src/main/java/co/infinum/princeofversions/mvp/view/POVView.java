@@ -5,7 +5,7 @@ import co.infinum.princeofversions.common.ErrorCode;
 /**
  * Created by stefano on 08/07/16.
  */
-public interface POVView {
+public interface PovView {
 
     void notifyMandatoryUpdate(String version);
 
