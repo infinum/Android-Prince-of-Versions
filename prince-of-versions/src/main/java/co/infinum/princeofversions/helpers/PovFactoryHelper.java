@@ -3,24 +3,24 @@ package co.infinum.princeofversions.helpers;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
-import co.infinum.princeofversions.mvp.interactor.impl.POVInteractorImpl;
-import co.infinum.princeofversions.mvp.presenter.POVPresenter;
-import co.infinum.princeofversions.mvp.presenter.impl.POVPresenterImpl;
-import co.infinum.princeofversions.mvp.view.POVView;
+import co.infinum.princeofversions.mvp.interactor.impl.PovInteractorImpl;
+import co.infinum.princeofversions.mvp.presenter.PovPresenter;
+import co.infinum.princeofversions.mvp.presenter.impl.PovPresenterImpl;
+import co.infinum.princeofversions.mvp.view.PovView;
 
 /**
  * Created by stefano on 08/07/16.
  */
-public class POVFactoryHelper {
+public class PovFactoryHelper {
 
-    private static POVFactoryHelper instance;
+    private static PovFactoryHelper instance;
 
-    private POVFactoryHelper() {
+    private PovFactoryHelper() {
     }
 
-    public static POVFactoryHelper getInstance() {
+    public static PovFactoryHelper getInstance() {
         if (instance == null) {
-            instance = new POVFactoryHelper();
+            instance = new PovFactoryHelper();
         }
         return instance;
     }
@@ -34,9 +34,9 @@ public class POVFactoryHelper {
      * @param repository Repository for persisting library data.
      * @return New instance of POVPresenter.
      */
-    public POVPresenter getPresenter(POVView view, UpdateConfigLoader loader, VersionVerifierFactory factory,
+    public PovPresenter getPresenter(PovView view, UpdateConfigLoader loader, VersionVerifierFactory factory,
                                      VersionRepository repository) {
-        return new POVPresenterImpl(view, new POVInteractorImpl(factory.newInstance(), loader), repository);
+        return new PovPresenterImpl(view, new PovInteractorImpl(factory.newInstance(), loader), repository);
     }
 
 }
