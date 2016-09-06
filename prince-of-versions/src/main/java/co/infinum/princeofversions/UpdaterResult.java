@@ -102,19 +102,19 @@ public class UpdaterResult implements PovView {
     @Override
     public void notifyMandatoryUpdate(String version) {
         isConsumed = true;
-        callback.onNewUpdate(version, true);
+        callback.onNewUpdate(version, true, null);
     }
 
     @Override
     public void notifyOptionalUpdate(String version) {
         isConsumed = true;
-        callback.onNewUpdate(version, false);
+        callback.onNewUpdate(version, false, null);
     }
 
     @Override
     public void notifyNoUpdate() {
         isConsumed = true;
-        callback.onNoUpdate();
+        callback.onNoUpdate(null);
     }
 
     @Override

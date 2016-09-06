@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Map;
 
 import co.infinum.princeofversions.UpdaterResult;
 import co.infinum.princeofversions.LoaderFactory;
@@ -21,7 +22,7 @@ public class StreamLoaderExample extends AppCompatActivity {
 
     protected UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(String version, boolean isMandatory) {
+        public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
             toastIt(
                     getString(
                             R.string.update_available_msg,
@@ -33,7 +34,7 @@ public class StreamLoaderExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate() {
+        public void onNoUpdate(Map<String, String> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 
