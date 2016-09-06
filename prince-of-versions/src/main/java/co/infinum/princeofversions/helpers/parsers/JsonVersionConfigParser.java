@@ -5,6 +5,10 @@ import com.github.zafarkhaja.semver.Version;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.exceptions.ParseException;
 
@@ -19,6 +23,8 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * <li><i>minimum_version</i></li>
  * <li><i>optional_update</i></li>
  * </ul>.
+ * Valid content can also have <i>meta</i> key. Value contained in <i>meta</i> key is JSON object containing metadata ordered in key-value
+ * pairs.
  * Minimum version value is represented as string, minimum version code as integer and optional update is JSON object with following
  * keys:
  * <ul>
@@ -48,6 +54,10 @@ import co.infinum.princeofversions.exceptions.ParseException;
  *              "version": "2.4.5",
  *              "notification_type": "ONCE"
  *          }
+ *      },
+ *      "meta": {
+ *          "key1": "value1",
+ *          "key2": "value2"
  *      }
  *  }
  * </pre>
@@ -80,6 +90,11 @@ public class JsonVersionConfigParser implements VersionConfigParser {
      * Optional update version key
      */
     public static final String VERSION = "version";
+
+    /**
+     * Metadata key
+     */
+    public static final String META = "meta";
 
 
     /**
@@ -122,7 +137,6 @@ public class JsonVersionConfigParser implements VersionConfigParser {
         Version minVersion = Version.valueOf(min);
         VersionContext.Version minVersionContext = new VersionContext.Version(minVersion.toString());
 
-
         VersionContext versionContext = new VersionContext(
                 this.currentVersion,
                 minVersionContext,
@@ -144,6 +158,20 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                 updateContext.setNotificationType(updateObject.getString(NOTIFICATION));
             }
             versionContext.setOptionalUpdate(updateContext, currentVersion.lessThan(updateVersion));
+        }
+
+        /* metadata */
+        if (data.has(META)) {
+            JSONObject metadataObject = data.getJSONObject(META);
+            Map<String, String> metadata = new HashMap<>();
+
+            Iterator<String> metadataIterator = metadataObject.keys();
+            while (metadataIterator.hasNext()) {
+                String key = metadataIterator.next();
+                metadata.put(key, metadataObject.getString(key));
+            }
+
+            versionContext.setMetadata(metadata);
         }
 
         return versionContext;

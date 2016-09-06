@@ -26,6 +26,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import co.infinum.princeofversions.BaseLoader;
 import co.infinum.princeofversions.LoaderFactory;
@@ -47,7 +48,7 @@ public class NetworkWithLoginExample extends AppCompatActivity {
 
     protected UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(String version, boolean isMandatory) {
+        public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
             toastIt(
                     getString(
                             R.string.update_available_msg,
@@ -59,7 +60,7 @@ public class NetworkWithLoginExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate() {
+        public void onNoUpdate(Map<String, String> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 

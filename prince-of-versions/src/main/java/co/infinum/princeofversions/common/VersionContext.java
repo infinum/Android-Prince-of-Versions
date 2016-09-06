@@ -1,5 +1,8 @@
 package co.infinum.princeofversions.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Holder for version information provided by VersionVerifier.
  * <p>
@@ -36,6 +39,11 @@ public class VersionContext {
      * Flag has value true if current application version is less than optional version specified by update configuration, false otherwise.
      */
     private boolean isCurrentLessThanOptional;
+
+    /**
+     * Metadata sent with the request.
+     */
+    private Map<String, String> metadata;
 
     /**
      * Creates a new holder with specified current, minimum and optional update version and corresponding flags.
@@ -75,6 +83,15 @@ public class VersionContext {
     public void setOptionalUpdate(UpdateContext optionalUpdate, boolean isCurrentLessThanOptional) {
         this.optionalUpdate = optionalUpdate;
         this.isCurrentLessThanOptional = isCurrentLessThanOptional;
+    }
+
+    /**
+     * Places the metadata container into this holder.
+     *
+     * @param metadata metadata do be added to this holder
+     */
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
     }
 
     /**
@@ -129,6 +146,18 @@ public class VersionContext {
      */
     public UpdateContext getOptionalUpdate() {
         return optionalUpdate;
+    }
+
+    /**
+     * Provides the metadata stored in this holder.
+     *
+     * @return metadata stored in this holder
+     */
+    public Map<String, String> getMetadata() {
+        if (metadata == null) {
+            metadata = new HashMap<>();
+        }
+        return metadata;
     }
 
     /**

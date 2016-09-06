@@ -77,9 +77,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.0", true);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.0", true, null);
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
     @Test
@@ -100,9 +100,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.1", false);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.1", false, null);
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
     @Test
@@ -123,9 +123,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean());
+        Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(1)).onNoUpdate();
+        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(null);
     }
 
     @Test
@@ -141,9 +141,9 @@ public class VerifierTest {
         }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean());
+        Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyMap());
         Mockito.verify(callback, Mockito.times(1)).onError(ErrorCode.WRONG_VERSION);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
 }
