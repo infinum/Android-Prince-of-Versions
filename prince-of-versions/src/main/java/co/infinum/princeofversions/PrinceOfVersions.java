@@ -198,7 +198,7 @@ public class PrinceOfVersions {
      *
      * @throws IllegalArgumentException if some of dependencies is not valid.
      */
-    private void validateDependencies() throws IllegalArgumentException {
+    private void validateDependencies() {
         if (this.factory == null) {
             throw new IllegalArgumentException("Factory is null.");
         } else if (this.repository == null) {
