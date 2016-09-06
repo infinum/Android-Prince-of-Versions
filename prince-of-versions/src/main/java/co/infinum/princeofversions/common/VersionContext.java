@@ -154,7 +154,7 @@ public class VersionContext {
      * @return metadata stored in this holder
      */
     public Map<String, String> getMetadata() {
-        if(metadata == null){
+        if (metadata == null) {
             metadata = new HashMap<>();
         }
         return metadata;
