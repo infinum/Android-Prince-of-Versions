@@ -8,7 +8,7 @@ import co.infinum.princeofversions.mvp.view.PovView;
 /**
  * This class represents calling context for specific update check.
  * <p>
- * Through instance of this class it is available to check if update check associated with this calling context finished and cancel
+ * Through instance of this class it is possible to check if update check associated with this calling context finished and cancel
  * it if not.
  * If update check finished, eg. if this context is marked as consumed there is no way to cancel notifying result anymore.
  * Context is marked as consumed if result is notified or is just being notified. Cancel option is available until class set its

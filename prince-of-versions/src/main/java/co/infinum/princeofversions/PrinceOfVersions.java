@@ -161,11 +161,11 @@ public class PrinceOfVersions {
      * @param repository Custom implementation of repository for persisting library data.
      */
     public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory,
-                            VersionRepository repository) {
+            VersionRepository repository) {
         ContextHelper.setContext(context);
         this.factory = factory;
         this.repository = repository;
-        validateDependenciesAndThrowIllegalArgumentIfNotValid();
+        validateDependencies();
     }
 
     /**
@@ -198,7 +198,7 @@ public class PrinceOfVersions {
      *
      * @throws IllegalArgumentException if some of dependencies is not valid.
      */
-    private void validateDependenciesAndThrowIllegalArgumentIfNotValid() {
+    private void validateDependencies() throws IllegalArgumentException {
         if (this.factory == null) {
             throw new IllegalArgumentException("Factory is null.");
         } else if (this.repository == null) {
