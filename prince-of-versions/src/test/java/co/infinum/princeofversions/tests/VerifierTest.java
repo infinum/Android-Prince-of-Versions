@@ -85,6 +85,167 @@ public class VerifierTest {
     }
 
     @Test
+    public void testMandatoryUpdateAvailableShortShort() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0"),
+                new VersionContext.Version("3.0"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0", true);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testMandatoryUpdateAvailableShortLong() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0"),
+                new VersionContext.Version("3.0.0"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.0", true);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testMandatoryUpdateAvailableLongShort() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0.0"),
+                new VersionContext.Version("3.0"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0", true);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testMandatoryUpdateAvailableBetaBeta() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0.0-beta1"),
+                new VersionContext.Version("2.0.0-beta2"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.0.0-beta2", true);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testMandatoryUpdateAvailableBetaNormal() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0.0-beta3"),
+                new VersionContext.Version("3.0.0"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.0", true);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testMandatoryUpdateAvailableBetaRc() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0.0-beta1"),
+                new VersionContext.Version("2.0.0-rc1"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.0.0-rc1", true);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testMandatoryUpdateAvailableBB() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0.0-b12"),
+                new VersionContext.Version("2.0.0-b45"), true,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.0.0-b45", true);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
     public void testOptionalUpdateAvailable() {
         final VersionContext versionContext = new VersionContext(
                 new VersionContext.Version("3.0.0"),
@@ -105,6 +266,168 @@ public class VerifierTest {
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.1"), eq(false), Mockito.anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
+    }
+
+
+    @Test
+    public void testOptionalUpdateAvailableShortShort() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("3.0"),
+                new VersionContext.Version("2.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.1", false);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testOptionalUpdateAvailableShortLong() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("3.0"),
+                new VersionContext.Version("2.0.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.1", false);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testOptionalUpdateAvailableLongShort() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("3.0.0"),
+                new VersionContext.Version("2.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.1", false);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testOptionalUpdateAvailableBetaBeta() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("2.0.0-beta2"),
+                new VersionContext.Version("2.0.0-beta1"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("2.0.0-beta3"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.0.0-beta3", false);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testOptionalUpdateAvailableBetaNormal() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("3.0.0-beta3"),
+                new VersionContext.Version("2.0.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.1", false);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testOptionalUpdateAvailableBetaRc() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("3.0.0-beta1"),
+                new VersionContext.Version("2.0.0"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.0-rc1"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.0-rc1", false);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
+    }
+
+    @Test
+    public void testOptionalUpdateAvailableBB() {
+        final VersionContext versionContext = new VersionContext(
+                new VersionContext.Version("3.0.0-b12"),
+                new VersionContext.Version("2.0.0-b45"), false,
+                new VersionContext.UpdateContext(new VersionContext.Version("3.0.0-b45"), "ONCE"), true);
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                VersionVerifierListener listener = (VersionVerifierListener) args[1];
+                listener.versionAvailable(versionContext);
+                return null;
+            }
+        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
+
+        PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
+        updater.checkForUpdates(loaderFactory, callback);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.0-b45", false);
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate();
     }
 
     @Test
