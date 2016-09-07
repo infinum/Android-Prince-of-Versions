@@ -1,5 +1,7 @@
 package co.infinum.princeofversions.callbacks;
 
+import java.util.Map;
+
 import co.infinum.princeofversions.common.ErrorCode;
 
 /**
@@ -15,13 +17,15 @@ public interface UpdaterCallback {
      *
      * @param version     Version string of available update.
      * @param isMandatory Determines if update is mandatory or just optional, true if update is mandatory, false if it is optional.
+     * @param metadata    Metadata accompanying the update
      */
-    void onNewUpdate(String version, boolean isMandatory);
+    void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata);
 
     /**
      * Method is called when update check is finished successfully, but there is no new update available.
+     * @param metadata   Metadata accompanying no update message
      */
-    void onNoUpdate();
+    void onNoUpdate(Map<String, String> metadata);
 
     /**
      * Method is called when there was some error while computing update check.
