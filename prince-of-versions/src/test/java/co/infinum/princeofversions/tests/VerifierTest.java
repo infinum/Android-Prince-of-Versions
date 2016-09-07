@@ -27,6 +27,8 @@ import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
 import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 
+import static org.mockito.Matchers.eq;
+
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
 public class VerifierTest {
@@ -77,7 +79,7 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.0", true, null);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0"), eq(true), Mockito.anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
@@ -100,7 +102,7 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate("3.0.1", false, null);
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.1"), eq(false), Mockito.anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
@@ -125,7 +127,7 @@ public class VerifierTest {
         updater.checkForUpdates(loaderFactory, callback);
         Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(null);
+        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(Mockito.anyMap());
     }
 
     @Test
@@ -143,7 +145,7 @@ public class VerifierTest {
         updater.checkForUpdates(loaderFactory, callback);
         Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyMap());
         Mockito.verify(callback, Mockito.times(1)).onError(ErrorCode.WRONG_VERSION);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
     }
 
 }
