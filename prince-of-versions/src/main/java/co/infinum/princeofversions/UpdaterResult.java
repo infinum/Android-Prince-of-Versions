@@ -1,5 +1,7 @@
 package co.infinum.princeofversions;
 
+import java.util.Map;
+
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.mvp.presenter.PovPresenter;
@@ -100,21 +102,21 @@ public class UpdaterResult implements PovView {
     }
 
     @Override
-    public void notifyMandatoryUpdate(String version) {
+    public void notifyMandatoryUpdate(String version, Map<String, String> metadata) {
         isConsumed = true;
-        callback.onNewUpdate(version, true, null);
+        callback.onNewUpdate(version, true, metadata);
     }
 
     @Override
-    public void notifyOptionalUpdate(String version) {
+    public void notifyOptionalUpdate(String version, Map<String, String> metadata) {
         isConsumed = true;
-        callback.onNewUpdate(version, false, null);
+        callback.onNewUpdate(version, false, metadata);
     }
 
     @Override
-    public void notifyNoUpdate() {
+    public void notifyNoUpdate(Map<String, String> metadata) {
         isConsumed = true;
-        callback.onNoUpdate(null);
+        callback.onNoUpdate(metadata);
     }
 
     @Override

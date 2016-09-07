@@ -41,21 +41,21 @@ public class PovPresenterImpl implements PovPresenter {
                 if (notificationType == null || lastVersion == null || !lastVersion.equals(version.getOptionalUpdate().getVersion()
                         .getVersionString())) {
                     repository.setLastVersionName(version.getOptionalUpdate().getVersion().getVersionString());
-                    view.notifyOptionalUpdate(version.getOptionalUpdate().getVersion().getVersionString());
+                    view.notifyOptionalUpdate(version.getOptionalUpdate().getVersion().getVersionString(), version.getMetadata());
                 } else {
-                    view.notifyNoUpdate();
+                    view.notifyNoUpdate(version.getMetadata());
                 }
             }
 
             @Override
             public void onMandatoryUpdateAvailable(VersionContext version) {
                 repository.setLastVersionName(version.getMinimumVersion().getVersionString());
-                view.notifyMandatoryUpdate(version.getMinimumVersion().getVersionString());
+                view.notifyMandatoryUpdate(version.getMinimumVersion().getVersionString(), version.getMetadata());
             }
 
             @Override
             public void onNoUpdateAvailable(VersionContext version) {
-                view.notifyNoUpdate();
+                view.notifyNoUpdate(version.getMetadata());
             }
 
             @Override
