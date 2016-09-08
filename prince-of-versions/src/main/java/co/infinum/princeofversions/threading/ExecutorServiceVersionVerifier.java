@@ -21,7 +21,7 @@ import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 
 /**
- * Implements checking for updates using cached single thread using.
+ * Implements checking for updates using a single cached thread.
  * <p>On every check new thread is created for waiting for result (eg. thread is blocked until result is ready). Class still use one
  * thread for computing result, but if more instances are running just one thread computing results.</p>
  *

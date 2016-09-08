@@ -1,5 +1,6 @@
 package co.infinum.princeofversions;
 
+
 import java.util.Map;
 
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
@@ -122,6 +123,7 @@ public class UpdaterResult implements PovView {
     @Override
     public void notifyError(@ErrorCode int error) {
         isConsumed = true;
+
         callback.onError(error);
     }
 
