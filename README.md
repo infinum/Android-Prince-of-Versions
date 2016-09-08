@@ -37,11 +37,16 @@ If you are using a default parser, version in your application and the JSON file
 			"version": "2.4.5",
 			"notification_type": "ONCE"
 		}
+	},
+	"meta": {
+		"key1": "value1",
+		"key2": "value2"
 	}
 }
 ```
 
-Depending on <code>notification_type</code> property, the user can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you via <code>onNewUpdate(String version, boolean isMandatory)</code> method only once. Every other time the library will return <code>onNoUpdate</code> for that specific version.
+Depending on <code>notification_type</code> property, the user can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you via <code>onNewUpdate(String version, boolean isMandatory)</code> method only once. Every other time the library will return <code>onNoUpdate</code> for that specific version. 
+Key-value pairs under <code>"meta"</code> key are optional metadata of which any amount can be sent accompanying the required fields.
 
 
 Examples
@@ -63,11 +68,11 @@ Full example application is available [here](ExampleApp).
 	```java
 	UpdaterCallback callback = new UpdaterCallback() {
 	        @Override
-	        public void onNewUpdate(String version, boolean isMandatory) {
+	        public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
 	        }
 	
 	        @Override
-	        public void onNoUpdate() {
+	        public void onNoUpdate(Map<String, String> metadata) {
 	        }
 	
 	        @Override
