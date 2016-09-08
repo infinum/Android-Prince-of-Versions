@@ -1,7 +1,5 @@
 package co.infinum.princeofversions.mvp.presenter.impl;
 
-import android.util.Log;
-
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionRepository;

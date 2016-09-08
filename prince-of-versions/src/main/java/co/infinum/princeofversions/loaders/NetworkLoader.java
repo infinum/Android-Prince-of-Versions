@@ -121,7 +121,7 @@ public class NetworkLoader extends BaseLoader {
                 }
             });
             return content;
-        }finally {
+        } finally {
             close(conn);
         }
     }

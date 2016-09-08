@@ -1,6 +1,5 @@
 package co.infinum.princeofversions;
 
-import android.util.Log;
 
 import java.util.Map;
 
