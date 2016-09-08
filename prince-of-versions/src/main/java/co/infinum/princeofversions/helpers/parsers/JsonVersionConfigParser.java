@@ -161,7 +161,7 @@ public class JsonVersionConfigParser implements VersionConfigParser {
         }
 
         /* metadata */
-        if (data.has(META)) {
+        if (data.has(META) && data.get(META) instanceof JSONObject) {
             JSONObject metadataObject = data.getJSONObject(META);
             Map<String, String> metadata = new HashMap<>();
 
