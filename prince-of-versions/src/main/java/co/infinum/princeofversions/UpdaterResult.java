@@ -1,5 +1,7 @@
 package co.infinum.princeofversions;
 
+import android.util.Log;
+
 import java.util.Map;
 
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
@@ -122,6 +124,7 @@ public class UpdaterResult implements PovView {
     @Override
     public void notifyError(@ErrorCode int error) {
         isConsumed = true;
+
         callback.onError(error);
     }
 

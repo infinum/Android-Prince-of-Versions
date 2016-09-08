@@ -21,7 +21,7 @@ public class NetworkLoader extends BaseLoader {
     /**
      * Default request timeout in seconds.
      */
-    public static final int DEFAULT_NETWORK_TIMEOUT_SECONDS = 60;
+    public static final int DEFAULT_NETWORK_TIMEOUT_SECONDS = 10;
 
     public static final int MILISECONDS_IN_SECOND = 1000;
 
@@ -33,7 +33,7 @@ public class NetworkLoader extends BaseLoader {
     /**
      * Custom network timeout in seconds.
      */
-    private int networkTimeoutSeconds;
+    private int networkTimeoutMiliseconds = DEFAULT_NETWORK_TIMEOUT_SECONDS * MILISECONDS_IN_SECOND;
 
     /**
      * Basic authentication username.
@@ -92,11 +92,12 @@ public class NetworkLoader extends BaseLoader {
         this.url = url;
         this.username = username;
         this.password = password;
-        this.networkTimeoutSeconds = networkTimeoutSeconds;
+        this.networkTimeoutMiliseconds = networkTimeoutSeconds * MILISECONDS_IN_SECOND;
     }
 
     @Override
     public String load() throws IOException, InterruptedException {
+
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         try {
             if (username != null && password != null) {
@@ -104,7 +105,8 @@ public class NetworkLoader extends BaseLoader {
                 String basicAuth = "Basic " + Base64.encodeToString(credentials.getBytes(Charset.forName("UTF-8")), Base64.NO_WRAP);
                 conn.setRequestProperty("Authorization", basicAuth);
             }
-            conn.setConnectTimeout(networkTimeoutSeconds * MILISECONDS_IN_SECOND);
+            conn.setConnectTimeout(networkTimeoutMiliseconds);
+            conn.setReadTimeout(networkTimeoutMiliseconds);
             InputStream response = conn.getInputStream();
             ifTaskIsCancelledThrowInterrupt(); // if cancelled here no need to read stream at all
             String content = StreamIo.toString(response, new StreamIo.StreamLineFilter() {
@@ -119,7 +121,7 @@ public class NetworkLoader extends BaseLoader {
                 }
             });
             return content;
-        } finally {
+        }finally {
             close(conn);
         }
     }

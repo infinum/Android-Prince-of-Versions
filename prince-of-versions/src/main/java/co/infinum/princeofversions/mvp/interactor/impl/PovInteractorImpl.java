@@ -1,5 +1,7 @@
 package co.infinum.princeofversions.mvp.interactor.impl;
 
+import android.util.Log;
+
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
