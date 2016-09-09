@@ -12,7 +12,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
-        versionName "0.0.2"
+        versionName "1.0.0"
     }
     buildTypes {
         release {
@@ -50,7 +50,7 @@ ext {
     siteUrl = 'https://github.com/infinum/Android-prince-of-versions'
     gitUrl = 'https://github.com/infinum/Android-prince-of-versions.git'
 
-    libraryVersion = '0.0.2'
+    libraryVersion = '1.0.0'
 
     developerId = 'ikocijan'
     developerName = 'Ivan Kocijan'
