@@ -1,6 +1,5 @@
 package co.infinum.princeofversions.tests;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,10 +69,11 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 1.0.0", "1.2.3-beta1", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 1.0.0-beta1", "1.2.3-beta1", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-beta3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
+                    version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
             assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
@@ -89,7 +89,7 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 1.0.0", "1.0.0-beta1", version.getCurrentVersion().getVersionString());
+            assertEquals("Current version should be 1.0.0-beta1", "1.0.0-beta1", version.getCurrentVersion().getVersionString());
             assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
             assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
@@ -110,9 +110,10 @@ public class JSONParserTest {
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
             VersionContext version = parser.parse(parsedResponseContent);
             assertEquals("Current version should be 1.0.0", "1.0.0", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-beta3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
+                    version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
             assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
@@ -129,10 +130,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_rc.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 1.0.0", "1.2.3-beta2", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 1.2.3-beta2", "1.2.3-beta2", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-rc2", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-rc3", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
             assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
@@ -148,10 +149,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 1.0.0", "1.2.3-b11", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-b12", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 1.2.3-b11", "1.2.3-b11", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
             assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
@@ -188,10 +189,11 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 1.2.3", "1.2.3-beta2", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 1.2.3-beta2", "1.2.3-beta2", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-beta3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
+                    version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
             assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
@@ -208,10 +210,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_rc.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 1.2.3", "1.2.3-rc2", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 1.2.3-rc2", "1.2.3-rc2", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-rc2", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-rc3", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
             assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
@@ -228,10 +230,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 1.2.3", "1.2.3-b12", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-b12", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 1.2.3-b12", "1.2.3-b12", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
             assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
@@ -248,10 +250,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 1.2.3", "1.2.3-beta12", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-b12", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 1.2.3-beta12", "1.2.3-beta12", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
             assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
@@ -287,10 +289,11 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 2.4.5", "2.4.5-beta3", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 2.4.5-beta3", "2.4.5-beta3", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-beta3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
+                    version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
             assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
@@ -307,10 +310,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_rc.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 2.4.5", "2.4.5-rc3", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 2.4.5-rc3", "2.4.5-rc3", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-rc2", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-rc3", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
             assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
@@ -327,10 +330,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 2.4.5", "2.4.5-b45", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-b12", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 2.4.5-b45", "2.4.5-b45", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
             assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
@@ -347,10 +350,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 2.4.5", "2.4.5-beta45", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-b12", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 2.4.5-beta45", "2.4.5-beta45", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
             assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
@@ -386,10 +389,11 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 3.0.0", "3.0.0-beta2", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 3.0.0-beta2", "3.0.0-beta2", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-beta3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
+                    version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
             assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
@@ -406,7 +410,7 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 3.0.0", "3.0.0-beta2", version.getCurrentVersion().getVersionString());
+            assertEquals("Current version should be 3.0.0-beta2", "3.0.0-beta2", version.getCurrentVersion().getVersionString());
             assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
             assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
@@ -427,9 +431,10 @@ public class JSONParserTest {
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
             VersionContext version = parser.parse(parsedResponseContent);
             assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-beta3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
+                    version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
             assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
@@ -446,10 +451,11 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 3.0.0", "2.4.5-rc3", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 3.0.0-rc3", "2.4.5-rc3", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-beta3", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
+                    version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
             assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
@@ -466,10 +472,10 @@ public class JSONParserTest {
             JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
             JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
             VersionContext version = parser.parse(parsedResponseContent);
-            assertEquals("Current version should be 3.0.0", "3.0.0-b2", version.getCurrentVersion().getVersionString());
-            assertEquals("Minimum version should be 1.2.3", "1.2.3-b12", version.getMinimumVersion().getVersionString());
+            assertEquals("Current version should be 3.0.0-b2", "3.0.0-b2", version.getCurrentVersion().getVersionString());
+            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
             assertTrue("Optional version should be available", version.hasOptionalUpdate());
-            assertEquals("Optional version should be 2.4.5", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
+            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
             assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
             assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
             assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
