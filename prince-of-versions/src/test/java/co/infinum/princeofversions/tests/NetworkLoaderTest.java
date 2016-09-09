@@ -73,7 +73,7 @@ public class NetworkLoaderTest {
     }
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         callback = Mockito.mock(UpdaterCallback.class);
         provider = Mockito.mock(VersionVerifierFactory.class);
 
@@ -83,6 +83,8 @@ public class NetworkLoaderTest {
         Mockito.doNothing().when(repository).setLastVersionName(Mockito.anyString());
 
         mockWebServer = new MockWebServer();
+        mockWebServer.start();
+
     }
 
     @Test
@@ -90,7 +92,6 @@ public class NetworkLoaderTest {
         MockResponse response = new MockResponse().setBody(ResourceUtils.readFromFile("valid_update_full.json")).setResponseCode(200);
 
         mockWebServer.enqueue(response);
-        mockWebServer.start();
 
         UpdateConfigLoader networkLoader = new NetworkLoaderFactory(mockWebServer.url("/").toString()).newInstance();
 
@@ -127,7 +128,6 @@ public class NetworkLoaderTest {
 
         versionVerifier.verify(loader, listener);
 
-        Log.d("t,", "f");
         verify(callback, timeout(20000).times(1)).onError(ErrorCode.LOAD_ERROR);
         verify(callback, never()).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyMap());
         verify(callback, never()).onNoUpdate(Mockito.anyMap());
@@ -139,7 +139,6 @@ public class NetworkLoaderTest {
         MockResponse response = new MockResponse().setBody(ResourceUtils.readFromFile("malformed_json.json")).setResponseCode(200);
 
         mockWebServer.enqueue(response);
-        mockWebServer.start();
 
         UpdateConfigLoader networkLoader = new NetworkLoaderFactory(mockWebServer.url("/").toString()).newInstance();
 
@@ -154,7 +153,6 @@ public class NetworkLoaderTest {
         MockResponse response = new MockResponse().setResponseCode(200);
 
         mockWebServer.enqueue(response);
-        mockWebServer.start();
 
         UpdateConfigLoader networkLoader = new NetworkLoaderFactory(mockWebServer.url("/").toString()).newInstance();
 

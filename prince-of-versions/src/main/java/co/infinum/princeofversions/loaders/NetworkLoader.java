@@ -21,7 +21,7 @@ public class NetworkLoader extends BaseLoader {
     /**
      * Default request timeout in seconds.
      */
-    public static final int DEFAULT_NETWORK_TIMEOUT_SECONDS = 10;
+    public static final int DEFAULT_NETWORK_TIMEOUT_SECONDS = 60;
 
     public static final int MILISECONDS_IN_SECOND = 1000;
 
