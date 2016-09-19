@@ -154,7 +154,7 @@ public class PrinceOfVersionsTest {
             }
         }, callback);
 
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("1.2.3"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.4.5"), eq(true), Mockito.anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }

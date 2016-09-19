@@ -1,5 +1,7 @@
 package co.infinum.princeofversions.mvp.presenter.impl;
 
+import com.github.zafarkhaja.semver.Version;
+
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionRepository;
@@ -49,8 +51,28 @@ public class PovPresenterImpl implements PovPresenter {
 
             @Override
             public void onMandatoryUpdateAvailable(VersionContext version) {
-                repository.setLastVersionName(version.getMinimumVersion().getVersionString());
-                view.notifyMandatoryUpdate(version.getMinimumVersion().getVersionString(), version.getMetadata());
+
+                String minimumVersion;
+
+                try {
+                    Version mandatoryVersion = Version.valueOf(version.getMinimumVersion().getVersionString());
+                    Version optionalUpdate = Version.valueOf(version.getOptionalUpdate().getVersion().getVersionString());
+
+                    //This covers a specific scenario
+                    //1. User has 1.0.0. installed
+                    //2. Two new versions are published: 1.1.0 (mandatory) and 1.1.1 (optional)
+                    //3. The library should display mandatory update with optinal version (1.1.1)
+                    minimumVersion = optionalUpdate.greaterThan(mandatoryVersion)
+                            ? version.getOptionalUpdate().getVersion().getVersionString()
+                            : version.getMinimumVersion().getVersionString();
+
+                } catch (Exception e) {
+                    minimumVersion = version.getMinimumVersion().getVersionString();
+                    e.printStackTrace();
+                }
+
+                repository.setLastVersionName(minimumVersion);
+                view.notifyMandatoryUpdate(minimumVersion, version.getMetadata());
             }
 
             @Override
