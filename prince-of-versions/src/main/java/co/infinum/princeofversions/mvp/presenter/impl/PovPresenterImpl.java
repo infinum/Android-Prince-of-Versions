@@ -62,8 +62,8 @@ public class PovPresenterImpl implements PovPresenter {
                     //1. User has 1.0.0. installed
                     //2. Two new versions are published: 1.1.0 (mandatory) and 1.1.1 (optional)
                     //3. The library should display mandatory update with optinal version (1.1.1)
-                    minimumVersion = optionalUpdate.greaterThan(mandatoryVersion) ?
-                            version.getOptionalUpdate().getVersion().getVersionString()
+                    minimumVersion = optionalUpdate.greaterThan(mandatoryVersion)
+                            ? version.getOptionalUpdate().getVersion().getVersionString()
                             : version.getMinimumVersion().getVersionString();
 
                 } catch (Exception e) {
