@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -15,7 +16,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
 
 import java.io.IOException;
 
@@ -129,8 +129,8 @@ public class NetworkLoaderTest {
         versionVerifier.verify(loader, listener);
 
         verify(callback, timeout(20000).times(1)).onError(ErrorCode.LOAD_ERROR);
-        verify(callback, never()).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyMap());
-        verify(callback, never()).onNoUpdate(Mockito.anyMap());
+        verify(callback, never()).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        verify(callback, never()).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
 
