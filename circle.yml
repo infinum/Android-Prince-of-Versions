@@ -25,3 +25,6 @@ test:
     # copy the build outputs to artifacts
     - cp -r prince-of-versions/build/outputs $CIRCLE_ARTIFACTS
     - cp -r prince-of-versions/build/reports $CIRCLE_ARTIFACTS
+    # set up test summary
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
