@@ -3,6 +3,7 @@ package co.infinum.princeofversions.tests;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -79,7 +80,7 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
@@ -102,9 +103,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -125,9 +126,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -148,9 +149,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -171,9 +172,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.0.0-beta2"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.0.0-beta2"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -194,9 +195,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -217,9 +218,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.0.0-rc1"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.0.0-rc1"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -240,9 +241,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.0.0-b45"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.0.0-b45"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -263,7 +264,7 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.1"), eq(false), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.1"), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
@@ -287,9 +288,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.1"), eq(false), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.1"), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -310,9 +311,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.1"), eq(false), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.1"), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -333,9 +334,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.1"), eq(false), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.1"), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -356,9 +357,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.0.0-beta3"), eq(false), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.0.0-beta3"), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -379,9 +380,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.1"), eq(false), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.1"), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -402,9 +403,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0-rc1"), eq(false), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0-rc1"), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -425,9 +426,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0-b45"), eq(false), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("3.0.0-b45"), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -448,9 +449,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -466,9 +467,9 @@ public class VerifierTest {
         }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onError(ErrorCode.WRONG_VERSION);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
 
@@ -490,9 +491,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("1.1.1"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("1.1.1"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -513,9 +514,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("1.1.0"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("1.1.0"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -536,9 +537,9 @@ public class VerifierTest {
 
         PrinceOfVersions updater = new PrinceOfVersions(new MockContext(), provider, repository);
         updater.checkForUpdates(loaderFactory, callback);
-        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("1.1.0"), eq(true), Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("1.1.0"), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(Mockito.anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
 }
