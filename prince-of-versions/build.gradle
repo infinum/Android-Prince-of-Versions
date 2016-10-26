@@ -3,6 +3,7 @@ apply from: './quality.gradle'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
+def libVersion = '2.0.0'
 
 android {
     compileSdkVersion 24
@@ -12,7 +13,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
-        versionName "2.0.0"
+        versionName libVersion
     }
     buildTypes {
         release {
@@ -50,7 +51,7 @@ ext {
     siteUrl = 'https://github.com/infinum/Android-prince-of-versions'
     gitUrl = 'https://github.com/infinum/Android-prince-of-versions.git'
 
-    libraryVersion = '1.0.1'
+    libraryVersion = '2.0.0'
 
     developerId = 'ikocijan'
     developerName = 'Ivan Kocijan'
@@ -62,7 +63,7 @@ ext {
 }
 
 group = publishedGroupId
-version = libraryVersion
+version = libVersion
 
 bintray {
 
