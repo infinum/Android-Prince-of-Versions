@@ -1,4 +1,4 @@
-# Prince of versions
+# Prince of Versions
 
 [![CircleCI](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master.svg?style=svg&circle-token=cb8ad23c030527474dd91da95b8f1f3b56fa0022)](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master)
 [ ![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg) ](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
@@ -117,7 +117,7 @@ For testing purposes you can create your own LoaderFactory. For ease of use, Str
 
 3rd, 4th and 5th step are same as in previous example.
 
-### Deploying a new versions
+### Deploying a new version
 
 1. Bump `libraryVersion` in `build.gradle`
 2. `./gradlew clean build generatePomFileForMavenPublication bintrayUpload -PbintrayUser=<bintray username> -PbintrayKey=<bintray api key> -PdryRun=false`
