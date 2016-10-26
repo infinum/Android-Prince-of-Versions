@@ -21,7 +21,7 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * object. Android object can contain keys as follow:
  * <ul>
  * <li><i>minimum_version</i></li>
- * <li><i>optional_update</i></li>
+ * <li><i>latest_version</i></li>
  * </ul>.
  * Valid content can also have <i>meta</i> key. Value contained in <i>meta</i> key is JSON object containing metadata ordered in key-value
  * pairs.
@@ -50,7 +50,7 @@ import co.infinum.princeofversions.exceptions.ParseException;
  *  {
  *      "android": {
  *          "minimum_version": "1.2.3",
- *          "optional_update": {
+ *          "latest_version": {
  *              "version": "2.4.5",
  *              "notification_type": "ONCE"
  *          }
@@ -77,9 +77,9 @@ public class JsonVersionConfigParser implements VersionConfigParser {
     public static final String MINIMUM_VERSION = "minimum_version";
 
     /**
-     * Optional update key
+     * Latest version key
      */
-    public static final String OPTIONAL_UPDATE = "optional_update";
+    public static final String LATEST_VERSION = "latest_version";
 
     /**
      * Notification type key
@@ -144,8 +144,8 @@ public class JsonVersionConfigParser implements VersionConfigParser {
         );
 
         /*  optional */
-        if (android.has(OPTIONAL_UPDATE)) {
-            JSONObject updateObject = android.getJSONObject(OPTIONAL_UPDATE);
+        if (android.has(LATEST_VERSION)) {
+            JSONObject updateObject = android.getJSONObject(LATEST_VERSION);
             String update = updateObject.getString(VERSION);
             Version updateVersion = Version.valueOf(update);
 

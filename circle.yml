@@ -15,13 +15,16 @@ machine:
 dependencies:
   pre:
       - echo y | android update sdk --no-ui --all --filter "tools,platform-tools,android-24,extra-android-support,extra-google-google_play_services,extra-google-m2repository,extra-android-m2repository"
-      - echo y | android update sdk --no-ui --all --filter "build-tools-24.0.0"
+      - echo y | android update sdk --no-ui --all --filter "build-tools-24.0.2"
 
 test:
   override:
-    # build the project and run static analysis while we wait for the emulator to boot (lint, pmd, findbugs, checkstyle)
+    # build the project and run static analysis, tests
    - ./gradlew assembleDebug check -PdisablePreDex
   post:
     # copy the build outputs to artifacts
     - cp -r prince-of-versions/build/outputs $CIRCLE_ARTIFACTS
     - cp -r prince-of-versions/build/reports $CIRCLE_ARTIFACTS
+    # set up test summary
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;

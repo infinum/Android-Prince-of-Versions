@@ -26,14 +26,14 @@ If you are using a default parser, version in your application and the JSON file
 {
 	"ios": {
 		"minimum_version": "1.2.3",
-		"optional_update": {
+		"latest_version": {
 			"version": "2.4.5",
 			"notification_type": "ALWAYS"
 		}
 	},
 	"android": {
 		"minimum_version": "1.2.3",
-		"optional_update": {
+		"latest_version": {
 			"version": "2.4.5",
 			"notification_type": "ONCE"
 		}

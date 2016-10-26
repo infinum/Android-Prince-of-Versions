@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 
@@ -31,9 +32,6 @@ import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
 import co.infinum.princeofversions.loaders.ResourceFileLoader;
 import co.infinum.princeofversions.util.ResourceUtils;
 import co.infinum.princeofversions.verifiers.SingleThreadVersionVerifier;
-
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.eq;
 
 /**
  * Created by Juraj Pejnović on 08/09/16.
@@ -87,7 +85,7 @@ public class MetadataTest {
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -127,7 +125,7 @@ public class MetadataTest {
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -165,7 +163,7 @@ public class MetadataTest {
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -201,7 +199,7 @@ public class MetadataTest {
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
@@ -237,7 +235,7 @@ public class MetadataTest {
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
     @Test
