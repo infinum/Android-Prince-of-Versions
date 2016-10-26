@@ -111,6 +111,11 @@ For testing purposes you can create your own LoaderFactory. For ease of use, Str
 
 3rd, 4th and 5th step are same as in previous example.
 
+### Deploying
+
+1. Define `bintray.user`, `bintray.apikey` and `bintray.gpg.password` in `local.properties` and run the gradle task `bintrayUpload`.
+2. Add a new entry in the [CHANGELOG](https://github.com/infinum/Android-Prince-of-Versions/blob/master/CHANGELOG.md)
+
 ### Contributing
 
 Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](https://github.com/infinum/Android-prince-of-versions/blob/dev/LICENCE).
