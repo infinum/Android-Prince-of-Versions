@@ -1,12 +1,18 @@
-Prince of versions
-=================
+# Prince of versions
+
 [![CircleCI](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master.svg?style=svg&circle-token=cb8ad23c030527474dd91da95b8f1f3b56fa0022)](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master)
 [ ![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg) ](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
 
 Library checks for updates using configuration from some resource.
 
-Features
---------
+## Getting via jcenter
+
+```groovy
+compile 'co.infinum:prince-of-versions:2.0.0'
+```
+
+## Features
+
   * Load update configuration from **network** resource or from **input stream** resource
   * Accept **custom loader** for loading update configuration resource
   * Use predefined parser for parsing update configuration in **JSON format**
@@ -49,8 +55,8 @@ Depending on <code>notification_type</code> property, the user can be notified <
 Key-value pairs under <code>"meta"</code> key are optional metadata of which any amount can be sent accompanying the required fields.
 
 
-Examples
--------------
+## Examples
+
 Full example application is available [here](ExampleApp).
 
 #### Most common usage - loading from network resource
@@ -110,6 +116,12 @@ For testing purposes you can create your own LoaderFactory. For ease of use, Str
 > Be aware that once used input stream in <code>StreamLoader</code> is read and closed. For that purpose always create new stream in <code>newInstance</code> method of <code>LoaderFactory</code>.
 
 3rd, 4th and 5th step are same as in previous example.
+
+### Deploying a new versions
+
+1. Bump `libraryVersion` in `build.gradle`
+2. `./gradlew clean build generatePomFileForMavenPublication bintrayUpload -PbintrayUser=<bintray username> -PbintrayKey=<bintray api key> -PdryRun=false`
+3. Add a new entry in the [CHANGELOG](https://github.com/infinum/Android-Prince-of-Versions/blob/master/CHANGELOG.md)
 
 ### Contributing
 

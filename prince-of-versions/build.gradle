@@ -1,8 +1,12 @@
 apply plugin: 'com.android.library'
 apply from: './quality.gradle'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.novoda.bintray-release'
 
+ext {
+    publishedGroupId = 'co.infinum'
+    publishedArtifactName = 'prince-of-versions'
+    libraryVersion = '2.0.0'
+}
 
 android {
     compileSdkVersion 24
@@ -12,7 +16,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
-        versionName "2.0.0"
+        versionName libraryVersion
     }
     buildTypes {
         release {
@@ -35,109 +39,19 @@ dependencies {
     testCompile 'com.squareup.okhttp3:mockwebserver:3.4.1'
 }
 
-ext {
-    bintrayRepo = 'android'
-    bintrayName = 'prince-of-versions'
-
-    userOrganization = 'infinum' // optional
-    publishedGroupId = 'co.infinum'
-    libraryName = 'prince-of-versions'
-    artifact = 'prince-of-versions'     // Has to be same as your library module name
-
-    libraryDescription = 'Library checks for application updates using configuration from some resource.'
-
-    // Your github repo link
-    siteUrl = 'https://github.com/infinum/Android-prince-of-versions'
-    gitUrl = 'https://github.com/infinum/Android-prince-of-versions.git'
-
-    libraryVersion = '1.0.1'
-
-    developerId = 'ikocijan'
-    developerName = 'Ivan Kocijan'
-    developerEmail = 'ivan.kocijan@infinum.hr'
-
-    licenseName = 'Apache-2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0'
-    allLicenses = ["Apache-2.0"]
-}
-
 group = publishedGroupId
 version = libraryVersion
 
-bintray {
-
-    if (project.rootProject.file('local.properties').exists()) {
-
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-        user = properties.getProperty("bintray.user")
-        key = properties.getProperty("bintray.apikey")
-
-        configurations = ['archives']
-        pkg {
-            repo = bintrayRepo
-            name = bintrayName
-            userOrg = userOrganization
-            desc = libraryDescription
-            websiteUrl = siteUrl
-            vcsUrl = gitUrl
-            licenses = ["Apache-2.0"]
-            publish = true
-            publicDownloadNumbers = true
-            dryRun = false
-            version {
-                name = libraryVersion
-                desc = libraryDescription
-                released = new Date()
-                gpg {
-                    sign = true //Determines whether to GPG sign the files. The default is false
-                    passphrase = properties.getProperty("bintray.gpg.password")
-                    //Optional. The passphrase for GPG signing'
-                }
-            }
-        }
-    }
-
-}
-
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-                groupId publishedGroupId
-                artifactId artifact
-
-                // Add your description here
-                name libraryName
-                description libraryDescription
-                url siteUrl
-
-                // Set your license
-                licenses {
-                    license {
-                        name licenseName
-                        url licenseUrl
-                    }
-                }
-                developers {
-                    developer {
-                        id developerId
-                        name developerName
-                        email developerEmail
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-
-                }
-            }
-        }
-    }
+// https://github.com/novoda/bintray-release/wiki/Configuration-of-the-publish-closure
+publish {
+    userOrg = 'infinum'
+    groupId = publishedGroupId
+    artifactId = publishedArtifactName
+    publishVersion = libraryVersion
+    desc = 'Library checks for application updates using configuration from some resource.'
+    website = 'https://github.com/infinum/Android-prince-of-versions'
+    licences = ["Apache-2.0"]
+    repoName = 'android'
 }
 
 task sourcesJar(type: Jar) {
