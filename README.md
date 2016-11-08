@@ -1,14 +1,14 @@
 # Prince of Versions
 
 [![CircleCI](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master.svg?style=svg&circle-token=cb8ad23c030527474dd91da95b8f1f3b56fa0022)](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master)
-[ ![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg) ](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
+[![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg)](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
 
 Library checks for updates using configuration from some resource.
 
 ## Getting via jcenter
 
 ```groovy
-compile 'co.infinum:prince-of-versions:2.0.0'
+compile 'co.infinum:prince-of-versions:2.0.1'
 ```
 
 ## Features
