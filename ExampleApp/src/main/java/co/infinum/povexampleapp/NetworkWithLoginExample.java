@@ -93,7 +93,7 @@ public class NetworkWithLoginExample extends AppCompatActivity {
         setContentView(R.layout.activity_network_with_login);
         initUI();
 
-        /*  create new instance of updater associated with application context  */
+        /*  create new instance of updater */
         updater = new PrinceOfVersions(this);
     }
 

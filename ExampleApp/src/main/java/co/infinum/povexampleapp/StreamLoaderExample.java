@@ -85,7 +85,7 @@ public class StreamLoaderExample extends AppCompatActivity {
         setContentView(R.layout.activity_common_usage);
         initUI();
 
-        /*  create new instance of updater associated with application context   */
+        /*  create new instance of updater */
         updater = new PrinceOfVersions(this);
         /*  create specific loader factory for loading from stream    */
         loaderFactory = new LoaderFactory() {

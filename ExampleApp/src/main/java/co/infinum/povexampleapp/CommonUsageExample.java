@@ -86,7 +86,7 @@ public class CommonUsageExample extends AppCompatActivity {
 
         initUI();
 
-        /*  create new instance of updater associated with application context   */
+        /*  create new instance of updater */
         updater = new PrinceOfVersions(this);
         /*  create specific loader factory for loading from internet    */
         loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/8yJBxJsg");

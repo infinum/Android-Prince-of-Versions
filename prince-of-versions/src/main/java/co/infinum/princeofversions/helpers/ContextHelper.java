@@ -10,26 +10,11 @@ import co.infinum.princeofversions.common.VersionContext;
  */
 public class ContextHelper {
 
-    private static Context context;
-
     private ContextHelper() {
-
-    }
-
-    public static Context getContext() {
-        return context;
-    }
-
-    public static void setContext(Context context) {
-        ContextHelper.context = context;
     }
 
     public static VersionContext.Version getAppVersion(Context context) throws PackageManager.NameNotFoundException {
         return new VersionContext.Version(
                 context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName);
-    }
-
-    public static VersionContext.Version getAppVersion() throws PackageManager.NameNotFoundException {
-        return getAppVersion(getContext());
     }
 }

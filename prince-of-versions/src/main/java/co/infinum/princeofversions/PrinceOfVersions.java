@@ -15,8 +15,8 @@ import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
-import co.infinum.princeofversions.mvp.presenter.PovPresenter;
 import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
+import co.infinum.princeofversions.mvp.presenter.PovPresenter;
 import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
 
 /**
@@ -78,11 +78,11 @@ public class PrinceOfVersions {
      * @param context Context of associated application.
      */
     public PrinceOfVersions(@NonNull final Context context) {
-        this(context, createDefaultVersionVerifierFactory(new ParserFactory() {
+        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(new ParserFactory() {
             @Override
             public VersionConfigParser newInstance() {
                 try {
-                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context));
+                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context.getApplicationContext()));
                 } catch (PackageManager.NameNotFoundException e) {
                     throw new IllegalArgumentException("Current version not available.");
                 }
@@ -96,7 +96,7 @@ public class PrinceOfVersions {
      * @param context Context of associated application.
      */
     public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory) {
-        this(context, createDefaultVersionVerifierFactory(parserFactory));
+        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(parserFactory));
     }
 
     /**
@@ -111,7 +111,7 @@ public class PrinceOfVersions {
      * @param factory Custom factory for creating VersionVerifier instances.
      */
     public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory) {
-        this(context, factory, new PrefsVersionRepository(context));
+        this(context.getApplicationContext(), factory, new PrefsVersionRepository(context.getApplicationContext()));
     }
 
     /**
@@ -122,11 +122,11 @@ public class PrinceOfVersions {
      * @param repository Custom implementation of repository for persisting library data.
      */
     public PrinceOfVersions(@NonNull final Context context, VersionRepository repository) {
-        this(context, createDefaultVersionVerifierFactory(new ParserFactory() {
+        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(new ParserFactory() {
             @Override
             public VersionConfigParser newInstance() {
                 try {
-                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context));
+                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context.getApplicationContext()));
                 } catch (PackageManager.NameNotFoundException e) {
                     throw new IllegalArgumentException("Current version not available.");
                 }
@@ -143,7 +143,7 @@ public class PrinceOfVersions {
      * @param repository    Custom implementation of repository for persisting library data.
      */
     public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory, VersionRepository repository) {
-        this(context, createDefaultVersionVerifierFactory(parserFactory), repository);
+        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(parserFactory), repository);
     }
 
     /**
@@ -162,7 +162,6 @@ public class PrinceOfVersions {
      */
     public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory,
             VersionRepository repository) {
-        ContextHelper.setContext(context);
         this.factory = factory;
         this.repository = repository;
         validateDependencies();
