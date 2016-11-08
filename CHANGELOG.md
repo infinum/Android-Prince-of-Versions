@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.0.1
+
+_2016-11-08_
+
+- Fixed potential memory leak, cleaned up libraries manifest and resources
+
 ## Version 2.0.0
 
 _2016-10-26_
