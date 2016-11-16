@@ -40,7 +40,7 @@ public class CommonUsageExample extends AppCompatActivity {
 
         @Override
         public void onError(@ErrorCode int error) {
-            toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
+            toastIt(String.format(getString(R.string.update_error), String.valueOf(error)), Toast.LENGTH_SHORT);
         }
     };
 
@@ -89,7 +89,7 @@ public class CommonUsageExample extends AppCompatActivity {
         /*  create new instance of updater */
         updater = new PrinceOfVersions(this);
         /*  create specific loader factory for loading from internet    */
-        loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/8yJBxJsg");
+        loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/QFGjJrLP");
     }
 
     @Override
