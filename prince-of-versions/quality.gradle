@@ -41,10 +41,10 @@ task findbugs(type: FindBugs) {
 task pmd(type: Pmd) {
     ruleSetFiles = files("${project.rootDir}/config/pmd-ruleset.xml")
     ignoreFailures = false
+    ruleSets = ["java-basic", "java-braces",  "java-android"]
 
     ruleSets = [
             'java-android',
-            'java-basic',
             'java-braces',
             'java-clone',
             'java-finalizers'
