@@ -39,9 +39,15 @@ public class PovPresenterImpl implements PovPresenter {
             public void onUpdateAvailable(VersionContext version) {
                 // notify if there is no notification type or there was no notification before, or current version is not equal to last one.
                 String notificationType = version.getOptionalUpdate().getNotificationType();
-                String lastVersion = repository.getLastVersionName(null);
-                if (notificationType == null || lastVersion == null || !lastVersion.equals(version.getOptionalUpdate().getVersion()
-                        .getVersionString())) {
+                String lastNotifiedVersion = repository.getLastVersionName(null);
+                boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion
+                        .equals(version.getOptionalUpdate().getVersion()
+                                .getVersionString());
+                boolean alreadyNotifiedUpdateAvailable = lastNotifiedVersion != null && lastNotifiedVersion
+                        .equals(version.getOptionalUpdate().getVersion()
+                                .getVersionString());
+                if (notNotifiedUpdateAvailable || (alreadyNotifiedUpdateAvailable && notificationType != null && notificationType
+                        .equalsIgnoreCase("ALWAYS"))) {
                     repository.setLastVersionName(version.getOptionalUpdate().getVersion().getVersionString());
                     view.notifyOptionalUpdate(version.getOptionalUpdate().getVersion().getVersionString(), version.getMetadata());
                 } else {
