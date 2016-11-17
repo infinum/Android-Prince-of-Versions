@@ -5,7 +5,7 @@ apply plugin: 'com.novoda.bintray-release'
 ext {
     publishedGroupId = 'co.infinum'
     publishedArtifactName = 'prince-of-versions'
-    libraryVersion = '2.0.1'
+    libraryVersion = '2.0.2'
 }
 
 android {

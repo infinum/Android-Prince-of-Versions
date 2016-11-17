@@ -36,23 +36,19 @@ import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
  * to callback.
  * </p>
  *
- * <p>
  * There is code for most common usage of this library
  * <pre>
  *         UpdateChecker updater = new DefaultUpdater(context, callback);
  *         LoaderFactory loaderFactory = new NetworkLoaderFactory("http://example.com/some/update.json");
  *         updater.checkForUpdates(loaderFactory); // starts checking for updates using NetworkLoader
  *     </pre>
- * </p>
  *
- * <p>
  * Example of using library with custom loader follows bellow.
  * <pre>
  *         UpdateChecker updater = new DefaultUpdater(context, callback);
  *         LoaderFactory loaderFactory = new FileLoaderFactory("path/to/file");
  *         updater.checkForUpdates(loaderFactory); // starts checking for updates using custom loader
  *     </pre>
- * </p>
  *
  * <p>
  * <b>Be aware, when implementing custom loader factory always return new instance of custom loader in newInstance method!</b>
@@ -93,7 +89,8 @@ public class PrinceOfVersions {
     /**
      * Creates a new instance of updater for application associated with provided context using custom parser implementation.
      *
-     * @param context Context of associated application.
+     * @param context       Context of associated application.
+     * @param parserFactory Factory for creating custom parser for parsing loaded content.
      */
     public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory) {
         this(context.getApplicationContext(), createDefaultVersionVerifierFactory(parserFactory));

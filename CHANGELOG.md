@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.0.2
+
+_2016-11-17_
+
+- Fix updating logic when update is available and notification is equal to `ALWAYS`.
+
 ## Version 2.0.1
 
 _2016-11-08_

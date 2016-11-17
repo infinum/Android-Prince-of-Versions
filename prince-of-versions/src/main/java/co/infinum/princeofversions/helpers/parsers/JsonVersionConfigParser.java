@@ -16,7 +16,6 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * This class represents parser for parsing loaded update configuration in <a href="http://www.json.org/">JSON</a> format.
  * <p>After parsing JSON content, class creates VersionContext holder instance from it.</p>
  * Content must contain at least minimum version as string, but optionally optional update version and notification type can be provided.
- * <p>
  * Valid content is represented as one JSON object that contains key <i>android</i>. Value from <i>android</i> key is another JSON
  * object. Android object can contain keys as follow:
  * <ul>
@@ -36,7 +35,6 @@ import co.infinum.princeofversions.exceptions.ParseException;
  * <li><i>ALWAYS</i></li>
  * <li><i>ONCE</i></li>
  * </ul>
- * </p>
  * <p>Minimum valid JSON content is available bellow:</p>
  * <pre>
  *  {
