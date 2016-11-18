@@ -26,8 +26,8 @@ import co.infinum.princeofversions.interfaces.VersionVerifierListener;
  * thread for computing result, but if more instances are running just one thread computing results.</p>
  *
  * <pre>
- *     1 request computation in same time => 1 thread for computing and 1 blocked thread waiting for result.
- *     10 requests computations in same time => 1 thread for computing and 10 blocked threads (not using processor time) waiting for
+ *     1 request computation in same time = 1 thread for computing and 1 blocked thread waiting for result.
+ *     10 requests computations in same time = 1 thread for computing and 10 blocked threads (not using processor time) waiting for
  *     result.
  * </pre>
  */

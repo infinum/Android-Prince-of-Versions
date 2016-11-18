@@ -16,8 +16,8 @@ import co.infinum.princeofversions.interfaces.VersionVerifierListener;
  * <p>On every check new thread is created for computing result.</p>
  *
  * <pre>
- *     1 request computation in same time => 1 thread for computing result.
- *     10 requests computations in same time => 1 thread for computing result.
+ *     1 request computation in same time = 1 thread for computing result.
+ *     10 requests computations in same time = 1 thread for computing result.
  * </pre>
  */
 public class ThreadVersionVerifier implements VersionVerifier {
