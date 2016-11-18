@@ -1,6 +1,6 @@
 # Prince of Versions
 
-[![CircleCI](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master.svg?style=svg&circle-token=cb8ad23c030527474dd91da95b8f1f3b56fa0022)](https://circleci.com/gh/infinum/Android-prince-of-versions/tree/master)
+[![CircleCI](https://circleci.com/gh/infinum/Android-Prince-of-Versions.svg?style=svg)](https://circleci.com/gh/infinum/Android-Prince-of-Versions)
 [![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg)](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
 
 Library checks for updates using configuration from some resource.
