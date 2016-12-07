@@ -20,9 +20,9 @@ _2016-10-26_
 
 ## Version 1.0.1
 
-- Fixed an issue where the lib would not show the update if there is both an optional and mandatory update
-
 _2016-09-19_
+
+- Fixed an issue where the lib would not show the update if there is both an optional and mandatory update
 
 ## Version 1.0.0
 
