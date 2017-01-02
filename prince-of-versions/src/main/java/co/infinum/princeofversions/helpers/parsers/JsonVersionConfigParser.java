@@ -94,7 +94,6 @@ public class JsonVersionConfigParser implements VersionConfigParser {
      */
     public static final String META = "meta";
 
-
     /**
      * Application version
      */
@@ -128,50 +127,101 @@ public class JsonVersionConfigParser implements VersionConfigParser {
      * @throws JSONException if error while parsing JSON occurred.
      */
     public VersionContext parse(JSONObject data) throws JSONException {
-        /*  mandatory */
-        JSONObject android = data.getJSONObject(ANDROID);
-        String min = android.getString(MINIMUM_VERSION);
         Version currentVersion = Version.valueOf(this.currentVersion.getVersionString());
-        Version minVersion = Version.valueOf(min);
-        VersionContext.Version minVersionContext = new VersionContext.Version(minVersion.toString());
+        Version minVersion = extractMinimumVersion(data);
+        Version latestVersion = extractLatestVersion(data);
+        Map<String, String> metadata = extractMetadata(data);
+        String notificationType = extractNotificationType(data);
 
-        VersionContext versionContext = new VersionContext(
-                this.currentVersion,
-                minVersionContext,
-                currentVersion.lessThan(minVersion)
-        );
+        VersionContext versionContext;
 
-        /*  optional */
-        if (android.has(LATEST_VERSION)) {
-            JSONObject updateObject = android.getJSONObject(LATEST_VERSION);
-            String update = updateObject.getString(VERSION);
-            Version updateVersion = Version.valueOf(update);
-
-            VersionContext.Version updateVersionContext = new VersionContext.Version(updateVersion.toString());
-
-            VersionContext.UpdateContext updateContext = new VersionContext.UpdateContext(
-                    updateVersionContext
+        if (minVersion != null && latestVersion != null) {
+            versionContext = new VersionContext(
+                    this.currentVersion,
+                    new VersionContext.Version(minVersion.toString()),
+                    currentVersion.lessThan(minVersion),
+                    new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType),
+                    currentVersion.lessThan(latestVersion)
             );
-            if (updateObject.has(NOTIFICATION)) {
-                updateContext.setNotificationType(updateObject.getString(NOTIFICATION));
-            }
-            versionContext.setOptionalUpdate(updateContext, currentVersion.lessThan(updateVersion));
+        } else if (latestVersion != null) {
+            versionContext = new VersionContext(
+                    this.currentVersion,
+                    null,
+                    false,
+                    new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType),
+                    currentVersion.lessThan(latestVersion)
+            );
+        } else if (minVersion != null) {
+            versionContext = new VersionContext(
+                    this.currentVersion,
+                    new VersionContext.Version(minVersion.toString()),
+                    currentVersion.lessThan(minVersion)
+            );
+        } else {
+            throw new com.github.zafarkhaja.semver.ParseException("Both min and latest versions are null!");
         }
 
-        /* metadata */
+        versionContext.setMetadata(metadata);
+
+        return versionContext;
+    }
+
+    private String extractNotificationType(JSONObject data) throws JSONException {
+        if (data.has(ANDROID)) {
+            JSONObject android = data.getJSONObject(ANDROID);
+            if (android.has(LATEST_VERSION)) {
+                JSONObject updateObject = android.getJSONObject(LATEST_VERSION);
+                if (updateObject.has(NOTIFICATION)) {
+                    return updateObject.getString(NOTIFICATION);
+                }
+            }
+        }
+        return null;
+    }
+
+    private Version extractLatestVersion(JSONObject data) throws JSONException {
+        if (data.has(ANDROID)) {
+            JSONObject android = data.getJSONObject(ANDROID);
+            if (android.has(LATEST_VERSION)) {
+                JSONObject updateObject = android.getJSONObject(LATEST_VERSION);
+                if (updateObject.has(VERSION)) {
+                    String latest = updateObject.getString(VERSION);
+                    if (latest != null && !latest.equals("null")) {
+                        return Version.valueOf(latest);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Version extractMinimumVersion(JSONObject data) throws JSONException {
+        if (data.has(ANDROID)) {
+            JSONObject android = data.getJSONObject(ANDROID);
+            if (android.has(MINIMUM_VERSION)) {
+                String min = android.getString(MINIMUM_VERSION);
+                if (min != null && !min.equals("null")) {
+                    return Version.valueOf(min);
+                }
+            }
+        }
+        return null;
+    }
+
+    private Map<String, String> extractMetadata(JSONObject data) throws JSONException {
+        Map<String, String> metadata = new HashMap<>();
         if (data.has(META) && data.get(META) instanceof JSONObject) {
             JSONObject metadataObject = data.getJSONObject(META);
-            Map<String, String> metadata = new HashMap<>();
 
             Iterator<String> metadataIterator = metadataObject.keys();
             while (metadataIterator.hasNext()) {
                 String key = metadataIterator.next();
-                metadata.put(key, metadataObject.getString(key));
+                Object object = metadataObject.get(key);
+                if (object instanceof String) {
+                    metadata.put(key, (String) object);
+                }
             }
-
-            versionContext.setMetadata(metadata);
         }
-
-        return versionContext;
+        return metadata;
     }
 }

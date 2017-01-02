@@ -264,40 +264,6 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingInvalidContentNoMinVersion() throws PackageManager.NameNotFoundException {
-        Context context = setupContext("3.0.0");
-        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
-        updater.checkForUpdates(new LoaderFactory() {
-            @Override
-            public UpdateConfigLoader newInstance() {
-                return new ResourceFileLoader("invalid_update_no_min_version.json");
-            }
-        }, callback);
-
-        Mockito.verify(callback, Mockito.times(0))
-                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(1)).onError(ErrorCode.WRONG_VERSION);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
-    }
-
-    @Test
-    public void testCheckingInvalidContentOptionalNoMinVersion() throws PackageManager.NameNotFoundException {
-        Context context = setupContext("3.0.0");
-        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
-        updater.checkForUpdates(new LoaderFactory() {
-            @Override
-            public UpdateConfigLoader newInstance() {
-                return new ResourceFileLoader("invalid_update_optional_without_version.json");
-            }
-        }, callback);
-
-        Mockito.verify(callback, Mockito.times(0))
-                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(1)).onError(ErrorCode.WRONG_VERSION);
-        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
-    }
-
-    @Test
     public void testCheckingValidContentWithAlwaysNotification() throws PackageManager.NameNotFoundException {
         Context context = setupContext("3.0.0");
         PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);

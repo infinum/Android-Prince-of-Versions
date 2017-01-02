@@ -57,7 +57,8 @@ public class VersionContext {
      * @param optionalUpdate            Optional version specified by update configuration.
      * @param isCurrentLessThanOptional Flag for setting if current version is less than optional.
      */
-    public VersionContext(Version currentVersion, @Nullable Version minimumVersion, boolean isCurrentLessThanMinimum, UpdateContext optionalUpdate,
+    public VersionContext(Version currentVersion, @Nullable Version minimumVersion, boolean isCurrentLessThanMinimum,
+            UpdateContext optionalUpdate,
             boolean isCurrentLessThanOptional) {
         this.currentVersion = currentVersion;
         this.minimumVersion = minimumVersion;
@@ -169,12 +170,10 @@ public class VersionContext {
      */
     public static class Version {
 
-
         /**
          * String representation of version.
          */
         private String versionString;
-
 
         /**
          * Creates a new holder for specific version from version string.
@@ -222,9 +221,9 @@ public class VersionContext {
          * @param version          Optional update version.
          * @param notificationType Notification type string.
          */
-        public UpdateContext(Version version, String notificationType) {
+        public UpdateContext(Version version, @Nullable String notificationType) {
             this.version = version;
-            this.notificationType = notificationType;
+            this.notificationType = notificationType == null ? DEFAULT_NOTIFICATION_TYPE : notificationType;
         }
 
         /**

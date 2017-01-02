@@ -8,6 +8,9 @@ import org.robolectric.annotation.Config;
 
 import android.os.Build;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import co.infinum.princeofversions.BuildConfig;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.exceptions.ParseException;
@@ -61,7 +64,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalBetaBeta() {
         VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-beta1");
@@ -101,7 +103,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalLongBeta() {
         VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
@@ -121,7 +122,6 @@ public class JsonParserTest {
             fail(e.getMessage());
         }
     }
-
 
     @Test
     public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalBetaRc() {
@@ -161,7 +161,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptional() {
         VersionContext.Version currentVersion = new VersionContext.Version("1.2.3");
@@ -180,7 +179,6 @@ public class JsonParserTest {
             fail(e.getMessage());
         }
     }
-
 
     @Test
     public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalBetaBeta() {
@@ -202,7 +200,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalRcRc() {
         VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-rc2");
@@ -222,7 +219,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalBB() {
         VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-b12");
@@ -241,7 +237,6 @@ public class JsonParserTest {
             fail(e.getMessage());
         }
     }
-
 
     @Test
     public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalBetaB() {
@@ -281,7 +276,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalBetaBeta() {
         VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-beta3");
@@ -302,7 +296,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalRcRc() {
         VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-rc3");
@@ -322,7 +315,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalBB() {
         VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-b45");
@@ -341,7 +333,6 @@ public class JsonParserTest {
             fail(e.getMessage());
         }
     }
-
 
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalBetaB() {
@@ -381,7 +372,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalBetaBeta() {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0-beta2");
@@ -402,7 +392,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalBetaLong() {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0-beta2");
@@ -421,7 +410,6 @@ public class JsonParserTest {
             fail(e.getMessage());
         }
     }
-
 
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalLongBeta() {
@@ -443,7 +431,6 @@ public class JsonParserTest {
         }
     }
 
-
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalRcBeta() {
         VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-rc3");
@@ -463,7 +450,6 @@ public class JsonParserTest {
             fail(e.getMessage());
         }
     }
-
 
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalBB() {
@@ -503,20 +489,6 @@ public class JsonParserTest {
         VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
         JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         parser.parse(ResourceUtils.readFromFile("invalid_update_no_json.json"));
-    }
-
-    @Test(expected = ParseException.class)
-    public void testParsingInvalidContentNoMinVersion() throws ParseException {
-        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-        parser.parse(ResourceUtils.readFromFile("invalid_update_no_min_version.json"));
-    }
-
-    @Test(expected = ParseException.class)
-    public void testParsingInvalidContentOptionalNoMinVersion() throws ParseException {
-        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-        parser.parse(ResourceUtils.readFromFile("invalid_update_optional_without_version.json"));
     }
 
     @Test
@@ -595,5 +567,16 @@ public class JsonParserTest {
         assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
         assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
         assertTrue("Current version should be smaller than optional", version.isCurrentLessThanOptional());
+    }
+
+    @Test
+    public void testSkipNonStringMetadata() throws Exception {
+        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
+        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_complex_metadata.json"));
+        Map<String, String> expectedMetadata = new HashMap<>();
+        expectedMetadata.put("key1", "value1");
+        expectedMetadata.put("key2", "value2");
+        assertEquals("Non-string metadata should be ignored", expectedMetadata, version.getMetadata());
     }
 }
