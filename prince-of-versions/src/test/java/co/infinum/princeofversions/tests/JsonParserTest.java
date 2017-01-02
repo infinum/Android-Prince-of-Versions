@@ -571,4 +571,29 @@ public class JsonParserTest {
         assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
     }
 
+    @Test
+    public void testParsingWithoutMinVersion() throws Exception {
+        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
+        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_no_min_version.json"));
+        assertEquals("Minimum version should be null", null, version.getMinimumVersion());
+        assertTrue("Optional version should be available", version.hasOptionalUpdate());
+        assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
+        assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
+        assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
+        assertTrue("Current version should be smaller than optional", version.isCurrentLessThanOptional());
+    }
+
+    @Test
+    public void testParsingWithNullMinVersion() throws Exception {
+        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
+        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_null_min_version.json"));
+        assertEquals("Minimum version should be null", null, version.getMinimumVersion());
+        assertTrue("Optional version should be available", version.hasOptionalUpdate());
+        assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
+        assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
+        assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
+        assertTrue("Current version should be smaller than optional", version.isCurrentLessThanOptional());
+    }
 }

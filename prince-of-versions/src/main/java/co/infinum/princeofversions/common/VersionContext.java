@@ -1,5 +1,7 @@
 package co.infinum.princeofversions.common;
 
+import android.support.annotation.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ public class VersionContext {
     /**
      * Minimum version specified by update configuration.
      */
+    @Nullable
     private Version minimumVersion;
 
     /**
@@ -54,7 +57,7 @@ public class VersionContext {
      * @param optionalUpdate            Optional version specified by update configuration.
      * @param isCurrentLessThanOptional Flag for setting if current version is less than optional.
      */
-    public VersionContext(Version currentVersion, Version minimumVersion, boolean isCurrentLessThanMinimum, UpdateContext optionalUpdate,
+    public VersionContext(Version currentVersion, @Nullable Version minimumVersion, boolean isCurrentLessThanMinimum, UpdateContext optionalUpdate,
             boolean isCurrentLessThanOptional) {
         this.currentVersion = currentVersion;
         this.minimumVersion = minimumVersion;
@@ -70,7 +73,7 @@ public class VersionContext {
      * @param minimumVersion           Minimum version specified by update configuration.
      * @param isCurrentLessThanMinimum Flag for setting if current version is less than minimum.
      */
-    public VersionContext(Version currentVersion, Version minimumVersion, boolean isCurrentLessThanMinimum) {
+    public VersionContext(Version currentVersion, @Nullable Version minimumVersion, boolean isCurrentLessThanMinimum) {
         this(currentVersion, minimumVersion, isCurrentLessThanMinimum, null, false);
     }
 
@@ -118,7 +121,7 @@ public class VersionContext {
      * @return true if holder contains current version less than optional, false otherwise.
      */
     public boolean isCurrentLessThanOptional() {
-        return hasOptionalUpdate() ? isCurrentLessThanOptional : false;
+        return hasOptionalUpdate() && isCurrentLessThanOptional;
     }
 
     /**
@@ -135,6 +138,7 @@ public class VersionContext {
      *
      * @return Minimum version from this holder.
      */
+    @Nullable
     public Version getMinimumVersion() {
         return minimumVersion;
     }
