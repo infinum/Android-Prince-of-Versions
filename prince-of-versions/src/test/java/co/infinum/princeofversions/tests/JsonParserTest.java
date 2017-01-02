@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
-public class JSONParserTest {
+public class JsonParserTest {
 
     @Test
     public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndLessThanOptional() {
