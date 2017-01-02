@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 2.0.3
+
+_2017-01-02_
+
+- Allow not specifying minimum version
+- Ignore non-string metadata
+
 ## Version 2.0.2
 
 _2016-11-17_
