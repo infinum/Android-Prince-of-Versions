@@ -117,6 +117,9 @@ For testing purposes you can create your own LoaderFactory. For ease of use, Str
 
 3rd, 4th and 5th step are same as in previous example.
 
+### Multiple flavors
+If your application has multiple product flavors (e.g. paid/free) you might need more than one JSON configuration file. If that is the case, do not forget to set a different URL for each flavor configuration. 
+
 ### Deploying a new version
 
 1. Bump `libraryVersion` in `build.gradle`
