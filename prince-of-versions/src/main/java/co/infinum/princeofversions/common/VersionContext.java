@@ -216,14 +216,37 @@ public class VersionContext {
         private String notificationType;
 
         /**
+         * Former minSdk value
+         */
+        private int lastMinSdk = 0;
+
+        /**
+         * New minSdk value after the update
+         */
+        private int newMinSdk = 0;
+
+        /**
+         * Creates a new holder from specific optional update data including the new minSdk value and old minSdk
+         * @param version           Optional update version.
+         * @param notificationType  Notification type string.
+         * @param lastMinSdk        former minSdk value as int.
+         * @param newMinSdk         new minSdk value as int.
+         */
+        public UpdateContext(Version version, @Nullable String notificationType, int lastMinSdk, int newMinSdk) {
+            this.version = version;
+            this.notificationType = notificationType == null ? DEFAULT_NOTIFICATION_TYPE : notificationType;
+            this.lastMinSdk = lastMinSdk;
+            this.newMinSdk = newMinSdk;
+        }
+
+        /**
          * Creates a new holder from specific optional update version and notification type.
          *
          * @param version          Optional update version.
          * @param notificationType Notification type string.
          */
         public UpdateContext(Version version, @Nullable String notificationType) {
-            this.version = version;
-            this.notificationType = notificationType == null ? DEFAULT_NOTIFICATION_TYPE : notificationType;
+            this(version, notificationType, 0, 0);
         }
 
         /**
