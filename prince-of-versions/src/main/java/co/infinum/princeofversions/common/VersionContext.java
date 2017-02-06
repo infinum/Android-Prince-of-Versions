@@ -206,6 +206,11 @@ public class VersionContext {
         public static final String DEFAULT_NOTIFICATION_TYPE = "ALWAYS";
 
         /**
+         * If minSdk values are not passed through the parser we assume they are not sent from the API then setting these values to 0
+         */
+        public static final int DEFAULT_MIN_SDK_VALUE = 0;
+
+        /**
          * Optional update version of this holder.
          */
         private Version version;
@@ -218,12 +223,12 @@ public class VersionContext {
         /**
          * Former minSdk value
          */
-        private int lastMinSdk = 0;
+        private int lastMinSdk;
 
         /**
          * New minSdk value after the update
          */
-        private int newMinSdk = 0;
+        private int newMinSdk;
 
         /**
          * Creates a new holder from specific optional update data including the new minSdk value and old minSdk
@@ -246,7 +251,7 @@ public class VersionContext {
          * @param notificationType Notification type string.
          */
         public UpdateContext(Version version, @Nullable String notificationType) {
-            this(version, notificationType, 0, 0);
+            this(version, notificationType, DEFAULT_MIN_SDK_VALUE, DEFAULT_MIN_SDK_VALUE);
         }
 
         /**
