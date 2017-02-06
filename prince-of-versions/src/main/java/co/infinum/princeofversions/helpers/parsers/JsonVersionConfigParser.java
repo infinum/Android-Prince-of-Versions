@@ -95,6 +95,16 @@ public class JsonVersionConfigParser implements VersionConfigParser {
     public static final String META = "meta";
 
     /**
+     * Last minSdk key
+     */
+    public static final String LAST_MIN_SDK = "minimum_version_min_sdk";
+
+    /**
+     * New minSdk key
+     */
+    public static final String NEW_MIN_SDK = "min_sdk";
+
+    /**
      * Application version
      */
     private VersionContext.Version currentVersion;
@@ -132,6 +142,8 @@ public class JsonVersionConfigParser implements VersionConfigParser {
         Version latestVersion = extractLatestVersion(data);
         Map<String, String> metadata = extractMetadata(data);
         String notificationType = extractNotificationType(data);
+        int lastMinSdk = extractLastMinSdk(data);
+        int newMinSdk = extractNewMinSdk(data);
 
         VersionContext versionContext;
 
@@ -223,5 +235,33 @@ public class JsonVersionConfigParser implements VersionConfigParser {
             }
         }
         return metadata;
+    }
+
+    private int extractLastMinSdk(JSONObject data) throws JSONException {
+        int lastMinSdk;
+        if (data.has(ANDROID)) {
+            JSONObject android = data.getJSONObject(ANDROID);
+            if (android.has(LAST_MIN_SDK)) {
+                lastMinSdk = android.getInt(LAST_MIN_SDK);
+                if (lastMinSdk != 0) {
+                    return lastMinSdk;
+                }
+            }
+        }
+        return 0;
+    }
+
+    private int extractNewMinSdk(JSONObject data) throws JSONException {
+        int newMinSdk;
+        if (data.has(ANDROID)) {
+            JSONObject android = data.getJSONObject(ANDROID);
+            if (android.has(LAST_MIN_SDK)) {
+                newMinSdk = android.getInt(LAST_MIN_SDK);
+                if (newMinSdk != 0) {
+                    return newMinSdk;
+                }
+            }
+        }
+        return 0;
     }
 }
