@@ -579,4 +579,38 @@ public class JsonParserTest {
         expectedMetadata.put("key2", "value2");
         assertEquals("Non-string metadata should be ignored", expectedMetadata, version.getMetadata());
     }
+
+    @Test
+    public void testParsingWithFullContentWithSdkValues() throws Exception {
+        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
+        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_sdk_values.json"));
+        assertTrue("Optional update must not be null", version.getOptionalUpdate() != null);
+        assertEquals("If sdk values are missing from json file, last should be 15", 15,
+                version.getOptionalUpdate().getLastMinSdk());
+        assertEquals("If sdk values are not missing from json file, new should be 16", 16,
+                version.getOptionalUpdate().getNewMinSdk());
+    }
+
+    @Test
+    public void testParsingWithNoSdkValuesInContent() throws Exception {
+        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
+        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_no_sdk_values.json"));
+        assertEquals("If sdk values are missing from json file, both min and last sdk should be 0", 0,
+                version.getOptionalUpdate().getLastMinSdk());
+        assertEquals("If sdk values are missing from json file, both min and last sdk should be 0", 0,
+                version.getOptionalUpdate().getNewMinSdk());
+    }
+
+    @Test
+    public void testParsingWithIncompleteSdkValues() throws Exception {
+        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
+        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_single_sdk_value.json"));
+        assertEquals("If a single sdkValue is missing from a json file it should be set to 0", 0,
+                version.getOptionalUpdate().getLastMinSdk());
+        assertEquals("If sdk values are not missing from json file, new should be 16", 16,
+                version.getOptionalUpdate().getNewMinSdk());
+    }
 }

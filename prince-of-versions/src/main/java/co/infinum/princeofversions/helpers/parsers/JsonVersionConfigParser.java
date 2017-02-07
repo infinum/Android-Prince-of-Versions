@@ -152,7 +152,8 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                     this.currentVersion,
                     new VersionContext.Version(minVersion.toString()),
                     currentVersion.lessThan(minVersion),
-                    new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType),
+                    new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType, lastMinSdk,
+                            newMinSdk),
                     currentVersion.lessThan(latestVersion)
             );
         } else if (latestVersion != null) {
@@ -255,10 +256,13 @@ public class JsonVersionConfigParser implements VersionConfigParser {
         int newMinSdk;
         if (data.has(ANDROID)) {
             JSONObject android = data.getJSONObject(ANDROID);
-            if (android.has(LAST_MIN_SDK)) {
-                newMinSdk = android.getInt(LAST_MIN_SDK);
-                if (newMinSdk != 0) {
-                    return newMinSdk;
+            if (android.has(LATEST_VERSION)) {
+                JSONObject latestVersion = android.getJSONObject(LATEST_VERSION);
+                if (latestVersion.has(NEW_MIN_SDK)) {
+                    newMinSdk = latestVersion.getInt(NEW_MIN_SDK);
+                    if (newMinSdk != 0) {
+                        return newMinSdk;
+                    }
                 }
             }
         }

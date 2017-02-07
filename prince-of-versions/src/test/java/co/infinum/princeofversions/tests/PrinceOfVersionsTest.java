@@ -334,4 +334,224 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
+    @Test
+    public void testCheckingWhenUpdateShouldBeMade() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.0.0");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_no_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(eq("2.4.5"), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
+    }
+
+    @Test
+    public void testCheckingUpdateWithFullSdkValues() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("1.0.0");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingUpdateWithASingleSdkValue() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.0.0");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_single_sdk_value.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+    }
+
+    @Test
+    public void testCheckingUpdateWithHugeSdkValues() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("1.0.0");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_huge_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+    }
+
+    @Test
+    public void testCheckingUpdateWithDowngradingSdkValues() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("1.0.0");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWithDowngradingSdkValues() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.4.1");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWithHugeSdkValues() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.4.1");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_huge_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(0))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWithSingleSdkValue() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.4.1");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_single_sdk_value.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWithSingleSdkValueAndHigherInitialVersion() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.4.4");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_single_sdk_value.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingMandatoryUpdateWithSdkValues() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("1.4.0");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_mandatory_update.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWithSdkValuesAndTheSameVersions() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.4.5");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_full_b_with_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(0))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWithSdkValuesAndWithDifferentVersions() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.4.4");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_full_b_with_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWithSdkValuesAndIncreaseInMinor() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.3.0");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_full_with_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(1))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
 }
