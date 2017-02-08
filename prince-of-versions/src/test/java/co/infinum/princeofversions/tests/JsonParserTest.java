@@ -581,12 +581,12 @@ public class JsonParserTest {
     }
 
     @Test
-    public void testParsingWithFullContentWithSdkValues() throws Exception {
+    public void testParsingWithFullContentAndSdkValues() throws Exception {
         VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
         JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
         VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_sdk_values.json"));
         assertTrue("Optional update must not be null", version.getOptionalUpdate() != null);
-        assertEquals("If sdk values are missing from json file, last should be 15", 15,
+        assertEquals("If sdk values are not missing from json file, last should be 15", 15,
                 version.getOptionalUpdate().getLastMinSdk());
         assertEquals("If sdk values are not missing from json file, new should be 16", 16,
                 version.getOptionalUpdate().getNewMinSdk());
