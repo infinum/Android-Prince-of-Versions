@@ -136,13 +136,7 @@ public class PovPresenterImpl implements PovPresenter {
                 if (currentMinor == updateMinor) {
                     return comparePatches(currentVersionPieces[THIRD_POSITION_IN_ARRAY], updateVersionPieces[THIRD_POSITION_IN_ARRAY],
                             version);
-                } else {
-                    //Just check if user supports that new minSdk value, if so, update, if not, dont show update
-                    return version.getOptionalUpdate().getNewMinSdk() <= Build.VERSION.SDK_INT;
                 }
-            } else {
-                //Just check if user supports that new minSdk value, if so, update, if not, dont show update
-                return version.getOptionalUpdate().getNewMinSdk() <= Build.VERSION.SDK_INT;
             }
         }
         return false;
@@ -170,8 +164,7 @@ public class PovPresenterImpl implements PovPresenter {
                     //If it does, split patch by dash - getting 2 and rc12 separately
                     String[] updatePatchPieces = updateVersionPiece.split(DASH_REGEX);
                     //If current + 1 is equal to 2 check if user can support the new minSdk on his phone
-                    if (currentPatch + 1 == Integer.parseInt(updatePatchPieces[FIRST_POSITION_IN_ARRAY])
-                            || currentPatch == Integer.parseInt(updatePatchPieces[FIRST_POSITION_IN_ARRAY])) {
+                    if (currentPatch + 1 == Integer.parseInt(updatePatchPieces[FIRST_POSITION_IN_ARRAY])) {
                         return version.getOptionalUpdate().getNewMinSdk() <= Build.VERSION.SDK_INT;
                     }
                 }
@@ -197,10 +190,7 @@ public class PovPresenterImpl implements PovPresenter {
                         String[] updatePatchPieces = updateVersionPiece.split(DASH_REGEX);
                         //Check current and update if they are the same after adding 1 to the current
                         if (Integer.parseInt(updatePatchPieces[FIRST_POSITION_IN_ARRAY]) == Integer
-                                .parseInt(currentPatchPieces[FIRST_POSITION_IN_ARRAY]) + 1
-                                ||
-                                Integer.parseInt(updatePatchPieces[FIRST_POSITION_IN_ARRAY]) == Integer
-                                        .parseInt(currentPatchPieces[FIRST_POSITION_IN_ARRAY])) {
+                                .parseInt(currentPatchPieces[FIRST_POSITION_IN_ARRAY]) + 1) {
                             //If so, check if user supports the new minSdk
                             return version.getOptionalUpdate().getNewMinSdk() <= Build.VERSION.SDK_INT;
                         }

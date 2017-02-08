@@ -554,4 +554,21 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
     }
+
+    @Test
+    public void testCheckingOptionalUpdateWithHighSdkValuesAndIncreaseInMinor() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.3.0");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository);
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_big_increase_in_sdk_values.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(0))
+                .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
 }
