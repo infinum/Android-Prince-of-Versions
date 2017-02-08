@@ -249,7 +249,7 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                 }
             }
         }
-        return 0;
+        return VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
     }
 
     private int extractNewMinSdk(JSONObject data) throws JSONException {
@@ -266,6 +266,6 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                 }
             }
         }
-        return 0;
+        return VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
     }
 }
