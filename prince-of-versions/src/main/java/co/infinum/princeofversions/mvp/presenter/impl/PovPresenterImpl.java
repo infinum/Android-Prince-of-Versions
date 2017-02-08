@@ -131,12 +131,9 @@ public class PovPresenterImpl implements PovPresenter {
             int currentMinor = Integer.parseInt(currentVersionPieces[SECOND_POSITION_IN_ARRAY]);
             int updateMinor = Integer.parseInt(updateVersionPieces[SECOND_POSITION_IN_ARRAY]);
 
-            if (currentMajor == updateMajor) {
-                //If minors are equal check patch parts
-                if (currentMinor == updateMinor) {
-                    return comparePatches(currentVersionPieces[THIRD_POSITION_IN_ARRAY], updateVersionPieces[THIRD_POSITION_IN_ARRAY],
-                            version);
-                }
+            if (currentMajor == updateMajor && currentMinor == updateMinor) {
+                return comparePatches(currentVersionPieces[THIRD_POSITION_IN_ARRAY], updateVersionPieces[THIRD_POSITION_IN_ARRAY],
+                        version);
             }
         }
         return false;
