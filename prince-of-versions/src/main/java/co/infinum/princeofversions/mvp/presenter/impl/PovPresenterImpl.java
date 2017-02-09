@@ -4,6 +4,7 @@ import com.github.zafarkhaja.semver.Version;
 
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
+import co.infinum.princeofversions.interfaces.SdkVersionProvider;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.mvp.interactor.PovInteractor;
 import co.infinum.princeofversions.mvp.interactor.listeners.PovInteractorListener;
@@ -17,6 +18,8 @@ public class PovPresenterImpl implements PovPresenter {
     private PovInteractor interactor;
 
     private VersionRepository repository;
+
+    private SdkVersionProvider sdkVersionProvider;
 
     public PovPresenterImpl(PovView view, PovInteractor interactor, VersionRepository repository) {
         this.view = view;

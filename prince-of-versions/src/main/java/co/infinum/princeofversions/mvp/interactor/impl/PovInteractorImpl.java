@@ -1,10 +1,9 @@
 package co.infinum.princeofversions.mvp.interactor.impl;
 
-import android.os.Build;
-
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
+import co.infinum.princeofversions.interfaces.SdkVersionProvider;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierListener;
 import co.infinum.princeofversions.mvp.interactor.PovInteractor;
@@ -16,9 +15,12 @@ public class PovInteractorImpl implements PovInteractor {
 
     private UpdateConfigLoader loader;
 
-    public PovInteractorImpl(VersionVerifier versionVerifier, UpdateConfigLoader loader) {
+    private SdkVersionProvider sdkVersionProvider;
+
+    public PovInteractorImpl(VersionVerifier versionVerifier, UpdateConfigLoader loader, SdkVersionProvider sdkVersionProvider) {
         this.versionVerifier = versionVerifier;
         this.loader = loader;
+        this.sdkVersionProvider = sdkVersionProvider;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class PovInteractorImpl implements PovInteractor {
                     public void versionAvailable(VersionContext version) {
                         if (version.isCurrentLessThanMinimum()) {
                             //If it's a mandatory update, we check if user's phone supports the minSdk
-                            if (version.getMinVersionMinSdk() <= Build.VERSION.SDK_INT) {
+                            if (version.getMinVersionMinSdk() <= sdkVersionProvider.getSdkInt()) {
                                 //If it does -> notify the user there's a new version of the app available
                                 listener.onMandatoryUpdateAvailable(version);
                             } else {
@@ -36,7 +38,7 @@ public class PovInteractorImpl implements PovInteractor {
                             }
 
                         } else if (version.hasOptionalUpdate() && version.isCurrentLessThanOptional()
-                                && version.getOptionalUpdate().getNewMinSdk() <= Build.VERSION.SDK_INT) {
+                                && version.getOptionalUpdate().getNewMinSdk() <= sdkVersionProvider.getSdkInt()) {
                             listener.onUpdateAvailable(version);
                         } else {
                             listener.onNoUpdateAvailable(version);
