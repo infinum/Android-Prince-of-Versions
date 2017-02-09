@@ -65,7 +65,7 @@ public class PrinceOfVersionsTest {
         Mockito.when(provider.newInstance()).thenReturn(versionVerifier);
         return context;
     }
-    
+
     private SdkVersionProvider setupSdkInt(int sdkInt) {
         return new SdkVersionProviderMock(sdkInt);
     }
