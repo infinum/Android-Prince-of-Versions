@@ -29,6 +29,7 @@ public class VersionContext {
     /**
      * Optional configuration specified by update configuration.
      */
+    @Nullable
     private UpdateContext optionalUpdate;
 
     /**
@@ -49,6 +50,11 @@ public class VersionContext {
     private Map<String, String> metadata;
 
     /**
+     * Former minSdk value
+     */
+    private int minVersionMinSdk;
+
+    /**
      * Creates a new holder with specified current, minimum and optional update version and corresponding flags.
      *
      * @param currentVersion            Current application version.
@@ -56,15 +62,16 @@ public class VersionContext {
      * @param isCurrentLessThanMinimum  Flag for setting if current version is less than minimum.
      * @param optionalUpdate            Optional version specified by update configuration.
      * @param isCurrentLessThanOptional Flag for setting if current version is less than optional.
+     * @param minVersionMinSdk          Minimum app version minSdk value.
      */
     public VersionContext(Version currentVersion, @Nullable Version minimumVersion, boolean isCurrentLessThanMinimum,
-            UpdateContext optionalUpdate,
-            boolean isCurrentLessThanOptional) {
+            UpdateContext optionalUpdate, boolean isCurrentLessThanOptional, int minVersionMinSdk) {
         this.currentVersion = currentVersion;
         this.minimumVersion = minimumVersion;
         this.optionalUpdate = optionalUpdate;
         this.isCurrentLessThanMinimum = isCurrentLessThanMinimum;
         this.isCurrentLessThanOptional = isCurrentLessThanOptional;
+        this.minVersionMinSdk = minVersionMinSdk;
     }
 
     /**
@@ -75,7 +82,7 @@ public class VersionContext {
      * @param isCurrentLessThanMinimum Flag for setting if current version is less than minimum.
      */
     public VersionContext(Version currentVersion, @Nullable Version minimumVersion, boolean isCurrentLessThanMinimum) {
-        this(currentVersion, minimumVersion, isCurrentLessThanMinimum, null, false);
+        this(currentVersion, minimumVersion, isCurrentLessThanMinimum, null, false, UpdateContext.DEFAULT_MIN_SDK_VALUE);
     }
 
     /**
@@ -166,6 +173,15 @@ public class VersionContext {
     }
 
     /**
+     * Provides last MinSdk of this holder
+     *
+     * @return last minSdk value as an integer.
+     */
+    public int getMinVersionMinSdk() {
+        return minVersionMinSdk;
+    }
+
+    /**
      * Holder for specific Version determined by version string and version code.
      */
     public static class Version {
@@ -221,11 +237,6 @@ public class VersionContext {
         private String notificationType;
 
         /**
-         * Former minSdk value
-         */
-        private int lastMinSdk;
-
-        /**
          * New minSdk value after the update
          */
         private int newMinSdk;
@@ -235,13 +246,11 @@ public class VersionContext {
          *
          * @param version          Optional update version.
          * @param notificationType Notification type string.
-         * @param lastMinSdk       former minSdk value as int.
          * @param newMinSdk        new minSdk value as int.
          */
-        public UpdateContext(Version version, @Nullable String notificationType, int lastMinSdk, int newMinSdk) {
+        public UpdateContext(Version version, @Nullable String notificationType, int newMinSdk) {
             this.version = version;
             this.notificationType = notificationType == null ? DEFAULT_NOTIFICATION_TYPE : notificationType;
-            this.lastMinSdk = lastMinSdk;
             this.newMinSdk = newMinSdk;
         }
 
@@ -252,7 +261,7 @@ public class VersionContext {
          * @param notificationType Notification type string.
          */
         public UpdateContext(Version version, @Nullable String notificationType) {
-            this(version, notificationType, DEFAULT_MIN_SDK_VALUE, DEFAULT_MIN_SDK_VALUE);
+            this(version, notificationType, DEFAULT_MIN_SDK_VALUE);
         }
 
         /**
@@ -298,15 +307,6 @@ public class VersionContext {
          */
         public void setNotificationType(String notificationType) {
             this.notificationType = notificationType;
-        }
-
-        /**
-         * Provides last MinSdk of this holder
-         *
-         * @return last minSdk value as an integer.
-         */
-        public int getLastMinSdk() {
-            return lastMinSdk;
         }
 
         /**

@@ -2,8 +2,6 @@ package co.infinum.princeofversions.mvp.presenter.impl;
 
 import com.github.zafarkhaja.semver.Version;
 
-import android.os.Build;
-
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionRepository;
@@ -13,20 +11,6 @@ import co.infinum.princeofversions.mvp.presenter.PovPresenter;
 import co.infinum.princeofversions.mvp.view.PovView;
 
 public class PovPresenterImpl implements PovPresenter {
-
-    private static final int STANDARD_VERSION_LENGTH = 3;
-
-    private static final int FIRST_POSITION_IN_ARRAY = 0;
-
-    private static final int SECOND_POSITION_IN_ARRAY = 1;
-
-    private static final int THIRD_POSITION_IN_ARRAY = 2;
-
-    private static final int SINGLE_NUMBER_LENGTH = 1;
-
-    private static final String DASH_REGEX = "-";
-
-    private static final String DOT_REGEX = "\\.";
 
     private PovView view;
 
@@ -50,25 +34,21 @@ public class PovPresenterImpl implements PovPresenter {
         interactor.checkForUpdates(new PovInteractorListener() {
             @Override
             public void onUpdateAvailable(VersionContext version) {
-                if (checkIfUpdateShouldBeMade(version)) {
-                    // notify if there is no notification type or there was no notification before, or current version is not equal to
-                    // last one.
-                    String notificationType = version.getOptionalUpdate().getNotificationType();
-                    String lastNotifiedVersion = repository.getLastVersionName(null);
+                // notify if there is no notification type or there was no notification before, or current version is not equal to
+                // last one.
+                String notificationType = version.getOptionalUpdate().getNotificationType();
+                String lastNotifiedVersion = repository.getLastVersionName(null);
 
-                    boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion
-                            .equals(version.getOptionalUpdate().getVersion()
-                                    .getVersionString());
-                    boolean alreadyNotifiedUpdateAvailable = lastNotifiedVersion != null && lastNotifiedVersion
-                            .equals(version.getOptionalUpdate().getVersion()
-                                    .getVersionString());
-                    if (notNotifiedUpdateAvailable || (alreadyNotifiedUpdateAvailable && notificationType != null && notificationType
-                            .equalsIgnoreCase("ALWAYS"))) {
-                        repository.setLastVersionName(version.getOptionalUpdate().getVersion().getVersionString());
-                        view.notifyOptionalUpdate(version.getOptionalUpdate().getVersion().getVersionString(), version.getMetadata());
-                    } else {
-                        view.notifyNoUpdate(version.getMetadata());
-                    }
+                boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion
+                        .equals(version.getOptionalUpdate().getVersion()
+                                .getVersionString());
+                boolean alreadyNotifiedUpdateAvailable = lastNotifiedVersion != null && lastNotifiedVersion
+                        .equals(version.getOptionalUpdate().getVersion()
+                                .getVersionString());
+                if (notNotifiedUpdateAvailable || (alreadyNotifiedUpdateAvailable && notificationType != null && notificationType
+                        .equalsIgnoreCase("ALWAYS"))) {
+                    repository.setLastVersionName(version.getOptionalUpdate().getVersion().getVersionString());
+                    view.notifyOptionalUpdate(version.getOptionalUpdate().getVersion().getVersionString(), version.getMetadata());
                 } else {
                     view.notifyNoUpdate(version.getMetadata());
                 }
@@ -110,9 +90,5 @@ public class PovPresenterImpl implements PovPresenter {
                 view.notifyError(error);
             }
         });
-    }
-
-    private boolean checkIfUpdateShouldBeMade(VersionContext version) {
-        return version.getOptionalUpdate().getNewMinSdk() <= Build.VERSION.SDK_INT;
     }
 }
