@@ -217,7 +217,7 @@ public class PrinceOfVersions {
         } else if (this.repository == null) {
             throw new IllegalArgumentException("Repository is null.");
         } else if (this.sdkVersionProvider == null) {
-            throw new IllegalArgumentException("SdkVersionProvider is null2");
+            throw new IllegalArgumentException("SdkVersionProvider is null");
         }
     }
 
