@@ -34,7 +34,12 @@ public class PovInteractorImpl implements PovInteractor {
                                 //If it does -> notify the user there's a new version of the app available
                                 listener.onMandatoryUpdateAvailable(version);
                             } else {
-                                listener.onNoUpdateAvailable(version);
+
+                                if (version.hasOptionalUpdate() && version.getOptionalUpdate().getNewMinSdk() <= sdkVersionProvider.getSdkInt()) {
+                                    listener.onUpdateAvailable(version);
+                                } else {
+                                    listener.onNoUpdateAvailable(version);
+                                }
                             }
 
                         } else if (version.hasOptionalUpdate() && version.isCurrentLessThanOptional()

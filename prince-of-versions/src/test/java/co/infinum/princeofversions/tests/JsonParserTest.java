@@ -613,4 +613,26 @@ public class JsonParserTest {
         assertEquals("If sdk values are not missing from json file, new should be 16", 16,
                 version.getOptionalUpdate().getNewMinSdk());
     }
+
+    @Test
+    public void testParsingWithNegativeSdkValues() throws Exception {
+        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
+        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_negative_sdk_values.json"));
+        assertEquals("If a minimumVersionMinSdk is set to a negative number the result should be 0", 0,
+                version.getMinimumVersionMinSdk());
+        assertEquals("If a minSdk is set to a negative number the result should be 0", 0,
+                version.getOptionalUpdate().getNewMinSdk());
+    }
+
+    @Test
+    public void testParsingWithASingleNegativeSdkValue() throws Exception {
+        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
+        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
+        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_single_negative_sdk_value.json"));
+        assertEquals("If a minimumVersionMinSdk is set ", 14,
+                version.getMinimumVersionMinSdk());
+        assertEquals("If a minSdk is set to a negative number the result should be 0", 0,
+                version.getOptionalUpdate().getNewMinSdk());
+    }
 }
