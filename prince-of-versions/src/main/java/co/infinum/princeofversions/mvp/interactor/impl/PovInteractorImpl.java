@@ -30,7 +30,7 @@ public class PovInteractorImpl implements PovInteractor {
                     public void versionAvailable(VersionContext version) {
                         if (version.isCurrentLessThanMinimum()) {
                             //If it's a mandatory update, we check if user's phone supports the minSdk
-                            if (version.getMinVersionMinSdk() <= sdkVersionProvider.getSdkInt()) {
+                            if (version.getMinimumVersionMinSdk() <= sdkVersionProvider.getSdkInt()) {
                                 //If it does -> notify the user there's a new version of the app available
                                 listener.onMandatoryUpdateAvailable(version);
                             } else {

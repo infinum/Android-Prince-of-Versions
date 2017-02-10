@@ -50,9 +50,9 @@ public class VersionContext {
     private Map<String, String> metadata;
 
     /**
-     * Former minSdk value
+     * This field represent the minSdk value of the minimum version of the app from the JSON config file.
      */
-    private int minVersionMinSdk;
+    private int minimumVersionMinSdk;
 
     /**
      * Creates a new holder with specified current, minimum and optional update version and corresponding flags.
@@ -62,16 +62,16 @@ public class VersionContext {
      * @param isCurrentLessThanMinimum  Flag for setting if current version is less than minimum.
      * @param optionalUpdate            Optional version specified by update configuration.
      * @param isCurrentLessThanOptional Flag for setting if current version is less than optional.
-     * @param minVersionMinSdk          Minimum app version minSdk value.
+     * @param minimumVersionMinSdk          Minimum app version minSdk value.
      */
     public VersionContext(Version currentVersion, @Nullable Version minimumVersion, boolean isCurrentLessThanMinimum,
-            UpdateContext optionalUpdate, boolean isCurrentLessThanOptional, int minVersionMinSdk) {
+            UpdateContext optionalUpdate, boolean isCurrentLessThanOptional, int minimumVersionMinSdk) {
         this.currentVersion = currentVersion;
         this.minimumVersion = minimumVersion;
         this.optionalUpdate = optionalUpdate;
         this.isCurrentLessThanMinimum = isCurrentLessThanMinimum;
         this.isCurrentLessThanOptional = isCurrentLessThanOptional;
-        this.minVersionMinSdk = minVersionMinSdk;
+        this.minimumVersionMinSdk = minimumVersionMinSdk;
     }
 
     /**
@@ -177,8 +177,8 @@ public class VersionContext {
      *
      * @return last minSdk value as an integer.
      */
-    public int getMinVersionMinSdk() {
-        return minVersionMinSdk;
+    public int getMinimumVersionMinSdk() {
+        return minimumVersionMinSdk;
     }
 
     /**
