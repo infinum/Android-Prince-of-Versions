@@ -142,7 +142,7 @@ public class JsonVersionConfigParser implements VersionConfigParser {
         Version latestVersion = extractLatestVersion(data);
         Map<String, String> metadata = extractMetadata(data);
         String notificationType = extractNotificationType(data);
-        int minVersionMinSdk = extractLastMinSdk(data);
+        int minimumVersionMinSdk = extractMinumumVersionMinSdk(data);
         int newMinSdk = extractNewMinSdk(data);
 
         VersionContext versionContext;
@@ -155,7 +155,7 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                     new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType,
                             newMinSdk),
                     currentVersion.lessThan(latestVersion),
-                    minVersionMinSdk
+                    minimumVersionMinSdk
             );
         } else if (latestVersion != null) {
             versionContext = new VersionContext(
@@ -164,7 +164,7 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                     false,
                     new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType),
                     currentVersion.lessThan(latestVersion),
-                    minVersionMinSdk
+                    minimumVersionMinSdk
             );
         } else if (minVersion != null) {
             versionContext = new VersionContext(
@@ -240,19 +240,19 @@ public class JsonVersionConfigParser implements VersionConfigParser {
         return metadata;
     }
 
-    private int extractLastMinSdk(JSONObject data) throws JSONException {
-        int lastMinSdk;
+    private int extractMinumumVersionMinSdk(JSONObject data) throws JSONException {
+        int minimumVersionMinSdk;
         if (data.has(ANDROID)) {
             JSONObject android = data.getJSONObject(ANDROID);
             if (android.has(MIN_VERSION_MIN_SDK)) {
                 try {
-                    lastMinSdk = android.getInt(MIN_VERSION_MIN_SDK);
+                    minimumVersionMinSdk = android.getInt(MIN_VERSION_MIN_SDK);
                 } catch (JSONException e) {
-                    lastMinSdk = VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
+                    minimumVersionMinSdk = VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
                     e.printStackTrace();
                 }
-                if (lastMinSdk != 0) {
-                    return lastMinSdk;
+                if (minimumVersionMinSdk < 0) {
+                    return minimumVersionMinSdk;
                 }
             }
         }
