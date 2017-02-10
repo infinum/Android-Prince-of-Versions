@@ -251,7 +251,7 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                     minimumVersionMinSdk = VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
                     e.printStackTrace();
                 }
-                if (minimumVersionMinSdk < 0) {
+                if (minimumVersionMinSdk > 0) {
                     return minimumVersionMinSdk;
                 }
             }
@@ -272,7 +272,7 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                         newMinSdk = VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
                         e.printStackTrace();
                     }
-                    if (newMinSdk != 0) {
+                    if (newMinSdk > 0) {
                         return newMinSdk;
                     }
                 }
