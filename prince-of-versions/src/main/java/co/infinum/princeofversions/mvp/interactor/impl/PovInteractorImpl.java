@@ -39,7 +39,8 @@ public class PovInteractorImpl implements PovInteractor {
                                 //update but he can install the latest update which has lower minSdk needed thus bypassing mandatory
                                 // update.
                                 if (version.hasOptionalUpdate()
-                                        && version.getOptionalUpdate().getNewMinSdk() <= sdkVersionProvider.getSdkInt()) {
+                                        && version.getOptionalUpdate().getNewMinSdk() <= sdkVersionProvider.getSdkInt()
+                                        && version.isCurrentLessThanOptional()) {
                                     listener.onUpdateAvailable(version);
                                 } else {
                                     listener.onNoUpdateAvailable(version);

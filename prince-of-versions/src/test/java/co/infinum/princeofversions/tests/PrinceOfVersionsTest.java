@@ -32,6 +32,7 @@ import co.infinum.princeofversions.loaders.ResourceFileLoader;
 import co.infinum.princeofversions.util.SdkVersionProviderMock;
 import co.infinum.princeofversions.verifiers.SingleThreadVersionVerifier;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 
 @RunWith(RobolectricTestRunner.class)
@@ -402,7 +403,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(0))
-                .onNewUpdate(Mockito.anyString(), eq(true), ArgumentMatchers.<String, String>anyMap());
+                .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
@@ -453,7 +454,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(0))
-                .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
+                .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
     }
@@ -521,7 +522,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(0))
-                .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
+                .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
     }
@@ -555,7 +556,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(0))
-                .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
+                .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
     }
@@ -572,7 +573,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(0))
-                .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
+                .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
     }
@@ -589,7 +590,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(0))
-                .onNewUpdate(Mockito.anyString(), eq(true), ArgumentMatchers.<String, String>anyMap());
+                .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
     }
@@ -625,6 +626,23 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWhenUserIsUpToDate() throws PackageManager.NameNotFoundException {
+        Context context = setupContext("2.1.1");
+        PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository, setupSdkInt(20));
+        updater.checkForUpdates(new LoaderFactory() {
+            @Override
+            public UpdateConfigLoader newInstance() {
+                return new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk.json");
+            }
+        }, callback);
+
+        Mockito.verify(callback, Mockito.times(0))
+                .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
     }
 
