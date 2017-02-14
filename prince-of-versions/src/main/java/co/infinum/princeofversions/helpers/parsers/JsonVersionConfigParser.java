@@ -95,6 +95,16 @@ public class JsonVersionConfigParser implements VersionConfigParser {
     public static final String META = "meta";
 
     /**
+     * Last minSdk key
+     */
+    public static final String MIN_VERSION_MIN_SDK = "minimum_version_min_sdk";
+
+    /**
+     * New minSdk key
+     */
+    public static final String NEW_MIN_SDK = "min_sdk";
+
+    /**
      * Application version
      */
     private VersionContext.Version currentVersion;
@@ -132,6 +142,8 @@ public class JsonVersionConfigParser implements VersionConfigParser {
         Version latestVersion = extractLatestVersion(data);
         Map<String, String> metadata = extractMetadata(data);
         String notificationType = extractNotificationType(data);
+        int minimumVersionMinSdk = extractMinumumVersionMinSdk(data);
+        int newMinSdk = extractNewMinSdk(data);
 
         VersionContext versionContext;
 
@@ -140,8 +152,10 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                     this.currentVersion,
                     new VersionContext.Version(minVersion.toString()),
                     currentVersion.lessThan(minVersion),
-                    new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType),
-                    currentVersion.lessThan(latestVersion)
+                    new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType,
+                            newMinSdk),
+                    currentVersion.lessThan(latestVersion),
+                    minimumVersionMinSdk
             );
         } else if (latestVersion != null) {
             versionContext = new VersionContext(
@@ -149,7 +163,8 @@ public class JsonVersionConfigParser implements VersionConfigParser {
                     null,
                     false,
                     new VersionContext.UpdateContext(new VersionContext.Version(latestVersion.toString()), notificationType),
-                    currentVersion.lessThan(latestVersion)
+                    currentVersion.lessThan(latestVersion),
+                    minimumVersionMinSdk
             );
         } else if (minVersion != null) {
             versionContext = new VersionContext(
@@ -223,5 +238,46 @@ public class JsonVersionConfigParser implements VersionConfigParser {
             }
         }
         return metadata;
+    }
+
+    private int extractMinumumVersionMinSdk(JSONObject data) throws JSONException {
+        int minimumVersionMinSdk;
+        if (data.has(ANDROID)) {
+            JSONObject android = data.getJSONObject(ANDROID);
+            if (android.has(MIN_VERSION_MIN_SDK)) {
+                try {
+                    minimumVersionMinSdk = android.getInt(MIN_VERSION_MIN_SDK);
+                } catch (JSONException e) {
+                    minimumVersionMinSdk = VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
+                    e.printStackTrace();
+                }
+                if (minimumVersionMinSdk > 0) {
+                    return minimumVersionMinSdk;
+                }
+            }
+        }
+        return VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
+    }
+
+    private int extractNewMinSdk(JSONObject data) throws JSONException {
+        int newMinSdk;
+        if (data.has(ANDROID)) {
+            JSONObject android = data.getJSONObject(ANDROID);
+            if (android.has(LATEST_VERSION)) {
+                JSONObject latestVersion = android.getJSONObject(LATEST_VERSION);
+                if (latestVersion.has(NEW_MIN_SDK)) {
+                    try {
+                        newMinSdk = latestVersion.getInt(NEW_MIN_SDK);
+                    } catch (JSONException e) {
+                        newMinSdk = VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
+                        e.printStackTrace();
+                    }
+                    if (newMinSdk > 0) {
+                        return newMinSdk;
+                    }
+                }
+            }
+        }
+        return VersionContext.UpdateContext.DEFAULT_MIN_SDK_VALUE;
     }
 }

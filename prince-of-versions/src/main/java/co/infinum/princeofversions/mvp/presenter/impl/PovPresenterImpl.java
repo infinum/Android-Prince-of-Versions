@@ -4,15 +4,13 @@ import com.github.zafarkhaja.semver.Version;
 
 import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
+import co.infinum.princeofversions.interfaces.SdkVersionProvider;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.mvp.interactor.PovInteractor;
 import co.infinum.princeofversions.mvp.interactor.listeners.PovInteractorListener;
 import co.infinum.princeofversions.mvp.presenter.PovPresenter;
 import co.infinum.princeofversions.mvp.view.PovView;
 
-/**
- * Created by stefano on 08/07/16.
- */
 public class PovPresenterImpl implements PovPresenter {
 
     private PovView view;
@@ -20,6 +18,8 @@ public class PovPresenterImpl implements PovPresenter {
     private PovInteractor interactor;
 
     private VersionRepository repository;
+
+    private SdkVersionProvider sdkVersionProvider;
 
     public PovPresenterImpl(PovView view, PovInteractor interactor, VersionRepository repository) {
         this.view = view;
@@ -37,9 +37,11 @@ public class PovPresenterImpl implements PovPresenter {
         interactor.checkForUpdates(new PovInteractorListener() {
             @Override
             public void onUpdateAvailable(VersionContext version) {
-                // notify if there is no notification type or there was no notification before, or current version is not equal to last one.
+                // notify if there is no notification type or there was no notification before, or current version is not equal to
+                // last one.
                 String notificationType = version.getOptionalUpdate().getNotificationType();
                 String lastNotifiedVersion = repository.getLastVersionName(null);
+
                 boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion
                         .equals(version.getOptionalUpdate().getVersion()
                                 .getVersionString());
@@ -55,6 +57,7 @@ public class PovPresenterImpl implements PovPresenter {
                 }
             }
 
+
             @Override
             public void onMandatoryUpdateAvailable(VersionContext version) {
 
@@ -63,11 +66,10 @@ public class PovPresenterImpl implements PovPresenter {
                 try {
                     Version mandatoryVersion = Version.valueOf(version.getMinimumVersion().getVersionString());
                     Version optionalUpdate = Version.valueOf(version.getOptionalUpdate().getVersion().getVersionString());
-
                     //This covers a specific scenario
                     //1. User has 1.0.0. installed
                     //2. Two new versions are published: 1.1.0 (mandatory) and 1.1.1 (optional)
-                    //3. The library should display mandatory update with optinal version (1.1.1)
+                    //3. The library should display mandatory update with optional version (1.1.1)
                     minimumVersion = optionalUpdate.greaterThan(mandatoryVersion)
                             ? version.getOptionalUpdate().getVersion().getVersionString()
                             : version.getMinimumVersion().getVersionString();

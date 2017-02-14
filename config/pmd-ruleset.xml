@@ -6,9 +6,6 @@
     <description>
         This ruleset checks my code for bad stuff
     </description>
-    <rule ref="rulesets/java/basic.xml">
-        <exclude name="UselessParentheses"/>
-    </rule>
     <rule ref="rulesets/java/unnecessary.xml">
         <exclude name="UselessParentheses"/>
     </rule>

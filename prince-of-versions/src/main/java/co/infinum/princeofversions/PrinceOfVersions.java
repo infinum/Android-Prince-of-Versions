@@ -9,9 +9,11 @@ import co.infinum.princeofversions.exceptions.LoaderValidationException;
 import co.infinum.princeofversions.helpers.ContextHelper;
 import co.infinum.princeofversions.helpers.PovFactoryHelper;
 import co.infinum.princeofversions.helpers.PrefsVersionRepository;
+import co.infinum.princeofversions.helpers.SdkVersionProviderImpl;
 import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
 import co.infinum.princeofversions.helpers.parsers.ParserFactory;
 import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
+import co.infinum.princeofversions.interfaces.SdkVersionProvider;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
@@ -67,6 +69,11 @@ public class PrinceOfVersions {
      * Repository for persisting library data.
      */
     private VersionRepository repository;
+
+    /**
+     * SDK int provider
+     */
+    private SdkVersionProvider sdkVersionProvider;
 
     /**
      * Creates a new instance of updater for application associated with provided context.
@@ -159,8 +166,18 @@ public class PrinceOfVersions {
      */
     public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory,
             VersionRepository repository) {
+        this(context.getApplicationContext(), factory, repository, createDefaultSdkVersionProvider());
+    }
+
+
+    /**
+     * Creates a new instance of updater for application associated wih provided
+     */
+    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory, VersionRepository repository,
+            SdkVersionProvider sdkVersionProvider) {
         this.factory = factory;
         this.repository = repository;
+        this.sdkVersionProvider = sdkVersionProvider;
         validateDependencies();
     }
 
@@ -199,7 +216,18 @@ public class PrinceOfVersions {
             throw new IllegalArgumentException("Factory is null.");
         } else if (this.repository == null) {
             throw new IllegalArgumentException("Repository is null.");
+        } else if (this.sdkVersionProvider == null) {
+            throw new IllegalArgumentException("SdkVersionProvider is null");
         }
+    }
+
+    /**
+     * Utility method for creating default SdkVersionProvider
+     *
+     * @return Implementation object of SdkVersionProvider
+     */
+    public static SdkVersionProvider createDefaultSdkVersionProvider() {
+        return new SdkVersionProviderImpl();
     }
 
     /**
@@ -223,7 +251,7 @@ public class PrinceOfVersions {
             throw new IllegalArgumentException(e);
         }
         UpdaterResult povContext = new UpdaterResult(callback);
-        PovPresenter presenter = PovFactoryHelper.getInstance().getPresenter(povContext, loader, factory, repository);
+        PovPresenter presenter = PovFactoryHelper.getInstance().getPresenter(povContext, loader, factory, repository, sdkVersionProvider);
         povContext.setPresenter(presenter);
         presenter.checkForUpdates();
         return povContext;

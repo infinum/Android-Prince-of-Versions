@@ -1,6 +1,7 @@
 package co.infinum.princeofversions.helpers;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
+import co.infinum.princeofversions.interfaces.SdkVersionProvider;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
 import co.infinum.princeofversions.mvp.interactor.impl.PovInteractorImpl;
@@ -32,11 +33,12 @@ public class PovFactoryHelper {
      * @param loader     Loader used for loading update configuration resource.
      * @param factory    Factory for creating class for verifying versions.
      * @param repository Repository for persisting library data.
+     * @param sdkVersionProvider
      * @return New instance of POVPresenter.
      */
     public PovPresenter getPresenter(PovView view, UpdateConfigLoader loader, VersionVerifierFactory factory,
-                                     VersionRepository repository) {
-        return new PovPresenterImpl(view, new PovInteractorImpl(factory.newInstance(), loader), repository);
+            VersionRepository repository, SdkVersionProvider sdkVersionProvider) {
+        return new PovPresenterImpl(view, new PovInteractorImpl(factory.newInstance(), loader, sdkVersionProvider), repository);
     }
 
 }
