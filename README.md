@@ -51,8 +51,38 @@ If you are using a default parser, version in your application and the JSON file
 }
 ```
 
+or
+
+```json
+{
+	"ios": {
+		"minimum_version": "1.2.3",
+		"latest_version": {
+			"version": "2.4.5",
+			"notification_type": "ALWAYS",
+		}
+	},
+	"android": {
+		"minimum_version": "1.2.3",
+		"minimum_version_min_sdk": 15,
+		"latest_version": {
+			"version": "2.4.5",
+			"notification_type": "ONCE",
+			"min_sdk":18
+		}
+	},
+	"meta": {
+		"key1": "value1",
+		"key2": "value2"
+	}
+}
+```
+
 Depending on <code>notification_type</code> property, the user can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you via <code>onNewUpdate(String version, boolean isMandatory)</code> method only once. Every other time the library will return <code>onNoUpdate</code> for that specific version. 
 Key-value pairs under <code>"meta"</code> key are optional metadata of which any amount can be sent accompanying the required fields.
+
+Support for sdk versions have been implemented as well, so the library checks whether the user can actually receive the update based on the device that he's using. <code>minumum_version_min_sdk</code> represents the minSdk value of the minimum supported version of the application. <code>min_sdk</code> represents minSdk value of the latest version of the application.
+Fields <code>minimum_version_min_sdk</code> and <code>min_sdk</code> are optional fields thus not including them makes no difference to the library implementation whatsoever.
 
 
 ## Examples
@@ -116,6 +146,12 @@ For testing purposes you can create your own LoaderFactory. For ease of use, Str
 > Be aware that once used input stream in <code>StreamLoader</code> is read and closed. For that purpose always create new stream in <code>newInstance</code> method of <code>LoaderFactory</code>.
 
 3rd, 4th and 5th step are same as in previous example.
+
+Since we've added the support for minSdk values of the device you can mock them and customize them when writing tests
+```
+PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository, setupSdkInt(20));
+```
+The last argument in PrinceOfVersions constructor represents the minSdk value you're mocking which describes approximately which device the user is using. 
 
 ### Multiple flavors
 If your application has multiple product flavors (e.g. paid/free) you might need more than one JSON configuration file. If that is the case, do not forget to set a different URL for each flavor configuration. 
