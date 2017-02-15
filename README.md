@@ -154,7 +154,7 @@ and it's used for creating a new instance of specific <code>VersionVerifier</cod
 repository = Mockito.mock(VersionRepository.class);
 ```
 
-* And finally, <code>sdkVersionProvider</code> is an abstraction that is used to fetch <code>Build.Version.SDK_INT</code> value. In order to use <code>sdkVersionProvider</code> in tests you need to create a custom mock class which will accept a mock integer which represents the minSdkValue you wish to use in your test, e.g.
+* And finally, <code>sdkVersionProvider</code> is an abstraction used to fetch <code>Build.Version.SDK_INT</code> value. In order to use <code>sdkVersionProvider</code> in tests you need to create a custom mock class which will accept a mock integer which represents the minSdkValue you wish to use in your test, e.g.
 
 ```
 public class SdkVersionProviderMock implements SdkVersionProvider {
