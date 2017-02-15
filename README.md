@@ -146,7 +146,7 @@ When creating a PrinceOfVersions object a few things need to be kept in mind:
 provider = Mockito.mock(VersionVerifierFactory.class);
 ```
 
-and its used for creating a new instance of specific <code>VersionVerifier</code> and it has a single method that provides a new instance of <code>VersionVerifier</code> which is used for verifying updates and cancellation of verification.
+and it's used for creating a new instance of specific <code>VersionVerifier</code> and it has a single method that provides a new instance of <code>VersionVerifier</code> which is used for verifying updates and cancellation of verification.
 
 * <code>repository</code> argument is used for representing repository which persists library data and is also mocked with Mockito library. 
 
@@ -154,7 +154,7 @@ and its used for creating a new instance of specific <code>VersionVerifier</code
 repository = Mockito.mock(VersionRepository.class);
 ```
 
-* And finally, <code>setupSdkInt(int minSdkValue)</code> this method mocks the minSdk value and treats and makes the lib act as if user is using a device with <code>minSdkValue</code> you passed as an argument.
+* And finally, <code>setupSdkInt(int minSdkValue)</code> this method mocks the minSdk value and treats and makes the lib act as if user is using a device with <code>minSdkValue</code> you passed as an argument. The <code>setupSdkInt</code> method returns an <code>SdkVersionProviderMock</code> object that holds an integer value which stands for the value from <code>Build.Version.SDK_INT</code>. So by doing that you're essentially hardcoding the value in <code>SdkVersionProvider</code>. In essence, what you need to mock minSdk value is to create a class that implements <code>SdkVersionProvider</code> and overrides it's only method which afterwards returns a custom int value that you pass through a constructor of that new class. Otherwise tests would depend on the device they are being run on, this way we can use a custom minSdk integer which is relevant to that test. In order to mock minSdk value for your tests you need to pass an object of <code>SdkVersionProvider</code> with the adequate value of minSdk to the constructor of PrinceOfVersions class.
 
 ### Multiple flavors
 If your application has multiple product flavors (e.g. paid/free) you might need more than one JSON configuration file. If that is the case, do not forget to set a different URL for each flavor configuration. 
