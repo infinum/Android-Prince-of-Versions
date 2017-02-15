@@ -134,31 +134,28 @@ PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository, s
 
 Since we've added the support for minSdk values of the device you can mock and customize them when writing tests by using the method <code>setupSdkInt(int minSdkValue)</code>.
 
-When creating a PrinceOfVersions object a few things need to be kept in mind. 
+When creating a PrinceOfVersions object a few things need to be kept in mind:
 
-<ol>
-<li><code>context</code> argument in PrinceOfVersions constructor can be made using the <code>setupContext(String versionString)</code> where versionString is a variation of one of the following strings: 
+* <code>context</code> argument in PrinceOfVersions constructor can be made using the <code>setupContext(String versionString)</code> where versionString is a variation of one of the following strings: 
 
 <code>"1.0.0"</code> <code>"1.2.3"</code> <code>"1.0.1-b12"</code> <code>"1.0.1-rc3"</code> <code>"1.0.1-beta4"</code>
-</li>
-<li> <code>provider</code> argument in PrinceOfVersions constructor can be Mocked using Mockito library. 
+
+* <code>provider</code> argument in PrinceOfVersions constructor can be Mocked using Mockito library. 
 
 ```
 provider = Mockito.mock(VersionVerifierFactory.class);
 ```
 
 and its used for creating a new instance of specific <code>VersionVerifier</code> and it has a single method that provides a new instance of <code>VersionVerifier</code> which is used for verifying updates and cancellation of verification.
-</li>
-<li> <code>repository</code> argument is used for representing repository which persists library data and is also mocked with Mockito library. 
+
+* <code>repository</code> argument is used for representing repository which persists library data and is also mocked with Mockito library. 
 
 ```
 repository = Mockito.mock(VersionRepository.class);
 ```
-</li>
 
-<li> And finally, <code>setupSdkInt(int minSdkValue)</code> this method mocks the minSdk value and treats and makes the lib act as if user is using a device with <code>minSdkValue</code> you passed as an argument.
-</li>
-</ol>
+* And finally, <code>setupSdkInt(int minSdkValue)</code> this method mocks the minSdk value and treats and makes the lib act as if user is using a device with <code>minSdkValue</code> you passed as an argument.
+
 ### Multiple flavors
 If your application has multiple product flavors (e.g. paid/free) you might need more than one JSON configuration file. If that is the case, do not forget to set a different URL for each flavor configuration. 
 
