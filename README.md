@@ -34,14 +34,16 @@ If you are using a default parser, version in your application and the JSON file
 		"minimum_version": "1.2.3",
 		"latest_version": {
 			"version": "2.4.5",
-			"notification_type": "ALWAYS"
+			"notification_type": "ALWAYS",
 		}
 	},
 	"android": {
 		"minimum_version": "1.2.3",
+		"minimum_version_min_sdk": 15,
 		"latest_version": {
 			"version": "2.4.5",
-			"notification_type": "ONCE"
+			"notification_type": "ONCE",
+			"min_sdk":18
 		}
 	},
 	"meta": {
@@ -53,6 +55,11 @@ If you are using a default parser, version in your application and the JSON file
 
 Depending on <code>notification_type</code> property, the user can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you via <code>onNewUpdate(String version, boolean isMandatory)</code> method only once. Every other time the library will return <code>onNoUpdate</code> for that specific version. 
 Key-value pairs under <code>"meta"</code> key are optional metadata of which any amount can be sent accompanying the required fields.
+
+The library supports min sdk version. If defined, it will show a new update only if user's device is supported.
+
+<code>minumum_version_min_sdk</code> represents the minSdk value of the minimum supported version of the application. <code>min_sdk</code> represents minSdk value of the latest version of the application.
+Fields <code>minimum_version_min_sdk</code> and <code>min_sdk</code> are optional fields thus not including them makes no difference to the library implementation whatsoever.
 
 
 ## Examples
@@ -116,6 +123,54 @@ For testing purposes you can create your own LoaderFactory. For ease of use, Str
 > Be aware that once used input stream in <code>StreamLoader</code> is read and closed. For that purpose always create new stream in <code>newInstance</code> method of <code>LoaderFactory</code>.
 
 3rd, 4th and 5th step are same as in previous example.
+
+#### Writing tests using minSdk value
+
+All the steps are the same just like writing tests without minSdk values. The only and single difference in writing tests with minSdk values is the PrinceOfVersions object, to be more precise, it's constructor's arguments. 
+
+```
+PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository, sdkVersionProvider);
+```
+
+Since we've added the support for minSdk values of the device you can mock and customize them when writing tests by using the interface <code>SdkVersionProvider</code>.
+
+When creating a PrinceOfVersions object a few things need to be kept in mind:
+
+* <code>context</code> argument in PrinceOfVersions constructor can be made using the <code>setupContext(String versionString)</code> where versionString is a variation of one of the following strings: 
+
+<code>"1.0.0"</code> <code>"1.2.3"</code> <code>"1.0.1-b12"</code> <code>"1.0.1-rc3"</code> <code>"1.0.1-beta4"</code>
+
+* <code>provider</code> argument in PrinceOfVersions constructor can be Mocked using Mockito library. 
+
+```
+provider = Mockito.mock(VersionVerifierFactory.class);
+```
+
+and it's used for creating a new instance of specific <code>VersionVerifier</code> and it has a single method that provides a new instance of <code>VersionVerifier</code> which is used for verifying updates and cancellation of verification.
+
+* <code>repository</code> argument is used for representing repository which persists library data and is also mocked with Mockito library. 
+
+```
+repository = Mockito.mock(VersionRepository.class);
+```
+
+* And finally, <code>sdkVersionProvider</code> is an abstraction used to fetch <code>Build.Version.SDK_INT</code> value. In order to use <code>sdkVersionProvider</code> in tests you need to create a custom mock class which will accept a mock integer which represents the minSdkValue you wish to use in your test, e.g.
+
+```
+public class SdkVersionProviderMock implements SdkVersionProvider {
+
+    private int sdkInt;
+
+    public SdkVersionProviderMock(int sdkInt) {
+        this.sdkInt = sdkInt;
+    }
+
+    @Override
+    public int getSdkInt() {
+        return sdkInt;
+    }
+}
+```
 
 ### Multiple flavors
 If your application has multiple product flavors (e.g. paid/free) you might need more than one JSON configuration file. If that is the case, do not forget to set a different URL for each flavor configuration. 
