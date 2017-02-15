@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.1.0
+
+_2017-02-14_
+
+- library now supports declaring minSdk in the configuration file
+
 ## Version 2.0.3
 
 _2017-01-02_
