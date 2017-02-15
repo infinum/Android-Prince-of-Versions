@@ -51,7 +51,6 @@ If you are using a default parser, version in your application and the JSON file
 		"key2": "value2"
 	}
 }
-
 ```
 
 Depending on <code>notification_type</code> property, the user can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you via <code>onNewUpdate(String version, boolean isMandatory)</code> method only once. Every other time the library will return <code>onNoUpdate</code> for that specific version. 
@@ -71,13 +70,13 @@ Full example application is available [here](https://github.com/infinum/Android-
 1. Create new instance of updater associated with application context.
 
 	```java
-PrinceOfVersions updater = new PrinceOfVersions(this);  
+PrinceOfVersions updater = new PrinceOfVersions(this);
 	```
 	
 2. Create loader factory for loading from network passing resource URL.
 
 	```java
-LoaderFactory loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/41N8stUD");  
+LoaderFactory loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/41N8stUD");
 	```
 	
 3. Create concrete callback for result implementing <code>co.infinum.princeofversions.callbacks.UpdaterCallback</code> interface.
@@ -87,21 +86,21 @@ UpdaterCallback callback = new UpdaterCallback() {
 		@Override
 		public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
 		}
-	
+
 		@Override
 		public void onNoUpdate(Map<String, String> metadata) {
 		}
-	
+
 		@Override
 		public void onError(@ErrorCode int error) {
 		}
-};  
+};
 	```
 
 4. Use updater with previously created loader factory and callback. Call <code>checkForUpdates</code> method to start update check.
 
 	```java
-UpdaterResult result = updater.checkForUpdates(loaderFactory, callback); 
+UpdaterResult result = updater.checkForUpdates(loaderFactory, callback);
 	```
 
 5. To cancel update check, call <code>cancel</code> method on <code>UpdaterResult</code> object.
