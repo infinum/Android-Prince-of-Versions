@@ -132,7 +132,7 @@ All the steps are the same just like writing tests without minSdk values. The on
 PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository, setupSdkInt(20));
 ```
 
-Since we've added the support for minSdk values of the device you can mock them and customize them when writing tests by using the method <code>setupSdkInt(int minSdkValue)</code>.
+Since we've added the support for minSdk values of the device you can mock and customize them when writing tests by using the method <code>setupSdkInt(int minSdkValue)</code>.
 
 When creating a PrinceOfVersions object a few things need to be kept in mind. 
 
