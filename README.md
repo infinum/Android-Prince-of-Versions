@@ -69,19 +69,19 @@ Full example application is available [here](https://github.com/infinum/Android-
 #### Most common usage - loading from network resource
 1. Create new instance of updater associated with application context.
 
-	```java
+```java
 PrinceOfVersions updater = new PrinceOfVersions(this);
-	```
+```
 	
 2. Create loader factory for loading from network passing resource URL.
 
-	```java
+```java
 LoaderFactory loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/41N8stUD");
-	```
+```
 	
 3. Create concrete callback for result implementing <code>co.infinum.princeofversions.callbacks.UpdaterCallback</code> interface.
 
-	```java
+```java
 UpdaterCallback callback = new UpdaterCallback() {
 		@Override
 		public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
@@ -95,13 +95,13 @@ UpdaterCallback callback = new UpdaterCallback() {
 		public void onError(@ErrorCode int error) {
 		}
 };
-	```
+```
 
 4. Use updater with previously created loader factory and callback. Call <code>checkForUpdates</code> method to start update check.
 
-	```java
+```java
 UpdaterResult result = updater.checkForUpdates(loaderFactory, callback);
-	```
+```
 
 5. To cancel update check, call <code>cancel</code> method on <code>UpdaterResult</code> object.
 
@@ -111,20 +111,21 @@ For testing purposes you can create your own LoaderFactory. For ease of use, Str
 
 1. Create new instance of updater associated with application context.
 
-	```java
+```java
 PrinceOfVersions updater = new PrinceOfVersions(this);
-	```
+```
 	
 2. Create loader factory for creating stream loader by passing new input stream in its constructor.
 
-	```java
+```java
 LoaderFactory loaderFactory = new LoaderFactory() {
 		@Override
 	        public UpdateConfigLoader newInstance() {
 	              return new StreamLoader(getResources().openRawResource(R.raw.update));
 	        }
 };
-	```
+```
+
 > **Note:**
 > Be aware that once used input stream in <code>StreamLoader</code> is read and closed. For that purpose always create new stream in <code>newInstance</code> method of <code>LoaderFactory</code>.
 
