@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -14,9 +13,10 @@ import org.robolectric.annotation.Config;
 
 import android.os.Build;
 
+import java.io.IOException;
+
 import co.infinum.princeofversions.BuildConfig;
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.SdkVersionProvider;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
@@ -64,7 +64,7 @@ public class InteractorTest {
         Mockito.verify(listener, Mockito.times(1)).onMandatoryUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onNoUpdateAvailable(versionContext);
-        Mockito.verify(listener, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(listener, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class InteractorTest {
         Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(1)).onUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onNoUpdateAvailable(versionContext);
-        Mockito.verify(listener, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(listener, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class InteractorTest {
         Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(1)).onNoUpdateAvailable(versionContext);
-        Mockito.verify(listener, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(listener, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -121,12 +121,13 @@ public class InteractorTest {
                 new VersionContext.Version("2.0.0"),
                 new VersionContext.Version("3.0.0"), true,
                 new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true, 15);
+        final IOException exception = new IOException();
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
                 VersionVerifierListener listener = (VersionVerifierListener) args[1];
-                listener.versionUnavailable(ErrorCode.LOAD_ERROR, new Exception());
+                listener.versionUnavailable(exception);
                 return null;
             }
         }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
@@ -136,9 +137,7 @@ public class InteractorTest {
         Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
         Mockito.verify(listener, Mockito.times(0)).onNoUpdateAvailable(versionContext);
-        Mockito.verify(listener, Mockito.times(1)).onError(ArgumentMatchers.eq(ErrorCode.LOAD_ERROR), ArgumentMatchers.any
-                (Throwable
-                .class));
+        Mockito.verify(listener, Mockito.times(1)).onError(exception);
     }
 
 }

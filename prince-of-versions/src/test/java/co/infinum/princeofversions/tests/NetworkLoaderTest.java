@@ -2,8 +2,6 @@ package co.infinum.princeofversions.tests;
 
 import junit.framework.Assert;
 
-import net.bytebuddy.implementation.bytecode.Throw;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +22,6 @@ import java.io.IOException;
 import co.infinum.princeofversions.BuildConfig;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.helpers.ContextHelper;
 import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
@@ -123,14 +120,14 @@ public class NetworkLoaderTest {
             }
 
             @Override
-            public void versionUnavailable(@ErrorCode int error, Throwable throwable) {
-                callback.onError(error, throwable);
+            public void versionUnavailable(Throwable throwable) {
+                callback.onError(throwable);
             }
         };
 
         versionVerifier.verify(loader, listener);
 
-        verify(callback, timeout(20000).times(1)).onError(ArgumentMatchers.eq(ErrorCode.LOAD_ERROR), ArgumentMatchers.any(Throwable.class));
+        verify(callback, timeout(20000).times(1)).onError(ArgumentMatchers.any(Throwable.class));
         verify(callback, never()).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         verify(callback, never()).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }

@@ -1,7 +1,6 @@
 package co.infinum.princeofversions.mvp.interactor.impl;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.SdkVersionProvider;
 import co.infinum.princeofversions.interfaces.VersionVerifier;
@@ -56,8 +55,8 @@ public class PovInteractorImpl implements PovInteractor {
                     }
 
                     @Override
-                    public void versionUnavailable(@ErrorCode int error, Throwable throwable) {
-                        listener.onError(error, throwable);
+                    public void versionUnavailable(Throwable throwable) {
+                        listener.onError(throwable);
                     }
                 }
         );

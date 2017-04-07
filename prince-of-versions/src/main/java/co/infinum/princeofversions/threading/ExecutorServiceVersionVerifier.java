@@ -13,7 +13,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.exceptions.ParseException;
 import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
@@ -91,14 +90,14 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
                 }
             });
         } catch (IOException e) {
-            onError(ErrorCode.LOAD_ERROR, e, listener);
+            onError(e, listener);
         } catch (ParseException e) {
-            onError(ErrorCode.WRONG_VERSION, e, listener);
+            onError(e, listener);
         } catch (CancellationException | InterruptedException intentionalEmpty) { // NOPMD
             // someone cancelled the task
         } catch (Throwable e) {
             e.printStackTrace();
-            onError(ErrorCode.UNKNOWN_ERROR, e, listener);
+            onError(e, listener);
         } finally {
             try {
                 response.close();
@@ -108,11 +107,11 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
         }
     }
 
-    private void onError(@ErrorCode final int loadError, final Throwable throwable, final VersionVerifierListener listener) {
+    private void onError(final Throwable throwable, final VersionVerifierListener listener) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                listener.versionUnavailable(loadError, throwable);
+                listener.versionUnavailable(throwable);
             }
         });
     }

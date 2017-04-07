@@ -21,7 +21,6 @@ import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.helpers.ContextHelper;
 import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
 import co.infinum.princeofversions.interfaces.SdkVersionProvider;
@@ -82,7 +81,7 @@ public class PrinceOfVersionsTest {
             }
         }, callback);
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.4.5"), eq(false), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -98,7 +97,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.4.5"), eq(false), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -115,7 +114,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -131,7 +130,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.4.5"), eq(false), Matchers.<Map<String, String>>any());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -147,7 +146,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.4.5"), eq(false), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -163,7 +162,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.4.5"), eq(true), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -179,7 +178,7 @@ public class PrinceOfVersionsTest {
         }, callback);
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate(eq("2.4.5"), eq(false), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -196,7 +195,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -213,7 +212,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -230,8 +229,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(1)).onError(ArgumentMatchers.eq(ErrorCode.WRONG_VERSION), ArgumentMatchers.any(Throwable
-                .class));
+        Mockito.verify(callback, Mockito.times(1)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
         Mockito.verifyNoMoreInteractions(callback);
     }
@@ -249,7 +247,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(1)).onError(ArgumentMatchers.eq(ErrorCode.WRONG_VERSION), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(1)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -266,7 +264,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(1)).onError(ArgumentMatchers.eq(ErrorCode.WRONG_VERSION), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(1)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -283,7 +281,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -300,7 +298,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -320,7 +318,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -337,8 +335,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(1)).onError(ArgumentMatchers.eq(ErrorCode.WRONG_VERSION),
-                ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(1)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -355,7 +352,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(eq("2.4.5"), eq(false), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(null);
     }
 
@@ -373,7 +370,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -389,7 +386,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -406,7 +403,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -423,7 +420,7 @@ public class PrinceOfVersionsTest {
 
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(true), ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -441,7 +438,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -458,7 +455,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -475,7 +472,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -492,7 +489,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -509,7 +506,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -526,7 +523,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -543,7 +540,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -560,7 +557,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -577,7 +574,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -594,7 +591,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -611,7 +608,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(true), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -628,7 +625,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(1))
                 .onNewUpdate(Mockito.anyString(), eq(false), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
     @Test
@@ -645,7 +642,7 @@ public class PrinceOfVersionsTest {
         Mockito.verify(callback, Mockito.times(0))
                 .onNewUpdate(Mockito.anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
-        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.any(Throwable.class));
     }
 
 }

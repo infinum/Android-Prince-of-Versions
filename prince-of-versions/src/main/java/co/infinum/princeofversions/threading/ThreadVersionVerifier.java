@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.concurrent.CancellationException;
 
 import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.exceptions.ParseException;
 import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
@@ -59,13 +58,13 @@ public class ThreadVersionVerifier implements VersionVerifier {
             ifTaskIsCancelledThrowInterrupt(); // if cancelled here no need to fire event
             listener.versionAvailable(version);
         } catch (IOException e) {
-            listener.versionUnavailable(ErrorCode.LOAD_ERROR, e);
+            listener.versionUnavailable(e);
         } catch (ParseException e) {
-            listener.versionUnavailable(ErrorCode.WRONG_VERSION, e);
+            listener.versionUnavailable(e);
         } catch (CancellationException | InterruptedException e) { // NOPMD
             // someone cancelled the task
         } catch (Throwable e) {
-            listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR, e);
+            listener.versionUnavailable(e);
         }
     }
 

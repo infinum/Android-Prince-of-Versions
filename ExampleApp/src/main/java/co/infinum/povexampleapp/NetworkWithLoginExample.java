@@ -33,7 +33,6 @@ import co.infinum.princeofversions.LoaderFactory;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.UpdateConfigLoader;
 import co.infinum.princeofversions.callbacks.UpdaterCallback;
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.exceptions.LoaderValidationException;
 
 public class NetworkWithLoginExample extends AppCompatActivity {
@@ -65,8 +64,8 @@ public class NetworkWithLoginExample extends AppCompatActivity {
         }
 
         @Override
-        public void onError(@ErrorCode int error, Throwable throwable) {
-            toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
+        public void onError(Throwable throwable) {
+            toastIt(String.format(getString(R.string.update_error), throwable.getMessage()), Toast.LENGTH_SHORT);
         }
     };
 

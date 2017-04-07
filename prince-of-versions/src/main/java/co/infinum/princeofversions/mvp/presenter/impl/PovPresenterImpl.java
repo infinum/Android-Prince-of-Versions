@@ -2,7 +2,6 @@ package co.infinum.princeofversions.mvp.presenter.impl;
 
 import com.github.zafarkhaja.semver.Version;
 
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 import co.infinum.princeofversions.interfaces.VersionRepository;
 import co.infinum.princeofversions.mvp.interactor.PovInteractor;
@@ -85,8 +84,8 @@ public class PovPresenterImpl implements PovPresenter {
             }
 
             @Override
-            public void onError(@ErrorCode int error, Throwable throwable) {
-                view.notifyError(error, throwable);
+            public void onError(Throwable throwable) {
+                view.notifyError(throwable);
             }
         });
     }

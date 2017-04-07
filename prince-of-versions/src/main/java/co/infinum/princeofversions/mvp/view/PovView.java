@@ -2,8 +2,6 @@ package co.infinum.princeofversions.mvp.view;
 
 import java.util.Map;
 
-import co.infinum.princeofversions.common.ErrorCode;
-
 /**
  * Created by stefano on 08/07/16.
  */
@@ -15,5 +13,5 @@ public interface PovView {
 
     void notifyNoUpdate(Map<String, String> metadata);
 
-    void notifyError(@ErrorCode int error, Throwable throwable);
+    void notifyError(Throwable throwable);
 }

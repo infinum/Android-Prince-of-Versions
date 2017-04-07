@@ -2,8 +2,6 @@ package co.infinum.princeofversions.callbacks;
 
 import java.util.Map;
 
-import co.infinum.princeofversions.common.ErrorCode;
-
 /**
  * Callback for notifying result after version checking computation is done.
  * <p>
@@ -30,7 +28,7 @@ public interface UpdaterCallback {
     /**
      * Method is called when there was some error while computing update check.
      *
-     * @param error ErrorCode describing error occurred.
+     * @param throwable Describing error occurred.
      */
-    void onError(@ErrorCode int error, Throwable throwable);
+    void onError(Throwable throwable);
 }

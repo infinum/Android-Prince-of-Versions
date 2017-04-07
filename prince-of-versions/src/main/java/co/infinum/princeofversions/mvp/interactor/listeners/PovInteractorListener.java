@@ -1,6 +1,5 @@
 package co.infinum.princeofversions.mvp.interactor.listeners;
 
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 
 public interface PovInteractorListener {
@@ -11,6 +10,6 @@ public interface PovInteractorListener {
 
     void onNoUpdateAvailable(VersionContext version);
 
-    void onError(@ErrorCode int error, Throwable throwable);
+    void onError(Throwable throwable);
 
 }

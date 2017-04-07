@@ -1,6 +1,5 @@
 package co.infinum.princeofversions.interfaces;
 
-import co.infinum.princeofversions.common.ErrorCode;
 import co.infinum.princeofversions.common.VersionContext;
 
 /**
@@ -18,8 +17,8 @@ public interface VersionVerifierListener {
     /**
      * Method is called when error occurred on loading or computing versions.
      *
-     * @param error ErrorCode describing error occurred.
+     * @param throwable describing error occurred.
      */
-    void versionUnavailable(@ErrorCode int error, Throwable throwable);
+    void versionUnavailable(Throwable throwable);
 
 }
