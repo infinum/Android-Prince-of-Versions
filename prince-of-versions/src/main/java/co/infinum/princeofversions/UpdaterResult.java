@@ -121,10 +121,9 @@ public class UpdaterResult implements PovView {
     }
 
     @Override
-    public void notifyError(@ErrorCode int error) {
+    public void notifyError(@ErrorCode int error, Throwable throwable) {
         isConsumed = true;
-
-        callback.onError(error);
+        callback.onError(error, throwable);
     }
 
 }

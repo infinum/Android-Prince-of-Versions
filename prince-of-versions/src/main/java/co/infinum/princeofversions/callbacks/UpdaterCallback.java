@@ -32,5 +32,5 @@ public interface UpdaterCallback {
      *
      * @param error ErrorCode describing error occurred.
      */
-    void onError(@ErrorCode int error);
+    void onError(@ErrorCode int error, Throwable throwable);
 }

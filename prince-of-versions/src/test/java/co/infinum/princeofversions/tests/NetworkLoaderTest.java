@@ -2,6 +2,8 @@ package co.infinum.princeofversions.tests;
 
 import junit.framework.Assert;
 
+import net.bytebuddy.implementation.bytecode.Throw;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -121,14 +123,14 @@ public class NetworkLoaderTest {
             }
 
             @Override
-            public void versionUnavailable(@ErrorCode int error) {
-                callback.onError(error);
+            public void versionUnavailable(@ErrorCode int error, Throwable throwable) {
+                callback.onError(error, throwable);
             }
         };
 
         versionVerifier.verify(loader, listener);
 
-        verify(callback, timeout(20000).times(1)).onError(ErrorCode.LOAD_ERROR);
+        verify(callback, timeout(20000).times(1)).onError(ArgumentMatchers.eq(ErrorCode.LOAD_ERROR), ArgumentMatchers.any(Throwable.class));
         verify(callback, never()).onNewUpdate(Mockito.anyString(), Mockito.anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         verify(callback, never()).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }

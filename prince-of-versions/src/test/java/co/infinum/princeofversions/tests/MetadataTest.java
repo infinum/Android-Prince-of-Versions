@@ -84,7 +84,8 @@ public class MetadataTest {
         data.put("key2", "value2");
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable
+                .class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -104,7 +105,7 @@ public class MetadataTest {
         data.put("key2", "value2");
 
         Mockito.verify(callback, Mockito.times(0)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(data);
     }
 
@@ -124,7 +125,7 @@ public class MetadataTest {
         data.put("key2", "value2");
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -144,7 +145,7 @@ public class MetadataTest {
         data.put("key2", "value2");
 
         Mockito.verify(callback, Mockito.times(0)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(data);
     }
 
@@ -162,7 +163,7 @@ public class MetadataTest {
         Map<String, String> data = new HashMap<>();
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -180,7 +181,7 @@ public class MetadataTest {
         Map<String, String> data = new HashMap<>();
 
         Mockito.verify(callback, Mockito.times(0)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(data);
     }
 
@@ -198,7 +199,7 @@ public class MetadataTest {
         Map<String, String> data = new HashMap<>();
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -216,7 +217,7 @@ public class MetadataTest {
         Map<String, String> data = new HashMap<>();
 
         Mockito.verify(callback, Mockito.times(0)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(data);
     }
 
@@ -234,7 +235,7 @@ public class MetadataTest {
         Map<String, String> data = new HashMap<>();
 
         Mockito.verify(callback, Mockito.times(1)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
     }
 
@@ -252,7 +253,7 @@ public class MetadataTest {
         Map<String, String> data = new HashMap<>();
 
         Mockito.verify(callback, Mockito.times(0)).onNewUpdate("2.4.5", false, data);
-        Mockito.verify(callback, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
+        Mockito.verify(callback, Mockito.times(0)).onError(ArgumentMatchers.anyInt(), ArgumentMatchers.any(Throwable.class));
         Mockito.verify(callback, Mockito.times(1)).onNoUpdate(data);
     }
 

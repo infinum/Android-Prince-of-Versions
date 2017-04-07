@@ -15,5 +15,5 @@ public interface PovView {
 
     void notifyNoUpdate(Map<String, String> metadata);
 
-    void notifyError(@ErrorCode int error);
+    void notifyError(@ErrorCode int error, Throwable throwable);
 }

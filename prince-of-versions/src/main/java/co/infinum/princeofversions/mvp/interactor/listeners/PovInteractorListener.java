@@ -11,6 +11,6 @@ public interface PovInteractorListener {
 
     void onNoUpdateAvailable(VersionContext version);
 
-    void onError(@ErrorCode int error);
+    void onError(@ErrorCode int error, Throwable throwable);
 
 }

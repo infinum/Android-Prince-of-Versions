@@ -56,8 +56,8 @@ public class PovInteractorImpl implements PovInteractor {
                     }
 
                     @Override
-                    public void versionUnavailable(@ErrorCode int error) {
-                        listener.onError(error);
+                    public void versionUnavailable(@ErrorCode int error, Throwable throwable) {
+                        listener.onError(error, throwable);
                     }
                 }
         );

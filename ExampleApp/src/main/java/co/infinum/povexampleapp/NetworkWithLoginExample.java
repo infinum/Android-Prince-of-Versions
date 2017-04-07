@@ -65,7 +65,7 @@ public class NetworkWithLoginExample extends AppCompatActivity {
         }
 
         @Override
-        public void onError(@ErrorCode int error) {
+        public void onError(@ErrorCode int error, Throwable throwable) {
             toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
         }
     };

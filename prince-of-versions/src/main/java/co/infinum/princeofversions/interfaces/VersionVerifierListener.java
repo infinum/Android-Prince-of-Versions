@@ -20,6 +20,6 @@ public interface VersionVerifierListener {
      *
      * @param error ErrorCode describing error occurred.
      */
-    void versionUnavailable(@ErrorCode int error);
+    void versionUnavailable(@ErrorCode int error, Throwable throwable);
 
 }

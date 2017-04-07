@@ -59,13 +59,13 @@ public class ThreadVersionVerifier implements VersionVerifier {
             ifTaskIsCancelledThrowInterrupt(); // if cancelled here no need to fire event
             listener.versionAvailable(version);
         } catch (IOException e) {
-            listener.versionUnavailable(ErrorCode.LOAD_ERROR);
+            listener.versionUnavailable(ErrorCode.LOAD_ERROR, e);
         } catch (ParseException e) {
-            listener.versionUnavailable(ErrorCode.WRONG_VERSION);
+            listener.versionUnavailable(ErrorCode.WRONG_VERSION, e);
         } catch (CancellationException | InterruptedException e) { // NOPMD
             // someone cancelled the task
         } catch (Throwable e) {
-            listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR);
+            listener.versionUnavailable(ErrorCode.UNKNOWN_ERROR, e);
         }
     }
 

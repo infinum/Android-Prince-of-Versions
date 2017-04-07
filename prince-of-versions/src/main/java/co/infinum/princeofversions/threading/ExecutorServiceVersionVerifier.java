@@ -50,7 +50,6 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
      */
     private Handler handler = new Handler(Looper.getMainLooper());
 
-
     /**
      * Parser used for parsing loaded update configuration resource.
      */
@@ -92,14 +91,14 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
                 }
             });
         } catch (IOException e) {
-            onError(ErrorCode.LOAD_ERROR, listener);
+            onError(ErrorCode.LOAD_ERROR, e, listener);
         } catch (ParseException e) {
-            onError(ErrorCode.WRONG_VERSION, listener);
+            onError(ErrorCode.WRONG_VERSION, e, listener);
         } catch (CancellationException | InterruptedException intentionalEmpty) { // NOPMD
             // someone cancelled the task
         } catch (Throwable e) {
             e.printStackTrace();
-            onError(ErrorCode.UNKNOWN_ERROR, listener);
+            onError(ErrorCode.UNKNOWN_ERROR, e, listener);
         } finally {
             try {
                 response.close();
@@ -109,11 +108,11 @@ public class ExecutorServiceVersionVerifier implements VersionVerifier {
         }
     }
 
-    private void onError(@ErrorCode final int loadError, final VersionVerifierListener listener) {
+    private void onError(@ErrorCode final int loadError, final Throwable throwable, final VersionVerifierListener listener) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                listener.versionUnavailable(loadError);
+                listener.versionUnavailable(loadError, throwable);
             }
         });
     }
