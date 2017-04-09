@@ -36,11 +36,7 @@ public class CheckResult {
     }
 
     public String getUpdateVersion() {
-        if (hasUpdate()) {
-            return updateVersion;
-        } else {
-            throw new UnsupportedOperationException("There is no update available.");
-        }
+        return updateVersion;
     }
 
     public boolean isOptional() {

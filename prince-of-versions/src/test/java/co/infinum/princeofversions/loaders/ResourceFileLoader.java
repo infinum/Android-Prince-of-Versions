@@ -2,11 +2,10 @@ package co.infinum.princeofversions.loaders;
 
 import java.io.IOException;
 
-import co.infinum.princeofversions.BaseLoader;
-import co.infinum.princeofversions.exceptions.LoaderValidationException;
+import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.util.ResourceUtils;
 
-public class ResourceFileLoader extends BaseLoader {
+public class ResourceFileLoader implements Loader {
 
     private String filename;
 
@@ -17,10 +16,5 @@ public class ResourceFileLoader extends BaseLoader {
     @Override
     public String load() throws IOException, InterruptedException {
         return ResourceUtils.readFromFile(filename);
-    }
-
-    @Override
-    public void validate() throws LoaderValidationException {
-
     }
 }

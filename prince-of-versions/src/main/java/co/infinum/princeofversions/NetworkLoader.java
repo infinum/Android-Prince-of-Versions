@@ -43,11 +43,6 @@ public class NetworkLoader implements Loader {
     private String password;
 
     /**
-     * Cancellation flag.
-     */
-    private volatile boolean cancelled = false;
-
-    /**
      * Creates a new network loader using provided url.
      *
      * @param url Resource locator.
