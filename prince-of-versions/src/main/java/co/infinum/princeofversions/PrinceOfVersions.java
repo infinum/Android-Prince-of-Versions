@@ -1,25 +1,6 @@
 package co.infinum.princeofversions;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-
-import co.infinum.princeofversions.callbacks.UpdaterCallback;
-import co.infinum.princeofversions.exceptions.LoaderValidationException;
-import co.infinum.princeofversions.helpers.ContextHelper;
-import co.infinum.princeofversions.helpers.PovFactoryHelper;
-import co.infinum.princeofversions.helpers.PrefsVersionRepository;
-import co.infinum.princeofversions.helpers.SdkVersionProviderImpl;
-import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
-import co.infinum.princeofversions.helpers.parsers.ParserFactory;
-import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
-import co.infinum.princeofversions.interfaces.SdkVersionProvider;
-import co.infinum.princeofversions.interfaces.VersionRepository;
-import co.infinum.princeofversions.interfaces.VersionVerifier;
-import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
-import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
-import co.infinum.princeofversions.mvp.presenter.PovPresenter;
-import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
 
 /**
  * This class represents main entry point for using library.
@@ -60,216 +41,103 @@ import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
  */
 public class PrinceOfVersions {
 
-    /**
-     * Factory for creating VersionVerifier instance.
-     */
-    private VersionVerifierFactory factory;
-
-    /**
-     * Repository for persisting library data.
-     */
-    private VersionRepository repository;
-
-    /**
-     * SDK int provider
-     */
-    private SdkVersionProvider sdkVersionProvider;
-
-    /**
-     * Creates a new instance of updater for application associated with provided context.
-     *
-     * @param context Context of associated application.
-     */
-    public PrinceOfVersions(@NonNull final Context context) {
-        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(new ParserFactory() {
-            @Override
-            public VersionConfigParser newInstance() {
-                try {
-                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context.getApplicationContext()));
-                } catch (PackageManager.NameNotFoundException e) {
-                    throw new IllegalArgumentException("Current version not available.");
-                }
-            }
-        }));
+    private static Parser createDefaultParser() {
+        return new JsonParser();
     }
 
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom parser implementation.
-     *
-     * @param context       Context of associated application.
-     * @param parserFactory Factory for creating custom parser for parsing loaded content.
-     */
-    public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory) {
-        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(parserFactory));
+    private static Storage createDefaultStorage(Context context) {
+        return new PrinceOfVersionsDefaultStorage(context);
     }
 
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom implementation of VersionVerifier.
-     * <p>
-     * VersionVerifierFactory must create new VersionVerifier instance to support cancel functionality. VersionVerifier should provide
-     * implementation of loading data using in-method provided loader, transforming it to VersionContext representation and firing
-     * right event of in-method provided listener.
-     * </p>
-     *
-     * @param context Context of associated application.
-     * @param factory Custom factory for creating VersionVerifier instances.
-     */
-    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory) {
-        this(context.getApplicationContext(), factory, new PrefsVersionRepository(context.getApplicationContext()));
+    private static VersionParser createDefaultVersionParser() {
+        return new PrinceOfVersionsDefaultVersionParser();
     }
 
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom implementation of
-     * VersionRepository for persisting library data.
-     *
-     * @param context    Context of associated application.
-     * @param repository Custom implementation of repository for persisting library data.
-     */
-    public PrinceOfVersions(@NonNull final Context context, VersionRepository repository) {
-        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(new ParserFactory() {
-            @Override
-            public VersionConfigParser newInstance() {
-                try {
-                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context.getApplicationContext()));
-                } catch (PackageManager.NameNotFoundException e) {
-                    throw new IllegalArgumentException("Current version not available.");
-                }
-            }
-        }), repository);
+    private static ApplicationConfiguration createAppConfig(Context context) {
+        return new ApplicationConfigurationImpl(context);
     }
 
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom implementation of parser and custom
-     * implementation of VersionRepository for persisting library data.
-     *
-     * @param context       Context of associated application.
-     * @param parserFactory Factory for creating custom parser for parsing loaded content.
-     * @param repository    Custom implementation of repository for persisting library data.
-     */
-    public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory, VersionRepository repository) {
-        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(parserFactory), repository);
+    private Presenter presenter;
+
+    public PrinceOfVersions(Context context) {
+        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createAppConfig(context));
     }
 
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom implementation of
-     * VersionVerifierFactory and VersionRepository.
-     * <p>
-     * VersionVerifierFactory must create new VersionVerifier instance to support cancel functionality. VersionVerifier should
-     * provide implementation of loading data using in-method provided loader, transforming it to VersionContext representation and
-     * firing right event of in-method provided listener.
-     * </p>
-     * <p>VersionRepository is custom implementation of storage for persisting library data.</p>
-     *
-     * @param context    Context of associated application.
-     * @param factory    Custom factory for creating VersionVerifier instances.
-     * @param repository Custom implementation of repository for persisting library data.
-     */
-    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory,
-            VersionRepository repository) {
-        this(context.getApplicationContext(), factory, repository, createDefaultSdkVersionProvider());
+    private PrinceOfVersions(Parser parser, VersionParser versionParser, Storage storage, ApplicationConfiguration appConfig) {
+        this.presenter = new PresenterImpl(
+                new InteractorImpl(parser, versionParser),
+                storage,
+                appConfig
+        );
     }
 
-
-    /**
-     * Creates a new instance of updater for application associated wih provided
-     */
-    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory, VersionRepository repository,
-            SdkVersionProvider sdkVersionProvider) {
-        this.factory = factory;
-        this.repository = repository;
-        this.sdkVersionProvider = sdkVersionProvider;
-        validateDependencies();
+    public PrinceOfVersionsCall checkForUpdates(String url, UpdaterCallback callback) {
+        return checkForUpdates(new PrinceOfVersionsDefaultExecutor(), new NetworkLoader(url), callback);
     }
 
-    /**
-     * Utility method for creating default version verifier using given factory for creating concrete parser.
-     *
-     * @param factory Factory for creating concrete parser.
-     * @return New instance of VersionVerifier class.
-     */
-    public static VersionVerifier createDefaultVersionVerifier(ParserFactory factory) {
-        return new ExecutorServiceVersionVerifier(factory.newInstance());
+    public PrinceOfVersionsCall checkForUpdates(Loader loader, UpdaterCallback callback) {
+        return checkForUpdates(new PrinceOfVersionsDefaultExecutor(), loader, callback);
     }
 
-    /**
-     * Utility method for creating default version verifier factory using given parser factory.
-     *
-     * @param factory Factory for creating concrete parser.
-     * @return New instance of VersionVerifierFactory class.
-     */
-    public static VersionVerifierFactory createDefaultVersionVerifierFactory(final ParserFactory factory) {
-        return new VersionVerifierFactory() {
-            @Override
-            public VersionVerifier newInstance() {
-                return createDefaultVersionVerifier(factory);
-            }
-        };
+    public PrinceOfVersionsCall checkForUpdates(Executor executor, String url, UpdaterCallback callback) {
+        return checkForUpdates(executor, new NetworkLoader(url), callback);
     }
 
-    /**
-     * Validating dependency injected through constructors.
-     *
-     * @throws IllegalArgumentException if some of dependencies is not valid.
-     */
-    private void validateDependencies() {
-        if (this.factory == null) {
-            throw new IllegalArgumentException("Factory is null.");
-        } else if (this.repository == null) {
-            throw new IllegalArgumentException("Repository is null.");
-        } else if (this.sdkVersionProvider == null) {
-            throw new IllegalArgumentException("SdkVersionProvider is null");
+    public PrinceOfVersionsCall checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
+        return presenter.check(loader, executor, new UiUpdaterCallback(callback));
+    }
+
+    public Result checkForUpdates(String url) throws Throwable {
+        return checkForUpdates(new NetworkLoader(url));
+    }
+
+    public Result checkForUpdates(Loader loader) throws Throwable {
+        return presenter.check(loader);
+    }
+
+    public static class Builder {
+
+        private Parser parser;
+
+        private Storage storage;
+
+        private VersionParser versionParser;
+
+        public Parser getParser() {
+            return parser;
         }
-    }
 
-    /**
-     * Utility method for creating default SdkVersionProvider
-     *
-     * @return Implementation object of SdkVersionProvider
-     */
-    public static SdkVersionProvider createDefaultSdkVersionProvider() {
-        return new SdkVersionProviderImpl();
-    }
-
-    /**
-     * Method checks for updates from resource provided by given LoaderFactory and notifies UpdaterCallback if there is some update
-     * available or not. Object returned from method represents calling context through is available to check if update check was
-     * notified or cancel update checking if not.
-     * <p>
-     * After creating new loader from LoaderFactory its validate method is called which throws exception if loader is invalid.
-     * </p>
-     *
-     * @param loaderFactory Representation of custom resource loader.
-     * @param callback      Callback for notifying update check result.
-     * @return Calling context representing this concrete update check.
-     * @throws IllegalArgumentException if newly created loader is invalid.
-     */
-    public UpdaterResult checkForUpdates(LoaderFactory loaderFactory, UpdaterCallback callback) {
-        UpdateConfigLoader loader = loaderFactory.newInstance();
-        try {
-            loader.validate();
-        } catch (LoaderValidationException e) {
-            throw new IllegalArgumentException(e);
+        public Builder withParser(Parser parser) {
+            this.parser = parser;
+            return this;
         }
-        UpdaterResult povContext = new UpdaterResult(callback);
-        PovPresenter presenter = PovFactoryHelper.getInstance().getPresenter(povContext, loader, factory, repository, sdkVersionProvider);
-        povContext.setPresenter(presenter);
-        presenter.checkForUpdates();
-        return povContext;
-    }
 
-    /**
-     * Method checks for updates from resource specified by given resource locator and notifies UpdaterCallback if there is some update
-     * available or not. Object returned from method represents calling context through is available to check if update check was
-     * notified or cancel update checking if not.
-     * <p>Note: currently only network resources are supported.</p>
-     *
-     * @param url      Resource locator.
-     * @param callback Callback for notifying update check result.
-     * @return Calling context representing this concrete update check.
-     * @throws IllegalArgumentException if resource locator is invalid.
-     */
-    public UpdaterResult checkForUpdates(String url, UpdaterCallback callback) {
-        return checkForUpdates(new NetworkLoaderFactory(url), callback);
+        public Storage getStorage() {
+            return storage;
+        }
+
+        public Builder withStorage(Storage storage) {
+            this.storage = storage;
+            return this;
+        }
+
+        public VersionParser getVersionParser() {
+            return versionParser;
+        }
+
+        public Builder withVersionParser(VersionParser versionParser) {
+            this.versionParser = versionParser;
+            return this;
+        }
+
+        public PrinceOfVersions build(Context context) {
+            return new PrinceOfVersions(
+                    parser != null ? parser : createDefaultParser(),
+                    versionParser != null ? versionParser : createDefaultVersionParser(),
+                    storage != null ? storage : createDefaultStorage(context),
+                    createAppConfig(context)
+            );
+        }
     }
 
 }
