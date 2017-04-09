@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">POVExampleApp</string>
     <string name="btn_new_update">Is there any new update?</string>
+    <string name="btn_new_update_sync">Is there any new update? (Sync version)</string>
     <string name="update_available_msg">There is new %1$s update. Version: %2$s</string>
     <string name="mandatory">mandatory</string>
     <string name="not_mandatory"></string>
     <string name="no_update_available">No new update available</string>
     <string name="update_error">Error occurred: %d</string>
+    <string name="update_exception">Exception occurred: %s</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_cancel_test">Test cancel</string>
     <string name="replace">Stopping current request and replacing it with new one...</string>

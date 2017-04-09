@@ -1,22 +1,21 @@
 package co.infinum.povexampleapp;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.Map;
 
-import co.infinum.princeofversions.UpdaterResult;
-import co.infinum.princeofversions.LoaderFactory;
+import co.infinum.princeofversions.Loader;
+import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
-import co.infinum.princeofversions.UpdateConfigLoader;
-import co.infinum.princeofversions.callbacks.UpdaterCallback;
-import co.infinum.princeofversions.common.ErrorCode;
-import co.infinum.princeofversions.exceptions.LoaderValidationException;
-import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
+import co.infinum.princeofversions.PrinceOfVersionsCall;
+import co.infinum.princeofversions.Result;
+import co.infinum.princeofversions.UpdaterCallback;
 
 public class CommonUsageExample extends AppCompatActivity {
 
@@ -39,45 +38,24 @@ public class CommonUsageExample extends AppCompatActivity {
         }
 
         @Override
-        public void onError(@ErrorCode int error) {
-            toastIt(String.format(getString(R.string.update_error), error), Toast.LENGTH_SHORT);
+        public void onError(Throwable throwable) {
+            throwable.printStackTrace();
+            toastIt(String.format(getString(R.string.update_exception), throwable.getMessage()), Toast.LENGTH_SHORT);
         }
     };
+
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     private PrinceOfVersions updater;
 
-    private LoaderFactory loaderFactory;
+    private Loader loader;
 
-    private UpdaterResult povContext;
+    private PrinceOfVersionsCall call;
 
     /**
-     * This factory creates a very slow loader, just to give you enough time to invoke cancel option.
+     * This instance represents a very slow loader, just to give you enough time to invoke cancel option.
      */
-    private LoaderFactory slowLoaderFactory = new LoaderFactory() {
-        @Override
-        public UpdateConfigLoader newInstance() {
-
-            final UpdateConfigLoader instance = loaderFactory.newInstance();
-
-            return new UpdateConfigLoader() {
-                @Override
-                public String load() throws IOException, InterruptedException {
-                    Thread.sleep(2000);
-                    return instance.load();
-                }
-
-                @Override
-                public void cancel() {
-                    instance.cancel();
-                }
-
-                @Override
-                public void validate() throws LoaderValidationException {
-                    instance.validate();
-                }
-            };
-        }
-    };
+    private Loader slowLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +65,10 @@ public class CommonUsageExample extends AppCompatActivity {
         initUI();
 
         /*  create new instance of updater */
-        updater = new PrinceOfVersions(this);
+        updater = new PrinceOfVersions.Builder().build(this);
         /*  create specific loader factory for loading from internet    */
-        loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/QFGjJrLP");
+        loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
+        slowLoader = createSlowLoader(loader);
     }
 
     @Override
@@ -102,6 +81,7 @@ public class CommonUsageExample extends AppCompatActivity {
         Button btnCheck = (Button) findViewById(R.id.btnCheck);
         Button btnCancelTest = (Button) findViewById(R.id.btnCancelTest);
         Button btnCancel = (Button) findViewById(R.id.btnCancel);
+        Button btnCheckSync = (Button) findViewById(R.id.btnCheckSync);
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,39 +100,79 @@ public class CommonUsageExample extends AppCompatActivity {
                 onCancelClick();
             }
         });
+        btnCheckSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCheckSyncClick();
+            }
+        });
     }
 
     public void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
-        UpdaterResult context = updater.checkForUpdates(loaderFactory, defaultCallback);
-        replacePOVContext(context);
+        PrinceOfVersionsCall call = updater.checkForUpdates(loader, defaultCallback);
+        replaceCall(call);
+    }
+
+    public void onCheckSyncClick() {
+        /*  call check for updates for start checking and remember return value if you need cancel option    */
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Result result = updater.checkForUpdates(loader);
+                    toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getVersion(),
+                            Toast.LENGTH_LONG);
+                } catch (Throwable throwable) {
+                    toastItOnMainThread("Error occurred " + throwable.getMessage(), Toast.LENGTH_LONG);
+                }
+            }
+        }, "Example thread");
+        thread.start();
     }
 
     public void onCancelTestClick() {
         /*  same call as few lines higher, but using another loader, this one is very slow loader just to demonstrate cancel
         functionality. */
-        UpdaterResult context = updater.checkForUpdates(slowLoaderFactory, defaultCallback);
-        replacePOVContext(context);
+        PrinceOfVersionsCall call = updater.checkForUpdates(slowLoader, defaultCallback);
+        replaceCall(call);
     }
 
     public void onCancelClick() {
         /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
-        if (povContext != null && !povContext.isConsumed()) {
-            povContext.cancel();
+        if (this.call != null) {
+            this.call.cancel();
         }
     }
 
-    private void replacePOVContext(UpdaterResult povContext) {
+    private void replaceCall(PrinceOfVersionsCall call) {
         /*  started new checking, kill current one if not dead and remember new context */
-        if (this.povContext != null && !this.povContext.isConsumed() && !this.povContext.isCancelled()) {
-            toastIt(getString(R.string.replace), Toast.LENGTH_SHORT);
-            this.povContext.cancel();
+        if (this.call != null) {
+            this.call.cancel();
         }
-        this.povContext = povContext;
+        this.call = call;
     }
 
     protected void toastIt(final String message, final int duration) {
         Toast.makeText(getApplicationContext(), message, duration).show();
     }
 
+    protected void toastItOnMainThread(final String message, final int duration) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                toastIt(message, duration);
+            }
+        });
+    }
+
+    private Loader createSlowLoader(final Loader loader) {
+        return new Loader() {
+            @Override
+            public String load() throws Throwable {
+                Thread.sleep(2000);
+                return loader.load();
+            }
+        };
+    }
 }
