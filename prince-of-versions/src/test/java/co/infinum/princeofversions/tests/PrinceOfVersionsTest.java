@@ -28,7 +28,7 @@
 //import co.infinum.princeofversions.interfaces.VersionRepository;
 //import co.infinum.princeofversions.interfaces.VersionVerifier;
 //import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
-//import co.infinum.princeofversions.loaders.ResourceFileLoader;
+//import co.infinum.princeofversions.mocks.ResourceFileLoader;
 //import co.infinum.princeofversions.util.SdkVersionProviderMock;
 //import co.infinum.princeofversions.verifiers.SingleThreadExecutor;
 //

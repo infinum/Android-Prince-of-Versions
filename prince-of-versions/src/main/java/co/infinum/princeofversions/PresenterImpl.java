@@ -1,32 +1,34 @@
 package co.infinum.princeofversions;
 
+import android.support.annotation.VisibleForTesting;
+
+import static co.infinum.princeofversions.UpdateStatus.MANDATORY;
+
 public class PresenterImpl implements Presenter {
 
     private Interactor interactor;
 
     private Storage storage;
 
-    private ApplicationConfiguration appConfig;
-
-    public PresenterImpl(Interactor interactor, Storage storage, ApplicationConfiguration appConfig) {
+    public PresenterImpl(Interactor interactor, Storage storage) {
         this.interactor = interactor;
         this.storage = storage;
-        this.appConfig = appConfig;
     }
 
     @Override
-    public Result check(Loader loader) throws Throwable {
-        return run(loader);
+    public Result check(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
+        return run(loader, appConfig);
     }
 
     @Override
-    public PrinceOfVersionsCall check(final Loader loader, Executor executor, final UpdaterCallback callback) {
+    public PrinceOfVersionsCall check(final Loader loader, Executor executor, final UpdaterCallback callback,
+            final ApplicationConfiguration appConfig) {
         final PrinceOfVersionsCall call = new UpdaterCall();
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Result result = PresenterImpl.this.run(loader);
+                    Result result = PresenterImpl.this.run(loader, appConfig);
                     if (!call.isCanceled()) {
                         switch (result.getStatus() != null ? result.getStatus() : UpdateStatus.NO_UPDATE) {
                             case MANDATORY:
@@ -50,12 +52,13 @@ public class PresenterImpl implements Presenter {
         return call;
     }
 
-    private Result run(Loader loader) throws Throwable {
+    @VisibleForTesting
+    public Result run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         CheckResult result = interactor.check(loader, appConfig);
         switch (result.status() != null ? result.status() : UpdateStatus.NO_UPDATE) {
             case MANDATORY:
                 storage.rememberLastNotifiedVersion(result.getUpdateVersion());
-                return new Result(UpdateStatus.MANDATORY, result.getUpdateVersion(), result.metadata());
+                return new Result(MANDATORY, result.getUpdateVersion(), result.metadata());
             case OPTIONAL:
                 String lastNotifiedVersion = storage.lastNotifiedVersion(null);
                 boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion.equals(result.getUpdateVersion());

@@ -1,140 +1,637 @@
-//package co.infinum.princeofversions.tests;
-//
-//import org.json.JSONException;
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.mockito.Mockito;
-//import org.mockito.invocation.InvocationOnMock;
-//import org.mockito.stubbing.Answer;
-//import org.robolectric.RobolectricTestRunner;
-//import org.robolectric.annotation.Config;
-//
-//import android.os.Build;
-//
-//import co.infinum.princeofversions.BuildConfig;
-//import co.infinum.princeofversions.UpdateConfigLoader;
-//import co.infinum.princeofversions.common.ErrorCode;
-//import co.infinum.princeofversions.common.VersionContext;
-//import co.infinum.princeofversions.interfaces.SdkVersionProvider;
-//import co.infinum.princeofversions.interfaces.VersionVerifier;
-//import co.infinum.princeofversions.interfaces.VersionVerifierListener;
-//import co.infinum.princeofversions.mvp.interactor.PovInteractor;
-//import co.infinum.princeofversions.mvp.interactor.impl.PovInteractorImpl;
-//import co.infinum.princeofversions.mvp.interactor.listeners.PovInteractorListener;
-//import co.infinum.princeofversions.util.SdkVersionProviderMock;
-//
-//@RunWith(RobolectricTestRunner.class)
-//@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
-//public class InteractorTest {
-//
-//    private VersionVerifier versionVerifier;
-//
-//    private UpdateConfigLoader loader;
-//
-//    private SdkVersionProvider sdkVersionProvider;
-//
-//    @Before
-//    public void setUp() throws JSONException {
-//        versionVerifier = Mockito.mock(VersionVerifier.class);
-//        loader = Mockito.mock(UpdateConfigLoader.class);
-//        sdkVersionProvider = new SdkVersionProviderMock(16);
-//    }
-//
-//    @Test
-//    public void testMandatoryUpdate() {
-//        final VersionContext versionContext = new VersionContext(
-//                new VersionContext.Version("2.0.0"),
-//                new VersionContext.Version("3.0.0"), true,
-//                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true, 15);
-//        Mockito.doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Object[] args = invocation.getArguments();
-//                VersionVerifierListener listener = (VersionVerifierListener) args[1];
-//                listener.versionAvailable(versionContext);
-//                return null;
-//            }
-//        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
-//        PovInteractorListener listener = Mockito.mock(PovInteractorListener.class);
-//        PovInteractor interactor = new PovInteractorImpl(versionVerifier, loader, sdkVersionProvider);
-//        interactor.checkForUpdates(listener);
-//        Mockito.verify(listener, Mockito.times(1)).onMandatoryUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onNoUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-//    }
-//
-//    @Test
-//    public void testOptionalUpdate() {
-//        final VersionContext versionContext = new VersionContext(
-//                new VersionContext.Version("3.0.0"),
-//                new VersionContext.Version("2.0.0"), false,
-//                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true, 15);
-//        Mockito.doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Object[] args = invocation.getArguments();
-//                VersionVerifierListener listener = (VersionVerifierListener) args[1];
-//                listener.versionAvailable(versionContext);
-//                return null;
-//            }
-//        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
-//        PovInteractorListener listener = Mockito.mock(PovInteractorListener.class);
-//        PovInteractor interactor = new PovInteractorImpl(versionVerifier, loader, sdkVersionProvider);
-//        interactor.checkForUpdates(listener);
-//        Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(1)).onUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onNoUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-//    }
-//
-//    @Test
-//    public void testNoUpdate() {
-//        final VersionContext versionContext = new VersionContext(
-//                new VersionContext.Version("4.0.0"),
-//                new VersionContext.Version("2.0.0"), false,
-//                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), false, 24);
-//        Mockito.doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Object[] args = invocation.getArguments();
-//                VersionVerifierListener listener = (VersionVerifierListener) args[1];
-//                listener.versionAvailable(versionContext);
-//                return null;
-//            }
-//        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
-//        PovInteractorListener listener = Mockito.mock(PovInteractorListener.class);
-//        PovInteractor interactor = new PovInteractorImpl(versionVerifier, loader, sdkVersionProvider);
-//        interactor.checkForUpdates(listener);
-//        Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(1)).onNoUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onError(ErrorCode.UNKNOWN_ERROR);
-//    }
-//
-//    @Test
-//    public void testError() {
-//        final VersionContext versionContext = new VersionContext(
-//                new VersionContext.Version("2.0.0"),
-//                new VersionContext.Version("3.0.0"), true,
-//                new VersionContext.UpdateContext(new VersionContext.Version("3.0.1"), "ONCE"), true, 15);
-//        Mockito.doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Object[] args = invocation.getArguments();
-//                VersionVerifierListener listener = (VersionVerifierListener) args[1];
-//                listener.versionUnavailable(ErrorCode.LOAD_ERROR);
-//                return null;
-//            }
-//        }).when(versionVerifier).verify(Mockito.any(UpdateConfigLoader.class), Mockito.any(VersionVerifierListener.class));
-//        PovInteractorListener listener = Mockito.mock(PovInteractorListener.class);
-//        PovInteractor interactor = new PovInteractorImpl(versionVerifier, loader, sdkVersionProvider);
-//        interactor.checkForUpdates(listener);
-//        Mockito.verify(listener, Mockito.times(0)).onMandatoryUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(0)).onNoUpdateAvailable(versionContext);
-//        Mockito.verify(listener, Mockito.times(1)).onError(ErrorCode.LOAD_ERROR);
-//    }
-//
-//}
+package co.infinum.princeofversions.tests;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import co.infinum.princeofversions.ApplicationConfiguration;
+import co.infinum.princeofversions.CheckResult;
+import co.infinum.princeofversions.Interactor;
+import co.infinum.princeofversions.InteractorImpl;
+import co.infinum.princeofversions.Loader;
+import co.infinum.princeofversions.MockApplicationConfiguration;
+import co.infinum.princeofversions.Parser;
+import co.infinum.princeofversions.PrinceOfVersionsConfig;
+import co.infinum.princeofversions.PrinceOfVersionsDefaultVersionParser;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class InteractorTest {
+
+    private static final String DEFAULT_LOADER_RESULT = "";
+
+    @Mock
+    Loader loader;
+
+    @Mock
+    Parser parser;
+
+    private Interactor interactor;
+
+    @Before
+    public void setUp() throws Throwable {
+        interactor = new InteractorImpl(parser, new PrinceOfVersionsDefaultVersionParser());
+        when(loader.load()).thenReturn(DEFAULT_LOADER_RESULT);
+    }
+
+    @After
+    public void tearDown() {
+        interactor = null;
+    }
+
+    @Test
+    public void checkMandatoryUpdateWithNoSdk() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withOptionalVersion("1.0.0")
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+
+        CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenOnlyMandatoryAvailableWithNoSdk() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+
+        CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenNoUpdateAvailableWithNoSdk() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenNoMandatoryOrOptionalUpdateAvailableWithNoSdk() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withOptionalVersion("1.0.0")
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWithOptionalVersionNoSdk() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withOptionalVersion("1.0.2")
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+
+        CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenMandatoryAndOptionalAreEqualWithNoSdk() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withOptionalVersion("1.0.1")
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+
+        CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWithWithSdkGreaterThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.0")
+                .withOptionalMinSdk(2)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWithWithSdkEqualToCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.0")
+                .withOptionalMinSdk(2)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWithWithSdkLessThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.0")
+                .withOptionalMinSdk(2)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 3);
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenOnlyMandatoryAvailableWithSdkGreaterThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(2)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenOnlyMandatoryAvailableWithSdkEqualToCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(1)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+
+        CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenOnlyMandatoryAvailableWithSdkGLessThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(1)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+
+        CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 2));
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenNoUpdateAvailableWithSdkGreaterThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(2)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenNoUpdateAvailableWithSdkEqualToCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(1)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenNoUpdateAvailableWithSdkLessThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(1)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenNoMandatoryOrOptionalUpdateAvailableWithSdkGreaterThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.0")
+                .withOptionalMinSdk(2)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenNoMandatoryOrOptionalUpdateAvailableWithSdkEqualToCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.0")
+                .withOptionalMinSdk(2)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenNoMandatoryOrOptionalUpdateAvailableWithSdkLessThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(1)
+                .withOptionalVersion("1.0.0")
+                .withOptionalMinSdk(1)
+                .build();
+
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWithOptionalVersionWithSdkGreaterThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.2")
+                .withOptionalMinSdk(2)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWithOptionalVersionWithSdkEqualToCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.2")
+                .withOptionalMinSdk(2)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWithOptionalVersionWithSdkLessThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(1)
+                .withOptionalVersion("1.0.2")
+                .withOptionalMinSdk(1)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenMandatoryAndOptionalAreEqualWithSdkGreaterThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.1")
+                .withOptionalMinSdk(2)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenMandatoryAndOptionalAreEqualWithSdkEqualToCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(2)
+                .withOptionalVersion("1.0.1")
+                .withOptionalMinSdk(2)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkMandatoryUpdateWhenMandatoryAndOptionalAreEqualWithSdkLessThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(1)
+                .withOptionalVersion("1.0.1")
+                .withOptionalMinSdk(1)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkOptionalUpdateWhenNoMandatoryNoSdk() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withOptionalVersion("1.0.1")
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkOptionalUpdateWhenNoMandatorySdkGreaterThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(1)
+                .withOptionalVersion("1.0.1")
+                .withOptionalMinSdk(3)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.noUpdate(appConfig.version(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkOptionalUpdateWhenNoMandatorySdkEqualToCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(1)
+                .withOptionalVersion("1.0.1")
+                .withOptionalMinSdk(2)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkOptionalUpdateWhenNoMandatorySdkLessThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.0")
+                .withMandatoryMinSdk(1)
+                .withOptionalVersion("1.0.1")
+                .withOptionalMinSdk(1)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
+        );
+    }
+
+    @Test
+    public void checkOptionalUpdateWhenHasMandatoryButSdkGreaterThanCurrent() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion("1.0.1")
+                .withMandatoryMinSdk(3)
+                .withOptionalVersion("1.0.2")
+                .withOptionalMinSdk(1)
+                .build();
+        when(parser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        assertThat(result).isEqualTo(
+                CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
+        );
+    }
+
+}

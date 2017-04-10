@@ -1,4 +1,4 @@
-package co.infinum.princeofversions.verifiers;
+package co.infinum.princeofversions.mocks;
 
 import co.infinum.princeofversions.Executor;
 

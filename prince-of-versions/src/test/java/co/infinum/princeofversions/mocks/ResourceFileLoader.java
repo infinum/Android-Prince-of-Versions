@@ -1,4 +1,4 @@
-package co.infinum.princeofversions.loaders;
+package co.infinum.princeofversions.mocks;
 
 import java.io.IOException;
 

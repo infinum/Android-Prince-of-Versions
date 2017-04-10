@@ -1,638 +1,304 @@
-//package co.infinum.princeofversions.tests;
-//
-//import org.json.JSONObject;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
-//import org.robolectric.RobolectricTestRunner;
-//import org.robolectric.annotation.Config;
-//
-//import android.os.Build;
-//
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//import co.infinum.princeofversions.BuildConfig;
-//import co.infinum.princeofversions.common.VersionContext;
-//import co.infinum.princeofversions.exceptions.ParseException;
-//import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
-//import co.infinum.princeofversions.util.ResourceUtils;
-//
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertTrue;
-//import static org.junit.Assert.fail;
-//
-//@RunWith(RobolectricTestRunner.class)
-//@Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP)
-//public class JsonParserTest {
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndLessThanOptional() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("2.0.0");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 2.0.0", "2.0.0", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptional() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.0.0", "1.0.0", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalBetaBeta() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-beta1");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.0.0-beta1", "1.2.3-beta1", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
-//                    version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalBetaLong() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0-beta1");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.0.0-beta1", "1.0.0-beta1", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalLongBeta() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.0.0", "1.0.0", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
-//                    version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalBetaRc() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-beta2");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_rc.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.2.3-beta2", "1.2.3-beta2", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-rc2", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-rc3", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalBB() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-b11");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.2.3-b11", "1.2.3-b11", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertTrue("Current version should be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptional() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.2.3");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.2.3", "1.2.3", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalBetaBeta() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-beta2");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.2.3-beta2", "1.2.3-beta2", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
-//                    version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalRcRc() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-rc2");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_rc.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.2.3-rc2", "1.2.3-rc2", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-rc2", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-rc3", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalBB() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-b12");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.2.3-b12", "1.2.3-b12", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalBetaB() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.2.3-beta12");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 1.2.3-beta12", "1.2.3-beta12", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertTrue("Current version should be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptional() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("2.4.5");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 2.4.5", "2.4.5", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalBetaBeta() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-beta3");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 2.4.5-beta3", "2.4.5-beta3", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
-//                    version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalRcRc() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-rc3");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_rc.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 2.4.5-rc3", "2.4.5-rc3", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-rc2", "1.2.3-rc2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-rc3", "2.4.5-rc3", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalBB() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-b45");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 2.4.5-b45", "2.4.5-b45", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalBetaB() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-beta45");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 2.4.5-beta45", "2.4.5-beta45", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should not be less than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should not be less than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptional() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalBetaBeta() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0-beta2");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 3.0.0-beta2", "3.0.0-beta2", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
-//                    version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalBetaLong() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0-beta2");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 3.0.0-beta2", "3.0.0-beta2", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalLongBeta() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
-//                    version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalRcBeta() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("2.4.5-rc3");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 3.0.0-rc3", "2.4.5-rc3", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-beta2", "1.2.3-beta2", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-beta3", "2.4.5-beta3",
-//                    version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void testParsingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalBB() {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0-b2");
-//        try {
-//            JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//            JSONObject parsedResponseContent = new JSONObject(ResourceUtils.readFromFile("valid_update_full_b.json"));
-//            VersionContext version = parser.parse(parsedResponseContent);
-//            assertEquals("Current version should be 3.0.0-b2", "3.0.0-b2", version.getCurrentVersion().getVersionString());
-//            assertEquals("Minimum version should be 1.2.3-b12", "1.2.3-b12", version.getMinimumVersion().getVersionString());
-//            assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//            assertEquals("Optional version should be 2.4.5-b45", "2.4.5-b45", version.getOptionalUpdate().getVersion().getVersionString());
-//            assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//            assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//            assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//        } catch (Throwable e) {
-//            fail(e.getMessage());
-//        }
-//    }
-//
-//    @Test(expected = ParseException.class)
-//    public void testParsingInvalidContentWithInvalidVersion() throws ParseException {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        parser.parse(ResourceUtils.readFromFile("invalid_update_invalid_version.json"));
-//    }
-//
-//    @Test(expected = ParseException.class)
-//    public void testParsingInvalidContentNoAndroidKey() throws ParseException {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        parser.parse(ResourceUtils.readFromFile("invalid_update_no_android.json"));
-//    }
-//
-//    @Test(expected = ParseException.class)
-//    public void testParsingInvalidContentNoJSON() throws ParseException {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        parser.parse(ResourceUtils.readFromFile("invalid_update_no_json.json"));
-//    }
-//
-//    @Test
-//    public void testParsingValidContentNoNotification() throws ParseException {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_no_notification.json"));
-//        assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
-//        assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//        assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//        assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//        assertEquals("Optional notification type should be ALWAYS", "ALWAYS", version.getOptionalUpdate().getNotificationType());
-//        assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//        assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//    }
-//
-//    @Test
-//    public void testParsingValidContentWithAlwaysNotification() throws ParseException {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_notification_always.json"));
-//        assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
-//        assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//        assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//        assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//        assertEquals("Optional notification type should be ALWAYS", "ALWAYS", version.getOptionalUpdate().getNotificationType());
-//        assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//        assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//    }
-//
-//    @Test
-//    public void testParsingValidContentWithOnlyMinVersion() throws ParseException {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_only_min_version.json"));
-//        assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
-//        assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//        assertFalse("Optional version should not be available", version.hasOptionalUpdate());
-//    }
-//
-//    @Test
-//    public void testParsingValidContentWithoutCodes() throws ParseException {
-//        VersionContext.Version currentVersion = new VersionContext.Version("3.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_without_codes.json"));
-//        assertEquals("Current version should be 3.0.0", "3.0.0", version.getCurrentVersion().getVersionString());
-//        assertEquals("Minimum version should be 1.2.3", "1.2.3", version.getMinimumVersion().getVersionString());
-//        assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//        assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//        assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//        assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//        assertFalse("Current version should be greater than optional", version.isCurrentLessThanOptional());
-//    }
-//
-//    @Test
-//    public void testParsingWithoutMinVersion() throws Exception {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_no_min_version.json"));
-//        assertEquals("Minimum version should be null", null, version.getMinimumVersion());
-//        assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//        assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//        assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//        assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//        assertTrue("Current version should be smaller than optional", version.isCurrentLessThanOptional());
-//    }
-//
-//    @Test
-//    public void testParsingWithNullMinVersion() throws Exception {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_null_min_version.json"));
-//        assertEquals("Minimum version should be null", null, version.getMinimumVersion());
-//        assertTrue("Optional version should be available", version.hasOptionalUpdate());
-//        assertEquals("Optional version should be 2.4.5", "2.4.5", version.getOptionalUpdate().getVersion().getVersionString());
-//        assertEquals("Optional notification type should be ONCE", "ONCE", version.getOptionalUpdate().getNotificationType());
-//        assertFalse("Current version should be greater than minimum", version.isCurrentLessThanMinimum());
-//        assertTrue("Current version should be smaller than optional", version.isCurrentLessThanOptional());
-//    }
-//
-//    @Test
-//    public void testSkipNonStringMetadata() throws Exception {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_complex_metadata.json"));
-//        Map<String, String> expectedMetadata = new HashMap<>();
-//        expectedMetadata.put("key1", "value1");
-//        expectedMetadata.put("key2", "value2");
-//        assertEquals("Non-string metadata should be ignored", expectedMetadata, version.getMetadata());
-//    }
-//
-//    @Test
-//    public void testParsingWithFullContentAndSdkValues() throws Exception {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_sdk_values.json"));
-//        assertTrue("Optional update must not be null", version.getOptionalUpdate() != null);
-//        assertEquals("If sdk values are not missing from json file, last should be 15", 15,
-//                version.getMinimumVersionMinSdk());
-//        assertEquals("If sdk values are not missing from json file, new should be 16", 16,
-//                version.getOptionalUpdate().getNewMinSdk());
-//    }
-//
-//    @Test
-//    public void testParsingWithNoSdkValuesInContent() throws Exception {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_no_sdk_values.json"));
-//        assertEquals("If sdk values are missing from json file, both min and last sdk should be 0", 0,
-//                version.getMinimumVersionMinSdk());
-//        assertEquals("If sdk values are missing from json file, both min and last sdk should be 0", 0,
-//                version.getOptionalUpdate().getNewMinSdk());
-//    }
-//
-//    @Test
-//    public void testParsingWithIncompleteSdkValues() throws Exception {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_single_sdk_value.json"));
-//        assertEquals("If a single sdkValue is missing from a json file it should be set to 0", 0,
-//                version.getMinimumVersionMinSdk());
-//        assertEquals("If sdk values are not missing from json file, new should be 16", 16,
-//                version.getOptionalUpdate().getNewMinSdk());
-//    }
-//
-//    @Test
-//    public void testParsingWithNegativeSdkValues() throws Exception {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_negative_sdk_values.json"));
-//        assertEquals("If a minimumVersionMinSdk is set to a negative number the result should be 0", 0,
-//                version.getMinimumVersionMinSdk());
-//        assertEquals("If a minSdk is set to a negative number the result should be 0", 0,
-//                version.getOptionalUpdate().getNewMinSdk());
-//    }
-//
-//    @Test
-//    public void testParsingWithASingleNegativeSdkValue() throws Exception {
-//        VersionContext.Version currentVersion = new VersionContext.Version("1.0.0");
-//        JsonVersionConfigParser parser = new JsonVersionConfigParser(currentVersion);
-//        VersionContext version = parser.parse(ResourceUtils.readFromFile("valid_update_with_single_negative_sdk_value.json"));
-//        assertEquals("If a minimumVersionMinSdk is set ", 14,
-//                version.getMinimumVersionMinSdk());
-//        assertEquals("If a minSdk is set to a negative number the result should be 0", 0,
-//                version.getOptionalUpdate().getNewMinSdk());
-//    }
-//}
+package co.infinum.princeofversions.tests;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.HashMap;
+
+import co.infinum.princeofversions.JsonParser;
+import co.infinum.princeofversions.NotificationType;
+import co.infinum.princeofversions.PrinceOfVersionsConfig;
+import co.infinum.princeofversions.util.MapUtil;
+import co.infinum.princeofversions.util.ResourceUtils;
+
+import static co.infinum.princeofversions.util.MapUtil.entry;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class JsonParserTest {
+
+    private JsonParser parser;
+
+    @Before
+    public void setUp() {
+        parser = new JsonParser();
+    }
+
+    @After
+    public void tearDown() {
+        parser = null;
+    }
+
+    @Test
+    public void testIsNonEmptyWithValue() {
+        assertThat(parser.isNonEmpty("value")).isTrue();
+    }
+
+    @Test
+    public void testIsNonEmptyWithEmpty() {
+        assertThat(parser.isNonEmpty("")).isFalse();
+    }
+
+
+    @Test
+    public void testIsNonEmptyWithSpace() {
+        assertThat(parser.isNonEmpty(" ")).isFalse();
+    }
+
+    @Test
+    public void testIsNonEmptyWithNull() {
+        assertThat(parser.isNonEmpty("null")).isFalse();
+    }
+
+    @Test
+    public void checkEmptyJsonToStringMap() throws Throwable {
+        assertThat(parser.jsonObjectToMap(new JSONObject("{}"))).isEmpty();
+    }
+
+    @Test
+    public void checkJsonToStringMap() throws Throwable {
+        assertThat(
+                parser.jsonObjectToMap(new JSONObject(ResourceUtils.readFromFile("json_obj_string.json")))
+        ).isEqualTo(
+                MapUtil.from(
+                        entry("key1", "value1"),
+                        entry("key2", "value2")
+                )
+        );
+    }
+
+    @Test
+    public void checkComplexJsonToStringMap() throws Throwable {
+        assertThat(
+                parser.jsonObjectToMap(new JSONObject(ResourceUtils.readFromFile("json_obj_string_complex.json")))
+        ).isEqualTo(
+                MapUtil.from(
+                        entry("key1", "value1"),
+                        entry("key2", "value2")
+                )
+        );
+    }
+
+    @Test
+    public void invalidUpdateInvalidVersion() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("invalid_update_invalid_version.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2")
+                        .withOptionalVersion("2.4.5")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidUpdateNoAndroid() throws Throwable {
+        parser.parse(ResourceUtils.readFromFile("invalid_update_no_android.json"));
+    }
+
+    @Test(expected = JSONException.class)
+    public void invalidUpdateNotJson() throws Throwable {
+        parser.parse(ResourceUtils.readFromFile("invalid_update_no_json.json"));
+    }
+
+    @Test(expected = JSONException.class)
+    public void malformedJson() throws Throwable {
+        parser.parse(ResourceUtils.readFromFile("malformed_json.json"));
+    }
+
+    @Test
+    public void validUpdateFullJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3")
+                        .withOptionalVersion("2.4.5")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
+    }
+
+    @Test
+    public void validUpdateFullBJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_b.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3-b12")
+                        .withOptionalVersion("2.4.5-b45")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
+    }
+
+    @Test
+    public void validUpdateFullBWithSdkValues() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_b_with_sdk_values.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3-b12")
+                        .withMandatoryMinSdk(15)
+                        .withOptionalVersion("2.4.5-b45")
+                        .withOptionalMinSdk(16)
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
+    }
+
+    @Test
+    public void validUpdateFullBetaJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_beta.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3-beta2")
+                        .withOptionalVersion("2.4.5-beta3")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
+    }
+
+    @Test
+    public void validUpdateFullRcJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_rc.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3-rc2")
+                        .withOptionalVersion("2.4.5-rc3")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
+    }
+
+    @Test
+    public void validUpdateFullWithMetadataJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_metadata.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3")
+                        .withOptionalVersion("2.4.5")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .withMetadata(MapUtil.from(
+                                entry("key1", "value1"),
+                                entry("key2", "value2")
+                        ))
+                        .build()
+        );
+    }
+
+    @Test
+    public void validUpdateFullWithEmptyMetadataJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_metadata_empty.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3")
+                        .withOptionalVersion("2.4.5")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .withMetadata(new HashMap<String, String>())
+                        .build()
+        );
+    }
+
+    @Test(expected = JSONException.class)
+    public void validUpdateFullWithMetadataMalformed() throws Throwable {
+        parser.parse(ResourceUtils.readFromFile("valid_update_full_with_metadata_malformed.json"));
+    }
+
+    @Test
+    public void validUpdateFullWithNullMetadataJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_metadata_null.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3")
+                        .withOptionalVersion("2.4.5")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .withMetadata(new HashMap<String, String>())
+                        .build()
+        );
+    }
+
+    @Test
+    public void validUpdateFullWithSdkValuesJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_sdk_values.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3")
+                        .withMandatoryMinSdk(15)
+                        .withOptionalVersion("2.4.0")
+                        .withOptionalMinSdk(17)
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void noMandatoryVersionJson() throws Throwable {
+        parser.parse(ResourceUtils.readFromFile("valid_update_no_min_version.json"));
+    }
+
+    @Test
+    public void validUpdateNoNotificationJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_no_notification.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3")
+                        .withOptionalVersion("2.4.5")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
+    }
+
+    @Test
+    public void validUpdateAlwaysNotificationJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_notification_always.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3")
+                        .withOptionalVersion("2.4.5")
+                        .withOptionalNotificationType(NotificationType.ALWAYS)
+                        .build()
+        );
+    }
+
+    @Test(expected = JSONException.class)
+    public void mandatoryVersionNullJson() throws Throwable {
+        parser.parse(ResourceUtils.readFromFile("valid_update_null_min_version.json"));
+    }
+
+    @Test
+    public void validUpdateOnlyMandatoryJson() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_only_min_version.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withMandatoryVersion("1.2.3")
+                        .build()
+        );
+    }
+
+}

@@ -62,4 +62,37 @@ public class CheckResult {
     public Map<String, String> metadata() {
         return metadata;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CheckResult)) {
+            return false;
+        }
+
+        CheckResult result = (CheckResult) o;
+
+        if (status != result.status) {
+            return false;
+        }
+        if (getUpdateVersion() != null ? !getUpdateVersion().equals(result.getUpdateVersion()) : result.getUpdateVersion() != null) {
+            return false;
+        }
+        if (notificationType != result.notificationType) {
+            return false;
+        }
+        return metadata != null ? metadata.equals(result.metadata) : result.metadata == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = status != null ? status.hashCode() : 0;
+        result = 31 * result + (getUpdateVersion() != null ? getUpdateVersion().hashCode() : 0);
+        result = 31 * result + (getNotificationType() != null ? getNotificationType().hashCode() : 0);
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0);
+        return result;
+    }
 }

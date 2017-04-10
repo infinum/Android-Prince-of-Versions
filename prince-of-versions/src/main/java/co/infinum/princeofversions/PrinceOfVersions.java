@@ -59,6 +59,8 @@ public class PrinceOfVersions {
 
     private Presenter presenter;
 
+    private ApplicationConfiguration appConfig;
+
     public PrinceOfVersions(Context context) {
         this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createAppConfig(context));
     }
@@ -66,9 +68,9 @@ public class PrinceOfVersions {
     private PrinceOfVersions(Parser parser, VersionParser versionParser, Storage storage, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
                 new InteractorImpl(parser, versionParser),
-                storage,
-                appConfig
+                storage
         );
+        this.appConfig = appConfig;
     }
 
     public PrinceOfVersionsCall checkForUpdates(String url, UpdaterCallback callback) {
@@ -84,7 +86,7 @@ public class PrinceOfVersions {
     }
 
     public PrinceOfVersionsCall checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
-        return presenter.check(loader, executor, new UiUpdaterCallback(callback));
+        return presenter.check(loader, executor, new UiUpdaterCallback(callback), appConfig);
     }
 
     public Result checkForUpdates(String url) throws Throwable {
@@ -92,7 +94,7 @@ public class PrinceOfVersions {
     }
 
     public Result checkForUpdates(Loader loader) throws Throwable {
-        return presenter.check(loader);
+        return presenter.check(loader, appConfig);
     }
 
     public static class Builder {

@@ -35,10 +35,13 @@ public class PrinceOfVersionsConfig {
         if (mandatoryMinSdk <= 0) {
             throw new IllegalArgumentException("Mandatory minimum SDK version must be greater than 0.");
         }
+        if (optionalNotificationType == null) {
+            throw new IllegalArgumentException("Notification type cannot be null.");
+        }
     }
 
     public boolean hasOptional() {
-        return optionalVersion != null && optionalMinSdk > 0 && optionalNotificationType != null;
+        return optionalVersion != null && optionalMinSdk > 0;
     }
 
     public String getMandatoryVersion() {
@@ -63,6 +66,60 @@ public class PrinceOfVersionsConfig {
 
     public Map<String, String> getMetadata() {
         return metadata;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PrinceOfVersionsConfig)) {
+            return false;
+        }
+
+        PrinceOfVersionsConfig that = (PrinceOfVersionsConfig) o;
+
+        if (getMandatoryMinSdk() != that.getMandatoryMinSdk()) {
+            return false;
+        }
+        if (getOptionalMinSdk() != that.getOptionalMinSdk()) {
+            return false;
+        }
+        if (getMandatoryVersion() != null ? !getMandatoryVersion().equals(that.getMandatoryVersion())
+                : that.getMandatoryVersion() != null) {
+            return false;
+        }
+        if (getOptionalVersion() != null ? !getOptionalVersion().equals(that.getOptionalVersion()) : that.getOptionalVersion() != null) {
+            return false;
+        }
+        if (getOptionalNotificationType() != that.getOptionalNotificationType()) {
+            return false;
+        }
+        return getMetadata() != null ? getMetadata().equals(that.getMetadata()) : that.getMetadata() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getMandatoryVersion() != null ? getMandatoryVersion().hashCode() : 0;
+        result = 31 * result + getMandatoryMinSdk();
+        result = 31 * result + (getOptionalVersion() != null ? getOptionalVersion().hashCode() : 0);
+        result = 31 * result + getOptionalMinSdk();
+        result = 31 * result + (getOptionalNotificationType() != null ? getOptionalNotificationType().hashCode() : 0);
+        result = 31 * result + (getMetadata() != null ? getMetadata().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PrinceOfVersionsConfig{"
+                + "mandatoryVersion='" + mandatoryVersion + '\''
+                + ", mandatoryMinSdk=" + mandatoryMinSdk
+                + ", optionalVersion='" + optionalVersion + '\''
+                + ", optionalMinSdk=" + optionalMinSdk
+                + ", optionalNotificationType=" + optionalNotificationType
+                + ", metadata=" + metadata
+                + '}';
     }
 
     public static class Builder {
@@ -137,7 +194,12 @@ public class PrinceOfVersionsConfig {
         }
 
         public PrinceOfVersionsConfig build() {
-            return new PrinceOfVersionsConfig(mandatoryVersion, mandatoryMinSdk, optionalVersion, optionalMinSdk, optionalNotificationType,
+            return new PrinceOfVersionsConfig(
+                    mandatoryVersion,
+                    mandatoryMinSdk,
+                    optionalVersion,
+                    optionalMinSdk,
+                    optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
                     metadata != null ? metadata : new HashMap<String, String>());
         }
     }

@@ -3,6 +3,8 @@ package co.infinum.princeofversions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.support.annotation.VisibleForTesting;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -142,13 +144,14 @@ public class JsonParser implements Parser {
         }
         if (data.has(META)) {
             Object meta = data.get(META);
-            if (meta instanceof JSONObject) {
+            if (meta != null && meta instanceof JSONObject) {
                 builder.withMetadata(jsonObjectToMap((JSONObject) meta));
             }
         }
     }
 
-    private Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
+    @VisibleForTesting
+    public Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
         Map<String, String> map = new HashMap<>();
         Iterator<String> metadataIterator = object.keys();
         while (metadataIterator.hasNext()) {
@@ -161,7 +164,8 @@ public class JsonParser implements Parser {
         return map;
     }
 
-    private boolean isNonEmpty(String value) {
+    @VisibleForTesting
+    public boolean isNonEmpty(String value) {
         return value != null && value.trim().length() > 0 && !value.trim().toLowerCase().equals("null");
     }
 
