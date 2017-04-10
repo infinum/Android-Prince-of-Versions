@@ -23,7 +23,7 @@ public class PresenterImpl implements Presenter {
     @Override
     public PrinceOfVersionsCall check(final Loader loader, Executor executor, final UpdaterCallback callback,
             final ApplicationConfiguration appConfig) {
-        final PrinceOfVersionsCall call = new UpdaterCall();
+        final PrinceOfVersionsCall call = createCall();
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -73,5 +73,10 @@ public class PresenterImpl implements Presenter {
             default:
                 return new Result(UpdateStatus.NO_UPDATE, result.getUpdateVersion(), result.metadata());
         }
+    }
+
+    @VisibleForTesting
+    public PrinceOfVersionsCall createCall() {
+        return new UpdaterCall();
     }
 }
