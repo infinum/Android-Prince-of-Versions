@@ -1,7 +1,5 @@
 package co.infinum.princeofversions.mocks;
 
-import java.io.IOException;
-
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.util.ResourceUtils;
 
@@ -14,7 +12,7 @@ public class ResourceFileLoader implements Loader {
     }
 
     @Override
-    public String load() throws IOException, InterruptedException {
+    public String load() throws Throwable {
         return ResourceUtils.readFromFile(filename);
     }
 }

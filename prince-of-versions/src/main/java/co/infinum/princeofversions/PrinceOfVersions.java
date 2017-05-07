@@ -1,6 +1,7 @@
 package co.infinum.princeofversions;
 
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 
 /**
  * This class represents main entry point for using library.
@@ -65,6 +66,11 @@ public class PrinceOfVersions {
         this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createAppConfig(context));
     }
 
+    @VisibleForTesting
+    public PrinceOfVersions(Storage storage, ApplicationConfiguration appConfig) {
+        this(createDefaultParser(), createDefaultVersionParser(), storage, appConfig);
+    }
+
     private PrinceOfVersions(Parser parser, VersionParser versionParser, Storage storage, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
                 new InteractorImpl(parser, versionParser),
@@ -86,7 +92,12 @@ public class PrinceOfVersions {
     }
 
     public PrinceOfVersionsCall checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
-        return presenter.check(loader, executor, new UiUpdaterCallback(callback), appConfig);
+        return checkForUpdatesInternal(executor, loader, new UiUpdaterCallback(callback));
+    }
+
+    @VisibleForTesting
+    public PrinceOfVersionsCall checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
+        return presenter.check(loader, executor, callback, appConfig);
     }
 
     public Result checkForUpdates(String url) throws Throwable {
@@ -105,17 +116,11 @@ public class PrinceOfVersions {
 
         private VersionParser versionParser;
 
-        public Parser getParser() {
-            return parser;
-        }
+        private ApplicationConfiguration appConfig;
 
         public Builder withParser(Parser parser) {
             this.parser = parser;
             return this;
-        }
-
-        public Storage getStorage() {
-            return storage;
         }
 
         public Builder withStorage(Storage storage) {
@@ -123,12 +128,14 @@ public class PrinceOfVersions {
             return this;
         }
 
-        public VersionParser getVersionParser() {
-            return versionParser;
-        }
-
         public Builder withVersionParser(VersionParser versionParser) {
             this.versionParser = versionParser;
+            return this;
+        }
+
+        @VisibleForTesting
+        public Builder withAppConfig(ApplicationConfiguration appConfig) {
+            this.appConfig = appConfig;
             return this;
         }
 
@@ -137,7 +144,7 @@ public class PrinceOfVersions {
                     parser != null ? parser : createDefaultParser(),
                     versionParser != null ? versionParser : createDefaultVersionParser(),
                     storage != null ? storage : createDefaultStorage(context),
-                    createAppConfig(context)
+                    appConfig != null ? appConfig : createAppConfig(context)
             );
         }
     }

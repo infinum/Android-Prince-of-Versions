@@ -12,7 +12,7 @@ import co.infinum.princeofversions.CheckResult;
 import co.infinum.princeofversions.Interactor;
 import co.infinum.princeofversions.InteractorImpl;
 import co.infinum.princeofversions.Loader;
-import co.infinum.princeofversions.MockApplicationConfiguration;
+import co.infinum.princeofversions.mocks.MockApplicationConfiguration;
 import co.infinum.princeofversions.Parser;
 import co.infinum.princeofversions.PrinceOfVersionsConfig;
 import co.infinum.princeofversions.PrinceOfVersionsDefaultVersionParser;

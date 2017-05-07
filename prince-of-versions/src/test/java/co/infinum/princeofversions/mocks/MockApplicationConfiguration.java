@@ -1,4 +1,6 @@
-package co.infinum.princeofversions;
+package co.infinum.princeofversions.mocks;
+
+import co.infinum.princeofversions.ApplicationConfiguration;
 
 public class MockApplicationConfiguration implements ApplicationConfiguration {
 
