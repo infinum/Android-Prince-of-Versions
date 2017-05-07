@@ -7,8 +7,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import android.content.pm.PackageManager;
-
 import java.util.Map;
 
 import co.infinum.princeofversions.PrinceOfVersions;
@@ -38,7 +36,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingValidContentNoNotification() throws PackageManager.NameNotFoundException {
+    public void testCheckingValidContentNoNotification() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -53,7 +51,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingValidContentNotificationAlways() throws PackageManager.NameNotFoundException {
+    public void testCheckingValidContentNotificationAlways() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -69,7 +67,23 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingValidContentOnlyMinVersion() throws PackageManager.NameNotFoundException {
+    public void testCheckingValidContentNotificationAlwaysAlreadyNotified() {
+        Storage storage = new MockStorage("2.4.5");
+        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 16));
+        princeOfVersions.checkForUpdatesInternal(
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_notification_always.json"),
+                callback
+        );
+
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(false), anyMap());
+        verify(callback, times(0)).onError(anyThrowable());
+        verify(callback, times(0)).onNoUpdate(anyMap());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
+    }
+
+    @Test
+    public void testCheckingValidContentOnlyMinVersion() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -84,7 +98,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingValidContentWithoutCodes() throws PackageManager.NameNotFoundException {
+    public void testCheckingValidContentWithoutCodes() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -100,7 +114,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndLessThanOptional() throws PackageManager.NameNotFoundException {
+    public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndLessThanOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -112,10 +126,11 @@ public class PrinceOfVersionsTest {
         verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(false), anyMap());
         verify(callback, times(0)).onError(anyThrowable());
         verify(callback, times(0)).onNoUpdate(anyMap());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingContentJSONWhenCurrentIsLessThanMinAndLessThanOptional() throws PackageManager.NameNotFoundException {
+    public void testCheckingContentJSONWhenCurrentIsLessThanMinAndLessThanOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -127,10 +142,11 @@ public class PrinceOfVersionsTest {
         verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(true), anyMap());
         verify(callback, times(0)).onError(anyThrowable());
         verify(callback, times(0)).onNoUpdate(anyMap());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingContentJSONWhenCurrentIsEqualToMinAndLessThanOptional() throws PackageManager.NameNotFoundException {
+    public void testCheckingContentJSONWhenCurrentIsEqualToMinAndLessThanOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.2.3", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -142,10 +158,27 @@ public class PrinceOfVersionsTest {
         verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(false), anyMap());
         verify(callback, times(0)).onError(anyThrowable());
         verify(callback, times(0)).onNoUpdate(anyMap());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptional() throws PackageManager.NameNotFoundException {
+    public void testCheckingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalButAlreadyNotified() {
+        Storage storage = new MockStorage("2.4.5");
+        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.2.3", 16));
+        princeOfVersions.checkForUpdatesInternal(
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
+        );
+
+        verify(callback, times(0)).onNewUpdate(anyString(), anyBoolean(), anyMap());
+        verify(callback, times(0)).onError(anyThrowable());
+        verify(callback, times(1)).onNoUpdate(anyMap());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
+    }
+
+    @Test
+    public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.4.5", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -160,7 +193,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptional() throws PackageManager.NameNotFoundException {
+    public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("3.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -175,7 +208,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingInvalidContentWithInvalidVersion() throws PackageManager.NameNotFoundException {
+    public void testCheckingInvalidContentWithInvalidVersion() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("3.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -190,7 +223,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingInvalidContentNoAndroidKey() throws PackageManager.NameNotFoundException {
+    public void testCheckingInvalidContentNoAndroidKey() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("3.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -205,7 +238,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingInvalidContentNoJSON() throws PackageManager.NameNotFoundException {
+    public void testCheckingInvalidContentNoJSON() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("3.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -220,7 +253,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingValidContentWithAlwaysNotification() throws PackageManager.NameNotFoundException {
+    public void testCheckingValidContentWithAlwaysNotification() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("3.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -235,7 +268,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingValidContentWithOnlyMinVersion() throws PackageManager.NameNotFoundException {
+    public void testCheckingValidContentWithOnlyMinVersion() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("3.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -250,7 +283,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingWhenVersionIsAlreadyNotified() throws PackageManager.NameNotFoundException {
+    public void testCheckingWhenVersionIsAlreadyNotified() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.4.5", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -265,7 +298,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingWhenCurrentAppVersionIsInvalid() throws PackageManager.NameNotFoundException {
+    public void testCheckingWhenCurrentAppVersionIsInvalid() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -280,7 +313,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingWhenUpdateShouldBeMade() throws PackageManager.NameNotFoundException {
+    public void testCheckingWhenUpdateShouldBeMade() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -292,10 +325,11 @@ public class PrinceOfVersionsTest {
         verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(false), anyMap());
         verify(callback, times(0)).onError(anyThrowable());
         verify(callback, times(0)).onNoUpdate(anyMap());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingUpdateWithFullSdkValues() throws PackageManager.NameNotFoundException {
+    public void testCheckingUpdateWithFullSdkValues() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -304,13 +338,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(true), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(true), anyMap());
         verify(callback, times(0)).onNoUpdate(anyMap());
         verify(callback, times(0)).onError(anyThrowable());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingUpdateWithASingleSdkValue() throws PackageManager.NameNotFoundException {
+    public void testCheckingUpdateWithASingleSdkValue() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -319,13 +354,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(false), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(false), anyMap());
         verify(callback, times(0)).onError(anyThrowable());
         verify(callback, times(0)).onNoUpdate(anyMap());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingUpdateWithHugeSdkValues() throws PackageManager.NameNotFoundException {
+    public void testCheckingUpdateWithHugeSdkValues() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -340,7 +376,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingUpdateWithDowngradingSdkValues() throws PackageManager.NameNotFoundException {
+    public void testCheckingUpdateWithDowngradingSdkValues() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.0.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -349,13 +385,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(true), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(true), anyMap());
         verify(callback, times(0)).onError(anyThrowable());
         verify(callback, times(0)).onNoUpdate(anyMap());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithDowngradingSdkValues() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithDowngradingSdkValues() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.4.1", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -364,13 +401,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(false), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(false), anyMap());
         verify(callback, times(0)).onNoUpdate(anyMap());
         verify(callback, times(0)).onError(anyThrowable());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithHugeSdkValues() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithHugeSdkValues() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.4.1", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -385,7 +423,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithSingleSdkValue() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithSingleSdkValue() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.4.1", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -394,13 +432,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(false), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(false), anyMap());
         verify(callback, times(0)).onNoUpdate(anyMap());
         verify(callback, times(0)).onError(anyThrowable());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithSingleSdkValueAndHigherInitialVersion() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithSingleSdkValueAndHigherInitialVersion() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.4.1", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -409,13 +448,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(false), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(false), anyMap());
         verify(callback, times(0)).onNoUpdate(anyMap());
         verify(callback, times(0)).onError(anyThrowable());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingMandatoryUpdateWithSdkValues() throws PackageManager.NameNotFoundException {
+    public void testCheckingMandatoryUpdateWithSdkValues() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.4.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -424,13 +464,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(true), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5"), eq(true), anyMap());
         verify(callback, times(0)).onNoUpdate(anyMap());
         verify(callback, times(0)).onError(anyThrowable());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5"));
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithSdkValuesAndTheSameVersions() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithSdkValuesAndTheSameVersions() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.4.5", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -445,7 +486,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithSdkValuesAndWithDifferentVersions() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithSdkValuesAndWithDifferentVersions() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.4.4", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -454,13 +495,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(false), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.4.5-b45"), eq(false), anyMap());
         verify(callback, times(0)).onNoUpdate(anyMap());
         verify(callback, times(0)).onError(anyThrowable());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.4.5-b45"));
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithSdkValuesAndIncreaseInMinor() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithSdkValuesAndIncreaseInMinor() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.3.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -475,7 +517,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithHighSdkValuesAndIncreaseInMinor() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithHighSdkValuesAndIncreaseInMinor() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.3.0", 16));
         princeOfVersions.checkForUpdatesInternal(
@@ -490,7 +532,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingMandatoryUpdateWithDeviceThatHasVeryLowMinSdk() throws PackageManager.NameNotFoundException {
+    public void testCheckingMandatoryUpdateWithDeviceThatHasVeryLowMinSdk() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.0.0", 12));
         princeOfVersions.checkForUpdatesInternal(
@@ -505,7 +547,7 @@ public class PrinceOfVersionsTest {
     }
 
     @Test
-    public void testCheckingMandatoryUpdateWithUnavailableOptionalUpdate() throws PackageManager.NameNotFoundException {
+    public void testCheckingMandatoryUpdateWithUnavailableOptionalUpdate() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("1.2.0", 14));
         princeOfVersions.checkForUpdatesInternal(
@@ -514,13 +556,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(true), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("1.2.3"), eq(true), anyMap());
         verify(callback, times(0)).onNoUpdate(anyMap());
         verify(callback, times(0)).onError(anyThrowable());
+        assertThat(storage.lastNotifiedVersion(null).equals("1.2.3"));
     }
 
     @Test
-    public void testCheckingOptionalUpdateWithBigMinimumVersionMinSdk() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWithBigMinimumVersionMinSdk() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.0.0", 23));
         princeOfVersions.checkForUpdatesInternal(
@@ -529,13 +572,14 @@ public class PrinceOfVersionsTest {
                 callback
         );
 
-        verify(callback, times(1)).onNewUpdate(anyString(), eq(false), anyMap());
+        verify(callback, times(1)).onNewUpdate(eq("2.1.1"), eq(false), anyMap());
         verify(callback, times(0)).onNoUpdate(anyMap());
         verify(callback, times(0)).onError(anyThrowable());
+        assertThat(storage.lastNotifiedVersion(null).equals("2.1.1"));
     }
 
     @Test
-    public void testCheckingOptionalUpdateWhenUserIsUpToDate() throws PackageManager.NameNotFoundException {
+    public void testCheckingOptionalUpdateWhenUserIsUpToDate() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.1.1", 20));
         princeOfVersions.checkForUpdatesInternal(
