@@ -6,6 +6,12 @@ public class InteractorImpl implements Interactor {
 
     private VersionParser versionParser;
 
+    /**
+     * Constructs interactor using provided {@link Parser} and {@link VersionParser}.
+     *
+     * @param parser        object which will be used for parsing update resource.
+     * @param versionParser object which will be used for parsing specific version strings.
+     */
     public InteractorImpl(Parser parser, VersionParser versionParser) {
         this.parser = parser;
         this.versionParser = versionParser;

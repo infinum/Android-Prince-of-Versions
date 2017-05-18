@@ -2,6 +2,15 @@ package co.infinum.princeofversions;
 
 import java.util.Map;
 
+/**
+ * Intermediate result of update check. This result contains following data:
+ * <ul>
+ *     <li>Update status (one of MANDATORY, OPTIONAL or NO_UPDATE)</li>
+ *     <li>Update version</li>
+ *     <li>Notification type (ONCE or ALWAYS)</li>
+ *     <li>Metadata</li>
+ * </ul>
+ */
 public class CheckResult {
 
     private UpdateStatus status;
