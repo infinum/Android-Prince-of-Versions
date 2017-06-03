@@ -5,10 +5,19 @@ import android.os.Looper;
 
 import java.util.Map;
 
+/**
+ * This class wraps {@link UpdaterCallback} instance to run all methods on main thread.
+ */
 public class UiUpdaterCallback implements UpdaterCallback {
 
+    /**
+     * Handler on UI thread
+     */
     private Handler handler = new Handler(Looper.getMainLooper());
 
+    /**
+     * Instance to which calls will be delegated
+     */
     private UpdaterCallback callback;
 
     public UiUpdaterCallback(UpdaterCallback callback) {

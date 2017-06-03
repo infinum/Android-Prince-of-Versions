@@ -6,39 +6,26 @@ import android.support.annotation.VisibleForTesting;
 /**
  * This class represents main entry point for using library.
  * <p>
- * Most common way to create instance of this class should be using constructor with two arguments, providing application context
- * Context and callback class UpdaterCallback with methods for accepting result of update check.
+ * Most common way to create instance of this class should be using {@link Builder} or constructor with {@link Context} argument.
  * </p>
  * <p>
- * There are two forms of checkForUpdates method: default one with one argument of type String and more powerful one which accepts
- * LoaderFactory factory interface for creating loader of type UpdateConfigLoader. That way it is possible to use library with custom
- * implementation of loader, for configuring library to load update resource from file, string or on some other way. Default method
- * use NetworkLoaderFactory, eg. String argument represents url from which update resource will be downloaded.
+ * To check if update exists you can use two different approaches: synchronous and asynchronous.
  * </p>
  * <p>
- * Also, library has cancel option for stopping loading and check process. If checking is cancelled no result will be returned
- * to callback.
+ * Depending on used approach there are several versions of checkForUpdates method.
+ * Synchronous execution is possible using checkForUpdates methods with one parameter ({@link Loader} or {@link String} as URL from which
+ * update configuration will be downloaded.
+ * Asynchronous execution expects one more parameter: {@link UpdaterCallback} callback through which results will be notified. Also,
+ * there you can specify custom {@link Executor}, class which should run process, usually on background thread.
+ * With this approach checkForUpdates method returns {@link PrinceOfVersionsCall} object which you can use to cancel request.
  * </p>
  *
- * There is code for most common usage of this library
+ * Here is code for most common usage of this library
  * <pre>
- *         UpdateChecker updater = new DefaultUpdater(context, callback);
- *         LoaderFactory loaderFactory = new NetworkLoaderFactory("http://example.com/some/update.json");
- *         updater.checkForUpdates(loaderFactory); // starts checking for updates using NetworkLoader
- *     </pre>
- *
- * Example of using library with custom loader follows bellow.
- * <pre>
- *         UpdateChecker updater = new DefaultUpdater(context, callback);
- *         LoaderFactory loaderFactory = new FileLoaderFactory("path/to/file");
- *         updater.checkForUpdates(loaderFactory); // starts checking for updates using custom loader
- *     </pre>
- *
- * <p>
- * <b>Be aware, when implementing custom loader factory always return new instance of custom loader in newInstance method!</b>
- * This is important because of cancel functionality. There is no way once cancelled loader became uncancelled, so to support correct
- * cancel functionality always provide new instance of loader.
- * </p>
+ *         {@link PrinceOfVersions} updater = new {@link PrinceOfVersions}(context);
+ *         {@link PrinceOfVersionsCall} call = updater.checkForUpdates("http://example.com/some/update.json", callback); // starts checking
+ * for update
+ * </pre>
  */
 public class PrinceOfVersions {
 
@@ -62,6 +49,11 @@ public class PrinceOfVersions {
 
     private ApplicationConfiguration appConfig;
 
+    /**
+     * Creates {@link PrinceOfVersions} using provided {@link Context}.
+     *
+     * @param context context which will be used for checking application version.
+     */
     public PrinceOfVersions(Context context) {
         this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createAppConfig(context));
     }
@@ -79,18 +71,52 @@ public class PrinceOfVersions {
         this.appConfig = appConfig;
     }
 
+    /**
+     * Start asynchronous check for update using provided {@link Executor} and {@link String}. Notifies result to provided {@link
+     * UpdaterCallback}.
+     *
+     * @param url      Url from where update config will be loaded.
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the call.
+     */
     public PrinceOfVersionsCall checkForUpdates(String url, UpdaterCallback callback) {
         return checkForUpdates(new PrinceOfVersionsDefaultExecutor(), new NetworkLoader(url), callback);
     }
 
+    /**
+     * Start asynchronous check for update using provided {@link Executor} and {@link Loader}. Notifies result to provided {@link
+     * UpdaterCallback}.
+     *
+     * @param loader   Instance for loading update config resource.
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the call.
+     */
     public PrinceOfVersionsCall checkForUpdates(Loader loader, UpdaterCallback callback) {
         return checkForUpdates(new PrinceOfVersionsDefaultExecutor(), loader, callback);
     }
 
+    /**
+     * Start asynchronous check for update using provided {@link Executor} and {@link String}. Notifies result to provided {@link
+     * UpdaterCallback}.
+     *
+     * @param executor Instance for running check call.
+     * @param url      Url from where update config will be loaded.
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the call.
+     */
     public PrinceOfVersionsCall checkForUpdates(Executor executor, String url, UpdaterCallback callback) {
         return checkForUpdates(executor, new NetworkLoader(url), callback);
     }
 
+    /**
+     * Start asynchronous check for update using provided {@link Executor} and {@link Loader}. Notifies result to provided {@link
+     * UpdaterCallback}.
+     *
+     * @param executor Instance for running check call.
+     * @param loader   Instance for loading update config resource.
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the call.
+     */
     public PrinceOfVersionsCall checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
         return checkForUpdatesInternal(executor, loader, new UiUpdaterCallback(callback));
     }
@@ -100,14 +126,31 @@ public class PrinceOfVersions {
         return presenter.check(loader, executor, callback, appConfig);
     }
 
+    /**
+     * Start synchronous check for update using provided URL as {@link String}.
+     *
+     * @param url Url from where update config will be loaded.
+     * @return result of update check.
+     * @throws Throwable if error occurred.
+     */
     public Result checkForUpdates(String url) throws Throwable {
         return checkForUpdates(new NetworkLoader(url));
     }
 
+    /**
+     * Start synchronous check for update using provided URL as {@link String}.
+     *
+     * @param loader Instance for loading update config resource.
+     * @return result of update check.
+     * @throws Throwable if error occurred.
+     */
     public Result checkForUpdates(Loader loader) throws Throwable {
         return presenter.check(loader, appConfig);
     }
 
+    /**
+     * Helper class for building {@link PrinceOfVersions} object.
+     */
     public static class Builder {
 
         private Parser parser;

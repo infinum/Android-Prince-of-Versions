@@ -3,18 +3,39 @@ package co.infinum.princeofversions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class holds loaded data from config resource.
+ */
 public class PrinceOfVersionsConfig {
 
+    /**
+     * Mandatory version text
+     */
     private String mandatoryVersion;
 
+    /**
+     * Minimum SDK version for mandatory update
+     */
     private int mandatoryMinSdk;
 
+    /**
+     * Optional version text
+     */
     private String optionalVersion;
 
+    /**
+     * Minimum SDK version for optional update
+     */
     private int optionalMinSdk;
 
+    /**
+     * Notification type
+     */
     private NotificationType optionalNotificationType;
 
+    /**
+     * Metadata of the update configuration
+     */
     private Map<String, String> metadata;
 
     public PrinceOfVersionsConfig(String mandatoryVersion, int mandatoryMinSdk, String optionalVersion, int optionalMinSdk,

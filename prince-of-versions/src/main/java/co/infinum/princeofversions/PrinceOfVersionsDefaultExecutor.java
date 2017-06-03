@@ -6,6 +6,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+/**
+ * Implementation of {@link Executor} which runs check on background thread of default priority.
+ */
 public class PrinceOfVersionsDefaultExecutor implements Executor {
 
     private static final ExecutorService SERVICE = Executors.newSingleThreadExecutor(new ThreadFactory() {

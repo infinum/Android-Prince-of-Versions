@@ -1,7 +1,7 @@
 package co.infinum.princeofversions;
 
 /**
- * This class provides method for executing update call
+ * This class provides method for executing update call.
  */
 public interface Executor {
 

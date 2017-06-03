@@ -1,7 +1,7 @@
 package co.infinum.princeofversions;
 
 /**
- * This class loads resource, parse it and determine whether there is an update or not
+ * This class loads resource, parse it and determine whether there is an update or not.
  */
 public interface Interactor {
 

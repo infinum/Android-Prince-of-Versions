@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+/**
+ * Implementation of {@link Storage} which stores data in default {@link SharedPreferences}.
+ */
 public class PrinceOfVersionsDefaultStorage implements Storage {
 
     private static final String KEY = "PrinceOfVersions_LastNotifiedUpdate";
