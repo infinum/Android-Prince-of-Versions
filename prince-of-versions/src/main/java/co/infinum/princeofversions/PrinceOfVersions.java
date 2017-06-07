@@ -190,6 +190,20 @@ public class PrinceOfVersions {
                     appConfig != null ? appConfig : createAppConfig(context)
             );
         }
+
+        @VisibleForTesting
+        public PrinceOfVersions build() {
+            if (storage == null || appConfig == null) {
+                throw new UnsupportedOperationException(
+                        "You must define storage and application configuration if you not provide Context.");
+            }
+            return new PrinceOfVersions(
+                    parser != null ? parser : createDefaultParser(),
+                    versionParser != null ? versionParser : createDefaultVersionParser(),
+                    storage,
+                    appConfig
+            );
+        }
     }
 
 }

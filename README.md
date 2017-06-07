@@ -13,20 +13,20 @@ compile 'co.infinum:prince-of-versions:latest_version'
 
 ## Features
 
-  * Load update configuration from **network** resource or from **input stream** resource
+  * Load update configuration from **network** resource or from generic **stream** resource
   * Accept **custom loader** for loading update configuration resource
   * Use predefined parser for parsing update configuration in **JSON format**
   * Accept **custom parser** for parsing update configuration
-  * Make **asynchronous** loading and use **callback** for notifying result
+  * Make **asynchronous** update check and use **callback** for notifying result
+  * Support **synchronous** update check
   * Loading and verifying versions happen **outside of UI thread**
   * Use **thread pool** to cap concurrent resource usage.
   * Provide functionality for **canceling** once started verifications
 
-----------
 
 ### Default parser and JSON file
 
-If you are using a default parser, version in your application and the JSON file has to follow [Semantic Versioning](http://semver.org/). JSON file has to look like this:
+If you use default parsers, version in your application and the JSON file has to follow [Semantic Versioning](http://semver.org/). JSON file has to look like this:
 
 ```json
 {
@@ -34,7 +34,7 @@ If you are using a default parser, version in your application and the JSON file
 		"minimum_version": "1.2.3",
 		"latest_version": {
 			"version": "2.4.5",
-			"notification_type": "ALWAYS",
+			"notification_type": "ALWAYS"
 		}
 	},
 	"android": {
@@ -76,7 +76,7 @@ PrinceOfVersions updater = new PrinceOfVersions(this);
 2. Create loader factory for loading from network passing resource URL.
 
 ```java
-LoaderFactory loaderFactory = new NetworkLoaderFactory("http://pastebin.com/raw/41N8stUD");
+Loader loader = new NetworkLoader("http://pastebin.com/raw/41N8stUD");
 ```
 	
 3. Create concrete callback for result implementing <code>co.infinum.princeofversions.callbacks.UpdaterCallback</code> interface.
@@ -92,22 +92,22 @@ UpdaterCallback callback = new UpdaterCallback() {
 		}
 
 		@Override
-		public void onError(@ErrorCode int error) {
+		public void onError(Throwable throwable) {
 		}
 };
 ```
 
-4. Use updater with previously created loader factory and callback. Call <code>checkForUpdates</code> method to start update check.
+4. Use updater with previously created loader and callback. Call <code>checkForUpdates</code> method to start update check.
 
 ```java
-UpdaterResult result = updater.checkForUpdates(loaderFactory, callback);
+PrinceOfVersionsCall call = updater.checkForUpdates(loaderFactory, callback);
 ```
 
-5. To cancel update check, call <code>cancel</code> method on <code>UpdaterResult</code> object.
+5. To cancel update check, call <code>cancel</code> method on <code>PrinceOfVersionsCall</code> object.
 
 #### Writing tests
 
-For testing purposes you can create your own LoaderFactory. For ease of use, StreamLoader object exists in the library. Here is an example of loading a JSON file from raw. 
+For testing purposes you can create your own Loader instance. For ease of use, StreamLoader object exists in the library. Here is an example of loading a JSON file from raw resource. 
 
 1. Create new instance of updater associated with application context.
 
@@ -118,63 +118,28 @@ PrinceOfVersions updater = new PrinceOfVersions(this);
 2. Create loader factory for creating stream loader by passing new input stream in its constructor.
 
 ```java
-LoaderFactory loaderFactory = new LoaderFactory() {
-		@Override
-	        public UpdateConfigLoader newInstance() {
-	              return new StreamLoader(getResources().openRawResource(R.raw.update));
-	        }
-};
+Loader loader = new StreamLoader(getResources().openRawResource(R.raw.update))
 ```
 
 > **Note:**
-> Be aware that once used input stream in <code>StreamLoader</code> is read and closed. For that purpose always create new stream in <code>newInstance</code> method of <code>LoaderFactory</code>.
+> Be aware that once used input stream in <code>StreamLoader</code> is read and closed. For that purpose always create new stream for every update check.
 
 3rd, 4th and 5th step are same as in previous example.
 
-#### Writing tests using minSdk value
+#### Writing tests using mocked application version and min sdk number
 
-All the steps are the same just like writing tests without minSdk values. The only and single difference in writing tests with minSdk values is the PrinceOfVersions object, to be more precise, it's constructor's arguments. 
+All the steps are the same just like writing tests without minSdk values. In test environment you can provide application's version and min sdk value when creating instance of <code>PrinceOfVersion</code>. If you also mock storage, you can use build method without <code>Context</code> argument.
 
-```
-PrinceOfVersions updater = new PrinceOfVersions(context, provider, repository, sdkVersionProvider);
-```
-
-Since we've added the support for minSdk values of the device you can mock and customize them when writing tests by using the interface <code>SdkVersionProvider</code>.
-
-When creating a PrinceOfVersions object a few things need to be kept in mind:
-
-* <code>context</code> argument in PrinceOfVersions constructor can be mocked using Mockito library.
-
-* <code>provider</code> argument in PrinceOfVersions constructor can be mocked using Mockito library. 
-
-```
-provider = Mockito.mock(VersionVerifierFactory.class);
+```java
+PrinceOfVersions princeOfVersions = new PrinceOfVersions.Builder()
+                .withStorage(new MockStorage())
+                .withAppConfig(new MockApplicationConfiguration("2.3.4", 16))
+                .build();
 ```
 
-and it's used for creating a new instance of specific <code>VersionVerifier</code> and it has a single method that provides a new instance of <code>VersionVerifier</code> which is used for verifying updates and cancellation of verification.
-
-* <code>repository</code> argument is used for representing repository which persists library data and is also mocked with Mockito library. 
-
-```
-repository = Mockito.mock(VersionRepository.class);
-```
-
-* And finally, <code>sdkVersionProvider</code> is an abstraction used to fetch <code>Build.Version.SDK_INT</code> value. In order to use <code>sdkVersionProvider</code> in tests you need to create a custom mock class which will accept a mock integer which represents the minSdkValue you wish to use in your test, e.g.
-
-```
-public class SdkVersionProviderMock implements SdkVersionProvider {
-
-    private int sdkInt;
-
-    public SdkVersionProviderMock(int sdkInt) {
-        this.sdkInt = sdkInt;
-    }
-
-    @Override
-    public int getSdkInt() {
-        return sdkInt;
-    }
-}
+If you write tests with asynchronous version of update check included, you probably want all PrinceOfVersion's work to be executed on main test thread. You can do that by providing <code>Executor</code> instance to <code>checkForUpdate</code> method. Library includes <code>PrinceOfVersionsDefaultExecutor</code> class for executing update check on separate thread and <code>SingleThreadExecutor</code> for executing update check immediately.
+```java
+princeOfVersions.checkForUpdates(executor, loader, callback);
 ```
 
 ### Multiple flavors
