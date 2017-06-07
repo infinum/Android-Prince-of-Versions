@@ -21,25 +21,44 @@ public class InteractorImpl implements Interactor {
     public CheckResult check(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         String content = loader.load();
         PrinceOfVersionsConfig config = parser.parse(content);
+
         Version currentVersion = versionParser.parse(appConfig.version());
-        Version mandatoryVersion = versionParser.parse(config.getMandatoryVersion());
-        int mandatoryMinSdk = config.getMandatoryMinSdk();
+
+        if (!config.hasMandatory() && !config.hasOptional()) {
+            // neither mandatory nor optional version is provided
+            throw new Exceptions.PrinceOfVersionsException("Both mandatory and optional version are null.");
+        }
+
+        if (config.hasMandatory()) {
+            Version mandatoryVersion = versionParser.parse(config.getMandatoryVersion());
+            int mandatoryMinSdk = config.getMandatoryMinSdk();
+
+            if (currentVersion.isLessThan(mandatoryVersion) && mandatoryMinSdk <= appConfig.minSdk()) {
+                // if mandatory update exists - notify mandatory update
+                // if there is also optional update available check if its version is greater than mandatory
+                // in that case notify mandatory update with optional version, otherwise notify mandatory update with mandatory version
+                if (config.hasOptional()) {
+                    Version optionalVersion = versionParser.parse(config.getOptionalVersion());
+                    int optionalMinSdk = config.getOptionalMinSdk();
+                    if (optionalVersion.isGreaterThan(mandatoryVersion) && optionalMinSdk <= appConfig.minSdk()) {
+                        // optional update also exists and has greater version than mandatory
+                        return CheckResult.mandatoryUpdate(optionalVersion.value(), config.getMetadata());
+                    }
+                }
+                // if there is no optional update or it isn't greater than mandatory - notify mandatory version
+                return CheckResult.mandatoryUpdate(mandatoryVersion.value(), config.getMetadata());
+            }
+        }
+
+        // if there is no mandatory update check for optional
         if (config.hasOptional()) {
             Version optionalVersion = versionParser.parse(config.getOptionalVersion());
             int optionalMinSdk = config.getOptionalMinSdk();
-            // if optional update exists
             if (currentVersion.isLessThan(optionalVersion) && optionalMinSdk <= appConfig.minSdk()) {
-                // first check if mandatory exists also - if do notify mandatory with optional version
-                if (currentVersion.isLessThan(mandatoryVersion) && mandatoryMinSdk <= appConfig.minSdk()) {
-                    return CheckResult.mandatoryUpdate(optionalVersion.value(), config.getMetadata());
-                } else {
-                    return CheckResult.optionalUpdate(optionalVersion.value(), config.getOptionalNotificationType(), config.getMetadata());
-                }
+                return CheckResult.optionalUpdate(optionalVersion.value(), config.getOptionalNotificationType(), config.getMetadata());
             }
         }
-        if (currentVersion.isLessThan(mandatoryVersion) && mandatoryMinSdk <= appConfig.minSdk()) {
-            return CheckResult.mandatoryUpdate(mandatoryVersion.value(), config.getMetadata());
-        }
+
         return CheckResult.noUpdate(currentVersion.value(), config.getMetadata());
     }
 }

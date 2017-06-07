@@ -961,6 +961,31 @@ public class PrinceOfVersionsTest {
         assertThat(result.getVersion()).isEqualTo("2.1.1");
     }
 
+    @Test
+    public void testCheckingOptionalUpdateWhenUserIsUpToDateAndNoMandatoryUpdateIsNotDefined() {
+        Storage storage = new MockStorage();
+        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.1.1", 20));
+        princeOfVersions.checkForUpdatesInternal(
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_no_min_version.json"),
+                callback
+        );
+
+        verify(callback, times(1)).onNewUpdate(anyString(), eq(false), anyMap());
+        verify(callback, times(0)).onNoUpdate(anyMap());
+        verify(callback, times(0)).onError(anyThrowable());
+    }
+
+    @Test
+    public void testCheckingOptionalUpdateWhenUserIsUpToDateAndNoMandatoryUpdateIsNotDefinedSync() throws Throwable {
+        Storage storage = new MockStorage();
+        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new MockApplicationConfiguration("2.1.1", 20));
+        Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_no_min_version.json"));
+
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getVersion()).isEqualTo("2.4.5");
+    }
+
     private static Throwable anyThrowable() {
         return any(Throwable.class);
     }

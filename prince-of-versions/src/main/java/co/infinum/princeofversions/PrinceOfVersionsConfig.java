@@ -50,15 +50,13 @@ public class PrinceOfVersionsConfig {
     }
 
     private void validate() {
-        if (mandatoryVersion == null) {
-            throw new IllegalArgumentException("Mandatory version must be present.");
-        }
-        if (mandatoryMinSdk <= 0) {
-            throw new IllegalArgumentException("Mandatory minimum SDK version must be greater than 0.");
-        }
         if (optionalNotificationType == null) {
             throw new IllegalArgumentException("Notification type cannot be null.");
         }
+    }
+
+    public boolean hasMandatory() {
+        return mandatoryVersion != null && mandatoryMinSdk > 0;
     }
 
     public boolean hasOptional() {

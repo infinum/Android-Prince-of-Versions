@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import co.infinum.princeofversions.Exceptions;
 import co.infinum.princeofversions.JsonParser;
 import co.infinum.princeofversions.NotificationType;
 import co.infinum.princeofversions.PrinceOfVersionsConfig;
@@ -95,7 +96,7 @@ public class JsonParserTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = Exceptions.PrinceOfVersionsException.class)
     public void invalidUpdateNoAndroid() throws Throwable {
         parser.parse(ResourceUtils.readFromFile("invalid_update_no_android.json"));
     }
@@ -251,9 +252,17 @@ public class JsonParserTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void noMandatoryVersionJson() throws Throwable {
-        parser.parse(ResourceUtils.readFromFile("valid_update_no_min_version.json"));
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_no_min_version.json"));
+        assertThat(
+                config
+        ).isEqualTo(
+                new PrinceOfVersionsConfig.Builder()
+                        .withOptionalVersion("2.4.5")
+                        .withOptionalNotificationType(NotificationType.ONCE)
+                        .build()
+        );
     }
 
     @Test

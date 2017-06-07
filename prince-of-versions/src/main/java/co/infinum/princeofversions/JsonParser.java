@@ -141,6 +141,8 @@ public class JsonParser implements Parser {
                                     : NotificationType.ONCE);
                 }
             }
+        } else {
+            throw new Exceptions.PrinceOfVersionsException("Config resource does not contain android key");
         }
         if (data.has(META)) {
             Object meta = data.get(META);
