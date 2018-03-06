@@ -1,15 +1,16 @@
 # Build configuration file for Circle CI
-# needs to be named `circle.yml` and should be in the top level dir of the repo
-
-machine:
-  java:
-    version: oraclejdk8
-  environment:
-    # set the adb install tcimeout to 8 minutes (default is 2 minutes)
-    ADB_INSTALL_TIMEOUT: 8
-    # set memory limits for java processes because the container has a memory limit of 4G
-    JAVA_OPTS: "-Xms512m -Xmx1024m"
-    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"'
+# needs to be named `config.yml` and should be in dir `.circleci/` relative to the top level dir of the repo
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/java:oraclejdk8
+    environment:
+      # set the adb install tcimeout to 8 minutes (default is 2 minutes)
+      ADB_INSTALL_TIMEOUT: 8
+      # set memory limits for java processes because the container has a memory limit of 4G
+      JAVA_OPTS: "-Xms512m -Xmx1024m"
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx1024m -XX:+HeapDumpOnOutOfMemoryError"'
 
 
 dependencies:
