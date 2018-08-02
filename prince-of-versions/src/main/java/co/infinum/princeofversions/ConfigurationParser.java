@@ -3,7 +3,7 @@ package co.infinum.princeofversions;
 /**
  * This class parses update resource text into {@link PrinceOfVersionsConfig}.
  */
-public interface Parser {
+public interface ConfigurationParser {
 
     /**
      * Parses update resource into {@link PrinceOfVersionsConfig}.

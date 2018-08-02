@@ -59,7 +59,7 @@ import java.util.Map;
  *
  * @see <a href="http://www.json.org/">JSON</a>
  */
-public class JsonParser implements Parser {
+public class JsonConfigurationParser implements ConfigurationParser {
 
     /**
      * Android key

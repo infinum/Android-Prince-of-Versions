@@ -13,7 +13,7 @@ import co.infinum.princeofversions.Interactor;
 import co.infinum.princeofversions.InteractorImpl;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.mocks.MockApplicationConfiguration;
-import co.infinum.princeofversions.Parser;
+import co.infinum.princeofversions.ConfigurationParser;
 import co.infinum.princeofversions.PrinceOfVersionsConfig;
 import co.infinum.princeofversions.PrinceOfVersionsDefaultVersionParser;
 
@@ -32,13 +32,13 @@ public class InteractorTest {
     Loader loader;
 
     @Mock
-    Parser parser;
+    ConfigurationParser configurationParser;
 
     private Interactor interactor;
 
     @Before
     public void setUp() throws Throwable {
-        interactor = new InteractorImpl(parser, new PrinceOfVersionsDefaultVersionParser());
+        interactor = new InteractorImpl(configurationParser, new PrinceOfVersionsDefaultVersionParser());
         when(loader.load()).thenReturn(DEFAULT_LOADER_RESULT);
     }
 
@@ -53,12 +53,12 @@ public class InteractorTest {
                 .withMandatoryVersion("1.0.1")
                 .withOptionalVersion("1.0.0")
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -71,12 +71,12 @@ public class InteractorTest {
                 .withMandatoryVersion("1.0.1")
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -89,13 +89,13 @@ public class InteractorTest {
                 .withMandatoryVersion("1.0.0")
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -109,13 +109,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.0")
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -128,12 +128,12 @@ public class InteractorTest {
                 .withMandatoryVersion("1.0.1")
                 .withOptionalVersion("1.0.2")
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
@@ -146,12 +146,12 @@ public class InteractorTest {
                 .withMandatoryVersion("1.0.1")
                 .withOptionalVersion("1.0.1")
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -166,13 +166,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.0")
                 .withOptionalMinSdk(2)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -187,13 +187,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.0")
                 .withOptionalMinSdk(2)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -208,13 +208,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.0")
                 .withOptionalMinSdk(2)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 3);
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -228,13 +228,13 @@ public class InteractorTest {
                 .withMandatoryMinSdk(2)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -248,12 +248,12 @@ public class InteractorTest {
                 .withMandatoryMinSdk(1)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 1));
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -267,12 +267,12 @@ public class InteractorTest {
                 .withMandatoryMinSdk(1)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
 
         CheckResult result = interactor.check(loader, new MockApplicationConfiguration("1.0.0", 2));
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -286,13 +286,13 @@ public class InteractorTest {
                 .withMandatoryMinSdk(2)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -306,13 +306,13 @@ public class InteractorTest {
                 .withMandatoryMinSdk(1)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -326,13 +326,13 @@ public class InteractorTest {
                 .withMandatoryMinSdk(1)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -348,13 +348,13 @@ public class InteractorTest {
                 .withOptionalMinSdk(2)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -370,13 +370,13 @@ public class InteractorTest {
                 .withOptionalMinSdk(2)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -392,13 +392,13 @@ public class InteractorTest {
                 .withOptionalMinSdk(1)
                 .build();
 
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -413,13 +413,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.2")
                 .withOptionalMinSdk(2)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -434,13 +434,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.2")
                 .withOptionalMinSdk(2)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
@@ -455,13 +455,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.2")
                 .withOptionalMinSdk(1)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
@@ -476,13 +476,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.1")
                 .withOptionalMinSdk(2)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 1);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -497,13 +497,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.1")
                 .withOptionalMinSdk(2)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -518,13 +518,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.1")
                 .withOptionalMinSdk(1)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
@@ -537,13 +537,13 @@ public class InteractorTest {
                 .withMandatoryVersion("1.0.0")
                 .withOptionalVersion("1.0.1")
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
@@ -558,13 +558,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.1")
                 .withOptionalMinSdk(3)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.noUpdate(appConfig.version(), config.getMetadata())
@@ -579,13 +579,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.1")
                 .withOptionalMinSdk(2)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
@@ -600,13 +600,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.1")
                 .withOptionalMinSdk(1)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
@@ -621,13 +621,13 @@ public class InteractorTest {
                 .withOptionalVersion("1.0.2")
                 .withOptionalMinSdk(1)
                 .build();
-        when(parser.parse(anyString())).thenReturn(config);
+        when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration("1.0.0", 2);
 
         CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
-        verify(parser, times(1)).parse(DEFAULT_LOADER_RESULT);
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
                 CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())

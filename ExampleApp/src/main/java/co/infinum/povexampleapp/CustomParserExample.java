@@ -12,9 +12,9 @@ import android.widget.Toast;
 
 import java.util.Map;
 
+import co.infinum.princeofversions.ConfigurationParser;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
-import co.infinum.princeofversions.Parser;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCall;
 import co.infinum.princeofversions.PrinceOfVersionsConfig;
@@ -62,7 +62,7 @@ public class CustomParserExample extends AppCompatActivity {
      * Custom parser factory, used for parsing in special format.
      * Custom parser is defined for JSON object containing only one key: minimum_version.
      */
-    private Parser customParser = new Parser() {
+    private ConfigurationParser customParser = new ConfigurationParser() {
 
         private static final String MINIMUM_VERSION = "minimum_version";
 

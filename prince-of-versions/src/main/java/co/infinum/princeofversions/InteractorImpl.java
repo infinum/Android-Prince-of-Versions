@@ -2,25 +2,25 @@ package co.infinum.princeofversions;
 
 public class InteractorImpl implements Interactor {
 
-    private Parser parser;
+    private ConfigurationParser configurationParser;
 
     private VersionParser versionParser;
 
     /**
-     * Constructs interactor using provided {@link Parser} and {@link VersionParser}.
+     * Constructs interactor using provided {@link ConfigurationParser} and {@link VersionParser}.
      *
-     * @param parser        object which will be used for parsing update resource.
+     * @param configurationParser        object which will be used for parsing update resource.
      * @param versionParser object which will be used for parsing specific version strings.
      */
-    public InteractorImpl(Parser parser, VersionParser versionParser) {
-        this.parser = parser;
+    public InteractorImpl(ConfigurationParser configurationParser, VersionParser versionParser) {
+        this.configurationParser = configurationParser;
         this.versionParser = versionParser;
     }
 
     @Override
     public CheckResult check(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         String content = loader.load();
-        PrinceOfVersionsConfig config = parser.parse(content);
+        PrinceOfVersionsConfig config = configurationParser.parse(content);
 
         Version currentVersion = versionParser.parse(appConfig.version());
 

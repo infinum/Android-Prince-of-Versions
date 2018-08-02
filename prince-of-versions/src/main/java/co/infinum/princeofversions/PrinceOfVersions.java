@@ -31,8 +31,8 @@ import java.util.concurrent.Executor;
  */
 public class PrinceOfVersions {
 
-    private static Parser createDefaultParser() {
-        return new JsonParser();
+    private static ConfigurationParser createDefaultParser() {
+        return new JsonConfigurationParser();
     }
 
     private static Storage createDefaultStorage(Context context) {
@@ -65,9 +65,9 @@ public class PrinceOfVersions {
         this(createDefaultParser(), createDefaultVersionParser(), storage, appConfig);
     }
 
-    private PrinceOfVersions(Parser parser, VersionParser versionParser, Storage storage, ApplicationConfiguration appConfig) {
+    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
-                new InteractorImpl(parser, versionParser),
+                new InteractorImpl(configurationParser, versionParser),
                 storage
         );
         this.appConfig = appConfig;
@@ -155,7 +155,7 @@ public class PrinceOfVersions {
      */
     public static class Builder {
 
-        private Parser parser;
+        private ConfigurationParser configurationParser;
 
         private Storage storage;
 
@@ -163,8 +163,8 @@ public class PrinceOfVersions {
 
         private ApplicationConfiguration appConfig;
 
-        public Builder withParser(Parser parser) {
-            this.parser = parser;
+        public Builder withParser(ConfigurationParser configurationParser) {
+            this.configurationParser = configurationParser;
             return this;
         }
 
@@ -186,7 +186,7 @@ public class PrinceOfVersions {
 
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
-                    parser != null ? parser : createDefaultParser(),
+                    configurationParser != null ? configurationParser : createDefaultParser(),
                     versionParser != null ? versionParser : createDefaultVersionParser(),
                     storage != null ? storage : createDefaultStorage(context),
                     appConfig != null ? appConfig : createAppConfig(context)
@@ -200,7 +200,7 @@ public class PrinceOfVersions {
                         "You must define storage and application configuration if you not provide Context.");
             }
             return new PrinceOfVersions(
-                    parser != null ? parser : createDefaultParser(),
+                    configurationParser != null ? configurationParser : createDefaultParser(),
                     versionParser != null ? versionParser : createDefaultVersionParser(),
                     storage,
                     appConfig
