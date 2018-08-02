@@ -14,7 +14,6 @@ import java.util.concurrent.Executor;
 
 import co.infinum.princeofversions.ApplicationConfiguration;
 import co.infinum.princeofversions.CheckResult;
-import co.infinum.princeofversions.Exceptions;
 import co.infinum.princeofversions.Interactor;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NotificationType;
@@ -304,7 +303,7 @@ public class PresenterTest {
     public void testAsyncCheckError() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
         PresenterImpl mock = mock(PresenterImpl.class);
-        Throwable throwable = new Exceptions.PrinceOfVersionsException();
+        Throwable throwable = new IllegalStateException();
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenThrow(throwable);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
                 .thenCallRealMethod();
@@ -317,9 +316,9 @@ public class PresenterTest {
         verify(callback, times(1)).onError(throwable);
     }
 
-    @Test(expected = Exceptions.PrinceOfVersionsException.class)
+    @Test(expected = IllegalStateException.class)
     public void testSyncCheckError() throws Throwable {
-        when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenThrow(new Exceptions.PrinceOfVersionsException());
+        when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenThrow(new IllegalStateException());
         presenter.check(loader, appConfig);
     }
 

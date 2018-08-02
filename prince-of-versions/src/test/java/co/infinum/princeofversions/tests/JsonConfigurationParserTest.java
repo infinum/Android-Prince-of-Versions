@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-import co.infinum.princeofversions.Exceptions;
 import co.infinum.princeofversions.JsonConfigurationParser;
 import co.infinum.princeofversions.NotificationType;
 import co.infinum.princeofversions.PrinceOfVersionsConfig;
@@ -96,7 +95,7 @@ public class JsonConfigurationParserTest {
         );
     }
 
-    @Test(expected = Exceptions.PrinceOfVersionsException.class)
+    @Test(expected = IllegalStateException.class)
     public void invalidUpdateNoAndroid() throws Throwable {
         parser.parse(ResourceUtils.readFromFile("invalid_update_no_android.json"));
     }

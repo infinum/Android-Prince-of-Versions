@@ -26,7 +26,7 @@ public class InteractorImpl implements Interactor {
 
         if (!config.hasMandatory() && !config.hasOptional()) {
             // neither mandatory nor optional version is provided
-            throw new Exceptions.PrinceOfVersionsException("Both mandatory and optional version are null.");
+            throw new IllegalStateException("Both mandatory and optional version are null.");
         }
 
         if (config.hasMandatory()) {

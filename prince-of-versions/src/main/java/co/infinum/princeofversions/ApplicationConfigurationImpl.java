@@ -29,7 +29,7 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
         try {
             version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            throw new Exceptions.PrinceOfVersionsException("Could not find package name", e);
+            throw new IllegalStateException("Could not find package name", e);
         }
     }
 
