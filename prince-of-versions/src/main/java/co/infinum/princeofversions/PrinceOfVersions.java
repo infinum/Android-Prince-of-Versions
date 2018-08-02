@@ -36,7 +36,10 @@ public class PrinceOfVersions {
     }
 
     private static Storage createDefaultStorage(Context context) {
-        return new PrinceOfVersionsDefaultStorage(context);
+        PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
+        PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
+        StorageMigration.migrateStorage(oldStorage, storage);
+        return storage;
     }
 
     private static VersionParser createDefaultVersionParser() {
