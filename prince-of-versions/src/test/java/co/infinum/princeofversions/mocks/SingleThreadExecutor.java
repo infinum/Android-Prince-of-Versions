@@ -1,6 +1,6 @@
 package co.infinum.princeofversions.mocks;
 
-import co.infinum.princeofversions.Executor;
+import java.util.concurrent.Executor;
 
 public class SingleThreadExecutor implements Executor {
 

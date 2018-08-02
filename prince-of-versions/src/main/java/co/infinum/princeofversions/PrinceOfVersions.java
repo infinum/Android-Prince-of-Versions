@@ -3,6 +3,8 @@ package co.infinum.princeofversions;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
+import java.util.concurrent.Executor;
+
 /**
  * This class represents main entry point for using library.
  * <p>

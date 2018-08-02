@@ -10,11 +10,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import co.infinum.princeofversions.ApplicationConfiguration;
 import co.infinum.princeofversions.CheckResult;
 import co.infinum.princeofversions.Exceptions;
-import co.infinum.princeofversions.Executor;
 import co.infinum.princeofversions.Interactor;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NotificationType;

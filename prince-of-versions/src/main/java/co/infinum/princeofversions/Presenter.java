@@ -1,5 +1,7 @@
 package co.infinum.princeofversions;
 
+import java.util.concurrent.Executor;
+
 /**
  * This class handles update checks.
  */
