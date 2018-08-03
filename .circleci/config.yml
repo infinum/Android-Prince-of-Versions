@@ -1,0 +1,54 @@
+# Build configuration file for Circle CI
+# needs to be named `config.yml` and should be in dir `.circleci/` relative to the top level dir of the repo
+version: 2
+jobs:
+  build-and-test:
+    docker:
+      - image: circleci/android:api-27-alpha
+    steps:
+      - run:
+          name: Install Build Tools
+          # Otherwise circle ci shows some accepting licence problem
+          command: echo y | sdkmanager "build-tools;27.0.3"
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "prince-of-versions/build.gradle" }}-{{ checksum "ExampleApp/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "prince-of-versions/build.gradle" }}-{{ checksum "ExampleApp/build.gradle" }}
+      - run:
+          name: Run Android Lint
+          command: ./gradlew lintDebug -PpreDexEnable=false -PdisablePreDex --console=plain
+      - run:
+          name: Run Checkstyle
+          command: ./gradlew checkstyle -PpreDexEnable=false -PdisablePreDex --console=plain
+      - run:
+          name: Run Findbugs
+          command: ./gradlew findbugs -PpreDexEnable=false -PdisablePreDex --console=plain
+      - run:
+          name: Run PMD
+          command: ./gradlew pmd -PpreDexEnable=false -PdisablePreDex --console=plain
+      - run:
+          name: Run Unit Tests
+          command: ./gradlew testDebug -PpreDexEnable=false -PdisablePreDex --console=plain
+      - store_artifacts:
+          path: prince-of-versions/build/reports
+          destination: reports
+      - store_artifacts:
+          path: prince-of-versions/build/outputs
+          destination: outputs
+      - store_test_results:
+          path: prince-of-versions/build/test-results
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-and-test:
+          filters:
+            tags:
+              only: /.*/
