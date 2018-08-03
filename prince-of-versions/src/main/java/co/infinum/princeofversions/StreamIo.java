@@ -1,4 +1,4 @@
-package co.infinum.princeofversions.helpers;
+package co.infinum.princeofversions;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.nio.charset.Charset;
 /**
  * Utility class for reading from input stream into string.
  */
-public class StreamIo {
+class StreamIo {
 
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+    private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
     private StreamIo() {
 
@@ -24,7 +24,7 @@ public class StreamIo {
      * @return String read from stream.
      * @throws IOException if reading error occurred.
      */
-    public static String toString(InputStream is) throws IOException {
+    static String toString(InputStream is) throws IOException {
         return toString(is, DEFAULT_CHARSET);
     }
 
@@ -36,7 +36,7 @@ public class StreamIo {
      * @return String read from stream.
      * @throws IOException if reading error occurred.
      */
-    public static String toString(InputStream is, Charset charset) throws IOException {
+    static String toString(InputStream is, Charset charset) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, charset));
         StringBuilder out = new StringBuilder();
         String line;

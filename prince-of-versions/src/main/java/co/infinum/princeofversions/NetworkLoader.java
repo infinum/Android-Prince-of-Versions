@@ -8,8 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import co.infinum.princeofversions.helpers.StreamIo;
-
 /**
  * Represents a concrete loader that load resource from network using provided URL.
  */

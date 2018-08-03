@@ -17,36 +17,20 @@ import android.support.annotation.VisibleForTesting;
  * update configuration will be downloaded.
  * Asynchronous execution expects one more parameter: {@link UpdaterCallback} callback through which results will be notified. Also,
  * there you can specify custom {@link Executor}, class which should run process, usually on background thread.
- * With this approach checkForUpdates method returns {@link PrinceOfVersionsCall} object which you can use to cancel request.
+ * With this approach checkForUpdates method returns {@link PrinceOfVersionsCancelable} object which you can use to cancel request.
  * </p>
  *
  * Here is code for most common usage of this library
  * <pre>
  *         {@link PrinceOfVersions} updater = new {@link PrinceOfVersions}(context);
- *         {@link PrinceOfVersionsCall} call = updater.checkForUpdates("http://example.com/some/update.json", callback); // starts checking
+ *         {@link PrinceOfVersionsCancelable} call = updater.checkForUpdates("http://example.com/some/update.json", callback); // starts
+ *         checking
  * for update
  * </pre>
  */
 public class PrinceOfVersions {
 
-    private static Parser createDefaultParser() {
-        return new JsonParser();
-    }
-
-    private static Storage createDefaultStorage(Context context) {
-        return new PrinceOfVersionsDefaultStorage(context);
-    }
-
-    private static VersionParser createDefaultVersionParser() {
-        return new PrinceOfVersionsDefaultVersionParser();
-    }
-
-    private static ApplicationConfiguration createAppConfig(Context context) {
-        return new ApplicationConfigurationImpl(context);
-    }
-
     private Presenter presenter;
-
     private ApplicationConfiguration appConfig;
 
     /**
@@ -65,10 +49,26 @@ public class PrinceOfVersions {
 
     private PrinceOfVersions(Parser parser, VersionParser versionParser, Storage storage, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
-                new InteractorImpl(parser, versionParser),
-                storage
+            new InteractorImpl(parser, versionParser),
+            storage
         );
         this.appConfig = appConfig;
+    }
+
+    private static Parser createDefaultParser() {
+        return new JsonParser();
+    }
+
+    private static Storage createDefaultStorage(Context context) {
+        return new PrinceOfVersionsDefaultStorage(context);
+    }
+
+    private static VersionParser createDefaultVersionParser() {
+        return new PrinceOfVersionsDefaultVersionParser();
+    }
+
+    private static ApplicationConfiguration createAppConfig(Context context) {
+        return new ApplicationConfigurationImpl(context);
     }
 
     /**
@@ -79,7 +79,7 @@ public class PrinceOfVersions {
      * @param callback Callback to notify result.
      * @return instance through which is possible to cancel the call.
      */
-    public PrinceOfVersionsCall checkForUpdates(String url, UpdaterCallback callback) {
+    public PrinceOfVersionsCancelable checkForUpdates(String url, UpdaterCallback callback) {
         return checkForUpdates(new PrinceOfVersionsDefaultExecutor(), new NetworkLoader(url), callback);
     }
 
@@ -91,7 +91,7 @@ public class PrinceOfVersions {
      * @param callback Callback to notify result.
      * @return instance through which is possible to cancel the call.
      */
-    public PrinceOfVersionsCall checkForUpdates(Loader loader, UpdaterCallback callback) {
+    public PrinceOfVersionsCancelable checkForUpdates(Loader loader, UpdaterCallback callback) {
         return checkForUpdates(new PrinceOfVersionsDefaultExecutor(), loader, callback);
     }
 
@@ -104,7 +104,7 @@ public class PrinceOfVersions {
      * @param callback Callback to notify result.
      * @return instance through which is possible to cancel the call.
      */
-    public PrinceOfVersionsCall checkForUpdates(Executor executor, String url, UpdaterCallback callback) {
+    public PrinceOfVersionsCancelable checkForUpdates(Executor executor, String url, UpdaterCallback callback) {
         return checkForUpdates(executor, new NetworkLoader(url), callback);
     }
 
@@ -117,12 +117,12 @@ public class PrinceOfVersions {
      * @param callback Callback to notify result.
      * @return instance through which is possible to cancel the call.
      */
-    public PrinceOfVersionsCall checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
+    public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
         return checkForUpdatesInternal(executor, loader, new UiUpdaterCallback(callback));
     }
 
     @VisibleForTesting
-    public PrinceOfVersionsCall checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
+    public PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
         return presenter.check(loader, executor, callback, appConfig);
     }
 
@@ -146,6 +146,26 @@ public class PrinceOfVersions {
      */
     public Result checkForUpdates(Loader loader) throws Throwable {
         return presenter.check(loader, appConfig);
+    }
+
+    /**
+     * Creates new call object which will load configuration from specified url.
+     *
+     * @param url Url from where update config will be loaded.
+     * @return Call with ability to execute or enqueue the check.
+     */
+    public PrinceOfVersionsCall newCall(String url) {
+        return newCall(new NetworkLoader(url));
+    }
+
+    /**
+     * Creates new call object which will load configuration from specified url.
+     *
+     * @param loader Instance for loading update config resource.
+     * @return Call with ability to execute or enqueue the check.
+     */
+    public PrinceOfVersionsCall newCall(Loader loader) {
+        return new UpdaterCall(this, loader);
     }
 
     /**
@@ -184,10 +204,10 @@ public class PrinceOfVersions {
 
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
-                    parser != null ? parser : createDefaultParser(),
-                    versionParser != null ? versionParser : createDefaultVersionParser(),
-                    storage != null ? storage : createDefaultStorage(context),
-                    appConfig != null ? appConfig : createAppConfig(context)
+                parser != null ? parser : createDefaultParser(),
+                versionParser != null ? versionParser : createDefaultVersionParser(),
+                storage != null ? storage : createDefaultStorage(context),
+                appConfig != null ? appConfig : createAppConfig(context)
             );
         }
 
@@ -195,15 +215,14 @@ public class PrinceOfVersions {
         public PrinceOfVersions build() {
             if (storage == null || appConfig == null) {
                 throw new UnsupportedOperationException(
-                        "You must define storage and application configuration if you not provide Context.");
+                    "You must define storage and application configuration if you not provide Context.");
             }
             return new PrinceOfVersions(
-                    parser != null ? parser : createDefaultParser(),
-                    versionParser != null ? versionParser : createDefaultVersionParser(),
-                    storage,
-                    appConfig
+                parser != null ? parser : createDefaultParser(),
+                versionParser != null ? versionParser : createDefaultVersionParser(),
+                storage,
+                appConfig
             );
         }
     }
-
 }

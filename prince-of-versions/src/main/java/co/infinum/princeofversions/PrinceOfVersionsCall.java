@@ -1,20 +1,10 @@
 package co.infinum.princeofversions;
 
-/**
- * A call represents a started check for update request which can be canceled.
- */
-public interface PrinceOfVersionsCall {
+public interface PrinceOfVersionsCall extends PrinceOfVersionsCancelable {
 
-    /**
-     * Cancel the call. Callback won't be notified after invocation of this method.
-     */
-    void cancel();
+    Result execute() throws Throwable;
 
-    /**
-     * Returns true if call is canceled, false otherwise.
-     *
-     * @return true if call is canceled, false otherwise.
-     */
-    boolean isCanceled();
+    void enqueue(UpdaterCallback callback);
 
+    void enqueue(Executor executor, UpdaterCallback callback);
 }

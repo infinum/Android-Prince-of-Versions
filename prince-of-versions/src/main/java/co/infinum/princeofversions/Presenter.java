@@ -24,6 +24,6 @@ public interface Presenter {
      * @param appConfig Application configuration.
      * @return Call object which offers method for cancelling update check.
      */
-    PrinceOfVersionsCall check(Loader loader, Executor executor, UpdaterCallback callback, ApplicationConfiguration appConfig);
+    PrinceOfVersionsCancelable check(Loader loader, Executor executor, UpdaterCallback callback, ApplicationConfiguration appConfig);
 
 }

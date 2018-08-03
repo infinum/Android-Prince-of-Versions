@@ -1,23 +1,67 @@
 package co.infinum.princeofversions;
 
-/**
- * This class represents a started check for update request which can be canceled.
- */
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class UpdaterCall implements PrinceOfVersionsCall {
 
-    /**
-     * Flag.
-     * {@code true} if call is canceled, {@code false} otherwise
-     */
-    private boolean flag;
+    private final PrinceOfVersions core;
+    private final Loader loader;
+
+    private final AtomicBoolean executed = new AtomicBoolean(false);
+    private final AtomicBoolean canceled = new AtomicBoolean(false);
+
+    private PrinceOfVersionsCancelable cancelable;
+
+    public UpdaterCall(final PrinceOfVersions core, final Loader loader) {
+        this.core = core;
+        this.loader = loader;
+    }
+
+    @Override
+    public Result execute() throws Throwable {
+        if (!executed.getAndSet(true)) {
+            throw new IllegalStateException("Already executed!");
+        }
+        if (!canceled.get()) {
+            throw new IOException("Canceled!");
+        }
+        return core.checkForUpdates(loader);
+    }
+
+    @Override
+    public void enqueue(final UpdaterCallback callback) {
+        if (!executed.getAndSet(true)) {
+            throw new IllegalStateException("Already executed!");
+        }
+        if (!canceled.get()) {
+            callback.onError(new IOException("Canceled"));
+        }
+        cancelable = core.checkForUpdates(loader, callback);
+    }
+
+    @Override
+    public void enqueue(final Executor executor, final UpdaterCallback callback) {
+        if (!executed.getAndSet(true)) {
+            throw new IllegalStateException("Already executed!");
+        }
+        if (!canceled.get()) {
+            callback.onError(new IOException("Canceled"));
+        }
+        cancelable = core.checkForUpdates(executor, loader, callback);
+    }
 
     @Override
     public void cancel() {
-        this.flag = true;
+        canceled.set(true);
+
+        if (cancelable != null) {
+            cancelable.cancel();
+        }
     }
 
     @Override
     public boolean isCanceled() {
-        return flag;
+        return canceled.get();
     }
 }
