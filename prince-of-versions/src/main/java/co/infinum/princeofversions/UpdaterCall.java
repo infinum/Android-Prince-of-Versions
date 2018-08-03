@@ -20,10 +20,10 @@ public class UpdaterCall implements PrinceOfVersionsCall {
 
     @Override
     public Result execute() throws Throwable {
-        if (!executed.getAndSet(true)) {
+        if (executed.getAndSet(true)) {
             throw new IllegalStateException("Already executed!");
         }
-        if (!canceled.get()) {
+        if (canceled.get()) {
             throw new IOException("Canceled!");
         }
         return core.checkForUpdates(loader);
@@ -31,10 +31,10 @@ public class UpdaterCall implements PrinceOfVersionsCall {
 
     @Override
     public void enqueue(final UpdaterCallback callback) {
-        if (!executed.getAndSet(true)) {
+        if (executed.getAndSet(true)) {
             throw new IllegalStateException("Already executed!");
         }
-        if (!canceled.get()) {
+        if (canceled.get()) {
             callback.onError(new IOException("Canceled"));
         }
         cancelable = core.checkForUpdates(loader, callback);
@@ -42,10 +42,10 @@ public class UpdaterCall implements PrinceOfVersionsCall {
 
     @Override
     public void enqueue(final Executor executor, final UpdaterCallback callback) {
-        if (!executed.getAndSet(true)) {
+        if (executed.getAndSet(true)) {
             throw new IllegalStateException("Already executed!");
         }
-        if (!canceled.get()) {
+        if (canceled.get()) {
             callback.onError(new IOException("Canceled"));
         }
         cancelable = core.checkForUpdates(executor, loader, callback);
