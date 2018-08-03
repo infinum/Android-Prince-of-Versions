@@ -4,6 +4,10 @@ apply plugin: 'pmd'
 
 check.dependsOn 'findbugs', 'checkstyle', 'pmd'
 
+checkstyle {
+    toolVersion = '6.0'
+}
+
 task checkstyle(type: Checkstyle) {
     configFile file("${project.rootDir}/config/checkstyle.xml")
     configProperties = [
@@ -22,6 +26,7 @@ task findbugs(type: FindBugs) {
     reportLevel = "high"
     excludeFilter = new File("${project.rootDir}/config/findbugs-filter.xml")
     classes = files("$project.buildDir/intermediates/classes/")
+    maxHeapSize = "256m"
 
     source 'src'
     include '**/*.java'
@@ -31,7 +36,7 @@ task findbugs(type: FindBugs) {
         xml.enabled = false
         html.enabled = true
         html {
-            destination = new File("$project.buildDir/reports/findbugs/findbugs.html")
+            destination = new File("${project.buildDir}/reports/findbugs/findbugs.html")
         }
     }
 

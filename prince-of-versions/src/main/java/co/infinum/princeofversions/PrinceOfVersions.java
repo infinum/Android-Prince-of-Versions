@@ -68,10 +68,11 @@ public class PrinceOfVersions {
         this(createDefaultParser(), createDefaultVersionParser(), storage, appConfig);
     }
 
-    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage, ApplicationConfiguration appConfig) {
+    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+        ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
-                new InteractorImpl(configurationParser, versionParser),
-                storage
+            new InteractorImpl(configurationParser, versionParser),
+            storage
         );
         this.appConfig = appConfig;
     }

@@ -2,6 +2,9 @@ package co.infinum.princeofversions;
 
 public class StorageMigration {
 
+    private StorageMigration() {
+    }
+
     public static void migrateStorage(Storage oldStorage, Storage newStorage) {
         if (newStorage.lastNotifiedVersion(null) == null) {
             String oldValue = oldStorage.lastNotifiedVersion(null);
