@@ -8,7 +8,7 @@ Library checks for updates using configuration from some resource.
 ## Getting via jcenter
 
 ```groovy
-compile 'co.infinum:prince-of-versions:latest_version'
+implementation 'co.infinum:prince-of-versions:latest_version'
 ```
 
 ## Features
