@@ -3,25 +3,25 @@
 [![CircleCI](https://circleci.com/gh/infinum/Android-Prince-of-Versions.svg?style=svg)](https://circleci.com/gh/infinum/Android-Prince-of-Versions)
 [![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg)](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
 
-Library checks for updates using configuration from some resource.
+Library checks for updates using configuration from remote or local resource.
 
 ## Getting via jcenter
 
 ```groovy
-compile 'co.infinum:prince-of-versions:latest_version'
+implementation 'co.infinum:prince-of-versions:latest_version'
 ```
 
 ## Features
 
-  * Load update configuration from **network** resource or from generic **stream** resource
-  * Accept **custom loader** for loading update configuration resource
-  * Use predefined parser for parsing update configuration in **JSON format**
-  * Accept **custom parser** for parsing update configuration
-  * Make **asynchronous** update check and use **callback** for notifying result
-  * Support **synchronous** update check
-  * Loading and verifying versions happen **outside of UI thread**
+  * Load update configuration from **network** resource or from generic **stream** resource.
+  * Accepts **custom loader** for loading update configuration resource.
+  * Use predefined parser for parsing update configuration in **JSON format**.
+  * Accept **custom parser** for parsing update configuration.
+  * Make **asynchronous** update check and use **callback** for notifying result.
+  * Supports **synchronous** update check.
+  * Loading and verifying versions happens **outside of the UI thread**.
   * Use **thread pool** to cap concurrent resource usage.
-  * Provide functionality for **canceling** once started verifications
+  * Provides functionality to **cancel** verification once started.
 
 
 ### Default parser and JSON file
@@ -67,7 +67,7 @@ Fields <code>minimum_version_min_sdk</code> and <code>min_sdk</code> are optiona
 Full example application is available [here](https://github.com/infinum/Android-Prince-of-Versions/tree/dev/ExampleApp).
 
 #### Most common usage - loading from network resource
-1. Create new instance of updater associated with application context.
+1. Create new instance of the updater associated with application context.
 
 ```java
 PrinceOfVersions updater = new PrinceOfVersions(this);
@@ -79,7 +79,7 @@ PrinceOfVersions updater = new PrinceOfVersions(this);
 Loader loader = new NetworkLoader("http://pastebin.com/raw/41N8stUD");
 ```
 	
-3. Create concrete callback for result implementing <code>co.infinum.princeofversions.callbacks.UpdaterCallback</code> interface.
+3. Create concrete callback to get the update check results by implementing <code>co.infinum.princeofversions.callbacks.UpdaterCallback</code> interface.
 
 ```java
 UpdaterCallback callback = new UpdaterCallback() {
@@ -100,10 +100,70 @@ UpdaterCallback callback = new UpdaterCallback() {
 4. Use updater with previously created loader and callback. Call <code>checkForUpdates</code> method to start update check.
 
 ```java
-PrinceOfVersionsCall call = updater.checkForUpdates(loaderFactory, callback);
+PrinceOfVersionsCancelable cancelable = updater.checkForUpdates(loaderFactory, callback);
 ```
 
-5. To cancel update check, call <code>cancel</code> method on <code>PrinceOfVersionsCall</code> object.
+5. To cancel update check, call <code>cancel</code> method on <code>PrinceOfVersionsCancelable</code> object.
+
+#### UpdaterCall api
+
+In version 2.0.0 we introduced a new UpdaterCall api.
+
+1. Create new instance of the updater associated with application context.
+
+```java
+PrinceOfVersions updater = new PrinceOfVersions(this);
+```
+
+2. (Optional) Create loader factory for loading from network passing resource URL. Otherwise a default implementation will be used.
+
+```java
+Loader loader = new NetworkLoader("http://pastebin.com/raw/41N8stUD");
+```
+
+3. Create a new <code>PrinceOfVersionsCall</code> instance.
+
+```java
+PrinceOfVersionsCall call = updater.newCall("http://pastebin.com/raw/41N8stUD");
+
+# If you previously created a Loader instace, you can pass it to the PrinceOfVersionsCall here.
+PrinceOfVersionsCall call = updater.newCall(loader);
+```
+
+4. If you want to use call in an asynchronous manner:
+4. 1. Create concrete callback to get the update check results by implementing <code>co.infinum.princeofversions.callbacks.UpdaterCallback</code> interface.
+
+```java
+UpdaterCallback callback = new UpdaterCallback() {
+    @Override
+    public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
+    }
+
+    @Override
+    public void onNoUpdate(Map<String, String> metadata) {
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+    }
+};
+```
+
+4. 2. Enqueue the call to be executed asynchronously, the result will be returned to your callback.
+
+```java
+call.enqueue(callback);
+```
+
+5. If you want to use the call in a synchronous manner call the <code>execute</code>. It returns a <code>Result</code> object containing the version check results.
+
+```java
+Result result = call.execute();
+```
+
+6. To cancel update check, call <code>cancel</code> method on <code>PrinceOfVersionsCancelable</code> object.
+
+7. Be aware that once a call has been executed it cannot be reused, you must use a new instance.
 
 #### Writing tests
 
