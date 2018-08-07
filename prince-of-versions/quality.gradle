@@ -20,7 +20,7 @@ task findbugs(type: FindBugs) {
     ignoreFailures = false
     effort = "max"
     reportLevel = "high"
-    excludeFilter = new File("${project.rootDir}/config/findbugs-filter.xml")
+    excludeFilter = file("${project.rootDir}/config/findbugs-filter.xml")
     classes = files("$project.buildDir/intermediates/classes/")
     maxHeapSize = "256m"
 
@@ -32,7 +32,7 @@ task findbugs(type: FindBugs) {
         xml.enabled = false
         html.enabled = true
         html {
-            destination = new File("${project.buildDir}/reports/findbugs/findbugs.html")
+            destination = file("${project.buildDir}/reports/findbugs/findbugs.html")
         }
     }
 
