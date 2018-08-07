@@ -13,22 +13,32 @@ import java.util.Map;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
-import co.infinum.princeofversions.PrinceOfVersionsCancelable;
+import co.infinum.princeofversions.PrinceOfVersionsCall;
 import co.infinum.princeofversions.Result;
 import co.infinum.princeofversions.UpdaterCallback;
 
-public class CommonUsageExample extends AppCompatActivity {
+public class CallUsageExample extends AppCompatActivity {
+
+    private Handler handler = new Handler(Looper.getMainLooper());
+
+    private PrinceOfVersions updater;
+
+    private Loader loader;
+
+    private PrinceOfVersionsCall call;
+
+    private static final String VERSIONS_FILE_URL = "http://pastebin.com/raw/QFGjJrLP";
 
     protected UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
         public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
             toastIt(
-                    getString(
-                            R.string.update_available_msg,
-                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
-                            version
-                    ),
-                    Toast.LENGTH_SHORT
+                getString(
+                    R.string.update_available_msg,
+                    getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
+                    version
+                ),
+                Toast.LENGTH_SHORT
             );
         }
 
@@ -43,14 +53,6 @@ public class CommonUsageExample extends AppCompatActivity {
             toastIt(String.format(getString(R.string.update_exception), throwable.getMessage()), Toast.LENGTH_SHORT);
         }
     };
-
-    private Handler handler = new Handler(Looper.getMainLooper());
-
-    private PrinceOfVersions updater;
-
-    private Loader loader;
-
-    private PrinceOfVersionsCancelable cancelable;
 
     /**
      * This instance represents a very slow loader, just to give you enough time to invoke cancel option.
@@ -67,7 +69,7 @@ public class CommonUsageExample extends AppCompatActivity {
         /*  create new instance of updater */
         updater = new PrinceOfVersions.Builder().build(this);
         /*  create specific loader factory for loading from internet    */
-        loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
+        loader = new NetworkLoader(VERSIONS_FILE_URL);
         slowLoader = createSlowLoader(loader);
     }
 
@@ -108,10 +110,12 @@ public class CommonUsageExample extends AppCompatActivity {
         });
     }
 
+
     public void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
-        PrinceOfVersionsCancelable cancelable = updater.checkForUpdates(loader, defaultCallback);
-        replaceCancelable(cancelable);
+        PrinceOfVersionsCall call = updater.newCall(VERSIONS_FILE_URL);
+        call.enqueue(defaultCallback);
+        replaceCall(call);
     }
 
     public void onCheckSyncClick() {
@@ -120,9 +124,10 @@ public class CommonUsageExample extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Result result = updater.checkForUpdates(loader);
+                    PrinceOfVersionsCall call = updater.newCall(loader);
+                    Result result = call.execute();
                     toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getVersion(),
-                            Toast.LENGTH_LONG);
+                        Toast.LENGTH_LONG);
                 } catch (Throwable throwable) {
                     toastItOnMainThread("Error occurred " + throwable.getMessage(), Toast.LENGTH_LONG);
                 }
@@ -134,23 +139,24 @@ public class CommonUsageExample extends AppCompatActivity {
     public void onCancelTestClick() {
         /*  same call as few lines higher, but using another loader, this one is very slow loader just to demonstrate cancel
         functionality. */
-        PrinceOfVersionsCancelable cancelable = updater.checkForUpdates(slowLoader, defaultCallback);
-        replaceCancelable(cancelable);
+        PrinceOfVersionsCall call = updater.newCall(slowLoader);
+        call.enqueue(defaultCallback);
+        replaceCall(call);
     }
 
     public void onCancelClick() {
         /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
-        if (this.cancelable != null) {
-            this.cancelable.cancel();
+        if (this.call != null) {
+            this.call.cancel();
         }
     }
 
-    private void replaceCancelable(PrinceOfVersionsCancelable cancelable) {
+    private void replaceCall(PrinceOfVersionsCall call) {
         /*  started new checking, kill current one if not dead and remember new context */
-        if (this.cancelable != null) {
-            this.cancelable.cancel();
+        if (this.call != null) {
+            this.call.cancel();
         }
-        this.cancelable = cancelable;
+        this.call = call;
     }
 
     protected void toastIt(final String message, final int duration) {
@@ -175,4 +181,5 @@ public class CommonUsageExample extends AppCompatActivity {
             }
         };
     }
+
 }

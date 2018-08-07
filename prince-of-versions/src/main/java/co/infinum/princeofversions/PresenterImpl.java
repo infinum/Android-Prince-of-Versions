@@ -21,9 +21,9 @@ public class PresenterImpl implements Presenter {
     }
 
     @Override
-    public PrinceOfVersionsCall check(final Loader loader, Executor executor, final UpdaterCallback callback,
+    public PrinceOfVersionsCancelable check(final Loader loader, Executor executor, final UpdaterCallback callback,
             final ApplicationConfiguration appConfig) {
-        final PrinceOfVersionsCall call = createCall();
+        final PrinceOfVersionsCancelable call = createCall();
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -76,7 +76,7 @@ public class PresenterImpl implements Presenter {
     }
 
     @VisibleForTesting
-    public PrinceOfVersionsCall createCall() {
-        return new UpdaterCall();
+    public PrinceOfVersionsCancelable createCall() {
+        return new UpdaterCancelable();
     }
 }

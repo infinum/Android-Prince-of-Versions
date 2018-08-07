@@ -112,9 +112,7 @@
         <module name="MagicNumber">
             <property name="ignoreHashCodeMethod" value="true"/>
         </module>
-        <module name="RedundantThrows">
-            <property name="suppressLoadErrors" value="true"/>
-        </module>
+        <!--<module name="RedundantThrows"/>-->
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="MissingSwitchDefault"/>

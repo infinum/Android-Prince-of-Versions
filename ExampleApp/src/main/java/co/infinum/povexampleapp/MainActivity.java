@@ -18,12 +18,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void initUI() {
         Button commonUsage = (Button) findViewById(R.id.btn_open_common_usage);
+        Button callUsage = (Button) findViewById(R.id.btn_open_call_usage);
         Button customParser = (Button) findViewById(R.id.btn_open_custom_parser);
         Button stream = (Button) findViewById(R.id.btn_open_stream_example);
         commonUsage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onCommonUsageClick();
+            }
+        });
+        callUsage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCallUsageClick();
             }
         });
         customParser.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCommonUsageClick() {
         startActivity(new Intent(this, CommonUsageExample.class));
+    }
+
+    public void onCallUsageClick() {
+        startActivity(new Intent(this, CallUsageExample.class));
     }
 
     public void onCustomParserClick() {

@@ -12,7 +12,7 @@ import java.util.Map;
 
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.PrinceOfVersions;
-import co.infinum.princeofversions.PrinceOfVersionsCall;
+import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.Result;
 import co.infinum.princeofversions.StreamLoader;
 import co.infinum.princeofversions.UpdaterCallback;
@@ -48,7 +48,7 @@ public class StreamLoaderExample extends AppCompatActivity {
 
     private PrinceOfVersions updater;
 
-    private PrinceOfVersionsCall call;
+    private PrinceOfVersionsCancelable cancelable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +99,9 @@ public class StreamLoaderExample extends AppCompatActivity {
 
     public void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
-        PrinceOfVersionsCall call = updater
+        PrinceOfVersionsCancelable cancelable = updater
                 .checkForUpdates(new StreamLoader(getResources().openRawResource(R.raw.update)), defaultCallback);
-        replaceCall(call);
+        replaceCancelable(cancelable);
     }
 
     public void onCheckSyncClick() {
@@ -124,24 +124,24 @@ public class StreamLoaderExample extends AppCompatActivity {
     public void onCancelTestClick() {
         /*  same call as few lines higher, but using another loader, this one is very slow loader just to demonstrate cancel
         functionality. */
-        PrinceOfVersionsCall call = updater
+        PrinceOfVersionsCancelable cancelable = updater
                 .checkForUpdates(createSlowLoader(new StreamLoader(getResources().openRawResource(R.raw.update))), defaultCallback);
-        replaceCall(call);
+        replaceCancelable(cancelable);
     }
 
     public void onCancelClick() {
         /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
-        if (call != null) {
-            call.cancel();
+        if (cancelable != null) {
+            cancelable.cancel();
         }
     }
 
-    private void replaceCall(PrinceOfVersionsCall call) {
+    private void replaceCancelable(PrinceOfVersionsCancelable call) {
         /*  started new checking, kill current one if not dead and remember new context */
-        if (this.call != null) {
-            this.call.cancel();
+        if (this.cancelable != null) {
+            this.cancelable.cancel();
         }
-        this.call = call;
+        this.cancelable = call;
     }
 
     protected void toastIt(final String message, final int duration) {
