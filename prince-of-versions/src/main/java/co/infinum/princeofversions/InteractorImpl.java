@@ -1,6 +1,6 @@
 package co.infinum.princeofversions;
 
-public class InteractorImpl implements Interactor {
+class InteractorImpl implements Interactor {
 
     private ConfigurationParser configurationParser;
 
@@ -12,7 +12,7 @@ public class InteractorImpl implements Interactor {
      * @param configurationParser        object which will be used for parsing update resource.
      * @param versionParser object which will be used for parsing specific version strings.
      */
-    public InteractorImpl(ConfigurationParser configurationParser, VersionParser versionParser) {
+    InteractorImpl(ConfigurationParser configurationParser, VersionParser versionParser) {
         this.configurationParser = configurationParser;
         this.versionParser = versionParser;
     }

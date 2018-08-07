@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadFactory;
 /**
  * Implementation of {@link Executor} which runs check on background thread of default priority.
  */
-public class PrinceOfVersionsDefaultExecutor implements Executor {
+class PrinceOfVersionsDefaultExecutor implements Executor {
 
     private static final ExecutorService SERVICE = Executors.newSingleThreadExecutor(new ThreadFactory() {
         @Override
@@ -22,7 +22,7 @@ public class PrinceOfVersionsDefaultExecutor implements Executor {
     });
 
     @Override
-    public void execute(Runnable runnable) {
+    public void execute(@NonNull Runnable runnable) {
         SERVICE.submit(runnable);
     }
 }

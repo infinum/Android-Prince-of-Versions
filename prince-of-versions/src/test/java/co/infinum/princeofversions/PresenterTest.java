@@ -1,4 +1,4 @@
-package co.infinum.princeofversions.tests;
+package co.infinum.princeofversions;
 
 import org.junit.After;
 import org.junit.Before;

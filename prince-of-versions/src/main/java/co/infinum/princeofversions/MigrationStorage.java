@@ -1,6 +1,6 @@
 package co.infinum.princeofversions;
 
-class MigrationStorage implements Storage {
+final class MigrationStorage implements Storage {
 
     private final Storage migrateFrom;
     private final Storage migrateTo;

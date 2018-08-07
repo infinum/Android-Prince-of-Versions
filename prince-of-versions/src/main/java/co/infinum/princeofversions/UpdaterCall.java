@@ -14,7 +14,7 @@ public class UpdaterCall implements PrinceOfVersionsCall {
 
     private PrinceOfVersionsCancelable cancelable;
 
-    public UpdaterCall(final PrinceOfVersions core, final Loader loader) {
+    UpdaterCall(final PrinceOfVersions core, final Loader loader) {
         this.core = core;
         this.loader = loader;
     }

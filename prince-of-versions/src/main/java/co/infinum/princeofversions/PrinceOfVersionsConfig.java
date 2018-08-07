@@ -38,7 +38,7 @@ public class PrinceOfVersionsConfig {
      */
     private Map<String, String> metadata;
 
-    public PrinceOfVersionsConfig(String mandatoryVersion, int mandatoryMinSdk, String optionalVersion, int optionalMinSdk,
+    PrinceOfVersionsConfig(String mandatoryVersion, int mandatoryMinSdk, String optionalVersion, int optionalMinSdk,
             NotificationType optionalNotificationType, Map<String, String> metadata) {
         this.mandatoryVersion = mandatoryVersion;
         this.mandatoryMinSdk = mandatoryMinSdk;

@@ -11,7 +11,7 @@ import java.util.Map;
  *     <li>Metadata</li>
  * </ul>
  */
-public class CheckResult {
+public final class CheckResult {
 
     private UpdateStatus status;
 

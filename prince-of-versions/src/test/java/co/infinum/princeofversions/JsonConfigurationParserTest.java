@@ -1,4 +1,4 @@
-package co.infinum.princeofversions.tests;
+package co.infinum.princeofversions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,9 +8,6 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-import co.infinum.princeofversions.JsonConfigurationParser;
-import co.infinum.princeofversions.NotificationType;
-import co.infinum.princeofversions.PrinceOfVersionsConfig;
 import co.infinum.princeofversions.util.MapUtil;
 import co.infinum.princeofversions.util.ResourceUtils;
 

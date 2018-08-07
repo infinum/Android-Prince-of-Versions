@@ -5,7 +5,7 @@ package co.infinum.princeofversions;
  *
  * @see <a href="http://semver.org/">http://semver.org/</a>
  */
-public class PrinceOfVersionsDefaultVersionParser implements VersionParser {
+class PrinceOfVersionsDefaultVersionParser implements VersionParser {
 
     @Override
     public Version parse(String value) {

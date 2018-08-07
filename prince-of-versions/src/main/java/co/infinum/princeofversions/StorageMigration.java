@@ -1,6 +1,6 @@
 package co.infinum.princeofversions;
 
-public class StorageMigration {
+class StorageMigration {
 
     private StorageMigration() {
     }

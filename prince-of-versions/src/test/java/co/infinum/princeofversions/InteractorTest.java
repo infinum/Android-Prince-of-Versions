@@ -1,4 +1,4 @@
-package co.infinum.princeofversions.tests;
+package co.infinum.princeofversions;
 
 import org.junit.After;
 import org.junit.Before;
@@ -7,15 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import co.infinum.princeofversions.ApplicationConfiguration;
-import co.infinum.princeofversions.CheckResult;
-import co.infinum.princeofversions.Interactor;
-import co.infinum.princeofversions.InteractorImpl;
-import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.mocks.MockApplicationConfiguration;
-import co.infinum.princeofversions.ConfigurationParser;
-import co.infinum.princeofversions.PrinceOfVersionsConfig;
-import co.infinum.princeofversions.PrinceOfVersionsDefaultVersionParser;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
