@@ -10,13 +10,13 @@ import android.preference.PreferenceManager;
  * @deprecated due to possibility of value erasure in shared storage. Use {@link
  * PrinceOfVersionsDefaultNamedPreferenceStorage} and migrate existing data to it.
  */
-public class PrinceOfVersionsDefaultStorage implements Storage {
+class PrinceOfVersionsDefaultStorage implements Storage {
 
     private static final String KEY = "PrinceOfVersions_LastNotifiedUpdate";
 
     private SharedPreferences sp;
 
-    public PrinceOfVersionsDefaultStorage(Context context) {
+    PrinceOfVersionsDefaultStorage(Context context) {
         sp = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
