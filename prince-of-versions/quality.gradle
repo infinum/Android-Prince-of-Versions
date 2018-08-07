@@ -4,10 +4,6 @@ apply plugin: 'pmd'
 
 check.dependsOn 'findbugs', 'checkstyle', 'pmd'
 
-checkstyle {
-    toolVersion = '6.0'
-}
-
 task checkstyle(type: Checkstyle) {
     configFile file("${project.rootDir}/config/checkstyle.xml")
     configProperties = [

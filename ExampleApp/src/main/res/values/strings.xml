@@ -21,4 +21,5 @@
     <string name="open_network_with_login">Custom network loader with login</string>
     <string name="open_custom_parser">Custom configurationParser example</string>
     <string name="open_stream_example">Stream loader example</string>
+    <string name="open_call_usage">Common usage with Calls example</string>
 </resources>

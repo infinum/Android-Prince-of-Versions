@@ -3,8 +3,6 @@ package co.infinum.princeofversions;
 import java.io.IOException;
 import java.io.InputStream;
 
-import co.infinum.princeofversions.helpers.StreamIo;
-
 /**
  * Represents a concrete loader that load resource from stream.
  */
@@ -25,7 +23,7 @@ public class StreamLoader implements Loader {
     }
 
     @Override
-    public String load() throws IOException, InterruptedException {
+    public String load() throws IOException {
         return StreamIo.toString(is);
     }
 }

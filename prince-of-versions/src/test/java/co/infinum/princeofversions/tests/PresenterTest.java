@@ -21,7 +21,7 @@ import co.infinum.princeofversions.PresenterImpl;
 import co.infinum.princeofversions.Result;
 import co.infinum.princeofversions.Storage;
 import co.infinum.princeofversions.UpdateStatus;
-import co.infinum.princeofversions.UpdaterCall;
+import co.infinum.princeofversions.UpdaterCancelable;
 import co.infinum.princeofversions.UpdaterCallback;
 import co.infinum.princeofversions.mocks.SingleThreadExecutor;
 
@@ -241,7 +241,7 @@ public class PresenterTest {
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
                 .thenCallRealMethod();
-        when(mock.createCall()).thenReturn(new UpdaterCall() {
+        when(mock.createCall()).thenReturn(new UpdaterCancelable() {
             @Override
             public boolean isCanceled() {
                 return true;
@@ -263,7 +263,7 @@ public class PresenterTest {
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
                 .thenCallRealMethod();
-        when(mock.createCall()).thenReturn(new UpdaterCall() {
+        when(mock.createCall()).thenReturn(new UpdaterCancelable() {
             @Override
             public boolean isCanceled() {
                 return true;
@@ -285,7 +285,7 @@ public class PresenterTest {
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
                 .thenCallRealMethod();
-        when(mock.createCall()).thenReturn(new UpdaterCall() {
+        when(mock.createCall()).thenReturn(new UpdaterCancelable() {
             @Override
             public boolean isCanceled() {
                 return true;
