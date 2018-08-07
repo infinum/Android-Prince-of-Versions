@@ -6,5 +6,4 @@
 
 <suppressions>
     <suppress files="app/src/test/java/.+\.java" checks="[a-zA-Z0-9]*"/>
-    <suppress files="main/.*" checks="InterfaceIsTypeCheck"/>
 </suppressions>
