@@ -26,12 +26,6 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            resources.srcDirs = ['src/main/resources', 'src/test/resources/']
-        }
-    }
-
     resourcePrefix 'prince_of_versions_'
 }
 
