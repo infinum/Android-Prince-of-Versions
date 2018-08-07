@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-@Deprecated
 /**
  * Implementation of {@link Storage} which stores data in default {@link SharedPreferences}.
  * @deprecated due to possibility of value erasure in shared storage. Use {@link
  * PrinceOfVersionsDefaultNamedPreferenceStorage} and migrate existing data to it.
  */
+@Deprecated
 class PrinceOfVersionsDefaultStorage implements Storage {
 
     private static final String KEY = "PrinceOfVersions_LastNotifiedUpdate";
