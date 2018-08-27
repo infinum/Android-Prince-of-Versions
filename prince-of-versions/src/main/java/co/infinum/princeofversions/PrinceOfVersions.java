@@ -220,7 +220,7 @@ public class PrinceOfVersions {
         public PrinceOfVersions build() {
             if (storage == null || appConfig == null) {
                 throw new UnsupportedOperationException(
-                    "You must define storage and application configuration if you not provide Context.");
+                    "You must define storage and application configuration if you don't provide Context.");
             }
             return new PrinceOfVersions(
                 configurationParser != null ? configurationParser : createDefaultParser(),

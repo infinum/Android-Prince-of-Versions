@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.concurrent.Callable;
+
 /**
  * Implementation of {@link Storage} which stores data in default {@link SharedPreferences}.
+ *
  * @deprecated due to possibility of value erasure in shared storage. Use {@link
  * PrinceOfVersionsDefaultNamedPreferenceStorage} and migrate existing data to it.
  */
@@ -14,10 +17,15 @@ class PrinceOfVersionsDefaultStorage implements Storage {
 
     private static final String KEY = "PrinceOfVersions_LastNotifiedUpdate";
 
-    private SharedPreferences sp;
+    private final SharedPreferences sp;
 
-    PrinceOfVersionsDefaultStorage(Context context) {
-        sp = PreferenceManager.getDefaultSharedPreferences(context);
+    PrinceOfVersionsDefaultStorage(final Context context) {
+        sp = Lazy.create(SharedPreferences.class, new Callable<SharedPreferences>() {
+            @Override
+            public SharedPreferences call() {
+                return PreferenceManager.getDefaultSharedPreferences(context);
+            }
+        });
     }
 
     @Override
@@ -29,5 +37,4 @@ class PrinceOfVersionsDefaultStorage implements Storage {
     public void rememberLastNotifiedVersion(String version) {
         sp.edit().putString(KEY, version).apply();
     }
-
 }
