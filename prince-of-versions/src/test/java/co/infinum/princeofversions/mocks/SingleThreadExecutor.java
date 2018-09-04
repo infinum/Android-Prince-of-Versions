@@ -1,11 +1,13 @@
 package co.infinum.princeofversions.mocks;
 
-import co.infinum.princeofversions.Executor;
+import android.support.annotation.NonNull;
+
+import java.util.concurrent.Executor;
 
 public class SingleThreadExecutor implements Executor {
 
     @Override
-    public void execute(Runnable runnable) {
+    public void execute(@NonNull Runnable runnable) {
         runnable.run();
     }
 }

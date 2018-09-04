@@ -7,7 +7,7 @@ import android.os.Build;
 /**
  * This class provides application's version name and minimum SDK version.
  */
-public class ApplicationConfigurationImpl implements ApplicationConfiguration {
+class ApplicationConfigurationImpl implements ApplicationConfiguration {
 
     /**
      * Version name
@@ -24,12 +24,12 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
      *
      * @param context instance of application context from where is version name read.
      */
-    public ApplicationConfigurationImpl(Context context) {
+    ApplicationConfigurationImpl(Context context) {
         minSdk = Build.VERSION.SDK_INT;
         try {
             version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            throw new Exceptions.PrinceOfVersionsException("Could not find package name", e);
+            throw new IllegalStateException("Could not find package name", e);
         }
     }
 

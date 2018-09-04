@@ -1,6 +1,7 @@
 package co.infinum.princeofversions;
 
 import java.io.IOException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UpdaterCall implements PrinceOfVersionsCall {
@@ -13,7 +14,7 @@ public class UpdaterCall implements PrinceOfVersionsCall {
 
     private PrinceOfVersionsCancelable cancelable;
 
-    public UpdaterCall(final PrinceOfVersions core, final Loader loader) {
+    UpdaterCall(final PrinceOfVersions core, final Loader loader) {
         this.core = core;
         this.loader = loader;
     }

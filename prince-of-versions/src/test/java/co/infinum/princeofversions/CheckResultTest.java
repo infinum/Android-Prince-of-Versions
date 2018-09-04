@@ -1,13 +1,9 @@
-package co.infinum.princeofversions.tests;
+package co.infinum.princeofversions;
 
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import co.infinum.princeofversions.CheckResult;
-import co.infinum.princeofversions.NotificationType;
-import co.infinum.princeofversions.UpdateStatus;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 

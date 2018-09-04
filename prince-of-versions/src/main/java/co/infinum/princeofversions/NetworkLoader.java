@@ -16,9 +16,9 @@ public class NetworkLoader implements Loader {
     /**
      * Default request timeout in seconds.
      */
-    public static final int DEFAULT_NETWORK_TIMEOUT_SECONDS = 60;
+    private static final int DEFAULT_NETWORK_TIMEOUT_SECONDS = 60;
 
-    public static final int MILLISECONDS_IN_SECOND = 1000;
+    private static final int MILLISECONDS_IN_SECOND = 1000;
 
     /**
      * Url representing the resource.

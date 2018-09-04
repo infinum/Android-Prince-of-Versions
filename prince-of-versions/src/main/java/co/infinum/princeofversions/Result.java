@@ -11,7 +11,7 @@ import java.util.Map;
  * If status is MANDATORY or OPTIONAL then update exists and version contains data about version of an app provided in update.
  * On the other hand, if status is NO_UPDATE then there is no new update. In that case version contains application's current version.
  */
-public class Result {
+public final class Result {
 
     /**
      * Holds information about update status.

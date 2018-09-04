@@ -17,10 +17,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        Button commonUsage = (Button) findViewById(R.id.btn_open_common_usage);
-        Button callUsage = (Button) findViewById(R.id.btn_open_call_usage);
-        Button customParser = (Button) findViewById(R.id.btn_open_custom_parser);
-        Button stream = (Button) findViewById(R.id.btn_open_stream_example);
+        Button commonUsage = findViewById(R.id.btn_open_common_usage);
+        Button callUsage = findViewById(R.id.btn_open_call_usage);
+        Button customParser = findViewById(R.id.btn_open_custom_parser);
+        Button stream = findViewById(R.id.btn_open_stream_example);
         commonUsage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

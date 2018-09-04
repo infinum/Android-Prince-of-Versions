@@ -1,4 +1,4 @@
-package co.infinum.princeofversions.tests;
+package co.infinum.princeofversions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,23 +8,19 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
-import co.infinum.princeofversions.Exceptions;
-import co.infinum.princeofversions.JsonParser;
-import co.infinum.princeofversions.NotificationType;
-import co.infinum.princeofversions.PrinceOfVersionsConfig;
 import co.infinum.princeofversions.util.MapUtil;
 import co.infinum.princeofversions.util.ResourceUtils;
 
 import static co.infinum.princeofversions.util.MapUtil.entry;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class JsonParserTest {
+public class JsonConfigurationParserTest {
 
-    private JsonParser parser;
+    private JsonConfigurationParser parser;
 
     @Before
     public void setUp() {
-        parser = new JsonParser();
+        parser = new JsonConfigurationParser();
     }
 
     @After
@@ -96,7 +92,7 @@ public class JsonParserTest {
         );
     }
 
-    @Test(expected = Exceptions.PrinceOfVersionsException.class)
+    @Test(expected = IllegalStateException.class)
     public void invalidUpdateNoAndroid() throws Throwable {
         parser.parse(ResourceUtils.readFromFile("invalid_update_no_android.json"));
     }

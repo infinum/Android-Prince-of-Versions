@@ -3,6 +3,8 @@ package co.infinum.princeofversions;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
+import java.util.concurrent.Executor;
+
 /**
  * This class represents main entry point for using library.
  * <p>
@@ -30,6 +32,24 @@ import android.support.annotation.VisibleForTesting;
  */
 public class PrinceOfVersions {
 
+    private static ConfigurationParser createDefaultParser() {
+        return new JsonConfigurationParser();
+    }
+
+    private static Storage createDefaultStorage(Context context) {
+        PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
+        PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
+        return new MigrationStorage(oldStorage, storage);
+    }
+
+    private static VersionParser createDefaultVersionParser() {
+        return new PrinceOfVersionsDefaultVersionParser();
+    }
+
+    private static ApplicationConfiguration createAppConfig(Context context) {
+        return new ApplicationConfigurationImpl(context);
+    }
+
     private Presenter presenter;
     private ApplicationConfiguration appConfig;
 
@@ -47,28 +67,13 @@ public class PrinceOfVersions {
         this(createDefaultParser(), createDefaultVersionParser(), storage, appConfig);
     }
 
-    private PrinceOfVersions(Parser parser, VersionParser versionParser, Storage storage, ApplicationConfiguration appConfig) {
+    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+        ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
-            new InteractorImpl(parser, versionParser),
+            new InteractorImpl(configurationParser, versionParser),
             storage
         );
         this.appConfig = appConfig;
-    }
-
-    private static Parser createDefaultParser() {
-        return new JsonParser();
-    }
-
-    private static Storage createDefaultStorage(Context context) {
-        return new PrinceOfVersionsDefaultStorage(context);
-    }
-
-    private static VersionParser createDefaultVersionParser() {
-        return new PrinceOfVersionsDefaultVersionParser();
-    }
-
-    private static ApplicationConfiguration createAppConfig(Context context) {
-        return new ApplicationConfigurationImpl(context);
     }
 
     /**
@@ -173,7 +178,7 @@ public class PrinceOfVersions {
      */
     public static class Builder {
 
-        private Parser parser;
+        private ConfigurationParser configurationParser;
 
         private Storage storage;
 
@@ -181,8 +186,8 @@ public class PrinceOfVersions {
 
         private ApplicationConfiguration appConfig;
 
-        public Builder withParser(Parser parser) {
-            this.parser = parser;
+        public Builder withParser(ConfigurationParser configurationParser) {
+            this.configurationParser = configurationParser;
             return this;
         }
 
@@ -204,7 +209,7 @@ public class PrinceOfVersions {
 
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
-                parser != null ? parser : createDefaultParser(),
+                configurationParser != null ? configurationParser : createDefaultParser(),
                 versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage != null ? storage : createDefaultStorage(context),
                 appConfig != null ? appConfig : createAppConfig(context)
@@ -215,10 +220,10 @@ public class PrinceOfVersions {
         public PrinceOfVersions build() {
             if (storage == null || appConfig == null) {
                 throw new UnsupportedOperationException(
-                    "You must define storage and application configuration if you not provide Context.");
+                    "You must define storage and application configuration if you don't provide Context.");
             }
             return new PrinceOfVersions(
-                parser != null ? parser : createDefaultParser(),
+                configurationParser != null ? configurationParser : createDefaultParser(),
                 versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage,
                 appConfig

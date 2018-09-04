@@ -1,32 +1,32 @@
 package co.infinum.princeofversions;
 
-public class InteractorImpl implements Interactor {
+class InteractorImpl implements Interactor {
 
-    private Parser parser;
+    private ConfigurationParser configurationParser;
 
     private VersionParser versionParser;
 
     /**
-     * Constructs interactor using provided {@link Parser} and {@link VersionParser}.
+     * Constructs interactor using provided {@link ConfigurationParser} and {@link VersionParser}.
      *
-     * @param parser        object which will be used for parsing update resource.
+     * @param configurationParser        object which will be used for parsing update resource.
      * @param versionParser object which will be used for parsing specific version strings.
      */
-    public InteractorImpl(Parser parser, VersionParser versionParser) {
-        this.parser = parser;
+    InteractorImpl(ConfigurationParser configurationParser, VersionParser versionParser) {
+        this.configurationParser = configurationParser;
         this.versionParser = versionParser;
     }
 
     @Override
     public CheckResult check(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         String content = loader.load();
-        PrinceOfVersionsConfig config = parser.parse(content);
+        PrinceOfVersionsConfig config = configurationParser.parse(content);
 
         Version currentVersion = versionParser.parse(appConfig.version());
 
         if (!config.hasMandatory() && !config.hasOptional()) {
             // neither mandatory nor optional version is provided
-            throw new Exceptions.PrinceOfVersionsException("Both mandatory and optional version are null.");
+            throw new IllegalStateException("Both mandatory and optional version are null.");
         }
 
         if (config.hasMandatory()) {

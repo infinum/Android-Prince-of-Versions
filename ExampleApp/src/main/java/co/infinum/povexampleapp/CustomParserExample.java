@@ -12,9 +12,9 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import co.infinum.princeofversions.ConfigurationParser;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
-import co.infinum.princeofversions.Parser;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.PrinceOfVersionsConfig;
@@ -62,7 +62,7 @@ public class CustomParserExample extends AppCompatActivity {
      * Custom parser factory, used for parsing in special format.
      * Custom parser is defined for JSON object containing only one key: minimum_version.
      */
-    private Parser customParser = new Parser() {
+    private ConfigurationParser customParser = new ConfigurationParser() {
 
         private static final String MINIMUM_VERSION = "minimum_version";
 
@@ -92,10 +92,10 @@ public class CustomParserExample extends AppCompatActivity {
     }
 
     private void initUI() {
-        Button btnCheck = (Button) findViewById(R.id.btnCheck);
-        Button btnCancelTest = (Button) findViewById(R.id.btnCancelTest);
-        Button btnCancel = (Button) findViewById(R.id.btnCancel);
-        Button btnCheckSync = (Button) findViewById(R.id.btnCheckSync);
+        Button btnCheck = findViewById(R.id.btnCheck);
+        Button btnCancelTest = findViewById(R.id.btnCancelTest);
+        Button btnCancel = findViewById(R.id.btnCancel);
+        Button btnCheckSync = findViewById(R.id.btnCheckSync);
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

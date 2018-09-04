@@ -26,25 +26,19 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            resources.srcDirs = ['src/main/resources', 'src/test/resources/']
-        }
-    }
-
     resourcePrefix 'prince_of_versions_'
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.github.zafarkhaja:java-semver:0.9.0'
-    compile 'com.android.support:appcompat-v7:27.1.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.github.zafarkhaja:java-semver:0.9.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.2.3'
-    testCompile 'com.squareup.okhttp3:mockwebserver:3.4.1'
-    testCompile 'org.assertj:assertj-core:3.6.0'
-    testCompile 'org.json:json:20140107'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.13.0'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.10.0'
+    testImplementation 'org.assertj:assertj-core:3.8.0'
+    testImplementation 'org.json:json:20140107'
 }
 
 group = publishedGroupId

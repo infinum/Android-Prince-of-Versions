@@ -1,9 +1,9 @@
 package co.infinum.princeofversions;
 
+import android.support.annotation.VisibleForTesting;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.support.annotation.VisibleForTesting;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,7 +59,7 @@ import java.util.Map;
  *
  * @see <a href="http://www.json.org/">JSON</a>
  */
-public class JsonParser implements Parser {
+class JsonConfigurationParser implements ConfigurationParser {
 
     /**
      * Android key
@@ -142,7 +142,7 @@ public class JsonParser implements Parser {
                 }
             }
         } else {
-            throw new Exceptions.PrinceOfVersionsException("Config resource does not contain android key");
+            throw new IllegalStateException("Config resource does not contain android key");
         }
         if (data.has(META)) {
             Object meta = data.get(META);

@@ -2,15 +2,17 @@ package co.infinum.princeofversions;
 
 import android.support.annotation.VisibleForTesting;
 
+import java.util.concurrent.Executor;
+
 import static co.infinum.princeofversions.UpdateStatus.MANDATORY;
 
-public class PresenterImpl implements Presenter {
+class PresenterImpl implements Presenter {
 
     private Interactor interactor;
 
     private Storage storage;
 
-    public PresenterImpl(Interactor interactor, Storage storage) {
+    PresenterImpl(Interactor interactor, Storage storage) {
         this.interactor = interactor;
         this.storage = storage;
     }
