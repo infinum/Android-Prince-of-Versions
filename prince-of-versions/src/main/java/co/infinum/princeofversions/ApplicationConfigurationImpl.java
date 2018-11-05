@@ -5,7 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 /**
- * This class provides application's version name and minimum SDK version.
+ * This class provides application's version name and SDK version code.
  */
 class ApplicationConfigurationImpl implements ApplicationConfiguration {
 
@@ -15,9 +15,9 @@ class ApplicationConfigurationImpl implements ApplicationConfiguration {
     private String version;
 
     /**
-     * Minimum SDK version
+     * SDK version code
      */
-    private int minSdk;
+    private int sdkVersionCode;
 
     /**
      * Creates application configuration for provided {@link Context}.
@@ -25,7 +25,7 @@ class ApplicationConfigurationImpl implements ApplicationConfiguration {
      * @param context instance of application context from where is version name read.
      */
     ApplicationConfigurationImpl(Context context) {
-        minSdk = Build.VERSION.SDK_INT;
+        sdkVersionCode = Build.VERSION.SDK_INT;
         try {
             version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
@@ -39,7 +39,7 @@ class ApplicationConfigurationImpl implements ApplicationConfiguration {
     }
 
     @Override
-    public int minSdk() {
-        return minSdk;
+    public int sdkVersionCode() {
+        return sdkVersionCode;
     }
 }

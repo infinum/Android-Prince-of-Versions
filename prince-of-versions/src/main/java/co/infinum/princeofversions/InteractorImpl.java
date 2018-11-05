@@ -33,14 +33,14 @@ class InteractorImpl implements Interactor {
             Version mandatoryVersion = versionParser.parse(config.getMandatoryVersion());
             int mandatoryMinSdk = config.getMandatoryMinSdk();
 
-            if (currentVersion.isLessThan(mandatoryVersion) && mandatoryMinSdk <= appConfig.minSdk()) {
+            if (currentVersion.isLessThan(mandatoryVersion) && mandatoryMinSdk <= appConfig.sdkVersionCode()) {
                 // if mandatory update exists - notify mandatory update
                 // if there is also optional update available check if its version is greater than mandatory
                 // in that case notify mandatory update with optional version, otherwise notify mandatory update with mandatory version
                 if (config.hasOptional()) {
                     Version optionalVersion = versionParser.parse(config.getOptionalVersion());
                     int optionalMinSdk = config.getOptionalMinSdk();
-                    if (optionalVersion.isGreaterThan(mandatoryVersion) && optionalMinSdk <= appConfig.minSdk()) {
+                    if (optionalVersion.isGreaterThan(mandatoryVersion) && optionalMinSdk <= appConfig.sdkVersionCode()) {
                         // optional update also exists and has greater version than mandatory
                         return CheckResult.mandatoryUpdate(optionalVersion.value(), config.getMetadata());
                     }
@@ -54,7 +54,7 @@ class InteractorImpl implements Interactor {
         if (config.hasOptional()) {
             Version optionalVersion = versionParser.parse(config.getOptionalVersion());
             int optionalMinSdk = config.getOptionalMinSdk();
-            if (currentVersion.isLessThan(optionalVersion) && optionalMinSdk <= appConfig.minSdk()) {
+            if (currentVersion.isLessThan(optionalVersion) && optionalMinSdk <= appConfig.sdkVersionCode()) {
                 return CheckResult.optionalUpdate(optionalVersion.value(), config.getOptionalNotificationType(), config.getMetadata());
             }
         }

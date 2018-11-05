@@ -4,7 +4,7 @@ package co.infinum.princeofversions;
  * Class provides application's parameters:
  * <ul>
  * <li>version name</li>
- * <li>minimum SDK version</li>
+ * <li>device SDK version code</li>
  * </ul>
  */
 public interface ApplicationConfiguration {
@@ -17,10 +17,10 @@ public interface ApplicationConfiguration {
     String version();
 
     /**
-     * Method provides application's minimum SDK version
+     * Method provides device's SDK version code
      *
-     * @return minimum SDK version
+     * @return SDK version code
      */
-    int minSdk();
+    int sdkVersionCode();
 
 }

@@ -6,11 +6,11 @@ public class MockApplicationConfiguration implements ApplicationConfiguration {
 
     private String version;
 
-    private int minSdk;
+    private int sdkVersionCode;
 
-    public MockApplicationConfiguration(String version, int minSdk) {
+    public MockApplicationConfiguration(String version, int sdkVersionCode) {
         this.version = version;
-        this.minSdk = minSdk;
+        this.sdkVersionCode = sdkVersionCode;
     }
 
     @Override
@@ -19,7 +19,7 @@ public class MockApplicationConfiguration implements ApplicationConfiguration {
     }
 
     @Override
-    public int minSdk() {
-        return minSdk;
+    public int sdkVersionCode() {
+        return sdkVersionCode;
     }
 }
