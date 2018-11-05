@@ -1,275 +1,233 @@
 package co.infinum.princeofversions;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
-import co.infinum.princeofversions.callbacks.UpdaterCallback;
-import co.infinum.princeofversions.exceptions.LoaderValidationException;
-import co.infinum.princeofversions.helpers.ContextHelper;
-import co.infinum.princeofversions.helpers.PovFactoryHelper;
-import co.infinum.princeofversions.helpers.PrefsVersionRepository;
-import co.infinum.princeofversions.helpers.SdkVersionProviderImpl;
-import co.infinum.princeofversions.helpers.parsers.JsonVersionConfigParser;
-import co.infinum.princeofversions.helpers.parsers.ParserFactory;
-import co.infinum.princeofversions.helpers.parsers.VersionConfigParser;
-import co.infinum.princeofversions.interfaces.SdkVersionProvider;
-import co.infinum.princeofversions.interfaces.VersionRepository;
-import co.infinum.princeofversions.interfaces.VersionVerifier;
-import co.infinum.princeofversions.interfaces.VersionVerifierFactory;
-import co.infinum.princeofversions.loaders.factories.NetworkLoaderFactory;
-import co.infinum.princeofversions.mvp.presenter.PovPresenter;
-import co.infinum.princeofversions.threading.ExecutorServiceVersionVerifier;
+import java.util.concurrent.Executor;
 
 /**
  * This class represents main entry point for using library.
  * <p>
- * Most common way to create instance of this class should be using constructor with two arguments, providing application context
- * Context and callback class UpdaterCallback with methods for accepting result of update check.
+ * Most common way to create instance of this class should be using {@link Builder} or constructor with {@link Context} argument.
  * </p>
  * <p>
- * There are two forms of checkForUpdates method: default one with one argument of type String and more powerful one which accepts
- * LoaderFactory factory interface for creating loader of type UpdateConfigLoader. That way it is possible to use library with custom
- * implementation of loader, for configuring library to load update resource from file, string or on some other way. Default method
- * use NetworkLoaderFactory, eg. String argument represents url from which update resource will be downloaded.
+ * To check if update exists you can use two different approaches: synchronous and asynchronous.
  * </p>
  * <p>
- * Also, library has cancel option for stopping loading and check process. If checking is cancelled no result will be returned
- * to callback.
+ * Depending on used approach there are several versions of checkForUpdates method.
+ * Synchronous execution is possible using checkForUpdates methods with one parameter ({@link Loader} or {@link String} as URL from which
+ * update configuration will be downloaded.
+ * Asynchronous execution expects one more parameter: {@link UpdaterCallback} callback through which results will be notified. Also,
+ * there you can specify custom {@link Executor}, class which should run process, usually on background thread.
+ * With this approach checkForUpdates method returns {@link PrinceOfVersionsCancelable} object which you can use to cancel request.
  * </p>
  *
- * There is code for most common usage of this library
+ * Here is code for most common usage of this library
  * <pre>
- *         UpdateChecker updater = new DefaultUpdater(context, callback);
- *         LoaderFactory loaderFactory = new NetworkLoaderFactory("http://example.com/some/update.json");
- *         updater.checkForUpdates(loaderFactory); // starts checking for updates using NetworkLoader
- *     </pre>
- *
- * Example of using library with custom loader follows bellow.
- * <pre>
- *         UpdateChecker updater = new DefaultUpdater(context, callback);
- *         LoaderFactory loaderFactory = new FileLoaderFactory("path/to/file");
- *         updater.checkForUpdates(loaderFactory); // starts checking for updates using custom loader
- *     </pre>
- *
- * <p>
- * <b>Be aware, when implementing custom loader factory always return new instance of custom loader in newInstance method!</b>
- * This is important because of cancel functionality. There is no way once cancelled loader became uncancelled, so to support correct
- * cancel functionality always provide new instance of loader.
- * </p>
+ *         {@link PrinceOfVersions} updater = new {@link PrinceOfVersions}(context);
+ *         {@link PrinceOfVersionsCancelable} call = updater.checkForUpdates("http://example.com/some/update.json", callback); // starts
+ *         checking
+ * for update
+ * </pre>
  */
 public class PrinceOfVersions {
 
-    /**
-     * Factory for creating VersionVerifier instance.
-     */
-    private VersionVerifierFactory factory;
+    private static ConfigurationParser createDefaultParser() {
+        return new JsonConfigurationParser();
+    }
+
+    private static Storage createDefaultStorage(Context context) {
+        PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
+        PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
+        return new MigrationStorage(oldStorage, storage);
+    }
+
+    private static VersionParser createDefaultVersionParser() {
+        return new PrinceOfVersionsDefaultVersionParser();
+    }
+
+    private static ApplicationConfiguration createAppConfig(Context context) {
+        return new ApplicationConfigurationImpl(context);
+    }
+
+    private Presenter presenter;
+    private ApplicationConfiguration appConfig;
 
     /**
-     * Repository for persisting library data.
-     */
-    private VersionRepository repository;
-
-    /**
-     * SDK int provider
-     */
-    private SdkVersionProvider sdkVersionProvider;
-
-    /**
-     * Creates a new instance of updater for application associated with provided context.
+     * Creates {@link PrinceOfVersions} using provided {@link Context}.
      *
-     * @param context Context of associated application.
+     * @param context context which will be used for checking application version.
      */
-    public PrinceOfVersions(@NonNull final Context context) {
-        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(new ParserFactory() {
-            @Override
-            public VersionConfigParser newInstance() {
-                try {
-                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context.getApplicationContext()));
-                } catch (PackageManager.NameNotFoundException e) {
-                    throw new IllegalArgumentException("Current version not available.");
-                }
+    public PrinceOfVersions(Context context) {
+        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createAppConfig(context));
+    }
+
+    @VisibleForTesting
+    public PrinceOfVersions(Storage storage, ApplicationConfiguration appConfig) {
+        this(createDefaultParser(), createDefaultVersionParser(), storage, appConfig);
+    }
+
+    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+        ApplicationConfiguration appConfig) {
+        this.presenter = new PresenterImpl(
+            new InteractorImpl(configurationParser, versionParser),
+            storage
+        );
+        this.appConfig = appConfig;
+    }
+
+    /**
+     * Start asynchronous check for update using provided {@link Executor} and {@link String}. Notifies result to provided {@link
+     * UpdaterCallback}.
+     *
+     * @param url      Url from where update config will be loaded.
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the call.
+     */
+    public PrinceOfVersionsCancelable checkForUpdates(String url, UpdaterCallback callback) {
+        return checkForUpdates(new PrinceOfVersionsDefaultExecutor(), new NetworkLoader(url), callback);
+    }
+
+    /**
+     * Start asynchronous check for update using provided {@link Executor} and {@link Loader}. Notifies result to provided {@link
+     * UpdaterCallback}.
+     *
+     * @param loader   Instance for loading update config resource.
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the call.
+     */
+    public PrinceOfVersionsCancelable checkForUpdates(Loader loader, UpdaterCallback callback) {
+        return checkForUpdates(new PrinceOfVersionsDefaultExecutor(), loader, callback);
+    }
+
+    /**
+     * Start asynchronous check for update using provided {@link Executor} and {@link String}. Notifies result to provided {@link
+     * UpdaterCallback}.
+     *
+     * @param executor Instance for running check call.
+     * @param url      Url from where update config will be loaded.
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the call.
+     */
+    public PrinceOfVersionsCancelable checkForUpdates(Executor executor, String url, UpdaterCallback callback) {
+        return checkForUpdates(executor, new NetworkLoader(url), callback);
+    }
+
+    /**
+     * Start asynchronous check for update using provided {@link Executor} and {@link Loader}. Notifies result to provided {@link
+     * UpdaterCallback}.
+     *
+     * @param executor Instance for running check call.
+     * @param loader   Instance for loading update config resource.
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the call.
+     */
+    public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
+        return checkForUpdatesInternal(executor, loader, new UiUpdaterCallback(callback));
+    }
+
+    @VisibleForTesting
+    public PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
+        return presenter.check(loader, executor, callback, appConfig);
+    }
+
+    /**
+     * Start synchronous check for update using provided URL as {@link String}.
+     *
+     * @param url Url from where update config will be loaded.
+     * @return result of update check.
+     * @throws Throwable if error occurred.
+     */
+    public Result checkForUpdates(String url) throws Throwable {
+        return checkForUpdates(new NetworkLoader(url));
+    }
+
+    /**
+     * Start synchronous check for update using provided URL as {@link String}.
+     *
+     * @param loader Instance for loading update config resource.
+     * @return result of update check.
+     * @throws Throwable if error occurred.
+     */
+    public Result checkForUpdates(Loader loader) throws Throwable {
+        return presenter.check(loader, appConfig);
+    }
+
+    /**
+     * Creates new call object which will load configuration from specified url.
+     *
+     * @param url Url from where update config will be loaded.
+     * @return Call with ability to execute or enqueue the check.
+     */
+    public PrinceOfVersionsCall newCall(String url) {
+        return newCall(new NetworkLoader(url));
+    }
+
+    /**
+     * Creates new call object which will load configuration from specified url.
+     *
+     * @param loader Instance for loading update config resource.
+     * @return Call with ability to execute or enqueue the check.
+     */
+    public PrinceOfVersionsCall newCall(Loader loader) {
+        return new UpdaterCall(this, loader);
+    }
+
+    /**
+     * Helper class for building {@link PrinceOfVersions} object.
+     */
+    public static class Builder {
+
+        private ConfigurationParser configurationParser;
+
+        private Storage storage;
+
+        private VersionParser versionParser;
+
+        private ApplicationConfiguration appConfig;
+
+        public Builder withParser(ConfigurationParser configurationParser) {
+            this.configurationParser = configurationParser;
+            return this;
+        }
+
+        public Builder withStorage(Storage storage) {
+            this.storage = storage;
+            return this;
+        }
+
+        public Builder withVersionParser(VersionParser versionParser) {
+            this.versionParser = versionParser;
+            return this;
+        }
+
+        @VisibleForTesting
+        public Builder withAppConfig(ApplicationConfiguration appConfig) {
+            this.appConfig = appConfig;
+            return this;
+        }
+
+        public PrinceOfVersions build(Context context) {
+            return new PrinceOfVersions(
+                configurationParser != null ? configurationParser : createDefaultParser(),
+                versionParser != null ? versionParser : createDefaultVersionParser(),
+                storage != null ? storage : createDefaultStorage(context),
+                appConfig != null ? appConfig : createAppConfig(context)
+            );
+        }
+
+        @VisibleForTesting
+        public PrinceOfVersions build() {
+            if (storage == null || appConfig == null) {
+                throw new UnsupportedOperationException(
+                    "You must define storage and application configuration if you don't provide Context.");
             }
-        }));
-    }
-
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom parser implementation.
-     *
-     * @param context       Context of associated application.
-     * @param parserFactory Factory for creating custom parser for parsing loaded content.
-     */
-    public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory) {
-        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(parserFactory));
-    }
-
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom implementation of VersionVerifier.
-     * <p>
-     * VersionVerifierFactory must create new VersionVerifier instance to support cancel functionality. VersionVerifier should provide
-     * implementation of loading data using in-method provided loader, transforming it to VersionContext representation and firing
-     * right event of in-method provided listener.
-     * </p>
-     *
-     * @param context Context of associated application.
-     * @param factory Custom factory for creating VersionVerifier instances.
-     */
-    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory) {
-        this(context.getApplicationContext(), factory, new PrefsVersionRepository(context.getApplicationContext()));
-    }
-
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom implementation of
-     * VersionRepository for persisting library data.
-     *
-     * @param context    Context of associated application.
-     * @param repository Custom implementation of repository for persisting library data.
-     */
-    public PrinceOfVersions(@NonNull final Context context, VersionRepository repository) {
-        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(new ParserFactory() {
-            @Override
-            public VersionConfigParser newInstance() {
-                try {
-                    return new JsonVersionConfigParser(ContextHelper.getAppVersion(context.getApplicationContext()));
-                } catch (PackageManager.NameNotFoundException e) {
-                    throw new IllegalArgumentException("Current version not available.");
-                }
-            }
-        }), repository);
-    }
-
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom implementation of parser and custom
-     * implementation of VersionRepository for persisting library data.
-     *
-     * @param context       Context of associated application.
-     * @param parserFactory Factory for creating custom parser for parsing loaded content.
-     * @param repository    Custom implementation of repository for persisting library data.
-     */
-    public PrinceOfVersions(@NonNull final Context context, ParserFactory parserFactory, VersionRepository repository) {
-        this(context.getApplicationContext(), createDefaultVersionVerifierFactory(parserFactory), repository);
-    }
-
-    /**
-     * Creates a new instance of updater for application associated with provided context using custom implementation of
-     * VersionVerifierFactory and VersionRepository.
-     * <p>
-     * VersionVerifierFactory must create new VersionVerifier instance to support cancel functionality. VersionVerifier should
-     * provide implementation of loading data using in-method provided loader, transforming it to VersionContext representation and
-     * firing right event of in-method provided listener.
-     * </p>
-     * <p>VersionRepository is custom implementation of storage for persisting library data.</p>
-     *
-     * @param context    Context of associated application.
-     * @param factory    Custom factory for creating VersionVerifier instances.
-     * @param repository Custom implementation of repository for persisting library data.
-     */
-    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory,
-            VersionRepository repository) {
-        this(context.getApplicationContext(), factory, repository, createDefaultSdkVersionProvider());
-    }
-
-
-    /**
-     * Creates a new instance of updater for application associated wih provided
-     */
-    public PrinceOfVersions(@NonNull final Context context, VersionVerifierFactory factory, VersionRepository repository,
-            SdkVersionProvider sdkVersionProvider) {
-        this.factory = factory;
-        this.repository = repository;
-        this.sdkVersionProvider = sdkVersionProvider;
-        validateDependencies();
-    }
-
-    /**
-     * Utility method for creating default version verifier using given factory for creating concrete parser.
-     *
-     * @param factory Factory for creating concrete parser.
-     * @return New instance of VersionVerifier class.
-     */
-    public static VersionVerifier createDefaultVersionVerifier(ParserFactory factory) {
-        return new ExecutorServiceVersionVerifier(factory.newInstance());
-    }
-
-    /**
-     * Utility method for creating default version verifier factory using given parser factory.
-     *
-     * @param factory Factory for creating concrete parser.
-     * @return New instance of VersionVerifierFactory class.
-     */
-    public static VersionVerifierFactory createDefaultVersionVerifierFactory(final ParserFactory factory) {
-        return new VersionVerifierFactory() {
-            @Override
-            public VersionVerifier newInstance() {
-                return createDefaultVersionVerifier(factory);
-            }
-        };
-    }
-
-    /**
-     * Validating dependency injected through constructors.
-     *
-     * @throws IllegalArgumentException if some of dependencies is not valid.
-     */
-    private void validateDependencies() {
-        if (this.factory == null) {
-            throw new IllegalArgumentException("Factory is null.");
-        } else if (this.repository == null) {
-            throw new IllegalArgumentException("Repository is null.");
-        } else if (this.sdkVersionProvider == null) {
-            throw new IllegalArgumentException("SdkVersionProvider is null");
+            return new PrinceOfVersions(
+                configurationParser != null ? configurationParser : createDefaultParser(),
+                versionParser != null ? versionParser : createDefaultVersionParser(),
+                storage,
+                appConfig
+            );
         }
     }
-
-    /**
-     * Utility method for creating default SdkVersionProvider
-     *
-     * @return Implementation object of SdkVersionProvider
-     */
-    public static SdkVersionProvider createDefaultSdkVersionProvider() {
-        return new SdkVersionProviderImpl();
-    }
-
-    /**
-     * Method checks for updates from resource provided by given LoaderFactory and notifies UpdaterCallback if there is some update
-     * available or not. Object returned from method represents calling context through is available to check if update check was
-     * notified or cancel update checking if not.
-     * <p>
-     * After creating new loader from LoaderFactory its validate method is called which throws exception if loader is invalid.
-     * </p>
-     *
-     * @param loaderFactory Representation of custom resource loader.
-     * @param callback      Callback for notifying update check result.
-     * @return Calling context representing this concrete update check.
-     * @throws IllegalArgumentException if newly created loader is invalid.
-     */
-    public UpdaterResult checkForUpdates(LoaderFactory loaderFactory, UpdaterCallback callback) {
-        UpdateConfigLoader loader = loaderFactory.newInstance();
-        try {
-            loader.validate();
-        } catch (LoaderValidationException e) {
-            throw new IllegalArgumentException(e);
-        }
-        UpdaterResult povContext = new UpdaterResult(callback);
-        PovPresenter presenter = PovFactoryHelper.getInstance().getPresenter(povContext, loader, factory, repository, sdkVersionProvider);
-        povContext.setPresenter(presenter);
-        presenter.checkForUpdates();
-        return povContext;
-    }
-
-    /**
-     * Method checks for updates from resource specified by given resource locator and notifies UpdaterCallback if there is some update
-     * available or not. Object returned from method represents calling context through is available to check if update check was
-     * notified or cancel update checking if not.
-     * <p>Note: currently only network resources are supported.</p>
-     *
-     * @param url      Resource locator.
-     * @param callback Callback for notifying update check result.
-     * @return Calling context representing this concrete update check.
-     * @throws IllegalArgumentException if resource locator is invalid.
-     */
-    public UpdaterResult checkForUpdates(String url, UpdaterCallback callback) {
-        return checkForUpdates(new NetworkLoaderFactory(url), callback);
-    }
-
 }
