@@ -3,7 +3,7 @@ package co.infinum.princeofversions;
 /**
  * Provides information about specific version.
  */
-public class Version {
+public final class Version {
 
     protected com.github.zafarkhaja.semver.Version version;
 

@@ -1,6 +1,6 @@
 package co.infinum.princeofversions;
 
-class InteractorImpl implements Interactor {
+final class InteractorImpl implements Interactor {
 
     private ConfigurationParser configurationParser;
 

@@ -6,7 +6,7 @@ import java.util.concurrent.Executor;
 
 import static co.infinum.princeofversions.UpdateStatus.MANDATORY;
 
-class PresenterImpl implements Presenter {
+final class PresenterImpl implements Presenter {
 
     private Interactor interactor;
 
@@ -55,7 +55,7 @@ class PresenterImpl implements Presenter {
     }
 
     @VisibleForTesting
-    public Result run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
+    Result run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         CheckResult result = interactor.check(loader, appConfig);
         switch (result.status() != null ? result.status() : UpdateStatus.NO_UPDATE) {
             case MANDATORY:
@@ -78,7 +78,7 @@ class PresenterImpl implements Presenter {
     }
 
     @VisibleForTesting
-    public PrinceOfVersionsCancelable createCall() {
+    PrinceOfVersionsCancelable createCall() {
         return new UpdaterCancelable();
     }
 }

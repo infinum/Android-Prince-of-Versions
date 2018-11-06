@@ -6,7 +6,7 @@ import java.io.InputStream;
 /**
  * Represents a concrete loader that load resource from stream.
  */
-public class StreamLoader implements Loader {
+public final class StreamLoader implements Loader {
 
     /**
      * Used input stream.

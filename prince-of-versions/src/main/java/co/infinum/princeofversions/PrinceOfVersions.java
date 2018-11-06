@@ -30,7 +30,7 @@ import java.util.concurrent.Executor;
  * for update
  * </pre>
  */
-public class PrinceOfVersions {
+public final class PrinceOfVersions {
 
     private static ConfigurationParser createDefaultParser() {
         return new JsonConfigurationParser();

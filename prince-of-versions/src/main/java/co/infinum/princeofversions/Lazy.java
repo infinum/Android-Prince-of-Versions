@@ -6,7 +6,7 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Lazy<T> {
+final class Lazy<T> {
 
     private Callable<T> creator;
 
@@ -18,7 +18,7 @@ public class Lazy<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T create(Class<T> clazz, Callable<T> creator) {
+    static <T> T create(Class<T> clazz, Callable<T> creator) {
         final Lazy<T> lazy = new Lazy<>(creator);
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, new InvocationHandler() {
             @Override
@@ -33,7 +33,7 @@ public class Lazy<T> {
         });
     }
 
-    public T get() {
+    private T get() {
         if (!hasBeenInitialized.get()) {
             synchronized (this) {
                 if (!hasBeenInitialized.getAndSet(true)) {
@@ -50,7 +50,7 @@ public class Lazy<T> {
         return instance;
     }
 
-    public boolean isInitialized() {
+    private boolean isInitialized() {
         return hasBeenInitialized.get();
     }
 

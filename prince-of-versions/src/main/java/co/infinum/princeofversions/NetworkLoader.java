@@ -86,7 +86,7 @@ public class NetworkLoader implements Loader {
     }
 
     @Override
-    public String load() throws IOException, InterruptedException {
+    public String load() throws IOException {
 
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         try {

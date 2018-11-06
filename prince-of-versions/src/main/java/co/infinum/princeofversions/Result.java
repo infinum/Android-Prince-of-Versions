@@ -28,7 +28,7 @@ public final class Result {
      */
     private Map<String, String> metadata;
 
-    public Result(UpdateStatus status, String version, Map<String, String> metadata) {
+    Result(UpdateStatus status, String version, Map<String, String> metadata) {
         this.status = status;
         this.version = version;
         this.metadata = metadata;

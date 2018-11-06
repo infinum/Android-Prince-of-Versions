@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
  * PrinceOfVersionsDefaultNamedPreferenceStorage} and migrate existing data to it.
  */
 @Deprecated
-class PrinceOfVersionsDefaultStorage implements Storage {
+final class PrinceOfVersionsDefaultStorage implements Storage {
 
     private static final String KEY = "PrinceOfVersions_LastNotifiedUpdate";
 

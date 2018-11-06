@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 import java.util.concurrent.Callable;
 
-class PrinceOfVersionsDefaultNamedPreferenceStorage implements Storage {
+final class PrinceOfVersionsDefaultNamedPreferenceStorage implements Storage {
 
     private static final String KEY = "PrinceOfVersions_LastNotifiedUpdate";
     private static final String PREF_FILE_NAME = "co.infinum.princeofversions.PREF_FILE";

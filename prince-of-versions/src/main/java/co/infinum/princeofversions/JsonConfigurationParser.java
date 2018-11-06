@@ -59,7 +59,7 @@ import java.util.Map;
  *
  * @see <a href="http://www.json.org/">JSON</a>
  */
-class JsonConfigurationParser implements ConfigurationParser {
+final class JsonConfigurationParser implements ConfigurationParser {
 
     /**
      * Android key
@@ -153,7 +153,7 @@ class JsonConfigurationParser implements ConfigurationParser {
     }
 
     @VisibleForTesting
-    public Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
+    Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
         Map<String, String> map = new HashMap<>();
         Iterator<String> metadataIterator = object.keys();
         while (metadataIterator.hasNext()) {
@@ -167,7 +167,7 @@ class JsonConfigurationParser implements ConfigurationParser {
     }
 
     @VisibleForTesting
-    public boolean isNonEmpty(String value) {
+    boolean isNonEmpty(String value) {
         return value != null && value.trim().length() > 0 && !value.trim().toLowerCase().equals("null");
     }
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class UpdaterCall implements PrinceOfVersionsCall {
+public final class UpdaterCall implements PrinceOfVersionsCall {
 
     private final PrinceOfVersions core;
     private final Loader loader;

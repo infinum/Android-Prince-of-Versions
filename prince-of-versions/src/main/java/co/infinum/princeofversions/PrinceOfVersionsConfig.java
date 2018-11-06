@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * This class holds loaded data from config resource.
  */
-public class PrinceOfVersionsConfig {
+public final class PrinceOfVersionsConfig {
 
     /**
      * Mandatory version text
@@ -55,35 +55,35 @@ public class PrinceOfVersionsConfig {
         }
     }
 
-    public boolean hasMandatory() {
+    boolean hasMandatory() {
         return mandatoryVersion != null && mandatoryMinSdk > 0;
     }
 
-    public boolean hasOptional() {
+    boolean hasOptional() {
         return optionalVersion != null && optionalMinSdk > 0;
     }
 
-    public String getMandatoryVersion() {
+    String getMandatoryVersion() {
         return mandatoryVersion;
     }
 
-    public int getMandatoryMinSdk() {
+    int getMandatoryMinSdk() {
         return mandatoryMinSdk;
     }
 
-    public String getOptionalVersion() {
+    String getOptionalVersion() {
         return optionalVersion;
     }
 
-    public int getOptionalMinSdk() {
+    int getOptionalMinSdk() {
         return optionalMinSdk;
     }
 
-    public NotificationType getOptionalNotificationType() {
+    NotificationType getOptionalNotificationType() {
         return optionalNotificationType;
     }
 
-    public Map<String, String> getMetadata() {
+    Map<String, String> getMetadata() {
         return metadata;
     }
 

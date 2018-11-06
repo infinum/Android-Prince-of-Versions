@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 /**
  * Utility class for reading from input stream into string.
  */
-class StreamIo {
+final class StreamIo {
 
     private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 

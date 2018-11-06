@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * This class wraps {@link UpdaterCallback} instance to run all methods on main thread.
  */
-class UiUpdaterCallback implements UpdaterCallback {
+final class UiUpdaterCallback implements UpdaterCallback {
 
     /**
      * Handler on UI thread

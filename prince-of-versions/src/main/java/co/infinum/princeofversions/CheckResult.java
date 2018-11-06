@@ -11,7 +11,7 @@ import java.util.Map;
  *     <li>Metadata</li>
  * </ul>
  */
-public final class CheckResult {
+final class CheckResult {
 
     private UpdateStatus status;
 
@@ -28,27 +28,27 @@ public final class CheckResult {
         this.metadata = metadata;
     }
 
-    public static CheckResult mandatoryUpdate(String version, Map<String, String> metadata) {
+    static CheckResult mandatoryUpdate(String version, Map<String, String> metadata) {
         return new CheckResult(UpdateStatus.MANDATORY, version, null, metadata);
     }
 
-    public static CheckResult optionalUpdate(String version, NotificationType notificationType, Map<String, String> metadata) {
+    static CheckResult optionalUpdate(String version, NotificationType notificationType, Map<String, String> metadata) {
         return new CheckResult(UpdateStatus.OPTIONAL, version, notificationType, metadata);
     }
 
-    public static CheckResult noUpdate(String version, Map<String, String> metadata) {
+    static CheckResult noUpdate(String version, Map<String, String> metadata) {
         return new CheckResult(UpdateStatus.NO_UPDATE, version, null, metadata);
     }
 
-    public boolean hasUpdate() {
+    boolean hasUpdate() {
         return UpdateStatus.MANDATORY.equals(status) || UpdateStatus.OPTIONAL.equals(status);
     }
 
-    public String getUpdateVersion() {
+    String getUpdateVersion() {
         return updateVersion;
     }
 
-    public boolean isOptional() {
+    boolean isOptional() {
         if (hasUpdate()) {
             return UpdateStatus.OPTIONAL.equals(status);
         } else {
@@ -56,7 +56,7 @@ public final class CheckResult {
         }
     }
 
-    public NotificationType getNotificationType() {
+    NotificationType getNotificationType() {
         if (isOptional()) {
             return notificationType;
         } else {
@@ -64,11 +64,11 @@ public final class CheckResult {
         }
     }
 
-    public UpdateStatus status() {
+    UpdateStatus status() {
         return status;
     }
 
-    public Map<String, String> metadata() {
+    Map<String, String> metadata() {
         return metadata;
     }
 
