@@ -4,13 +4,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import co.infinum.princeofversions.Loader;
-import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.util.ResourceUtils;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -77,7 +75,7 @@ public class NetworkLoaderTest {
     }
 
     @After
-    public void cleanup() throws IOException {
+    public void cleanup() {
         try {
             mockWebServer.shutdown();
         } catch (Exception ignored) {

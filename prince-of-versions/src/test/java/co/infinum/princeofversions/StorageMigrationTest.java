@@ -2,10 +2,8 @@ package co.infinum.princeofversions;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import co.infinum.princeofversions.Storage;
-import co.infinum.princeofversions.StorageMigration;
 import co.infinum.princeofversions.mocks.MockStorage;
 
 import static org.junit.Assert.assertEquals;
@@ -46,7 +44,7 @@ public class StorageMigrationTest {
         Storage oldStorage = new MockStorage(null);
         Storage newStorage = new MockStorage("2.0.0");
         StorageMigration.migrateStorage(oldStorage,newStorage);
-        assertEquals(null, oldStorage.lastNotifiedVersion(null));
+        assertNull(oldStorage.lastNotifiedVersion(null));
         assertEquals("2.0.0", newStorage.lastNotifiedVersion(null));
     }
 

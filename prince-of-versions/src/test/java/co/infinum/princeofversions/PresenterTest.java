@@ -6,23 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
-import co.infinum.princeofversions.ApplicationConfiguration;
-import co.infinum.princeofversions.CheckResult;
-import co.infinum.princeofversions.Interactor;
-import co.infinum.princeofversions.Loader;
-import co.infinum.princeofversions.NotificationType;
-import co.infinum.princeofversions.PresenterImpl;
-import co.infinum.princeofversions.Result;
-import co.infinum.princeofversions.Storage;
-import co.infinum.princeofversions.UpdateStatus;
-import co.infinum.princeofversions.UpdaterCancelable;
-import co.infinum.princeofversions.UpdaterCallback;
 import co.infinum.princeofversions.mocks.SingleThreadExecutor;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -71,9 +60,9 @@ public class PresenterTest {
         Result result = presenter.run(loader, appConfig);
 
         assertThat(result).isEqualTo(new Result(
-                UpdateStatus.MANDATORY,
-                checkResult.getUpdateVersion(),
-                checkResult.metadata()
+            UpdateStatus.MANDATORY,
+            checkResult.getUpdateVersion(),
+            checkResult.metadata()
         ));
 
         verify(storage, times(1)).rememberLastNotifiedVersion(checkResult.getUpdateVersion());
@@ -87,9 +76,9 @@ public class PresenterTest {
         Result result = presenter.run(loader, appConfig);
 
         assertThat(result).isEqualTo(new Result(
-                UpdateStatus.NO_UPDATE,
-                checkResult.getUpdateVersion(),
-                checkResult.metadata()
+            UpdateStatus.NO_UPDATE,
+            checkResult.getUpdateVersion(),
+            checkResult.metadata()
         ));
 
         verify(storage, times(0)).rememberLastNotifiedVersion(anyString());
@@ -104,9 +93,9 @@ public class PresenterTest {
         Result result = presenter.run(loader, appConfig);
 
         assertThat(result).isEqualTo(new Result(
-                UpdateStatus.OPTIONAL,
-                checkResult.getUpdateVersion(),
-                checkResult.metadata()
+            UpdateStatus.OPTIONAL,
+            checkResult.getUpdateVersion(),
+            checkResult.metadata()
         ));
 
         verify(storage, times(1)).rememberLastNotifiedVersion(checkResult.getUpdateVersion());
@@ -121,9 +110,9 @@ public class PresenterTest {
         Result result = presenter.run(loader, appConfig);
 
         assertThat(result).isEqualTo(new Result(
-                UpdateStatus.OPTIONAL,
-                checkResult.getUpdateVersion(),
-                checkResult.metadata()
+            UpdateStatus.OPTIONAL,
+            checkResult.getUpdateVersion(),
+            checkResult.metadata()
         ));
 
         verify(storage, times(1)).rememberLastNotifiedVersion(checkResult.getUpdateVersion());
@@ -138,9 +127,9 @@ public class PresenterTest {
         Result result = presenter.run(loader, appConfig);
 
         assertThat(result).isEqualTo(new Result(
-                UpdateStatus.NO_UPDATE,
-                checkResult.getUpdateVersion(),
-                checkResult.metadata()
+            UpdateStatus.NO_UPDATE,
+            checkResult.getUpdateVersion(),
+            checkResult.metadata()
         ));
 
         verify(storage, times(0)).rememberLastNotifiedVersion(anyString());
@@ -189,7 +178,7 @@ public class PresenterTest {
         Result expected = new Result(UpdateStatus.MANDATORY, "1.0.0", new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
-                .thenCallRealMethod();
+            .thenCallRealMethod();
         when(mock.createCall()).thenCallRealMethod();
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
@@ -206,7 +195,7 @@ public class PresenterTest {
         Result expected = new Result(UpdateStatus.OPTIONAL, "1.0.0", new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
-                .thenCallRealMethod();
+            .thenCallRealMethod();
         when(mock.createCall()).thenCallRealMethod();
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
@@ -223,7 +212,7 @@ public class PresenterTest {
         Result expected = new Result(UpdateStatus.NO_UPDATE, "1.0.0", new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
-                .thenCallRealMethod();
+            .thenCallRealMethod();
         when(mock.createCall()).thenCallRealMethod();
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
@@ -240,7 +229,7 @@ public class PresenterTest {
         Result expected = new Result(UpdateStatus.NO_UPDATE, "1.0.0", new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
-                .thenCallRealMethod();
+            .thenCallRealMethod();
         when(mock.createCall()).thenReturn(new UpdaterCancelable() {
             @Override
             public boolean isCanceled() {
@@ -262,7 +251,7 @@ public class PresenterTest {
         Result expected = new Result(UpdateStatus.MANDATORY, "1.0.0", new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
-                .thenCallRealMethod();
+            .thenCallRealMethod();
         when(mock.createCall()).thenReturn(new UpdaterCancelable() {
             @Override
             public boolean isCanceled() {
@@ -284,7 +273,7 @@ public class PresenterTest {
         Result expected = new Result(UpdateStatus.OPTIONAL, "1.0.0", new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
-                .thenCallRealMethod();
+            .thenCallRealMethod();
         when(mock.createCall()).thenReturn(new UpdaterCancelable() {
             @Override
             public boolean isCanceled() {
@@ -306,7 +295,7 @@ public class PresenterTest {
         Throwable throwable = new IllegalStateException();
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenThrow(throwable);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
-                .thenCallRealMethod();
+            .thenCallRealMethod();
         when(mock.createCall()).thenCallRealMethod();
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
@@ -321,5 +310,4 @@ public class PresenterTest {
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenThrow(new IllegalStateException());
         presenter.check(loader, appConfig);
     }
-
 }
