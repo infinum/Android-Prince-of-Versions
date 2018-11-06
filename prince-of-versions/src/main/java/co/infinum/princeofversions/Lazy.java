@@ -6,10 +6,15 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.Nullable;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 final class Lazy<T> {
 
     private Callable<T> creator;
 
+    @Nullable
     private volatile T instance;
     private AtomicBoolean hasBeenInitialized = new AtomicBoolean(false);
 
@@ -33,6 +38,7 @@ final class Lazy<T> {
         });
     }
 
+    @Nullable
     private T get() {
         if (!hasBeenInitialized.get()) {
             synchronized (this) {
@@ -42,7 +48,7 @@ final class Lazy<T> {
                     } catch (Throwable throwable) {
                         throw new RuntimeException(throwable);
                     } finally {
-                        creator = null;
+                        clearCreator();
                     }
                 }
             }
@@ -54,8 +60,16 @@ final class Lazy<T> {
         return hasBeenInitialized.get();
     }
 
+    @SuppressFBWarnings(
+        value = "NP_STORE_INTO_NONNULL_FIELD",
+        justification = "We don't need creator instance anymore after instantiation. We clear it so it can be garbage collected."
+    )
+    private void clearCreator() {
+        creator = null;
+    }
+
     @Override
     public String toString() {
-        return isInitialized() ? get().toString() : "Lazy value not initialized yet.";
+        return isInitialized() ? String.valueOf(get()) : "Lazy value not initialized yet.";
     }
 }

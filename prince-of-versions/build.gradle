@@ -33,14 +33,15 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.github.zafarkhaja:java-semver:0.9.0'
     compileOnly 'com.android.support:appcompat-v7:27.1.1'
-    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.13.0'
     testImplementation 'com.squareup.okhttp3:mockwebserver:3.10.0'
     testImplementation 'org.assertj:assertj-core:3.8.0'
     testImplementation 'org.json:json:20140107'
-    testCompileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    testCompileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 group = publishedGroupId

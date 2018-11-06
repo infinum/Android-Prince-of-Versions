@@ -7,10 +7,10 @@ import javax.annotation.Nullable;
 /**
  * Intermediate result of update check. This result contains following data:
  * <ul>
- *     <li>Update status (one of MANDATORY, OPTIONAL or NO_UPDATE)</li>
- *     <li>Update version</li>
- *     <li>Notification type (ONCE or ALWAYS)</li>
- *     <li>Metadata</li>
+ * <li>Update status (one of MANDATORY, OPTIONAL or NO_UPDATE)</li>
+ * <li>Update version</li>
+ * <li>Notification type (ONCE or ALWAYS)</li>
+ * <li>Metadata</li>
  * </ul>
  */
 final class CheckResult {
@@ -24,7 +24,8 @@ final class CheckResult {
 
     private Map<String, String> metadata;
 
-    private CheckResult(UpdateStatus status, String updateVersion, @Nullable NotificationType notificationType, Map<String, String> metadata) {
+    private CheckResult(UpdateStatus status, String updateVersion, @Nullable NotificationType notificationType,
+        Map<String, String> metadata) {
         this.status = status;
         this.updateVersion = updateVersion;
         this.notificationType = notificationType;
@@ -97,7 +98,6 @@ final class CheckResult {
             return false;
         }
         return metadata != null ? metadata.equals(result.metadata) : result.metadata == null;
-
     }
 
     @Override
