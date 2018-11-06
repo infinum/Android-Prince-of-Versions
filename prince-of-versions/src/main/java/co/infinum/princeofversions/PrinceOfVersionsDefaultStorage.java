@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 
 import java.util.concurrent.Callable;
 
+import javax.annotation.Nullable;
+
 /**
  * Implementation of {@link Storage} which stores data in default {@link SharedPreferences}.
  *
@@ -29,12 +31,12 @@ final class PrinceOfVersionsDefaultStorage implements Storage {
     }
 
     @Override
-    public String lastNotifiedVersion(String defaultValue) {
+    public String lastNotifiedVersion(@Nullable String defaultValue) {
         return sp.getString(KEY, defaultValue);
     }
 
     @Override
-    public void rememberLastNotifiedVersion(String version) {
+    public void rememberLastNotifiedVersion(@Nullable String version) {
         sp.edit().putString(KEY, version).apply();
     }
 }

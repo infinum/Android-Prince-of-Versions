@@ -8,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import javax.annotation.Nullable;
+
 /**
  * Represents a concrete loader that load resource from network using provided URL.
  */
@@ -33,11 +35,13 @@ public class NetworkLoader implements Loader {
     /**
      * Basic authentication username.
      */
+    @Nullable
     private String username;
 
     /**
      * Basic authentication password.
      */
+    @Nullable
     private String password;
 
     /**
@@ -66,7 +70,7 @@ public class NetworkLoader implements Loader {
      * @param username Basic authentication username.
      * @param password Basic authentication password.
      */
-    public NetworkLoader(String url, String username, String password) {
+    public NetworkLoader(String url, @Nullable String username, @Nullable String password) {
         this(url, username, password, DEFAULT_NETWORK_TIMEOUT_SECONDS);
     }
 
@@ -78,7 +82,7 @@ public class NetworkLoader implements Loader {
      * @param password              Basic authentication password.
      * @param networkTimeoutSeconds Custom network timeout.
      */
-    public NetworkLoader(String url, String username, String password, int networkTimeoutSeconds) {
+    public NetworkLoader(String url, @Nullable String username, @Nullable String password, int networkTimeoutSeconds) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -109,7 +113,7 @@ public class NetworkLoader implements Loader {
      *
      * @param conn Http connection.
      */
-    protected void close(HttpURLConnection conn) {
+    protected void close(@Nullable HttpURLConnection conn) {
         if (conn != null) {
             try {
                 conn.disconnect();

@@ -3,6 +3,7 @@ package co.infinum.povexampleapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import co.infinum.princeofversions.ConfigurationParser;
 import co.infinum.princeofversions.Loader;
@@ -25,7 +28,7 @@ public class CustomParserExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
             toastIt(
                     getString(
                             R.string.update_available_msg,
@@ -37,12 +40,12 @@ public class CustomParserExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate(Map<String, String> metadata) {
+        public void onNoUpdate(@NonNull Map<String, String> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 
         @Override
-        public void onError(Throwable throwable) {
+        public void onError(@Nonnull Throwable throwable) {
             throwable.printStackTrace();
             toastIt(String.format(getString(R.string.update_exception), throwable.getMessage()), Toast.LENGTH_SHORT);
         }
@@ -67,7 +70,7 @@ public class CustomParserExample extends AppCompatActivity {
         private static final String MINIMUM_VERSION = "minimum_version";
 
         @Override
-        public PrinceOfVersionsConfig parse(String value) throws Throwable {
+        public PrinceOfVersionsConfig parse(@Nonnull String value) throws Throwable {
             return new PrinceOfVersionsConfig.Builder().withMandatoryVersion(new JSONObject(value).getString(MINIMUM_VERSION)).build();
         }
     };

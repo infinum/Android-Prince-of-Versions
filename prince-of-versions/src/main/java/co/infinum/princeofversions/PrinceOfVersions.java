@@ -5,6 +5,8 @@ import android.support.annotation.VisibleForTesting;
 
 import java.util.concurrent.Executor;
 
+import javax.annotation.Nullable;
+
 /**
  * This class represents main entry point for using library.
  * <p>
@@ -32,24 +34,6 @@ import java.util.concurrent.Executor;
  */
 public final class PrinceOfVersions {
 
-    private static ConfigurationParser createDefaultParser() {
-        return new JsonConfigurationParser();
-    }
-
-    private static Storage createDefaultStorage(Context context) {
-        PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
-        PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
-        return new MigrationStorage(oldStorage, storage);
-    }
-
-    private static VersionParser createDefaultVersionParser() {
-        return new PrinceOfVersionsDefaultVersionParser();
-    }
-
-    private static ApplicationConfiguration createAppConfig(Context context) {
-        return new ApplicationConfigurationImpl(context);
-    }
-
     private Presenter presenter;
     private ApplicationConfiguration appConfig;
 
@@ -74,6 +58,24 @@ public final class PrinceOfVersions {
             storage
         );
         this.appConfig = appConfig;
+    }
+
+    private static ConfigurationParser createDefaultParser() {
+        return new JsonConfigurationParser();
+    }
+
+    private static Storage createDefaultStorage(Context context) {
+        PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
+        PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
+        return new MigrationStorage(oldStorage, storage);
+    }
+
+    private static VersionParser createDefaultVersionParser() {
+        return new PrinceOfVersionsDefaultVersionParser();
+    }
+
+    private static ApplicationConfiguration createAppConfig(Context context) {
+        return new ApplicationConfigurationImpl(context);
     }
 
     /**
@@ -178,12 +180,16 @@ public final class PrinceOfVersions {
      */
     public static class Builder {
 
+        @Nullable
         private ConfigurationParser configurationParser;
 
+        @Nullable
         private Storage storage;
 
+        @Nullable
         private VersionParser versionParser;
 
+        @Nullable
         private ApplicationConfiguration appConfig;
 
         public Builder withParser(ConfigurationParser configurationParser) {

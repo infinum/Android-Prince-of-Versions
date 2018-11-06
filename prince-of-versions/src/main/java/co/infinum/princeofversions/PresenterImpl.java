@@ -6,7 +6,7 @@ import java.util.concurrent.Executor;
 
 import static co.infinum.princeofversions.UpdateStatus.MANDATORY;
 
-final class PresenterImpl implements Presenter {
+class PresenterImpl implements Presenter {
 
     private Interactor interactor;
 
@@ -32,7 +32,7 @@ final class PresenterImpl implements Presenter {
                 try {
                     Result result = PresenterImpl.this.run(loader, appConfig);
                     if (!call.isCanceled()) {
-                        switch (result.getStatus() != null ? result.getStatus() : UpdateStatus.NO_UPDATE) {
+                        switch (result.getStatus()) {
                             case MANDATORY:
                                 callback.onNewUpdate(result.getVersion(), true, result.getMetadata());
                                 break;
@@ -57,7 +57,7 @@ final class PresenterImpl implements Presenter {
     @VisibleForTesting
     Result run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         CheckResult result = interactor.check(loader, appConfig);
-        switch (result.status() != null ? result.status() : UpdateStatus.NO_UPDATE) {
+        switch (result.status()) {
             case MANDATORY:
                 storage.rememberLastNotifiedVersion(result.getUpdateVersion());
                 return new Result(MANDATORY, result.getUpdateVersion(), result.metadata());

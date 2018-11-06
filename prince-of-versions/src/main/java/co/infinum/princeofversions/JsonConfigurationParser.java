@@ -1,5 +1,6 @@
 package co.infinum.princeofversions;
 
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import org.json.JSONException;
@@ -146,7 +147,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
         }
         if (data.has(META)) {
             Object meta = data.get(META);
-            if (meta != null && meta instanceof JSONObject) {
+            if (meta instanceof JSONObject) {
                 builder.withMetadata(jsonObjectToMap((JSONObject) meta));
             }
         }
@@ -167,7 +168,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
     }
 
     @VisibleForTesting
-    boolean isNonEmpty(String value) {
+    boolean isNonEmpty(@Nullable String value) {
         return value != null && value.trim().length() > 0 && !value.trim().toLowerCase().equals("null");
     }
 

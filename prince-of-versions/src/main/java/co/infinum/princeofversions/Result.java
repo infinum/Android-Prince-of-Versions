@@ -75,18 +75,18 @@ public final class Result {
         if (getStatus() != result.getStatus()) {
             return false;
         }
-        if (getVersion() != null ? !getVersion().equals(result.getVersion()) : result.getVersion() != null) {
+        if (!getVersion().equals(result.getVersion())) {
             return false;
         }
-        return getMetadata() != null ? getMetadata().equals(result.getMetadata()) : result.getMetadata() == null;
+        return getMetadata().equals(result.getMetadata());
 
     }
 
     @Override
     public int hashCode() {
-        int result = getStatus() != null ? getStatus().hashCode() : 0;
-        result = 31 * result + (getVersion() != null ? getVersion().hashCode() : 0);
-        result = 31 * result + (getMetadata() != null ? getMetadata().hashCode() : 0);
+        int result = getStatus().hashCode();
+        result = 31 * result + getVersion().hashCode();
+        result = 31 * result + getMetadata().hashCode();
         return result;
     }
 

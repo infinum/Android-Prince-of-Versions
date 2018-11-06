@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.Nullable;
+
 public final class UpdaterCall implements PrinceOfVersionsCall {
 
     private final PrinceOfVersions core;
@@ -12,6 +14,7 @@ public final class UpdaterCall implements PrinceOfVersionsCall {
     private final AtomicBoolean executed = new AtomicBoolean(false);
     private final AtomicBoolean canceled = new AtomicBoolean(false);
 
+    @Nullable
     private PrinceOfVersionsCancelable cancelable;
 
     UpdaterCall(final PrinceOfVersions core, final Loader loader) {

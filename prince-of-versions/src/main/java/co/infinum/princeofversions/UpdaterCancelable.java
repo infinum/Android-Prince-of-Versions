@@ -3,7 +3,7 @@ package co.infinum.princeofversions;
 /**
  * This class represents a started check for update request which can be canceled.
  */
-public final class UpdaterCancelable implements PrinceOfVersionsCancelable {
+public class UpdaterCancelable implements PrinceOfVersionsCancelable {
 
     /**
      * Flag.
