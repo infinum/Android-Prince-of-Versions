@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 3.0.0
+
+_2018-11-07_
+
+- instead of error code, `onError` method in callback accepts `Throwable`.
+- add support for synchronous update check
+- add call mechanism - from now it is possible to create a call instance in advance and `enqueue` or `execute` it later on
+
 ## Version 2.1.0
 
 _2017-02-14_
