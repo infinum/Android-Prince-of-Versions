@@ -23,7 +23,7 @@ import co.infinum.princeofversions.UpdaterCallback;
 
 public class CustomParserExample extends AppCompatActivity {
 
-    protected UpdaterCallback defaultCallback = new UpdaterCallback() {
+    private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
         public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
             toastIt(
@@ -48,7 +48,7 @@ public class CustomParserExample extends AppCompatActivity {
         }
     };
 
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     private PrinceOfVersions updater;
 
@@ -122,13 +122,13 @@ public class CustomParserExample extends AppCompatActivity {
         });
     }
 
-    public void onCheckClick() {
+    private void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
         PrinceOfVersionsCancelable cancelable = updater.checkForUpdates(loader, defaultCallback);
         replaceCancelable(cancelable);
     }
 
-    public void onCheckSyncClick() {
+    private void onCheckSyncClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -145,13 +145,13 @@ public class CustomParserExample extends AppCompatActivity {
         thread.start();
     }
 
-    public void onCancelTestClick() {
+    private void onCancelTestClick() {
         /*  same call as few lines higher, but using another loader, this one is very slow loader  */
         PrinceOfVersionsCancelable cancelable = updater.checkForUpdates(slowLoader, defaultCallback);
         replaceCancelable(cancelable);
     }
 
-    public void onCancelClick() {
+    private void onCancelClick() {
         /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
         if (cancelable != null) {
             cancelable.cancel();
@@ -166,11 +166,11 @@ public class CustomParserExample extends AppCompatActivity {
         this.cancelable = cancelable;
     }
 
-    protected void toastIt(final String message, final int duration) {
+    private void toastIt(final String message, final int duration) {
         Toast.makeText(getApplicationContext(), message, duration).show();
     }
 
-    protected void toastItOnMainThread(final String message, final int duration) {
+    private void toastItOnMainThread(final String message, final int duration) {
         handler.post(new Runnable() {
             @Override
             public void run() {

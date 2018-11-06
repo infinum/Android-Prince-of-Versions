@@ -47,19 +47,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void onCommonUsageClick() {
+    private void onCommonUsageClick() {
         startActivity(new Intent(this, CommonUsageExample.class));
     }
 
-    public void onCallUsageClick() {
+    private void onCallUsageClick() {
         startActivity(new Intent(this, CallUsageExample.class));
     }
 
-    public void onCustomParserClick() {
+    private void onCustomParserClick() {
         startActivity(new Intent(this, CustomParserExample.class));
     }
 
-    public void onStreamLoaderClick() {
+    private void onStreamLoaderClick() {
         startActivity(new Intent(this, StreamLoaderExample.class));
     }
 }
