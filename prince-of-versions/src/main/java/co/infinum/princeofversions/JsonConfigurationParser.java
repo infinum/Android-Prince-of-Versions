@@ -1,6 +1,5 @@
 package co.infinum.princeofversions;
 
-import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import org.json.JSONException;
@@ -9,6 +8,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * This class represents parser for parsing loaded update configuration in <a href="http://www.json.org/">JSON</a> format.

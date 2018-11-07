@@ -48,7 +48,7 @@ final class Lazy<T> {
                     } catch (Throwable throwable) {
                         throw new RuntimeException(throwable);
                     } finally {
-                        clearCreator();
+                        cleanup();
                     }
                 }
             }
@@ -64,7 +64,7 @@ final class Lazy<T> {
         value = "NP_STORE_INTO_NONNULL_FIELD",
         justification = "We don't need creator instance anymore after instantiation. We clear it so it can be garbage collected."
     )
-    private void clearCreator() {
+    private void cleanup() {
         creator = null;
     }
 

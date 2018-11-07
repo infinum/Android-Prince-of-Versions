@@ -67,7 +67,7 @@ class PresenterImpl implements Presenter {
                 boolean alreadyNotifiedUpdateAvailable = lastNotifiedVersion != null && lastNotifiedVersion
                         .equals(result.getUpdateVersion());
                 if (notNotifiedUpdateAvailable || (alreadyNotifiedUpdateAvailable && NotificationType.ALWAYS
-                        .equals(result.getNotificationType()))) {
+                    .equals(result.getNotificationType()))) {
                     storage.rememberLastNotifiedVersion(result.getUpdateVersion());
                     return new Result(UpdateStatus.OPTIONAL, result.getUpdateVersion(), result.metadata());
                 }

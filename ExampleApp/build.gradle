@@ -27,5 +27,5 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation project(':prince-of-versions')
 
-    provided group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 }
