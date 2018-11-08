@@ -34,8 +34,9 @@ import javax.annotation.Nullable;
  */
 public final class PrinceOfVersions {
 
-    private Presenter presenter;
-    private ApplicationConfiguration appConfig;
+    private final Presenter presenter;
+    private final ApplicationConfiguration appConfig;
+    private final Executor callbackExecutor;
 
     /**
      * Creates {@link PrinceOfVersions} using provided {@link Context}.
@@ -43,20 +44,22 @@ public final class PrinceOfVersions {
      * @param context context which will be used for checking application version.
      */
     public PrinceOfVersions(Context context) {
-        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createAppConfig(context));
+        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createDefaultCallbackExecutor(),
+            createAppConfig(context));
     }
 
     @VisibleForTesting
-    public PrinceOfVersions(Storage storage, ApplicationConfiguration appConfig) {
-        this(createDefaultParser(), createDefaultVersionParser(), storage, appConfig);
+    public PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
+        this(createDefaultParser(), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
     }
 
     private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
-        ApplicationConfiguration appConfig) {
+        Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
             new InteractorImpl(configurationParser, versionParser),
             storage
         );
+        this.callbackExecutor = callbackExecutor;
         this.appConfig = appConfig;
     }
 
@@ -76,6 +79,10 @@ public final class PrinceOfVersions {
 
     private static ApplicationConfiguration createAppConfig(Context context) {
         return new ApplicationConfigurationImpl(context);
+    }
+
+    private static Executor createDefaultCallbackExecutor() {
+        return new PrinceOfVersionsCallbackExecutor();
     }
 
     /**
@@ -125,7 +132,7 @@ public final class PrinceOfVersions {
      * @return instance through which is possible to cancel the call.
      */
     public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
-        return checkForUpdatesInternal(executor, loader, new UiUpdaterCallback(callback));
+        return checkForUpdatesInternal(executor, loader, new ExecutorUpdaterCallback(callback, callbackExecutor));
     }
 
     @VisibleForTesting
@@ -192,6 +199,9 @@ public final class PrinceOfVersions {
         @Nullable
         private ApplicationConfiguration appConfig;
 
+        @Nullable
+        private Executor callbackExecutor;
+
         public Builder withParser(ConfigurationParser configurationParser) {
             this.configurationParser = configurationParser;
             return this;
@@ -207,6 +217,11 @@ public final class PrinceOfVersions {
             return this;
         }
 
+        public Builder withCallbackExecutor(@Nullable final Executor callbackExecutor) {
+            this.callbackExecutor = callbackExecutor;
+            return this;
+        }
+
         @VisibleForTesting
         public Builder withAppConfig(ApplicationConfiguration appConfig) {
             this.appConfig = appConfig;
@@ -218,6 +233,7 @@ public final class PrinceOfVersions {
                 configurationParser != null ? configurationParser : createDefaultParser(),
                 versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage != null ? storage : createDefaultStorage(context),
+                callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig != null ? appConfig : createAppConfig(context)
             );
         }
@@ -232,6 +248,7 @@ public final class PrinceOfVersions {
                 configurationParser != null ? configurationParser : createDefaultParser(),
                 versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage,
+                callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig
             );
         }
