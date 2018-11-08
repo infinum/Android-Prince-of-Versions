@@ -6,6 +6,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nullable;
 
+/**
+ * An invocation of a {@link PrinceOfVersions} update check method.
+ * The instance can be used only once, if call is already executed or enqueued new instnace should be used instead.
+ *
+ * <p>Calls may be executed synchronously with {@link #execute}, or asynchronously with {@link #enqueue}.
+ * In either case the call can be canceled at any time with {@link #cancel}.
+ */
 public final class UpdaterCall implements PrinceOfVersionsCall {
 
     private final PrinceOfVersions core;

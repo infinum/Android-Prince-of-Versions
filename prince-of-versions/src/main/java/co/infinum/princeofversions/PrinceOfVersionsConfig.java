@@ -166,6 +166,10 @@ public final class PrinceOfVersionsConfig {
         }
     }
 
+    /**
+     * Builds a new {@link PrinceOfVersionsConfig}.
+     * All methods are optional.
+     */
     public static class Builder {
 
         @Nullable
@@ -187,36 +191,70 @@ public final class PrinceOfVersionsConfig {
         public Builder() {
         }
 
+        /**
+         * Set a new mandatory version string.
+         * @param mandatoryVersion Mandatory version name
+         * @return this builder
+         */
         public Builder withMandatoryVersion(String mandatoryVersion) {
             this.mandatoryVersion = mandatoryVersion;
             return this;
         }
 
+        /**
+         * Set a new minSdk value of mandatory app version.
+         * @param mandatoryMinSdk MinSdk value of mandatory app version
+         * @return this builder
+         */
         public Builder withMandatoryMinSdk(int mandatoryMinSdk) {
             this.mandatoryMinSdk = mandatoryMinSdk;
             return this;
         }
 
+        /**
+         * Set a new optional version string.
+         * @param optionalVersion Optional version name
+         * @return this builder
+         */
         public Builder withOptionalVersion(String optionalVersion) {
             this.optionalVersion = optionalVersion;
             return this;
         }
 
+        /**
+         * Set a new minSdk value of optional app version.
+         * @param optionalMinSdk MinSdk value of optional app version
+         * @return this builder
+         */
         public Builder withOptionalMinSdk(int optionalMinSdk) {
             this.optionalMinSdk = optionalMinSdk;
             return this;
         }
 
+        /**
+         * Set a new notification type of optional update.
+         * @param optionalNotificationType Notification type
+         * @return this builder
+         */
         public Builder withOptionalNotificationType(NotificationType optionalNotificationType) {
             this.optionalNotificationType = optionalNotificationType;
             return this;
         }
 
+        /**
+         * Set new metadata about the update.
+         * @param metadata String to string map
+         * @return this builder
+         */
         public Builder withMetadata(Map<String, String> metadata) {
             this.metadata = metadata;
             return this;
         }
 
+        /**
+         * Create the {@link PrinceOfVersionsConfig} instance using the configured values.
+         * @return A new {@link PrinceOfVersionsConfig} instance
+         */
         public PrinceOfVersionsConfig build() {
             return new PrinceOfVersionsConfig(
                 mandatoryVersion,
