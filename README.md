@@ -54,12 +54,12 @@ If you use default parsers, version in your application and in the JSON configur
 ```
 The most important part of the configuration for Android applications is <code>android</code> object. All properties in the object are optional.
 
-Property <code>minimum_version</code> specifies the mandatory version of application, eg. if application has version less than <code>minimum_version</code> - mandatory update will be notified. Semantic of mandatory update is that application has to be updated before any further use. Because of that, if mandatory update exists it will be notified on each update check.
+Property <code>minimum_version</code> specifies the mandatory version of application, eg. if application has version lower than <code>minimum_version</code> - mandatory update will be notified. Semantic of mandatory update is that application has to be updated before any further use. Because of that, if mandatory update exists it will be notified on each update check.
 
 code>minumum_version_min_sdk</code> represents the minimum Android version a device has to support to be able to update to mandatory version. Eg. If <code>minimum_version_min_sdk</code> is set to <code>15</code>, a device has to have at least Android version 15 or above to be able to receive an update.
 
 Property <code>latest_version</code> contains object that holds informations about optional update.  
-<code>version</code> property defines a version of the latest optional update. If application has version less than <code>version</code> - optional update will be notified.  
+<code>version</code> property defines a version of the latest optional update. If application has version lower than <code>version</code> - optional update will be notified.  
 <code>min_sdk</code> property defines minimum Android version required to be able to update to optional version.  
 Depending on <code>notification_type</code> property, application can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you only first time for a specific version. In every following check the library would notify <code>onNoUpdate</code> for that specific version. This setting applies only for optional update and has no effect in case of mandatory update. Default value for this property is <code>ONCE</code>.
 
