@@ -1,14 +1,14 @@
 def build = [
-        compile: 27,
-        tools  : '27.0.3',
+        compile: 28,
+        tools  : '28.0.3',
         min    : 15,
-        target : 27,
+        target : 28,
 ]
 
 def versions = [
         prince  : '3.0.0',
         semver  : '0.9.0',
-        google  : '27.1.1',
+        google  : '28.0.0',
         findbugs: '3.0.1'
 ]
 
