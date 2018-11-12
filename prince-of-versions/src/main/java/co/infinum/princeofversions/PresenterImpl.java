@@ -32,7 +32,7 @@ class PresenterImpl implements Presenter {
                 try {
                     Result result = PresenterImpl.this.run(loader, appConfig);
                     if (!call.isCanceled()) {
-                        switch (result.getStatus() != null ? result.getStatus() : UpdateStatus.NO_UPDATE) {
+                        switch (result.getStatus()) {
                             case MANDATORY:
                                 callback.onNewUpdate(result.getVersion(), true, result.getMetadata());
                                 break;
@@ -55,9 +55,9 @@ class PresenterImpl implements Presenter {
     }
 
     @VisibleForTesting
-    public Result run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
+    Result run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         CheckResult result = interactor.check(loader, appConfig);
-        switch (result.status() != null ? result.status() : UpdateStatus.NO_UPDATE) {
+        switch (result.status()) {
             case MANDATORY:
                 storage.rememberLastNotifiedVersion(result.getUpdateVersion());
                 return new Result(MANDATORY, result.getUpdateVersion(), result.metadata());
@@ -67,7 +67,7 @@ class PresenterImpl implements Presenter {
                 boolean alreadyNotifiedUpdateAvailable = lastNotifiedVersion != null && lastNotifiedVersion
                         .equals(result.getUpdateVersion());
                 if (notNotifiedUpdateAvailable || (alreadyNotifiedUpdateAvailable && NotificationType.ALWAYS
-                        .equals(result.getNotificationType()))) {
+                    .equals(result.getNotificationType()))) {
                     storage.rememberLastNotifiedVersion(result.getUpdateVersion());
                     return new Result(UpdateStatus.OPTIONAL, result.getUpdateVersion(), result.metadata());
                 }
@@ -78,7 +78,7 @@ class PresenterImpl implements Presenter {
     }
 
     @VisibleForTesting
-    public PrinceOfVersionsCancelable createCall() {
+    PrinceOfVersionsCancelable createCall() {
         return new UpdaterCancelable();
     }
 }

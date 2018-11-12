@@ -5,18 +5,17 @@ apply plugin: 'com.novoda.bintray-release'
 ext {
     publishedGroupId = 'co.infinum'
     publishedArtifactName = 'prince-of-versions'
-    libraryVersion = '2.1.0'
 }
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion buildVersions.compile
+    buildToolsVersion buildVersions.tools
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 27
+        minSdkVersion buildVersions.min
+        targetSdkVersion buildVersions.target
         versionCode 1
-        versionName libraryVersion
+        versionName versions.prince
     }
 
     buildTypes {
@@ -31,25 +30,27 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.github.zafarkhaja:java-semver:0.9.0'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation deps.semver
+    compileOnly deps.appcompat
+    compileOnly deps.fbannotations
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.13.0'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:3.10.0'
-    testImplementation 'org.assertj:assertj-core:3.8.0'
-    testImplementation 'org.json:json:20140107'
+    testImplementation deps.junit
+    testImplementation deps.mockito
+    testImplementation deps.mockwebserver
+    testImplementation deps.assertj
+    testImplementation deps.json
+    testCompileOnly deps.fbannotations
 }
 
 group = publishedGroupId
-version = libraryVersion
+version = versions.prince
 
 // https://github.com/novoda/bintray-release/wiki/Configuration-of-the-publish-closure
 publish {
     userOrg = 'infinum'
     groupId = publishedGroupId
     artifactId = publishedArtifactName
-    publishVersion = libraryVersion
+    publishVersion = versions.prince
     desc = 'Library checks for application updates using configuration from some resource.'
     website = 'https://github.com/infinum/Android-prince-of-versions'
     licences = ["Apache-2.0"]
@@ -64,4 +65,8 @@ task sourcesJar(type: Jar) {
 artifacts {
     archives sourcesJar
 }
+
+apply from: '../tasks.gradle'
+
+preBuild.dependsOn ':prince-of-versions:generateReadme'
 

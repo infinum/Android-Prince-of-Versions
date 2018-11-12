@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 /**
  * This class represents parser for parsing loaded update configuration in <a href="http://www.json.org/">JSON</a> format.
  * <p>After parsing JSON content, class creates VersionContext holder instance from it.</p>
@@ -59,7 +61,7 @@ import java.util.Map;
  *
  * @see <a href="http://www.json.org/">JSON</a>
  */
-class JsonConfigurationParser implements ConfigurationParser {
+final class JsonConfigurationParser implements ConfigurationParser {
 
     /**
      * Android key
@@ -146,14 +148,14 @@ class JsonConfigurationParser implements ConfigurationParser {
         }
         if (data.has(META)) {
             Object meta = data.get(META);
-            if (meta != null && meta instanceof JSONObject) {
+            if (meta instanceof JSONObject) {
                 builder.withMetadata(jsonObjectToMap((JSONObject) meta));
             }
         }
     }
 
     @VisibleForTesting
-    public Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
+    Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
         Map<String, String> map = new HashMap<>();
         Iterator<String> metadataIterator = object.keys();
         while (metadataIterator.hasNext()) {
@@ -167,7 +169,7 @@ class JsonConfigurationParser implements ConfigurationParser {
     }
 
     @VisibleForTesting
-    public boolean isNonEmpty(String value) {
+    boolean isNonEmpty(@Nullable String value) {
         return value != null && value.trim().length() > 0 && !value.trim().toLowerCase().equals("null");
     }
 

@@ -5,7 +5,7 @@ import java.util.concurrent.Executor;
 /**
  * This class handles update checks.
  */
-public interface Presenter {
+interface Presenter {
 
     /**
      * Start synchronous update check.

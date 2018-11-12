@@ -3,12 +3,15 @@ package co.infinum.povexampleapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
@@ -19,19 +22,13 @@ import co.infinum.princeofversions.UpdaterCallback;
 
 public class CallUsageExample extends AppCompatActivity {
 
-    private Handler handler = new Handler(Looper.getMainLooper());
-
-    private PrinceOfVersions updater;
-
-    private Loader loader;
-
-    private PrinceOfVersionsCall call;
-
     private static final String VERSIONS_FILE_URL = "http://pastebin.com/raw/QFGjJrLP";
 
-    protected UpdaterCallback defaultCallback = new UpdaterCallback() {
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
+    private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
             toastIt(
                 getString(
                     R.string.update_available_msg,
@@ -43,16 +40,22 @@ public class CallUsageExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate(Map<String, String> metadata) {
+        public void onNoUpdate(@NonNull Map<String, String> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 
         @Override
-        public void onError(Throwable throwable) {
+        public void onError(@Nonnull Throwable throwable) {
             throwable.printStackTrace();
             toastIt(String.format(getString(R.string.update_exception), throwable.getMessage()), Toast.LENGTH_SHORT);
         }
     };
+
+    private PrinceOfVersions updater;
+
+    private Loader loader;
+
+    private PrinceOfVersionsCall call;
 
     /**
      * This instance represents a very slow loader, just to give you enough time to invoke cancel option.
@@ -110,15 +113,14 @@ public class CallUsageExample extends AppCompatActivity {
         });
     }
 
-
-    public void onCheckClick() {
+    private void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
         PrinceOfVersionsCall call = updater.newCall(VERSIONS_FILE_URL);
         call.enqueue(defaultCallback);
         replaceCall(call);
     }
 
-    public void onCheckSyncClick() {
+    private void onCheckSyncClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -136,7 +138,7 @@ public class CallUsageExample extends AppCompatActivity {
         thread.start();
     }
 
-    public void onCancelTestClick() {
+    private void onCancelTestClick() {
         /*  same call as few lines higher, but using another loader, this one is very slow loader just to demonstrate cancel
         functionality. */
         PrinceOfVersionsCall call = updater.newCall(slowLoader);
@@ -144,7 +146,7 @@ public class CallUsageExample extends AppCompatActivity {
         replaceCall(call);
     }
 
-    public void onCancelClick() {
+    private void onCancelClick() {
         /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
         if (this.call != null) {
             this.call.cancel();
@@ -159,11 +161,11 @@ public class CallUsageExample extends AppCompatActivity {
         this.call = call;
     }
 
-    protected void toastIt(final String message, final int duration) {
+    private void toastIt(final String message, final int duration) {
         Toast.makeText(getApplicationContext(), message, duration).show();
     }
 
-    protected void toastItOnMainThread(final String message, final int duration) {
+    private void toastItOnMainThread(final String message, final int duration) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -181,5 +183,4 @@ public class CallUsageExample extends AppCompatActivity {
             }
         };
     }
-
 }

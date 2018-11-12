@@ -6,10 +6,15 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Lazy<T> {
+import javax.annotation.Nullable;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+final class Lazy<T> {
 
     private Callable<T> creator;
 
+    @Nullable
     private volatile T instance;
     private AtomicBoolean hasBeenInitialized = new AtomicBoolean(false);
 
@@ -18,7 +23,7 @@ public class Lazy<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T create(Class<T> clazz, Callable<T> creator) {
+    static <T> T create(Class<T> clazz, Callable<T> creator) {
         final Lazy<T> lazy = new Lazy<>(creator);
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, new InvocationHandler() {
             @Override
@@ -33,7 +38,8 @@ public class Lazy<T> {
         });
     }
 
-    public T get() {
+    @Nullable
+    private T get() {
         if (!hasBeenInitialized.get()) {
             synchronized (this) {
                 if (!hasBeenInitialized.getAndSet(true)) {
@@ -42,7 +48,7 @@ public class Lazy<T> {
                     } catch (Throwable throwable) {
                         throw new RuntimeException(throwable);
                     } finally {
-                        creator = null;
+                        cleanup();
                     }
                 }
             }
@@ -50,12 +56,20 @@ public class Lazy<T> {
         return instance;
     }
 
-    public boolean isInitialized() {
+    private boolean isInitialized() {
         return hasBeenInitialized.get();
+    }
+
+    @SuppressFBWarnings(
+        value = "NP_STORE_INTO_NONNULL_FIELD",
+        justification = "We don't need creator instance anymore after instantiation. We clear it so it can be garbage collected."
+    )
+    private void cleanup() {
+        creator = null;
     }
 
     @Override
     public String toString() {
-        return isInitialized() ? get().toString() : "Lazy value not initialized yet.";
+        return isInitialized() ? String.valueOf(get()) : "Lazy value not initialized yet.";
     }
 }

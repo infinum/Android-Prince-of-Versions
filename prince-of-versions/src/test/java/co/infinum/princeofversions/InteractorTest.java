@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import co.infinum.princeofversions.mocks.MockApplicationConfiguration;
 
@@ -53,7 +53,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -71,7 +71,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -128,7 +128,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getOptionalVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -146,7 +146,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -188,7 +188,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -209,7 +209,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -248,7 +248,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -267,7 +267,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -435,7 +435,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getOptionalVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -456,7 +456,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getOptionalVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -498,7 +498,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -519,7 +519,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata())
+                CheckResult.mandatoryUpdate(config.getMandatoryVersion().getVersion(), config.getMetadata())
         );
     }
 
@@ -538,7 +538,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
+                CheckResult.optionalUpdate(config.getOptionalVersion().getVersion(), config.getOptionalNotificationType(), config.getMetadata())
         );
     }
 
@@ -580,7 +580,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
+                CheckResult.optionalUpdate(config.getOptionalVersion().getVersion(), config.getOptionalNotificationType(), config.getMetadata())
         );
     }
 
@@ -601,7 +601,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
+                CheckResult.optionalUpdate(config.getOptionalVersion().getVersion(), config.getOptionalNotificationType(), config.getMetadata())
         );
     }
 
@@ -622,7 +622,7 @@ public class InteractorTest {
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
         assertThat(result).isEqualTo(
-                CheckResult.optionalUpdate(config.getOptionalVersion(), config.getOptionalNotificationType(), config.getMetadata())
+                CheckResult.optionalUpdate(config.getOptionalVersion().getVersion(), config.getOptionalNotificationType(), config.getMetadata())
         );
     }
 

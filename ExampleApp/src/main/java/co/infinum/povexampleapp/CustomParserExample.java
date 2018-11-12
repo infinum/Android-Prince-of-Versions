@@ -3,6 +3,7 @@ package co.infinum.povexampleapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import co.infinum.princeofversions.ConfigurationParser;
 import co.infinum.princeofversions.Loader;
@@ -23,9 +26,9 @@ import co.infinum.princeofversions.UpdaterCallback;
 
 public class CustomParserExample extends AppCompatActivity {
 
-    protected UpdaterCallback defaultCallback = new UpdaterCallback() {
+    private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
             toastIt(
                     getString(
                             R.string.update_available_msg,
@@ -37,18 +40,18 @@ public class CustomParserExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate(Map<String, String> metadata) {
+        public void onNoUpdate(@NonNull Map<String, String> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 
         @Override
-        public void onError(Throwable throwable) {
+        public void onError(@Nonnull Throwable throwable) {
             throwable.printStackTrace();
             toastIt(String.format(getString(R.string.update_exception), throwable.getMessage()), Toast.LENGTH_SHORT);
         }
     };
 
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     private PrinceOfVersions updater;
 
@@ -67,7 +70,7 @@ public class CustomParserExample extends AppCompatActivity {
         private static final String MINIMUM_VERSION = "minimum_version";
 
         @Override
-        public PrinceOfVersionsConfig parse(String value) throws Throwable {
+        public PrinceOfVersionsConfig parse(@Nonnull String value) throws Throwable {
             return new PrinceOfVersionsConfig.Builder().withMandatoryVersion(new JSONObject(value).getString(MINIMUM_VERSION)).build();
         }
     };
@@ -122,13 +125,13 @@ public class CustomParserExample extends AppCompatActivity {
         });
     }
 
-    public void onCheckClick() {
+    private void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
         PrinceOfVersionsCancelable cancelable = updater.checkForUpdates(loader, defaultCallback);
         replaceCancelable(cancelable);
     }
 
-    public void onCheckSyncClick() {
+    private void onCheckSyncClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -145,13 +148,13 @@ public class CustomParserExample extends AppCompatActivity {
         thread.start();
     }
 
-    public void onCancelTestClick() {
+    private void onCancelTestClick() {
         /*  same call as few lines higher, but using another loader, this one is very slow loader  */
         PrinceOfVersionsCancelable cancelable = updater.checkForUpdates(slowLoader, defaultCallback);
         replaceCancelable(cancelable);
     }
 
-    public void onCancelClick() {
+    private void onCancelClick() {
         /*  cancel current checking request, checking if context is not consumed yet is not necessary   */
         if (cancelable != null) {
             cancelable.cancel();
@@ -166,11 +169,11 @@ public class CustomParserExample extends AppCompatActivity {
         this.cancelable = cancelable;
     }
 
-    protected void toastIt(final String message, final int duration) {
+    private void toastIt(final String message, final int duration) {
         Toast.makeText(getApplicationContext(), message, duration).show();
     }
 
-    protected void toastItOnMainThread(final String message, final int duration) {
+    private void toastItOnMainThread(final String message, final int duration) {
         handler.post(new Runnable() {
             @Override
             public void run() {

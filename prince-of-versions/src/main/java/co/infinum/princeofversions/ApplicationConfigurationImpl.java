@@ -7,7 +7,7 @@ import android.os.Build;
 /**
  * This class provides application's version name and SDK version code.
  */
-class ApplicationConfigurationImpl implements ApplicationConfiguration {
+final class ApplicationConfigurationImpl implements ApplicationConfiguration {
 
     /**
      * Version name

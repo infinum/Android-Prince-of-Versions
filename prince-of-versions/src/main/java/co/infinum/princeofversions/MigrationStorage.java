@@ -1,5 +1,7 @@
 package co.infinum.princeofversions;
 
+import javax.annotation.Nullable;
+
 final class MigrationStorage implements Storage {
 
     private final Storage migrateFrom;
@@ -12,14 +14,15 @@ final class MigrationStorage implements Storage {
         this.migrateTo = migrateTo;
     }
 
+    @Nullable
     @Override
-    public String lastNotifiedVersion(final String defaultValue) {
+    public String lastNotifiedVersion(@Nullable final String defaultValue) {
         migrateIfNot();
         return migrateTo.lastNotifiedVersion(defaultValue);
     }
 
     @Override
-    public void rememberLastNotifiedVersion(final String version) {
+    public void rememberLastNotifiedVersion(@Nullable final String version) {
         migrateIfNot();
         migrateTo.rememberLastNotifiedVersion(version);
     }

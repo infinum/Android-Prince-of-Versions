@@ -3,92 +3,70 @@ package co.infinum.princeofversions;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This class holds loaded data from config resource.
  */
-public class PrinceOfVersionsConfig {
+public final class PrinceOfVersionsConfig {
 
     /**
-     * Mandatory version text
+     * Mandatory version
      */
-    private String mandatoryVersion;
+    @Nullable
+    private final Version mandatoryVersion;
 
     /**
-     * Minimum SDK version for mandatory update
+     * Optional version
      */
-    private int mandatoryMinSdk;
-
-    /**
-     * Optional version text
-     */
-    private String optionalVersion;
-
-    /**
-     * Minimum SDK version for optional update
-     */
-    private int optionalMinSdk;
+    @Nullable
+    private final Version optionalVersion;
 
     /**
      * Notification type
      */
-    private NotificationType optionalNotificationType;
+    private final NotificationType optionalNotificationType;
 
     /**
      * Metadata of the update configuration
      */
-    private Map<String, String> metadata;
+    private final Map<String, String> metadata;
 
-    PrinceOfVersionsConfig(String mandatoryVersion, int mandatoryMinSdk, String optionalVersion, int optionalMinSdk,
-            NotificationType optionalNotificationType, Map<String, String> metadata) {
-        this.mandatoryVersion = mandatoryVersion;
-        this.mandatoryMinSdk = mandatoryMinSdk;
-        this.optionalVersion = optionalVersion;
-        this.optionalMinSdk = optionalMinSdk;
+    PrinceOfVersionsConfig(
+        @Nullable String mandatoryVersion,
+        int mandatoryMinSdk,
+        @Nullable String optionalVersion,
+        int optionalMinSdk,
+        @Nonnull NotificationType optionalNotificationType,
+        @Nonnull Map<String, String> metadata) {
+
+        this.mandatoryVersion = (mandatoryVersion != null && mandatoryMinSdk > 0) ? new Version(mandatoryVersion, mandatoryMinSdk) : null;
+        this.optionalVersion = (optionalVersion != null && optionalMinSdk > 0) ? new Version(optionalVersion, optionalMinSdk) : null;
         this.optionalNotificationType = optionalNotificationType;
         this.metadata = metadata;
-        validate();
     }
 
-    private void validate() {
-        if (optionalNotificationType == null) {
-            throw new IllegalArgumentException("Notification type cannot be null.");
-        }
-    }
-
-    public boolean hasMandatory() {
-        return mandatoryVersion != null && mandatoryMinSdk > 0;
-    }
-
-    public boolean hasOptional() {
-        return optionalVersion != null && optionalMinSdk > 0;
-    }
-
-    public String getMandatoryVersion() {
+    @Nullable
+    Version getMandatoryVersion() {
         return mandatoryVersion;
     }
 
-    public int getMandatoryMinSdk() {
-        return mandatoryMinSdk;
-    }
-
-    public String getOptionalVersion() {
+    @Nullable
+    Version getOptionalVersion() {
         return optionalVersion;
     }
 
-    public int getOptionalMinSdk() {
-        return optionalMinSdk;
-    }
-
-    public NotificationType getOptionalNotificationType() {
+    NotificationType getOptionalNotificationType() {
         return optionalNotificationType;
     }
 
-    public Map<String, String> getMetadata() {
+    Map<String, String> getMetadata() {
         return metadata;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -96,16 +74,10 @@ public class PrinceOfVersionsConfig {
             return false;
         }
 
-        PrinceOfVersionsConfig that = (PrinceOfVersionsConfig) o;
+        final PrinceOfVersionsConfig that = (PrinceOfVersionsConfig) o;
 
-        if (getMandatoryMinSdk() != that.getMandatoryMinSdk()) {
-            return false;
-        }
-        if (getOptionalMinSdk() != that.getOptionalMinSdk()) {
-            return false;
-        }
         if (getMandatoryVersion() != null ? !getMandatoryVersion().equals(that.getMandatoryVersion())
-                : that.getMandatoryVersion() != null) {
+            : that.getMandatoryVersion() != null) {
             return false;
         }
         if (getOptionalVersion() != null ? !getOptionalVersion().equals(that.getOptionalVersion()) : that.getOptionalVersion() != null) {
@@ -114,112 +86,183 @@ public class PrinceOfVersionsConfig {
         if (getOptionalNotificationType() != that.getOptionalNotificationType()) {
             return false;
         }
-        return getMetadata() != null ? getMetadata().equals(that.getMetadata()) : that.getMetadata() == null;
-
+        return getMetadata().equals(that.getMetadata());
     }
 
     @Override
     public int hashCode() {
         int result = getMandatoryVersion() != null ? getMandatoryVersion().hashCode() : 0;
-        result = 31 * result + getMandatoryMinSdk();
         result = 31 * result + (getOptionalVersion() != null ? getOptionalVersion().hashCode() : 0);
-        result = 31 * result + getOptionalMinSdk();
-        result = 31 * result + (getOptionalNotificationType() != null ? getOptionalNotificationType().hashCode() : 0);
-        result = 31 * result + (getMetadata() != null ? getMetadata().hashCode() : 0);
+        result = 31 * result + getOptionalNotificationType().hashCode();
+        result = 31 * result + getMetadata().hashCode();
         return result;
     }
 
     @Override
     public String toString() {
         return "PrinceOfVersionsConfig{"
-                + "mandatoryVersion='" + mandatoryVersion + '\''
-                + ", mandatoryMinSdk=" + mandatoryMinSdk
-                + ", optionalVersion='" + optionalVersion + '\''
-                + ", optionalMinSdk=" + optionalMinSdk
-                + ", optionalNotificationType=" + optionalNotificationType
-                + ", metadata=" + metadata
-                + '}';
+            + "mandatoryVersion=" + mandatoryVersion
+            + ", optionalVersion=" + optionalVersion
+            + ", optionalNotificationType=" + optionalNotificationType
+            + ", metadata=" + metadata
+            + '}';
     }
 
+    static class Version {
+
+        /**
+         * Version string
+         */
+        private final String version;
+
+        /**
+         * MinSdk for update
+         */
+        private final int minSdk;
+
+        Version(final String version, final int minSdk) {
+            this.version = version;
+            this.minSdk = minSdk;
+        }
+
+        String getVersion() {
+            return version;
+        }
+
+        int getMinSdk() {
+            return minSdk;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof Version)) {
+                return false;
+            }
+
+            final Version version1 = (Version) o;
+
+            if (getMinSdk() != version1.getMinSdk()) {
+                return false;
+            }
+            return getVersion().equals(version1.getVersion());
+        }
+
+        @Override
+        public int hashCode() {
+            int result = getVersion().hashCode();
+            result = 31 * result + getMinSdk();
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Version{"
+                + "version='" + version + '\''
+                + ", minSdk=" + minSdk
+                + '}';
+        }
+    }
+
+    /**
+     * Builds a new {@link PrinceOfVersionsConfig}.
+     * All methods are optional.
+     */
     public static class Builder {
 
+        @Nullable
         private String mandatoryVersion;
 
         private int mandatoryMinSdk = 1;
 
+        @Nullable
         private String optionalVersion;
 
         private int optionalMinSdk = 1;
 
+        @Nullable
         private NotificationType optionalNotificationType;
 
+        @Nullable
         private Map<String, String> metadata;
 
         public Builder() {
         }
 
-        public String getMandatoryVersion() {
-            return mandatoryVersion;
-        }
-
+        /**
+         * Set a new mandatory version string.
+         * @param mandatoryVersion Mandatory version name
+         * @return this builder
+         */
         public Builder withMandatoryVersion(String mandatoryVersion) {
             this.mandatoryVersion = mandatoryVersion;
             return this;
         }
 
-        public int getMandatoryMinSdk() {
-            return mandatoryMinSdk;
-        }
-
+        /**
+         * Set a new minSdk value of mandatory app version.
+         * @param mandatoryMinSdk MinSdk value of mandatory app version
+         * @return this builder
+         */
         public Builder withMandatoryMinSdk(int mandatoryMinSdk) {
             this.mandatoryMinSdk = mandatoryMinSdk;
             return this;
         }
 
-        public String getOptionalVersion() {
-            return optionalVersion;
-        }
-
+        /**
+         * Set a new optional version string.
+         * @param optionalVersion Optional version name
+         * @return this builder
+         */
         public Builder withOptionalVersion(String optionalVersion) {
             this.optionalVersion = optionalVersion;
             return this;
         }
 
-        public int getOptionalMinSdk() {
-            return optionalMinSdk;
-        }
-
+        /**
+         * Set a new minSdk value of optional app version.
+         * @param optionalMinSdk MinSdk value of optional app version
+         * @return this builder
+         */
         public Builder withOptionalMinSdk(int optionalMinSdk) {
             this.optionalMinSdk = optionalMinSdk;
             return this;
         }
 
-        public NotificationType getOptionalNotificationType() {
-            return optionalNotificationType;
-        }
-
+        /**
+         * Set a new notification type of optional update.
+         * @param optionalNotificationType Notification type
+         * @return this builder
+         */
         public Builder withOptionalNotificationType(NotificationType optionalNotificationType) {
             this.optionalNotificationType = optionalNotificationType;
             return this;
         }
 
-        public Map<String, String> getMetadata() {
-            return metadata;
-        }
-
+        /**
+         * Set new metadata about the update.
+         * @param metadata String to string map
+         * @return this builder
+         */
         public Builder withMetadata(Map<String, String> metadata) {
             this.metadata = metadata;
             return this;
         }
 
+        /**
+         * Create the {@link PrinceOfVersionsConfig} instance using the configured values.
+         * @return A new {@link PrinceOfVersionsConfig} instance
+         */
         public PrinceOfVersionsConfig build() {
             return new PrinceOfVersionsConfig(
-                    mandatoryVersion,
-                    mandatoryMinSdk,
-                    optionalVersion,
-                    optionalMinSdk,
-                    optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
-                    metadata != null ? metadata : new HashMap<String, String>());
+                mandatoryVersion,
+                mandatoryMinSdk,
+                optionalVersion,
+                optionalMinSdk,
+                optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
+                metadata != null ? metadata : new HashMap<String, String>());
         }
     }
 }

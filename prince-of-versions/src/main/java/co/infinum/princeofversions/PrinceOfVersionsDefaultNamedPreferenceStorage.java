@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 
 import java.util.concurrent.Callable;
 
-class PrinceOfVersionsDefaultNamedPreferenceStorage implements Storage {
+import javax.annotation.Nullable;
+
+final class PrinceOfVersionsDefaultNamedPreferenceStorage implements Storage {
 
     private static final String KEY = "PrinceOfVersions_LastNotifiedUpdate";
     private static final String PREF_FILE_NAME = "co.infinum.princeofversions.PREF_FILE";
@@ -22,12 +24,12 @@ class PrinceOfVersionsDefaultNamedPreferenceStorage implements Storage {
     }
 
     @Override
-    public String lastNotifiedVersion(String defaultValue) {
+    public String lastNotifiedVersion(@Nullable String defaultValue) {
         return sp.getString(KEY, defaultValue);
     }
 
     @Override
-    public void rememberLastNotifiedVersion(String version) {
+    public void rememberLastNotifiedVersion(@Nullable String version) {
         sp.edit().putString(KEY, version).apply();
     }
 }

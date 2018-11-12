@@ -5,6 +5,8 @@ import android.support.annotation.VisibleForTesting;
 
 import java.util.concurrent.Executor;
 
+import javax.annotation.Nullable;
+
 /**
  * This class represents main entry point for using library.
  * <p>
@@ -30,7 +32,36 @@ import java.util.concurrent.Executor;
  * for update
  * </pre>
  */
-public class PrinceOfVersions {
+public final class PrinceOfVersions {
+
+    private final Presenter presenter;
+    private final ApplicationConfiguration appConfig;
+    private final Executor callbackExecutor;
+
+    /**
+     * Creates {@link PrinceOfVersions} using provided {@link Context}.
+     *
+     * @param context context which will be used for checking application version.
+     */
+    public PrinceOfVersions(Context context) {
+        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createDefaultCallbackExecutor(),
+            createAppConfig(context));
+    }
+
+    @VisibleForTesting
+    PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
+        this(createDefaultParser(), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
+    }
+
+    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+        Executor callbackExecutor, ApplicationConfiguration appConfig) {
+        this.presenter = new PresenterImpl(
+            new InteractorImpl(configurationParser, versionParser),
+            storage
+        );
+        this.callbackExecutor = callbackExecutor;
+        this.appConfig = appConfig;
+    }
 
     private static ConfigurationParser createDefaultParser() {
         return new JsonConfigurationParser();
@@ -50,30 +81,8 @@ public class PrinceOfVersions {
         return new ApplicationConfigurationImpl(context);
     }
 
-    private Presenter presenter;
-    private ApplicationConfiguration appConfig;
-
-    /**
-     * Creates {@link PrinceOfVersions} using provided {@link Context}.
-     *
-     * @param context context which will be used for checking application version.
-     */
-    public PrinceOfVersions(Context context) {
-        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createAppConfig(context));
-    }
-
-    @VisibleForTesting
-    public PrinceOfVersions(Storage storage, ApplicationConfiguration appConfig) {
-        this(createDefaultParser(), createDefaultVersionParser(), storage, appConfig);
-    }
-
-    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
-        ApplicationConfiguration appConfig) {
-        this.presenter = new PresenterImpl(
-            new InteractorImpl(configurationParser, versionParser),
-            storage
-        );
-        this.appConfig = appConfig;
+    private static Executor createDefaultCallbackExecutor() {
+        return new PrinceOfVersionsCallbackExecutor();
     }
 
     /**
@@ -123,11 +132,11 @@ public class PrinceOfVersions {
      * @return instance through which is possible to cancel the call.
      */
     public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
-        return checkForUpdatesInternal(executor, loader, new UiUpdaterCallback(callback));
+        return checkForUpdatesInternal(executor, loader, new ExecutorUpdaterCallback(callback, callbackExecutor));
     }
 
     @VisibleForTesting
-    public PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
+    PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
         return presenter.check(loader, executor, callback, appConfig);
     }
 
@@ -175,49 +184,105 @@ public class PrinceOfVersions {
 
     /**
      * Helper class for building {@link PrinceOfVersions} object.
+     * All methods are optional.
      */
     public static class Builder {
 
+        @Nullable
         private ConfigurationParser configurationParser;
 
+        @Nullable
         private Storage storage;
 
+        @Nullable
         private VersionParser versionParser;
 
+        @Nullable
         private ApplicationConfiguration appConfig;
 
+        @Nullable
+        private Executor callbackExecutor;
+
+        /**
+         * Set a new configuration parser used to parse configuration file into the model.
+         *
+         * @param configurationParser Configuration parser
+         * @return this builder
+         */
         public Builder withParser(ConfigurationParser configurationParser) {
             this.configurationParser = configurationParser;
             return this;
         }
 
+        /**
+         * Set a new implementation of the storage used to store internal metadata about update check.
+         *
+         * @param storage Storage implementation
+         * @return this builder
+         */
         public Builder withStorage(Storage storage) {
             this.storage = storage;
             return this;
         }
 
+        /**
+         * Set a new version parser used to parse version strings.
+         *
+         * @param versionParser Version parser
+         * @return this builder
+         */
         public Builder withVersionParser(VersionParser versionParser) {
             this.versionParser = versionParser;
             return this;
         }
 
+        /**
+         * Set a new callback executor which runs callback code on specific thread.
+         *
+         * @param callbackExecutor Callback executor
+         * @return this builder
+         */
+        public Builder withCallbackExecutor(@Nullable final Executor callbackExecutor) {
+            this.callbackExecutor = callbackExecutor;
+            return this;
+        }
+
+        /**
+         * Set a new application configuration, used to specify data about current application version
+         *
+         * @param appConfig Currect application configuration
+         * @return this builder
+         */
         @VisibleForTesting
-        public Builder withAppConfig(ApplicationConfiguration appConfig) {
+        Builder withAppConfig(ApplicationConfiguration appConfig) {
             this.appConfig = appConfig;
             return this;
         }
 
+        /**
+         * Create the {@link PrinceOfVersions} instance using the configured values.
+         *
+         * @param context Context used to extract data about current application version
+         * @return PrinceOfVersions instance
+         */
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
                 configurationParser != null ? configurationParser : createDefaultParser(),
                 versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage != null ? storage : createDefaultStorage(context),
+                callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig != null ? appConfig : createAppConfig(context)
             );
         }
 
+        /**
+         * Create the {@link PrinceOfVersions} instance using the configured values.
+         * Note: both storage and application configuration has to be set to use this method.
+         *
+         * @return PrinceOfVersions instance
+         */
         @VisibleForTesting
-        public PrinceOfVersions build() {
+        PrinceOfVersions build() {
             if (storage == null || appConfig == null) {
                 throw new UnsupportedOperationException(
                     "You must define storage and application configuration if you don't provide Context.");
@@ -226,6 +291,7 @@ public class PrinceOfVersions {
                 configurationParser != null ? configurationParser : createDefaultParser(),
                 versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage,
+                callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig
             );
         }
