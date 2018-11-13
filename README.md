@@ -56,7 +56,7 @@ The most important part of the configuration for Android applications is <code>a
 
 Property <code>minimum_version</code> specifies the mandatory version of application, eg. if application has version lower than <code>minimum_version</code> - mandatory update will be notified. Semantic of mandatory update is that application has to be updated before any further use. Because of that, if mandatory update exists it will be notified on each update check.
 
-code>minumum_version_min_sdk</code> represents the minimum Android version a device has to support to be able to update to mandatory version. Eg. If <code>minimum_version_min_sdk</code> is set to <code>15</code>, a device has to have at least Android version 15 or above to be able to receive an update.
+<code>minumum_version_min_sdk</code> represents the minimum Android version a device has to support to be able to update to mandatory version. Eg. If <code>minimum_version_min_sdk</code> is set to <code>15</code>, a device has to have at least Android version 15 or above to be able to receive an update.
 
 Property <code>latest_version</code> contains object that holds informations about optional update.  
 <code>version</code> property defines a version of the latest optional update. If application has version lower than <code>version</code> - optional update will be notified.  
@@ -176,6 +176,13 @@ princeOfVersions.checkForUpdates(executor, loader, callback);
 
 ### Multiple flavors
 If your application has multiple product flavors (e.g. paid/free) you might need more than one JSON configuration file. If that is the case, do not forget to set a different URL for each flavor configuration.
+
+
+### R8 / ProGuard
+
+If you are using R8 or ProGuard add the options from
+[this file](./prince-of-versions/prince-of-versions.pro).
+
 
 ### Contributing
 
