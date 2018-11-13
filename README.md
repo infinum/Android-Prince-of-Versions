@@ -177,6 +177,13 @@ princeOfVersions.checkForUpdates(executor, loader, callback);
 ### Multiple flavors
 If your application has multiple product flavors (e.g. paid/free) you might need more than one JSON configuration file. If that is the case, do not forget to set a different URL for each flavor configuration.
 
+
+### R8 / ProGuard
+
+If you are using R8 or ProGuard add the options from
+[this file](./prince-of-versions/prince-of-versions.pro).
+
+
 ### Contributing
 
 Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](https://github.com/infinum/Android-prince-of-versions/blob/dev/LICENCE).
