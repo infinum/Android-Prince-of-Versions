@@ -17,20 +17,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        Button commonUsage = (Button) findViewById(R.id.btn_open_common_usage);
-        Button networkWithLogin = (Button) findViewById(R.id.btn_open_network_with_login);
-        Button customParser = (Button) findViewById(R.id.btn_open_custom_parser);
-        Button stream = (Button) findViewById(R.id.btn_open_stream_example);
+        Button commonUsage = findViewById(R.id.btn_open_common_usage);
+        Button callUsage = findViewById(R.id.btn_open_call_usage);
+        Button customParser = findViewById(R.id.btn_open_custom_parser);
+        Button stream = findViewById(R.id.btn_open_stream_example);
         commonUsage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onCommonUsageClick();
             }
         });
-        networkWithLogin.setOnClickListener(new View.OnClickListener() {
+        callUsage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onNetworkWithLoginClick();
+                onCallUsageClick();
             }
         });
         customParser.setOnClickListener(new View.OnClickListener() {
@@ -47,19 +47,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void onCommonUsageClick() {
+    private void onCommonUsageClick() {
         startActivity(new Intent(this, CommonUsageExample.class));
     }
 
-    public void onNetworkWithLoginClick() {
-        startActivity(new Intent(this, NetworkWithLoginExample.class));
+    private void onCallUsageClick() {
+        startActivity(new Intent(this, CallUsageExample.class));
     }
 
-    public void onCustomParserClick() {
+    private void onCustomParserClick() {
         startActivity(new Intent(this, CustomParserExample.class));
     }
 
-    public void onStreamLoaderClick() {
+    private void onStreamLoaderClick() {
         startActivity(new Intent(this, StreamLoaderExample.class));
     }
 }

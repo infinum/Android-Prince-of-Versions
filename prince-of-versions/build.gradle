@@ -5,28 +5,23 @@ apply plugin: 'com.novoda.bintray-release'
 ext {
     publishedGroupId = 'co.infinum'
     publishedArtifactName = 'prince-of-versions'
-    libraryVersion = '2.1.0'
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion buildVersions.compile
+    buildToolsVersion buildVersions.tools
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion buildVersions.min
+        targetSdkVersion buildVersions.target
         versionCode 1
-        versionName libraryVersion
+        versionName versions.prince
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    sourceSets {
-        main {
-            resources.srcDirs = ['src/main/resources', 'src/test/resources/']
         }
     }
 
@@ -34,25 +29,28 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.github.zafarkhaja:java-semver:0.9.0'
-    compile 'com.android.support:appcompat-v7:25.1.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation deps.semver
+    compileOnly deps.appcompat
+    compileOnly deps.fbannotations
 
-    testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.1.1"
-    testCompile 'org.mockito:mockito-core:2.2.3'
-    testCompile 'com.squareup.okhttp3:mockwebserver:3.4.1'
+    testImplementation deps.junit
+    testImplementation deps.mockito
+    testImplementation deps.mockwebserver
+    testImplementation deps.assertj
+    testImplementation deps.json
+    testCompileOnly deps.fbannotations
 }
 
 group = publishedGroupId
-version = libraryVersion
+version = versions.prince
 
 // https://github.com/novoda/bintray-release/wiki/Configuration-of-the-publish-closure
 publish {
     userOrg = 'infinum'
     groupId = publishedGroupId
     artifactId = publishedArtifactName
-    publishVersion = libraryVersion
+    publishVersion = versions.prince
     desc = 'Library checks for application updates using configuration from some resource.'
     website = 'https://github.com/infinum/Android-prince-of-versions'
     licences = ["Apache-2.0"]
@@ -67,4 +65,8 @@ task sourcesJar(type: Jar) {
 artifacts {
     archives sourcesJar
 }
+
+apply from: '../tasks.gradle'
+
+preBuild.dependsOn ':prince-of-versions:generateReadme'
 
