@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 /**
  * This class represents parser for parsing loaded update configuration in <a href="http://www.json.org/">JSON</a> format.
- * <p>After parsing JSON content, class creates VersionContext holder instance from it.</p>
+ * <p>After parsing JSON content, class creates a PrinceOfVersionsConfig holder instance.</p>
  * Content must contain at least minimum version as string, but optionally optional update version and notification type can be provided.
  * Valid content is represented as one JSON object that contains key <i>android</i>. Value from <i>android</i> key is another JSON
  * object. Android object can contain keys as follow:
