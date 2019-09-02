@@ -1,1 +1,1 @@
-include ':ExampleApp', ':prince-of-versions'
+include ':ExampleApp', ':prince-of-versions', ':queen-of-versions'
