@@ -11,7 +11,6 @@ import com.google.android.play.core.install.model.InstallStatus;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.nio.charset.IllegalCharsetNameException;
 import java.util.Map;
 
 import co.infinum.princeofversions.UpdaterCallback;
@@ -21,23 +20,13 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     private int requestCode;
     private AppUpdateManager appUpdateManager;
     private Activity activity;
-    private UpdaterFlexibleStateCallback flexibleStateListener;
-    private PrinceOfVersionsStateCallback princeOfVersionsStateListener;
+    private UpdaterStateCallback flexibleStateListener;
 
-    public GoogleInAppUpdateCallback(int requestCode, Activity activity,
-        PrinceOfVersionsStateCallback stateCallback, UpdaterFlexibleStateCallback listener) {
+    public GoogleInAppUpdateCallback(int requestCode, Activity activity, UpdaterStateCallback listener) {
         this.requestCode = requestCode;
         this.activity = activity;
         this.appUpdateManager = AppUpdateManagerFactory.create(activity);
-        this.princeOfVersionsStateListener = stateCallback;
         this.flexibleStateListener = listener;
-    }
-
-    public GoogleInAppUpdateCallback(int requestCode, Activity activity, PrinceOfVersionsStateCallback stateCallback) {
-        this.requestCode = requestCode;
-        this.activity = activity;
-        this.appUpdateManager = AppUpdateManagerFactory.create(activity);
-        this.princeOfVersionsStateListener = stateCallback;
     }
 
     @Override
@@ -58,12 +47,12 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
 
     @Override
     public void onNoUpdate(@NotNull Map<String, String> metadata) {
-        princeOfVersionsStateListener.onNoUpdate();
+        flexibleStateListener.onNoUpdate();
     }
 
     @Override
     public void onError(@NotNull Throwable error) {
-        princeOfVersionsStateListener.onError(error);
+        flexibleStateListener.onFailed(new GoogleInAppUpdateException(error));
     }
 
     @Override
@@ -72,6 +61,12 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
             flexibleStateListener.onDownloaded(this);
         } else if (installState.installStatus() == InstallStatus.CANCELED) {
             flexibleStateListener.onCanceled();
+        } else if (installState.installStatus() == InstallStatus.INSTALLING) {
+            flexibleStateListener.onInstalling();
+        } else if (installState.installStatus() == InstallStatus.DOWNLOADING) {
+            flexibleStateListener.onDownloading();
+        } else if (installState.installStatus() == InstallStatus.REQUIRES_UI_INTENT) {
+            flexibleStateListener.onRequiresUI();
         } else if (installState.installStatus() == InstallStatus.INSTALLED) {
             flexibleStateListener.onInstalled();
         } else if (installState.installStatus() == InstallStatus.PENDING) {
@@ -79,22 +74,7 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
         } else if (installState.installStatus() == InstallStatus.UNKNOWN) {
             flexibleStateListener.onUnknown();
         } else if (installState.installStatus() == InstallStatus.FAILED) {
-
-            if (installState.installErrorCode() == InstallErrorCode.ERROR_API_NOT_AVAILABLE) {
-                flexibleStateListener.onFailed(new GoogleInAppUpdateException("API NOT AVAILABLE"));
-            } else if (installState.installErrorCode() == InstallErrorCode.ERROR_DOWNLOAD_NOT_PRESENT) {
-                flexibleStateListener.onFailed(new GoogleInAppUpdateException("DOWNLOAD NOT PRESENT"));
-            } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_NOT_ALLOWED) {
-                flexibleStateListener.onFailed(new GoogleInAppUpdateException("INSTALL NOT ALLOWED"));
-            } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_UNAVAILABLE) {
-                flexibleStateListener.onFailed(new GoogleInAppUpdateException("INSTALL UNAVAILABLE"));
-            } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INTERNAL_ERROR) {
-                flexibleStateListener.onFailed(new GoogleInAppUpdateException("INTERNAL ERROR"));
-            } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INVALID_REQUEST) {
-                flexibleStateListener.onFailed(new GoogleInAppUpdateException("INVALID REQUEST"));
-            } else if (installState.installErrorCode() == InstallErrorCode.ERROR_UNKNOWN) {
-                flexibleStateListener.onFailed(new GoogleInAppUpdateException("UNKNOWN ERROR"));
-            }
+            checkErrorStates(installState);
         }
     }
 
@@ -102,5 +82,23 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     public void completeUpdate() {
         appUpdateManager.completeUpdate();
         appUpdateManager.unregisterListener(this);
+    }
+
+    private void checkErrorStates(InstallState installState) {
+        if (installState.installErrorCode() == InstallErrorCode.ERROR_API_NOT_AVAILABLE) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.API_NOT_AVAILABLE));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_DOWNLOAD_NOT_PRESENT) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.DOWNLOAD_NOT_PRESENT));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_NOT_ALLOWED) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.INSTALL_NOT_ALLOWED));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_UNAVAILABLE) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.INSTALL_UNAVAILABLE));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INTERNAL_ERROR) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.INTERNAL_ERROR));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INVALID_REQUEST) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.INVALID_REQUEST));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_UNKNOWN) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.ERROR_UNKNOWN));
+        }
     }
 }

@@ -10,14 +10,13 @@ import android.widget.Toast;
 
 import com.infinum.queenofversions.GoogleInAppUpdateCallback;
 import com.infinum.queenofversions.GoogleInAppUpdateFlexibleHandler;
-import com.infinum.queenofversions.PrinceOfVersionsStateCallback;
-import com.infinum.queenofversions.UpdaterFlexibleStateCallback;
+import com.infinum.queenofversions.UpdaterStateCallback;
 
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
 
-public class GoogleInAppUpdatesExample extends AppCompatActivity implements UpdaterFlexibleStateCallback, PrinceOfVersionsStateCallback {
+public class GoogleInAppUpdatesExample extends AppCompatActivity implements UpdaterStateCallback{
 
     private static final String TAG = "GoogleInAppUpdates";
     private final int REQUEST_CODE = 420;
@@ -34,7 +33,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Upda
         initUI();
 
         princeOfVersions = new PrinceOfVersions.Builder().build(this);
-        googleInAppUpdateCallback = new GoogleInAppUpdateCallback(REQUEST_CODE, this, this, this);
+        googleInAppUpdateCallback = new GoogleInAppUpdateCallback(REQUEST_CODE, this, this);
         loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
     }
 
@@ -58,9 +57,18 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Upda
     }
 
     @Override
-    public void onError(Throwable error) {
-        Toast.makeText(this, "Error occurred on PoV!", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Error:", error);
+    public void onDownloading() {
+        Toast.makeText(this, "Downloading update...", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onInstalling() {
+        Toast.makeText(this, "Installing update...", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRequiresUI() {
+        Toast.makeText(this, "Requires UI!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

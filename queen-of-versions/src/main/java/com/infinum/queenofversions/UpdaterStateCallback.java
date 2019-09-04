@@ -1,6 +1,6 @@
 package com.infinum.queenofversions;
 
-public interface UpdaterFlexibleStateCallback {
+public interface UpdaterStateCallback {
 
     void onDownloaded(GoogleInAppUpdateFlexibleHandler handler);
 
@@ -13,4 +13,12 @@ public interface UpdaterFlexibleStateCallback {
     void onUnknown();
 
     void onFailed(Exception exception);
+
+    void onNoUpdate();
+
+    void onDownloading();
+
+    void onInstalling();
+
+    void onRequiresUI();
 }

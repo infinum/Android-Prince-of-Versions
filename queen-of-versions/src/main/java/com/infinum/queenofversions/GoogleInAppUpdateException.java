@@ -2,7 +2,11 @@ package com.infinum.queenofversions;
 
 class GoogleInAppUpdateException extends Exception {
 
-    GoogleInAppUpdateException(String msg){
-        super(msg);
+    GoogleInAppUpdateException(GoogleException exception){
+        super(exception.toString());
+    }
+
+    GoogleInAppUpdateException(Throwable error){
+        super(error.getMessage());
     }
 }
