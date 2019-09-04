@@ -8,7 +8,7 @@ android {
         applicationId "co.infinum.povexampleapp"
         minSdkVersion buildVersions.min
         targetSdkVersion buildVersions.target
-        versionCode 1
+        versionCode 2
         versionName "1.0.0"
     }
     buildTypes {
@@ -26,6 +26,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation deps.appcompat
     implementation project(':prince-of-versions')
+    implementation project(':queen-of-versions')
 
     compileOnly deps.fbannotations
 }

@@ -59,7 +59,5 @@ apply from: '../tasks.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
 
-
-
 sourceCompatibility = "7"
 targetCompatibility = "7"
