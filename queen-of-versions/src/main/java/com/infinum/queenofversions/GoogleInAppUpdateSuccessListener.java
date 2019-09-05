@@ -10,8 +10,6 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.OnSuccessListener;
 
-import java.util.HashMap;
-
 import co.infinum.princeofversions.UpdaterCallback;
 
 public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUpdateInfo> {
@@ -22,35 +20,41 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
     private final AppUpdateManager appUpdateManager;
     private final InstallStateUpdatedListener installStateUpdatedListener;
     private final UpdaterCallback updaterCallback;
-    private final UpdaterStateCallback flexiableStateListener;
+    private final UpdaterStateCallback flexibleStateListener;
     private final GoogleInAppUpdateFlexibleHandler handler;
     private final String appVersionCode;
 
     GoogleInAppUpdateSuccessListener(int requestCode, Activity activity, boolean isMandatory, AppUpdateManager appUpdateManager,
-        UpdaterStateCallback flexiableListener, String versionCode, InstallStateUpdatedListener installStateUpdatedListener,
+        UpdaterStateCallback flexibleListener, String versionCode, InstallStateUpdatedListener installStateUpdatedListener,
         UpdaterCallback updaterCallback,
         GoogleInAppUpdateFlexibleHandler handler) {
         this.requestCode = requestCode;
         this.activity = activity;
         this.isMandatory = isMandatory;
         this.appUpdateManager = appUpdateManager;
-        this.flexiableStateListener = flexiableListener;
+        this.flexibleStateListener = flexibleListener;
         this.installStateUpdatedListener = installStateUpdatedListener;
         this.updaterCallback = updaterCallback;
         this.handler = handler;
         this.appVersionCode = versionCode;
     }
 
+
+    //TODO we have to agree on what to do in specific version cases
     @Override
     public void onSuccess(AppUpdateInfo appUpdateInfo) {
-        if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && checkVersionCode(appUpdateInfo)) {
-            updateAvailable(appUpdateInfo);
-        } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_NOT_AVAILABLE) {
+        if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+            if(checkVersionCode(appUpdateInfo)){
+                startUpdate(appUpdateInfo,isMandatory);
+            }else {
+                startUpdate(appUpdateInfo,false);
+            }
+        } else {
             noUpdate();
         }
     }
 
-    private void updateAvailable(AppUpdateInfo appUpdateInfo) {
+    private void startUpdate(AppUpdateInfo appUpdateInfo,boolean isMandatory) {
         if (isMandatory) {
             startImmediateFlow(appUpdateInfo);
         } else {
@@ -60,7 +64,7 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
     }
 
     private void noUpdate() {
-        updaterCallback.onNoUpdate(new HashMap<String, String>());
+        flexibleStateListener.onNoUpdate();
     }
 
     private void startFlexibleFlow(AppUpdateInfo appUpdateInfo) {
@@ -92,15 +96,15 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
 
     private void registerImmediateResumeFlow() {
         activity.getApplication().registerActivityLifecycleCallbacks(
-            new AppCallbacks(requestCode, activity, appUpdateManager, updaterCallback, flexiableStateListener, handler)
+            new AppCallbacks(requestCode, activity, appUpdateManager, updaterCallback, flexibleStateListener, handler)
         );
     }
 
-    private boolean checkVersionCode(AppUpdateInfo appUpdateInfo){
-        int versionCode;
-        if(appVersionCode == null){
+    private boolean checkVersionCode(AppUpdateInfo appUpdateInfo) {
+        Integer versionCode;
+        if (appVersionCode == null) {
             return false;
-        }else{
+        } else {
             versionCode = Integer.parseInt(appVersionCode);
         }
 

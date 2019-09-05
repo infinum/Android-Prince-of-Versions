@@ -31,29 +31,15 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
 
     @Override
     public void onNewUpdate(@NotNull String version, final boolean isMandatory, @NotNull Map<String, String> metadata) {
-
         String appVersionCode = metadata.get("version-code");
+        checkWithGoogleForAnUpdate(isMandatory,appVersionCode);
 
-        appUpdateManager.getAppUpdateInfo()
-            .addOnSuccessListener(
-                new GoogleInAppUpdateSuccessListener(
-                    requestCode,
-                    activity,
-                    isMandatory,
-                    appUpdateManager,
-                    flexibleStateListener,
-                    appVersionCode,
-                    this,
-                    this,
-                    this
-                )
-            )
-            .addOnFailureListener(new GoogleInAppUpdateFailureListener(this));
     }
 
     @Override
     public void onNoUpdate(@NotNull Map<String, String> metadata) {
-        flexibleStateListener.onNoUpdate();
+        String appVersionCode = metadata.get("version-code");
+        checkWithGoogleForAnUpdate(false,appVersionCode);
     }
 
     @Override
@@ -106,5 +92,24 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_UNKNOWN) {
             flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.ERROR_UNKNOWN));
         }
+    }
+
+    private void checkWithGoogleForAnUpdate(boolean isMandatory, String appVersionCode){
+
+        appUpdateManager.getAppUpdateInfo()
+            .addOnSuccessListener(
+                new GoogleInAppUpdateSuccessListener(
+                    requestCode,
+                    activity,
+                    isMandatory,
+                    appUpdateManager,
+                    flexibleStateListener,
+                    appVersionCode,
+                    this,
+                    this,
+                    this
+                )
+            )
+            .addOnFailureListener(new GoogleInAppUpdateFailureListener(this));
     }
 }
