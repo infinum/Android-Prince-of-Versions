@@ -38,6 +38,8 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
                     activity,
                     isMandatory,
                     appUpdateManager,
+                    flexibleStateListener,
+                    this,
                     this,
                     this
                 )

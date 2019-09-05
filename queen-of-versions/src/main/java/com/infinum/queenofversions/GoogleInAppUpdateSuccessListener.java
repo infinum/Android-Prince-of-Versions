@@ -22,15 +22,20 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
     private final AppUpdateManager appUpdateManager;
     private final InstallStateUpdatedListener installStateUpdatedListener;
     private final UpdaterCallback updaterCallback;
+    private final UpdaterStateCallback flexiableStateListener;
+    private final GoogleInAppUpdateFlexibleHandler handler;
 
     GoogleInAppUpdateSuccessListener(int requestCode, Activity activity, boolean isMandatory, AppUpdateManager appUpdateManager,
-        InstallStateUpdatedListener installStateUpdatedListener, UpdaterCallback updaterCallback) {
+        UpdaterStateCallback flexiableListener, InstallStateUpdatedListener installStateUpdatedListener, UpdaterCallback updaterCallback,
+        GoogleInAppUpdateFlexibleHandler handler) {
         this.requestCode = requestCode;
         this.activity = activity;
         this.isMandatory = isMandatory;
         this.appUpdateManager = appUpdateManager;
+        this.flexiableStateListener = flexiableListener;
         this.installStateUpdatedListener = installStateUpdatedListener;
         this.updaterCallback = updaterCallback;
+        this.handler = handler;
     }
 
     @Override
@@ -84,7 +89,7 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
 
     private void registerImmediateResumeFlow() {
         activity.getApplication().registerActivityLifecycleCallbacks(
-            new AppCallbacks(requestCode, activity, appUpdateManager, updaterCallback)
+            new AppCallbacks(requestCode, activity, appUpdateManager, updaterCallback, flexiableStateListener, handler)
         );
     }
 }

@@ -14,13 +14,17 @@ public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
     private final Activity activity;
     private final AppUpdateManager appUpdateManager;
     private final UpdaterCallback updaterCallback;
+    private final UpdaterStateCallback flexibleListener;
+    private final GoogleInAppUpdateFlexibleHandler handler;
 
     AppCallbacks(int requestCode, Activity activity, AppUpdateManager appUpdateManager,
-        UpdaterCallback updaterCallback) {
+        UpdaterCallback updaterCallback, UpdaterStateCallback flexibleListener, GoogleInAppUpdateFlexibleHandler handler) {
         this.requestCode = requestCode;
         this.activity = activity;
         this.appUpdateManager = appUpdateManager;
         this.updaterCallback = updaterCallback;
+        this.flexibleListener = flexibleListener;
+        this.handler = handler;
     }
 
     @Override
@@ -62,7 +66,7 @@ public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
         if (this.activity.equals(activity)) {
             appUpdateManager.getAppUpdateInfo()
                 .addOnSuccessListener(
-                    new GoogleInAppUpdateResumeSuccessListener(requestCode, activity, appUpdateManager, updaterCallback)
+                    new GoogleInAppUpdateResumeSuccessListener(requestCode, activity, appUpdateManager, updaterCallback,flexibleListener,handler)
                 )
                 .addOnFailureListener(new GoogleInAppUpdateFailureListener(updaterCallback));
         }
