@@ -24,9 +24,11 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
     private final UpdaterCallback updaterCallback;
     private final UpdaterStateCallback flexiableStateListener;
     private final GoogleInAppUpdateFlexibleHandler handler;
+    private final String appVersionCode;
 
     GoogleInAppUpdateSuccessListener(int requestCode, Activity activity, boolean isMandatory, AppUpdateManager appUpdateManager,
-        UpdaterStateCallback flexiableListener, InstallStateUpdatedListener installStateUpdatedListener, UpdaterCallback updaterCallback,
+        UpdaterStateCallback flexiableListener, String versionCode, InstallStateUpdatedListener installStateUpdatedListener,
+        UpdaterCallback updaterCallback,
         GoogleInAppUpdateFlexibleHandler handler) {
         this.requestCode = requestCode;
         this.activity = activity;
@@ -36,11 +38,12 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
         this.installStateUpdatedListener = installStateUpdatedListener;
         this.updaterCallback = updaterCallback;
         this.handler = handler;
+        this.appVersionCode = versionCode;
     }
 
     @Override
     public void onSuccess(AppUpdateInfo appUpdateInfo) {
-        if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+        if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && checkVersionCode(appUpdateInfo)) {
             updateAvailable(appUpdateInfo);
         } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_NOT_AVAILABLE) {
             noUpdate();
@@ -91,5 +94,16 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
         activity.getApplication().registerActivityLifecycleCallbacks(
             new AppCallbacks(requestCode, activity, appUpdateManager, updaterCallback, flexiableStateListener, handler)
         );
+    }
+
+    private boolean checkVersionCode(AppUpdateInfo appUpdateInfo){
+        int versionCode;
+        if(appVersionCode == null){
+            return false;
+        }else{
+            versionCode = Integer.parseInt(appVersionCode);
+        }
+
+        return versionCode == appUpdateInfo.availableVersionCode();
     }
 }

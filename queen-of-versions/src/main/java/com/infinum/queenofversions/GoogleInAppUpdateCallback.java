@@ -31,6 +31,9 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
 
     @Override
     public void onNewUpdate(@NotNull String version, final boolean isMandatory, @NotNull Map<String, String> metadata) {
+
+        String appVersionCode = metadata.get("version-code");
+
         appUpdateManager.getAppUpdateInfo()
             .addOnSuccessListener(
                 new GoogleInAppUpdateSuccessListener(
@@ -39,6 +42,7 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
                     isMandatory,
                     appUpdateManager,
                     flexibleStateListener,
+                    appVersionCode,
                     this,
                     this,
                     this
