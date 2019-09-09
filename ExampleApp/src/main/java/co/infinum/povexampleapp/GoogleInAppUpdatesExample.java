@@ -16,7 +16,7 @@ import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
 
-public class GoogleInAppUpdatesExample extends AppCompatActivity implements UpdaterStateCallback{
+public class GoogleInAppUpdatesExample extends AppCompatActivity implements UpdaterStateCallback {
 
     private static final String TAG = "GoogleInAppUpdates";
     private final int REQUEST_CODE = 420;
@@ -33,7 +33,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Upda
         initUI();
 
         princeOfVersions = new PrinceOfVersions.Builder().build(this);
-        googleInAppUpdateCallback = new GoogleInAppUpdateCallback(REQUEST_CODE, this, this);
+        googleInAppUpdateCallback = new GoogleInAppUpdateCallback(REQUEST_CODE, this, this, BuildConfig.VERSION_CODE);
         loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
     }
 

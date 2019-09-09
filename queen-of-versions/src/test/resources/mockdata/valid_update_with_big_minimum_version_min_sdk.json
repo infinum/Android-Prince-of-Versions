@@ -1,0 +1,11 @@
+{
+  "android": {
+    "minimum_version": "2.1.0",
+    "minimum_version_min_sdk": 24,
+    "latest_version": {
+      "version": "2.1.1",
+      "notification_type": "ALWAYS",
+      "min_sdk": 19
+    }
+  }
+}

@@ -49,11 +49,11 @@ public final class PrinceOfVersions {
     }
 
     @VisibleForTesting
-    PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
+    public PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this(createDefaultParser(), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
     }
 
-    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+    public PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
         Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
             new InteractorImpl(configurationParser, versionParser),
@@ -136,7 +136,7 @@ public final class PrinceOfVersions {
     }
 
     @VisibleForTesting
-    PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
+    public PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
         return presenter.check(loader, executor, callback, appConfig);
     }
 

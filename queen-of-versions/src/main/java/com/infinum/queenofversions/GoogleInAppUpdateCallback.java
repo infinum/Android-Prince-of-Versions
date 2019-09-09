@@ -1,13 +1,15 @@
 package com.infinum.queenofversions;
 
 import android.app.Activity;
+import android.support.annotation.VisibleForTesting;
 
-import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.android.play.core.install.InstallState;
 import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallErrorCode;
 import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,29 +19,36 @@ import co.infinum.princeofversions.UpdaterCallback;
 
 public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateUpdatedListener, GoogleInAppUpdateFlexibleHandler {
 
-    private int requestCode;
-    private AppUpdateManager appUpdateManager;
-    private Activity activity;
-    private UpdaterStateCallback flexibleStateListener;
+    private UpdateStateDelegate flexibleStateListener;
+    private GoogleAppUpdater googleAppUpdater;
+    private final int appVersionCode;
 
-    public GoogleInAppUpdateCallback(int requestCode, Activity activity, UpdaterStateCallback listener) {
-        this.requestCode = requestCode;
-        this.activity = activity;
-        this.appUpdateManager = AppUpdateManagerFactory.create(activity);
-        this.flexibleStateListener = listener;
+    public GoogleInAppUpdateCallback(int requestCode, Activity activity, UpdaterStateCallback listener, int appVersionCode) {
+        this.flexibleStateListener = new UpdateStateDelegate(false,listener);
+        this.appVersionCode = appVersionCode;
+        this.googleAppUpdater = new AppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
+            flexibleStateListener,
+            this);
+    }
+
+    @VisibleForTesting
+    GoogleInAppUpdateCallback(int requestCode, GoogleAppUpdater appUpdater, UpdaterStateCallback flexibleStateListener,
+        int appVersionCode) {
+        this.flexibleStateListener = new UpdateStateDelegate(false,flexibleStateListener);
+        this.appVersionCode = appVersionCode;
+        this.googleAppUpdater = appUpdater;
     }
 
     @Override
     public void onNewUpdate(@NotNull String version, final boolean isMandatory, @NotNull Map<String, String> metadata) {
-        String appVersionCode = metadata.get("version-code");
-        checkWithGoogleForAnUpdate(isMandatory,appVersionCode);
-
+        String princeVersionCode = metadata.get("version-code");
+        checkWithGoogleForAnUpdate(isMandatory, princeVersionCode);
     }
 
     @Override
     public void onNoUpdate(@NotNull Map<String, String> metadata) {
-        String appVersionCode = metadata.get("version-code");
-        checkWithGoogleForAnUpdate(false,appVersionCode);
+        String princeVersionCode = metadata.get("version-code");
+        checkWithGoogleForAnUpdate(false, princeVersionCode);
     }
 
     @Override
@@ -72,8 +81,29 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
 
     @Override
     public void completeUpdate() {
-        appUpdateManager.completeUpdate();
-        appUpdateManager.unregisterListener(this);
+        googleAppUpdater.completeUpdate();
+    }
+
+    void handleSuccess(@UpdateAvailability int updateAvailability, String princeVersionCode, int googleUpdateVersionCode,
+        boolean isMandatory) {
+        int updateType = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory);
+        if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE && (updateType == AppUpdateType.FLEXIBLE
+            || updateType == AppUpdateType.IMMEDIATE)) {
+            googleAppUpdater.startUpdate(updateType);
+        } else {
+            googleAppUpdater.noUpdate();
+        }
+    }
+
+    //This method is called when you leave app during an immediate update, but also it checks if user has left app during flexible update
+    //In case of flexible update we notify user about downloaded update so he can do install it or whatever
+
+    void handleResumeSuccess(@UpdateAvailability int updateAvailability, @InstallStatus int installStatus, boolean isFlexible) {
+        if (updateAvailability == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+            googleAppUpdater.restartUpdate();
+        } else if (installStatus == InstallStatus.DOWNLOADED && isFlexible) {
+            googleAppUpdater.notifyUser();
+        }
     }
 
     private void checkErrorStates(InstallState installState) {
@@ -94,22 +124,39 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
         }
     }
 
-    private void checkWithGoogleForAnUpdate(boolean isMandatory, String appVersionCode){
+    private void checkWithGoogleForAnUpdate(boolean isMandatory, String princeVersionCode) {
+        googleAppUpdater.initGoogleUpdate(isMandatory, princeVersionCode);
+    }
 
-        appUpdateManager.getAppUpdateInfo()
-            .addOnSuccessListener(
-                new GoogleInAppUpdateSuccessListener(
-                    requestCode,
-                    activity,
-                    isMandatory,
-                    appUpdateManager,
-                    flexibleStateListener,
-                    appVersionCode,
-                    this,
-                    this,
-                    this
-                )
-            )
-            .addOnFailureListener(new GoogleInAppUpdateFailureListener(this));
+    private int checkVersionCode(String princeVersionCode, int googleVersionCode, boolean isMandatory) {
+        int princeOfVersionsCode;
+        if (princeVersionCode == null) {
+            return AppUpdateType.FLEXIBLE;
+        } else {
+            princeOfVersionsCode = Integer.parseInt(princeVersionCode);
+        }
+
+        if (princeOfVersionsCode <= googleVersionCode && isMandatory) {
+            if (appVersionCode > princeOfVersionsCode) {
+                return AppUpdateType.FLEXIBLE;
+            } else {
+                return AppUpdateType.IMMEDIATE;
+            }
+        } else if (princeOfVersionsCode > googleVersionCode) {
+            // This if is only for testing purpose. In production this if should never be true.
+            if (appVersionCode > googleVersionCode) {
+                return -1;
+            } else {
+                //TODO for now we should offer flexible,but in future we will add mandatory list that will check if google update is
+                // mandatory
+                return AppUpdateType.FLEXIBLE;
+            }
+        } else {
+            return AppUpdateType.FLEXIBLE;
+        }
+    }
+
+    public void cancel() {
+        flexibleStateListener.cancel();
     }
 }

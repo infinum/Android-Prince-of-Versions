@@ -26,9 +26,21 @@ android {
 }
 
 dependencies {
-    implementation 'co.infinum:prince-of-versions:3.0.0'
+    implementation project(':prince-of-versions')
     implementation 'com.google.android.play:core:1.6.1'
-    implementation 'org.jetbrains:annotations-java5:15.0'
+    implementation 'org.jetbrains:annotations-java5:16.0.1'
+
+
+    compileOnly deps.appcompat
+    compileOnly deps.fbannotations
+
+    testImplementation deps.junit
+    testImplementation deps.mockito
+    testImplementation deps.mockwebserver
+    testImplementation deps.assertj
+    testImplementation deps.json
+    testCompileOnly deps.fbannotations
+    testCompile project(path: ':prince-of-versions')
 }
 
 group = publishedGroupId

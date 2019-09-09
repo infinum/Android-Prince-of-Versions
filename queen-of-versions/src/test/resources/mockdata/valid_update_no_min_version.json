@@ -1,0 +1,14 @@
+{
+  "ios": {
+    "latest_version": {
+      "version": "2.4.5",
+      "notification_type": "ALWAYS"
+    }
+  },
+  "android": {
+    "latest_version": {
+      "version": "2.4.5",
+      "notification_type": "ONCE"
+    }
+  }
+}
