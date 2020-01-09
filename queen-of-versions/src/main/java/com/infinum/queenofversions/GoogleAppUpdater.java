@@ -6,7 +6,7 @@ import com.google.android.play.core.appupdate.AppUpdateInfo;
 
 public interface GoogleAppUpdater {
 
-    void initGoogleUpdate(boolean isMandatory,String version);
+    void initGoogleUpdate(boolean isMandatory, String version);
 
     void startUpdate(int updateType);
 

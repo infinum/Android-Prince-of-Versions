@@ -12,7 +12,7 @@ public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
 
     private final GoogleAppUpdater googleAppUpdater;
 
-    AppCallbacks(GoogleAppUpdater googleAppUpdater){
+    AppCallbacks(GoogleAppUpdater googleAppUpdater) {
         this.googleAppUpdater = googleAppUpdater;
     }
 

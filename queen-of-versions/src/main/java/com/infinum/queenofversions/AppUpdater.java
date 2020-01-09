@@ -47,7 +47,7 @@ public class AppUpdater implements GoogleAppUpdater {
     public void startUpdate(int updateType) {
         if (updateType == AppUpdateType.IMMEDIATE) {
             startImmediateFlow(appUpdateInfo);
-        } else{
+        } else {
             startFlexibleFlow(appUpdateInfo);
         }
         appUpdateManager.registerListener(callback);
@@ -109,7 +109,7 @@ public class AppUpdater implements GoogleAppUpdater {
                         @Override
                         public void onSuccess(AppUpdateInfo appUpdateInfo) {
                             AppUpdater.this.appUpdateInfo = appUpdateInfo;
-                            callback.handleResumeSuccess(appUpdateInfo.updateAvailability(),appUpdateInfo.installStatus(),
+                            callback.handleResumeSuccess(appUpdateInfo.updateAvailability(), appUpdateInfo.installStatus(),
                                 appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE));
                         }
                     }

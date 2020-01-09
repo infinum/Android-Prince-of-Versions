@@ -24,7 +24,7 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     private final int appVersionCode;
 
     public GoogleInAppUpdateCallback(int requestCode, Activity activity, UpdaterStateCallback listener, int appVersionCode) {
-        this.flexibleStateListener = new UpdateStateDelegate(false,listener);
+        this.flexibleStateListener = new UpdateStateDelegate(false, listener);
         this.appVersionCode = appVersionCode;
         this.googleAppUpdater = new AppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
             flexibleStateListener,
@@ -34,7 +34,7 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     @VisibleForTesting
     GoogleInAppUpdateCallback(int requestCode, GoogleAppUpdater appUpdater, UpdaterStateCallback flexibleStateListener,
         int appVersionCode) {
-        this.flexibleStateListener = new UpdateStateDelegate(false,flexibleStateListener);
+        this.flexibleStateListener = new UpdateStateDelegate(false, flexibleStateListener);
         this.appVersionCode = appVersionCode;
         this.googleAppUpdater = appUpdater;
     }

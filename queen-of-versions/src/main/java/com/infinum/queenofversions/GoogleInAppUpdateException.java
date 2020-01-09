@@ -9,7 +9,7 @@ class GoogleInAppUpdateException extends Exception {
         this.error = exception;
     }
 
-    GoogleInAppUpdateException(Throwable error){
+    GoogleInAppUpdateException(Throwable error) {
         super(error.getMessage());
         this.error = GoogleException.ERROR_UNKNOWN;
     }

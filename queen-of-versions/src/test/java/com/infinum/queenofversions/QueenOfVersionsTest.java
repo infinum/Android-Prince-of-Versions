@@ -530,7 +530,7 @@ public class QueenOfVersionsTest {
             new GoogleInAppUpdateCallback(200, googleAppUpdater, updaterStateCallback, 10);
         googleInAppUpdateCallback.completeUpdate();
 
-        verify(googleAppUpdater,times(1)).completeUpdate();
+        verify(googleAppUpdater, times(1)).completeUpdate();
     }
 
     @Test
@@ -941,11 +941,11 @@ public class QueenOfVersionsTest {
      */
 
     @Test
-    public void testOnFailureCallInAppUpdateFailureListener(){
+    public void testOnFailureCallInAppUpdateFailureListener() {
         GoogleInAppUpdateFailureListener googleInAppUpdateFailureListener = new GoogleInAppUpdateFailureListener(updaterStateCallback);
         googleInAppUpdateFailureListener.onFailure(new GoogleInAppUpdateException(new Throwable("Error")));
 
-        verify(updaterStateCallback,times(1)).onFailed(any(GoogleInAppUpdateException.class));
+        verify(updaterStateCallback, times(1)).onFailed(any(GoogleInAppUpdateException.class));
     }
 
     /**
@@ -953,10 +953,10 @@ public class QueenOfVersionsTest {
      */
 
     @Test
-    public void testOnResumeHasBeenCalledForImmediate(){
+    public void testOnResumeHasBeenCalledForImmediate() {
         GoogleInAppUpdateCallback googleInAppUpdateCallback =
             new GoogleInAppUpdateCallback(200, googleAppUpdater, updaterStateCallback, 11);
-        googleInAppUpdateCallback.handleResumeSuccess(UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS,InstallStatus.CANCELED,
+        googleInAppUpdateCallback.handleResumeSuccess(UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS, InstallStatus.CANCELED,
             false);
 
         verify(googleAppUpdater, times(0)).notifyUser();
@@ -964,13 +964,12 @@ public class QueenOfVersionsTest {
     }
 
     @Test
-    public void testOnResumeHasBeenCallForFlexible(){
+    public void testOnResumeHasBeenCallForFlexible() {
         GoogleInAppUpdateCallback googleInAppUpdateCallback =
             new GoogleInAppUpdateCallback(200, googleAppUpdater, updaterStateCallback, 11);
-        googleInAppUpdateCallback.handleResumeSuccess(UpdateAvailability.UNKNOWN,InstallStatus.DOWNLOADED,true);
+        googleInAppUpdateCallback.handleResumeSuccess(UpdateAvailability.UNKNOWN, InstallStatus.DOWNLOADED, true);
 
         verify(googleAppUpdater, times(1)).notifyUser();
         verify(googleAppUpdater, times(0)).restartUpdate();
     }
-
 }
