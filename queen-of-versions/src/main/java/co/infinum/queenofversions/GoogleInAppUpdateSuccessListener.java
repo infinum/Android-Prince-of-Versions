@@ -1,4 +1,4 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.content.IntentSender;
@@ -20,12 +20,12 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
     private final AppUpdateManager appUpdateManager;
     private final InstallStateUpdatedListener installStateUpdatedListener;
     private final UpdaterCallback updaterCallback;
-    private final UpdaterStateCallback flexibleStateListener;
+    private final InAppUpdateProcessCallback flexibleStateListener;
     private final GoogleInAppUpdateFlexibleHandler handler;
     private final String appVersionCode;
 
     GoogleInAppUpdateSuccessListener(int requestCode, Activity activity, boolean isMandatory, AppUpdateManager appUpdateManager,
-        UpdaterStateCallback flexibleListener, String versionCode, InstallStateUpdatedListener installStateUpdatedListener,
+        InAppUpdateProcessCallback flexibleListener, String versionCode, InstallStateUpdatedListener installStateUpdatedListener,
         UpdaterCallback updaterCallback,
         GoogleInAppUpdateFlexibleHandler handler) {
         this.requestCode = requestCode;
@@ -39,28 +39,28 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
         this.appVersionCode = versionCode;
     }
 
-
     //TODO we have to agree on what to do in specific version cases
     @Override
     public void onSuccess(AppUpdateInfo appUpdateInfo) {
         if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
-            if(checkVersionCode(appUpdateInfo)){
-                startUpdate(appUpdateInfo,isMandatory);
-            }else {
-                startUpdate(appUpdateInfo,false);
+            if (checkVersionCode(appUpdateInfo)) {
+                startUpdate(appUpdateInfo, isMandatory);
+            } else {
+                startUpdate(appUpdateInfo, false);
             }
         } else {
             noUpdate();
         }
     }
 
-    private void startUpdate(AppUpdateInfo appUpdateInfo,boolean isMandatory) {
+    private void startUpdate(AppUpdateInfo appUpdateInfo, boolean isMandatory) {
+        appUpdateManager.registerListener(installStateUpdatedListener);
+
         if (isMandatory) {
             startImmediateFlow(appUpdateInfo);
         } else {
             startFlexibleFlow(appUpdateInfo);
         }
-        appUpdateManager.registerListener(installStateUpdatedListener);
     }
 
     private void noUpdate() {
@@ -82,13 +82,13 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
 
     private void startImmediateFlow(AppUpdateInfo appUpdateInfo) {
         try {
+            registerImmediateResumeFlow();
             appUpdateManager.startUpdateFlowForResult(
                 appUpdateInfo,
                 AppUpdateType.IMMEDIATE,
                 activity,
                 requestCode
             );
-            registerImmediateResumeFlow();
         } catch (IntentSender.SendIntentException e) {
             updaterCallback.onError(e);
         }
@@ -101,11 +101,17 @@ public class GoogleInAppUpdateSuccessListener implements OnSuccessListener<AppUp
     }
 
     private boolean checkVersionCode(AppUpdateInfo appUpdateInfo) {
-        Integer versionCode;
+        int versionCode;
         if (appVersionCode == null) {
             return false;
         } else {
-            versionCode = Integer.parseInt(appVersionCode);
+            try {
+                versionCode = Integer.parseInt(appVersionCode);
+            } catch (NumberFormatException e) {
+                flexibleStateListener.onFailed(e);
+                e.printStackTrace();
+                return false;
+            }
         }
 
         return versionCode == appUpdateInfo.availableVersionCode();

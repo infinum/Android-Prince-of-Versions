@@ -1,4 +1,4 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
 public interface GoogleInAppUpdateFlexibleHandler {
 

@@ -1,6 +1,6 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
-public interface UpdaterStateCallback {
+public interface InAppUpdateProcessCallback {
 
     void onDownloaded(GoogleInAppUpdateFlexibleHandler handler);
 
