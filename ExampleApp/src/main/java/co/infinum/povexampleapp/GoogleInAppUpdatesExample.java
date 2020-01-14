@@ -72,6 +72,11 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Upda
     }
 
     @Override
+    public void onWrongVersion() {
+        Toast.makeText(this, "Wrong version!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onDownloaded(GoogleInAppUpdateFlexibleHandler handler) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();

@@ -158,6 +158,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(0)).onUnknown();
     }
 
+
     @Test
     public void testStatusChangedOnInstallStatusInstalled() {
         GoogleInAppUpdateCallback googleInAppUpdateCallback =
@@ -458,8 +459,7 @@ public class QueenOfVersionsTest {
             new GoogleInAppUpdateCallback(200, googleAppUpdater, updaterStateCallback, 11);
         googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, "12", 10, true);
 
-        verify(googleAppUpdater, times(0)).startUpdate(anyInt());
-        verify(googleAppUpdater, times(1)).noUpdate();
+        verify(googleAppUpdater, times(1)).wrongVersion();
     }
 
     @Test
@@ -506,5 +506,23 @@ public class QueenOfVersionsTest {
 
         verify(googleAppUpdater, times(1)).notifyUser();
         verify(googleAppUpdater, times(0)).restartUpdate();
+    }
+
+    @Test
+    public void testUnsupportedVersionOnPrince() {
+        GoogleInAppUpdateCallback googleInAppUpdateCallback =
+            new GoogleInAppUpdateCallback(200, googleAppUpdater, updaterStateCallback, 11);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, "12", 11, true);
+
+        verify(googleAppUpdater,times(1)).wrongVersion();
+    }
+
+    @Test
+    public void testNoUpdateFromGoogleOrPrince(){
+        GoogleInAppUpdateCallback googleInAppUpdateCallback =
+            new GoogleInAppUpdateCallback(200, googleAppUpdater, updaterStateCallback, 11);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, "11", 11, true);
+
+        verify(googleAppUpdater,times(1)).noUpdate();
     }
 }

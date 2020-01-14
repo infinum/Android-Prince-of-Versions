@@ -19,6 +19,8 @@ import co.infinum.princeofversions.UpdaterCallback;
 
 public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateUpdatedListener, GoogleInAppUpdateFlexibleHandler {
 
+    public static final int UNSUPPORTED_VERSION = 3;
+
     private UpdateStateDelegate flexibleStateListener;
     private GoogleAppUpdater googleAppUpdater;
     private final int appVersionCode;
@@ -87,11 +89,15 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     void handleSuccess(@UpdateAvailability int updateAvailability, String princeVersionCode, int googleUpdateVersionCode,
         boolean isMandatory) {
         int updateType = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory);
-        if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE && (updateType == AppUpdateType.FLEXIBLE
-            || updateType == AppUpdateType.IMMEDIATE)) {
-            googleAppUpdater.startUpdate(updateType);
+        if (updateType != UNSUPPORTED_VERSION) {
+            if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE && (updateType == AppUpdateType.FLEXIBLE
+                || updateType == AppUpdateType.IMMEDIATE)) {
+                googleAppUpdater.startUpdate(updateType);
+            } else {
+                googleAppUpdater.noUpdate();
+            }
         } else {
-            googleAppUpdater.noUpdate();
+            googleAppUpdater.wrongVersion();
         }
     }
 
@@ -143,9 +149,14 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
                 return AppUpdateType.IMMEDIATE;
             }
         } else if (princeOfVersionsCode > googleVersionCode) {
-            // This if is only for testing purpose. In production this if should never be true.
-            if (appVersionCode > googleVersionCode) {
-                return -1;
+            if (appVersionCode
+                > googleVersionCode) { //This if shouldn't be possible in production. App version can't be lower than Google Play version.
+                return UNSUPPORTED_VERSION;
+            } else if (appVersionCode == googleVersionCode && isMandatory) {
+                return UNSUPPORTED_VERSION;
+            } else if (appVersionCode < googleVersionCode && isMandatory) {
+                //TODO still have to figure out how to handle this kind of update
+                return AppUpdateType.FLEXIBLE;
             } else {
                 //TODO for now we should offer flexible,but in future we will add mandatory list that will check if google update is
                 // mandatory

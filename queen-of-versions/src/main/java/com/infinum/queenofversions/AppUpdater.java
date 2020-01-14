@@ -13,13 +13,13 @@ public class AppUpdater implements GoogleAppUpdater {
     private final Activity activity;
     private final AppUpdateManager appUpdateManager;
     private final int requestCode;
-    private final UpdaterStateCallback flexibleStateListener;
+    private final UpdateStateDelegate flexibleStateListener;
     private final GoogleInAppUpdateCallback callback;
 
     private AppUpdateInfo appUpdateInfo;
 
     AppUpdater(Activity activity, AppUpdateManager appUpdateManager, int requestCode,
-        UpdaterStateCallback flexibleStateListener, GoogleInAppUpdateCallback callback) {
+        UpdateStateDelegate flexibleStateListener, GoogleInAppUpdateCallback callback) {
         this.activity = activity;
         this.appUpdateManager = appUpdateManager;
         this.requestCode = requestCode;
@@ -130,6 +130,11 @@ public class AppUpdater implements GoogleAppUpdater {
         } catch (IntentSender.SendIntentException e) {
             flexibleStateListener.onFailed(e);
         }
+    }
+
+    @Override
+    public void wrongVersion() {
+        flexibleStateListener.onWrongVersion();
     }
 
     @Override

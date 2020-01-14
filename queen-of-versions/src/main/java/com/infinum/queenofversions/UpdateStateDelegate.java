@@ -80,6 +80,13 @@ public class UpdateStateDelegate implements UpdaterStateCallback {
         }
     }
 
+    @Override
+    public void onWrongVersion() {
+        if(!isCanceled){
+            listener.onWrongVersion();
+        }
+    }
+
     void cancel() {
         isCanceled = true;
     }

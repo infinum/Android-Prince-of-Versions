@@ -21,4 +21,6 @@ public interface UpdaterStateCallback {
     void onInstalling();
 
     void onRequiresUI();
+
+    void onWrongVersion();
 }
