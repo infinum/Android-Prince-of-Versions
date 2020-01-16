@@ -105,6 +105,12 @@ final class JsonConfigurationParser implements ConfigurationParser {
 
     private static final String NOTIFICATION_ALWAYS = "always";
 
+    private RequirementChecker requirementChecker;
+
+    JsonConfigurationParser(RequirementChecker requirementChecker){
+        this.requirementChecker = requirementChecker;
+    }
+
     @Override
     public PrinceOfVersionsConfig parse(String content) throws Throwable {
         JSONObject data = new JSONObject(content);
@@ -113,6 +119,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
         return builder.build();
     }
 
+    //TODO this parser needs to be changed in order to fit new JSON
     private void parseToBuilder(JSONObject data, PrinceOfVersionsConfig.Builder builder) throws JSONException {
         if (data.has(ANDROID)) {
             JSONObject android = data.getJSONObject(ANDROID);
@@ -152,6 +159,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
                 builder.withMetadata(jsonObjectToMap((JSONObject) meta));
             }
         }
+        requirementChecker.checkRequirements(data);
     }
 
     @VisibleForTesting

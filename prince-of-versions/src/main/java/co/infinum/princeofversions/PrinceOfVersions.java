@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  * there you can specify custom {@link Executor}, class which should run process, usually on background thread.
  * With this approach checkForUpdates method returns {@link PrinceOfVersionsCancelable} object which you can use to cancel request.
  * </p>
- *
+ * <p>
  * Here is code for most common usage of this library
  * <pre>
  *         {@link PrinceOfVersions} updater = new {@link PrinceOfVersions}(context);
@@ -44,13 +44,26 @@ public final class PrinceOfVersions {
      * @param context context which will be used for checking application version.
      */
     public PrinceOfVersions(Context context) {
-        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createDefaultCallbackExecutor(),
+        this(createDefaultParser(null), createDefaultVersionParser(), createDefaultStorage(context),
+            createDefaultCallbackExecutor(),
+            createAppConfig(context));
+    }
+
+    /**
+     * Creates {@link PrinceOfVersions} using provided {@link Context} and {@link RequirementChecker}.
+     *
+     * @param context context which will be used for checking application version
+     * @param requirementChecker Instance for custom requirement checking when parsing JSON
+     */
+    public PrinceOfVersions(Context context, @Nullable RequirementChecker requirementChecker){
+        this(createDefaultParser(requirementChecker), createDefaultVersionParser(), createDefaultStorage(context),
+            createDefaultCallbackExecutor(),
             createAppConfig(context));
     }
 
     @VisibleForTesting
     PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
-        this(createDefaultParser(), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
+        this(createDefaultParser(null), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
     }
 
     private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
@@ -63,8 +76,12 @@ public final class PrinceOfVersions {
         this.appConfig = appConfig;
     }
 
-    private static ConfigurationParser createDefaultParser() {
-        return new JsonConfigurationParser();
+    private static ConfigurationParser createDefaultParser(@Nullable RequirementChecker requirementChecker) {
+        if (requirementChecker == null) {
+            return new JsonConfigurationParser(new BasicRequirementChecker());
+        } else {
+            return new JsonConfigurationParser(requirementChecker);
+        }
     }
 
     private static Storage createDefaultStorage(Context context) {
@@ -203,6 +220,9 @@ public final class PrinceOfVersions {
         @Nullable
         private Executor callbackExecutor;
 
+        @Nullable
+        private RequirementChecker requirementChecker;
+
         /**
          * Set a new configuration parser used to parse configuration file into the model.
          *
@@ -248,6 +268,16 @@ public final class PrinceOfVersions {
         }
 
         /**
+         *  Set a new custom requirements checker that's used in process of parsing JSON
+         * @param requirementsChecker Requirements checker
+         * @return this builder
+         */
+        public Builder withCustomRequirementsChecker(@Nullable RequirementChecker requirementsChecker){
+            this.requirementChecker = requirementsChecker;
+            return this;
+        }
+
+        /**
          * Set a new application configuration, used to specify data about current application version
          *
          * @param appConfig Currect application configuration
@@ -267,7 +297,7 @@ public final class PrinceOfVersions {
          */
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(),
+                configurationParser != null ? configurationParser : createDefaultParser(this.requirementChecker),
                 versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage != null ? storage : createDefaultStorage(context),
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
@@ -288,7 +318,7 @@ public final class PrinceOfVersions {
                     "You must define storage and application configuration if you don't provide Context.");
             }
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(),
+                configurationParser != null ? configurationParser : createDefaultParser(null),
                 versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage,
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
