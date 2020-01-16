@@ -107,7 +107,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
 
     private RequirementChecker requirementChecker;
 
-    JsonConfigurationParser(RequirementChecker requirementChecker){
+    JsonConfigurationParser(RequirementChecker requirementChecker) {
         this.requirementChecker = requirementChecker;
     }
 
@@ -146,8 +146,8 @@ final class JsonConfigurationParser implements ConfigurationParser {
                 if (updateObject.has(NOTIFICATION)) {
                     String notification = updateObject.getString(NOTIFICATION);
                     builder.withOptionalNotificationType(
-                            notification != null && notification.equalsIgnoreCase(NOTIFICATION_ALWAYS) ? NotificationType.ALWAYS
-                                    : NotificationType.ONCE);
+                        notification != null && notification.equalsIgnoreCase(NOTIFICATION_ALWAYS) ? NotificationType.ALWAYS
+                            : NotificationType.ONCE);
                 }
             }
         } else {
@@ -180,5 +180,4 @@ final class JsonConfigurationParser implements ConfigurationParser {
     boolean isNonEmpty(@Nullable String value) {
         return value != null && value.trim().length() > 0 && !value.trim().toLowerCase().equals("null");
     }
-
 }

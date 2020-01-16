@@ -52,10 +52,10 @@ public final class PrinceOfVersions {
     /**
      * Creates {@link PrinceOfVersions} using provided {@link Context} and {@link RequirementChecker}.
      *
-     * @param context context which will be used for checking application version
+     * @param context            context which will be used for checking application version
      * @param requirementChecker Instance for custom requirement checking when parsing JSON
      */
-    public PrinceOfVersions(Context context, @Nullable RequirementChecker requirementChecker){
+    public PrinceOfVersions(Context context, @Nullable RequirementChecker requirementChecker) {
         this(createDefaultParser(requirementChecker), createDefaultVersionParser(), createDefaultStorage(context),
             createDefaultCallbackExecutor(),
             createAppConfig(context));
@@ -268,11 +268,12 @@ public final class PrinceOfVersions {
         }
 
         /**
-         *  Set a new custom requirements checker that's used in process of parsing JSON
+         * Set a new custom requirements checker that's used in process of parsing JSON
+         *
          * @param requirementsChecker Requirements checker
          * @return this builder
          */
-        public Builder withCustomRequirementsChecker(@Nullable RequirementChecker requirementsChecker){
+        public Builder withCustomRequirementsChecker(@Nullable RequirementChecker requirementsChecker) {
             this.requirementChecker = requirementsChecker;
             return this;
         }

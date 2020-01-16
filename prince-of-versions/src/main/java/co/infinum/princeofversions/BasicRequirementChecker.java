@@ -1,7 +1,5 @@
 package co.infinum.princeofversions;
 
-import android.util.Log;
-
 import org.json.JSONObject;
 
 /**
@@ -18,7 +16,6 @@ public class BasicRequirementChecker implements RequirementChecker {
      */
     @Override
     public boolean checkRequirements(JSONObject data) {
-        Log.d("KORISTIM BASIC!!!","logaaaaaaaaaam");
         return true;
     }
 }
