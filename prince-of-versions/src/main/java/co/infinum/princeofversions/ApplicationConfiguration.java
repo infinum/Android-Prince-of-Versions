@@ -10,11 +10,11 @@ package co.infinum.princeofversions;
 public interface ApplicationConfiguration {
 
     /**
-     * Method provides application's version name
+     * Method provides application's version code
      *
-     * @return application version name
+     * @return application version code
      */
-    String version();
+    int version();
 
     /**
      * Method provides device's SDK version code

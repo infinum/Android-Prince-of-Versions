@@ -2,14 +2,13 @@ package co.infinum.princeofversions;
 
 import android.support.annotation.VisibleForTesting;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * This class represents parser for parsing loaded update configuration in <a href="http://www.json.org/">JSON</a> format.
@@ -66,44 +65,31 @@ final class JsonConfigurationParser implements ConfigurationParser {
     /**
      * Android key
      */
-    private static final String ANDROID = "android";
+    private static final String ANDROID = "android2";
 
     /**
      * Minimum version key
      */
-    private static final String MINIMUM_VERSION = "minimum_version";
+    private static final String MINIMUM_VERSION = "forceUpdate";
 
     /**
      * Latest version key
      */
-    private static final String LATEST_VERSION = "latest_version";
+    private static final String LATEST_VERSION = "lastVersionAvailable";
 
     /**
      * Notification type key
      */
-    private static final String NOTIFICATION = "notification_type";
-
-    /**
-     * Optional update version key
-     */
-    private static final String VERSION = "version";
+    private static final String NOTIFICATION = "notifyLastVersion";
 
     /**
      * Metadata key
      */
     private static final String META = "meta";
 
-    /**
-     * Minimum SDK for mandatory version
-     */
-    private static final String MANDATORY_MIN_SDK = "minimum_version_min_sdk";
-
-    /**
-     * Minimum SDK for optional version
-     */
-    private static final String OPTIONAL_MIN_SDK = "min_sdk";
-
     private static final String NOTIFICATION_ALWAYS = "always";
+
+    private static final String REQUIREMENTS = "requirements";
 
     private RequirementChecker requirementChecker;
 
@@ -122,32 +108,28 @@ final class JsonConfigurationParser implements ConfigurationParser {
     //TODO this parser needs to be changed in order to fit new JSON
     private void parseToBuilder(JSONObject data, PrinceOfVersionsConfig.Builder builder) throws JSONException {
         if (data.has(ANDROID)) {
-            JSONObject android = data.getJSONObject(ANDROID);
-            if (android.has(MINIMUM_VERSION)) {
-                String min = android.getString(MINIMUM_VERSION);
-                if (isNonEmpty(min)) {
-                    builder.withMandatoryVersion(min);
-                }
-            }
-            if (android.has(MANDATORY_MIN_SDK)) {
-                builder.withMandatoryMinSdk(android.getInt(MANDATORY_MIN_SDK));
-            }
-            if (android.has(LATEST_VERSION)) {
-                JSONObject updateObject = android.getJSONObject(LATEST_VERSION);
-                if (updateObject.has(VERSION)) {
-                    String latest = updateObject.getString(VERSION);
-                    if (isNonEmpty(latest)) {
-                        builder.withOptionalVersion(latest);
+            JSONArray android = data.getJSONArray(ANDROID);
+            for (int i = 0; i < android.length(); i++) {
+                JSONObject update = android.getJSONObject(i);
+                if (update.has(REQUIREMENTS)) {
+                    JSONObject requirements = update.getJSONObject(REQUIREMENTS);
+                    if (requirementChecker.checkRequirements(requirements)) {
+                        if (update.has(MINIMUM_VERSION)) {
+                            int min = update.getInt(MINIMUM_VERSION);
+                            builder.withMandatoryVersion(min);
+                        }
+                        if (update.has(LATEST_VERSION)) {
+                            int latest = update.getInt(LATEST_VERSION);
+                            builder.withOptionalVersion(latest);
+                        }
+                        if (update.has(NOTIFICATION)) {
+                            String notification = update.getString(NOTIFICATION);
+                            builder.withOptionalNotificationType(
+                                notification != null && notification.equalsIgnoreCase(NOTIFICATION_ALWAYS) ? NotificationType.ALWAYS
+                                    : NotificationType.ONCE);
+                        }
+                        break;
                     }
-                }
-                if (updateObject.has(OPTIONAL_MIN_SDK)) {
-                    builder.withOptionalMinSdk(updateObject.getInt(OPTIONAL_MIN_SDK));
-                }
-                if (updateObject.has(NOTIFICATION)) {
-                    String notification = updateObject.getString(NOTIFICATION);
-                    builder.withOptionalNotificationType(
-                        notification != null && notification.equalsIgnoreCase(NOTIFICATION_ALWAYS) ? NotificationType.ALWAYS
-                            : NotificationType.ONCE);
                 }
             }
         } else {
@@ -159,7 +141,6 @@ final class JsonConfigurationParser implements ConfigurationParser {
                 builder.withMetadata(jsonObjectToMap((JSONObject) meta));
             }
         }
-        requirementChecker.checkRequirements(data);
     }
 
     @VisibleForTesting
@@ -174,10 +155,5 @@ final class JsonConfigurationParser implements ConfigurationParser {
             }
         }
         return map;
-    }
-
-    @VisibleForTesting
-    boolean isNonEmpty(@Nullable String value) {
-        return value != null && value.trim().length() > 0 && !value.trim().toLowerCase().equals("null");
     }
 }

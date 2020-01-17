@@ -24,7 +24,7 @@ class PresenterImpl implements Presenter {
 
     @Override
     public PrinceOfVersionsCancelable check(final Loader loader, Executor executor, final UpdaterCallback callback,
-            final ApplicationConfiguration appConfig) {
+        final ApplicationConfiguration appConfig) {
         final PrinceOfVersionsCancelable call = createCall();
         executor.execute(new Runnable() {
             @Override
@@ -65,7 +65,7 @@ class PresenterImpl implements Presenter {
                 String lastNotifiedVersion = storage.lastNotifiedVersion(null);
                 boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion.equals(result.getUpdateVersion());
                 boolean alreadyNotifiedUpdateAvailable = lastNotifiedVersion != null && lastNotifiedVersion
-                        .equals(result.getUpdateVersion());
+                    .equals(result.getUpdateVersion());
                 if (notNotifiedUpdateAvailable || (alreadyNotifiedUpdateAvailable && NotificationType.ALWAYS
                     .equals(result.getNotificationType()))) {
                     storage.rememberLastNotifiedVersion(result.getUpdateVersion());

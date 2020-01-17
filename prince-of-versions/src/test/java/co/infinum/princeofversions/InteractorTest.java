@@ -30,7 +30,7 @@ public class InteractorTest {
 
     @Before
     public void setUp() throws Throwable {
-        interactor = new InteractorImpl(configurationParser, new PrinceOfVersionsDefaultVersionParser());
+        interactor = new InteractorImpl(configurationParser);
         when(loader.load()).thenReturn(DEFAULT_LOADER_RESULT);
     }
 

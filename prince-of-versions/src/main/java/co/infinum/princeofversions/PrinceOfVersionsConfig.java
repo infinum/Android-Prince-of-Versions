@@ -15,13 +15,13 @@ public final class PrinceOfVersionsConfig {
      * Mandatory version
      */
     @Nullable
-    private final Version mandatoryVersion;
+    private final Integer mandatoryVersion;
 
     /**
      * Optional version
      */
     @Nullable
-    private final Version optionalVersion;
+    private final Integer optionalVersion;
 
     /**
      * Notification type
@@ -34,26 +34,24 @@ public final class PrinceOfVersionsConfig {
     private final Map<String, String> metadata;
 
     PrinceOfVersionsConfig(
-        @Nullable String mandatoryVersion,
-        int mandatoryMinSdk,
-        @Nullable String optionalVersion,
-        int optionalMinSdk,
+        int mandatoryVersion,
+        int optionalVersion,
         @Nonnull NotificationType optionalNotificationType,
         @Nonnull Map<String, String> metadata) {
 
-        this.mandatoryVersion = (mandatoryVersion != null && mandatoryMinSdk > 0) ? new Version(mandatoryVersion, mandatoryMinSdk) : null;
-        this.optionalVersion = (optionalVersion != null && optionalMinSdk > 0) ? new Version(optionalVersion, optionalMinSdk) : null;
+        this.mandatoryVersion = (mandatoryVersion > 0) ? mandatoryVersion : null;
+        this.optionalVersion = (optionalVersion > 0) ? optionalVersion : null;
         this.optionalNotificationType = optionalNotificationType;
         this.metadata = metadata;
     }
 
     @Nullable
-    Version getMandatoryVersion() {
+    Integer getMandatoryVersion() {
         return mandatoryVersion;
     }
 
     @Nullable
-    Version getOptionalVersion() {
+    Integer getOptionalVersion() {
         return optionalVersion;
     }
 
@@ -108,64 +106,6 @@ public final class PrinceOfVersionsConfig {
             + '}';
     }
 
-    static class Version {
-
-        /**
-         * Version string
-         */
-        private final String version;
-
-        /**
-         * MinSdk for update
-         */
-        private final int minSdk;
-
-        Version(final String version, final int minSdk) {
-            this.version = version;
-            this.minSdk = minSdk;
-        }
-
-        String getVersion() {
-            return version;
-        }
-
-        int getMinSdk() {
-            return minSdk;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof Version)) {
-                return false;
-            }
-
-            final Version version1 = (Version) o;
-
-            if (getMinSdk() != version1.getMinSdk()) {
-                return false;
-            }
-            return getVersion().equals(version1.getVersion());
-        }
-
-        @Override
-        public int hashCode() {
-            int result = getVersion().hashCode();
-            result = 31 * result + getMinSdk();
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "Version{"
-                + "version='" + version + '\''
-                + ", minSdk=" + minSdk
-                + '}';
-        }
-    }
-
     /**
      * Builds a new {@link PrinceOfVersionsConfig}.
      * All methods are optional.
@@ -173,14 +113,10 @@ public final class PrinceOfVersionsConfig {
     public static class Builder {
 
         @Nullable
-        private String mandatoryVersion;
-
-        private int mandatoryMinSdk = 1;
+        private int mandatoryVersion;
 
         @Nullable
-        private String optionalVersion;
-
-        private int optionalMinSdk = 1;
+        private int optionalVersion;
 
         @Nullable
         private NotificationType optionalNotificationType;
@@ -196,18 +132,8 @@ public final class PrinceOfVersionsConfig {
          * @param mandatoryVersion Mandatory version name
          * @return this builder
          */
-        public Builder withMandatoryVersion(String mandatoryVersion) {
+        public Builder withMandatoryVersion(int mandatoryVersion) {
             this.mandatoryVersion = mandatoryVersion;
-            return this;
-        }
-
-        /**
-         * Set a new minSdk value of mandatory app version.
-         * @param mandatoryMinSdk MinSdk value of mandatory app version
-         * @return this builder
-         */
-        public Builder withMandatoryMinSdk(int mandatoryMinSdk) {
-            this.mandatoryMinSdk = mandatoryMinSdk;
             return this;
         }
 
@@ -216,18 +142,8 @@ public final class PrinceOfVersionsConfig {
          * @param optionalVersion Optional version name
          * @return this builder
          */
-        public Builder withOptionalVersion(String optionalVersion) {
+        public Builder withOptionalVersion(int optionalVersion) {
             this.optionalVersion = optionalVersion;
-            return this;
-        }
-
-        /**
-         * Set a new minSdk value of optional app version.
-         * @param optionalMinSdk MinSdk value of optional app version
-         * @return this builder
-         */
-        public Builder withOptionalMinSdk(int optionalMinSdk) {
-            this.optionalMinSdk = optionalMinSdk;
             return this;
         }
 
@@ -258,9 +174,7 @@ public final class PrinceOfVersionsConfig {
         public PrinceOfVersionsConfig build() {
             return new PrinceOfVersionsConfig(
                 mandatoryVersion,
-                mandatoryMinSdk,
                 optionalVersion,
-                optionalMinSdk,
                 optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
                 metadata != null ? metadata : new HashMap<String, String>());
         }

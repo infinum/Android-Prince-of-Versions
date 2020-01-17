@@ -8,7 +8,7 @@ android {
         applicationId "co.infinum.povexampleapp"
         minSdkVersion buildVersions.min
         targetSdkVersion buildVersions.target
-        versionCode 1
+        versionCode 10
         versionName "1.0.0"
     }
     buildTypes {

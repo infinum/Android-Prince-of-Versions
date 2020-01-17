@@ -55,6 +55,8 @@ public class CommonUsageExample extends AppCompatActivity {
 
     private PrinceOfVersionsCancelable cancelable;
 
+    private PrinceRequirementsChecker checker;
+
     /**
      * This instance represents a very slow loader, just to give you enough time to invoke cancel option.
      */
@@ -67,10 +69,13 @@ public class CommonUsageExample extends AppCompatActivity {
 
         initUI();
 
+        /* create new instance of custom requirements checker */
+        checker = new PrinceRequirementsChecker();
+
         /*  create new instance of updater */
-        updater = new PrinceOfVersions.Builder().build(this);
+        updater = new PrinceOfVersions.Builder().withCustomRequirementsChecker(checker).build(this);
         /*  create specific loader factory for loading from internet    */
-        loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
+        loader = new NetworkLoader("https://pastebin.com/raw/qxcfunAZ");
         slowLoader = createSlowLoader(loader);
     }
 

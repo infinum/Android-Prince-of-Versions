@@ -1,5 +1,6 @@
 package co.infinum.princeofversions;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -13,6 +14,6 @@ public interface RequirementChecker {
      * @param data
      * @return true or false depending if the data matched requirements
      */
-    boolean checkRequirements(JSONObject data);
+    boolean checkRequirements(JSONObject data) throws JSONException;
 
 }

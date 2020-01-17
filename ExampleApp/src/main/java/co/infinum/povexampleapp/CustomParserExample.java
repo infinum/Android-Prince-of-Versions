@@ -71,7 +71,7 @@ public class CustomParserExample extends AppCompatActivity {
 
         @Override
         public PrinceOfVersionsConfig parse(@Nonnull String value) throws Throwable {
-            return new PrinceOfVersionsConfig.Builder().withMandatoryVersion(new JSONObject(value).getString(MINIMUM_VERSION)).build();
+            return new PrinceOfVersionsConfig.Builder().withMandatoryVersion(new JSONObject(value).getInt(MINIMUM_VERSION)).build();
         }
     };
 

@@ -44,7 +44,7 @@ public final class PrinceOfVersions {
      * @param context context which will be used for checking application version.
      */
     public PrinceOfVersions(Context context) {
-        this(createDefaultParser(null), createDefaultVersionParser(), createDefaultStorage(context),
+        this(createDefaultParser(null), createDefaultStorage(context),
             createDefaultCallbackExecutor(),
             createAppConfig(context));
     }
@@ -56,20 +56,20 @@ public final class PrinceOfVersions {
      * @param requirementChecker Instance for custom requirement checking when parsing JSON
      */
     public PrinceOfVersions(Context context, @Nullable RequirementChecker requirementChecker) {
-        this(createDefaultParser(requirementChecker), createDefaultVersionParser(), createDefaultStorage(context),
+        this(createDefaultParser(requirementChecker), createDefaultStorage(context),
             createDefaultCallbackExecutor(),
             createAppConfig(context));
     }
 
     @VisibleForTesting
     PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
-        this(createDefaultParser(null), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
+        this(createDefaultParser(null), storage, callbackExecutor, appConfig);
     }
 
-    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+    private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
         Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
-            new InteractorImpl(configurationParser, versionParser),
+            new InteractorImpl(configurationParser),
             storage
         );
         this.callbackExecutor = callbackExecutor;
@@ -88,10 +88,6 @@ public final class PrinceOfVersions {
         PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
         PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
         return new MigrationStorage(oldStorage, storage);
-    }
-
-    private static VersionParser createDefaultVersionParser() {
-        return new PrinceOfVersionsDefaultVersionParser();
     }
 
     private static ApplicationConfiguration createAppConfig(Context context) {
@@ -212,9 +208,6 @@ public final class PrinceOfVersions {
         private Storage storage;
 
         @Nullable
-        private VersionParser versionParser;
-
-        @Nullable
         private ApplicationConfiguration appConfig;
 
         @Nullable
@@ -242,17 +235,6 @@ public final class PrinceOfVersions {
          */
         public Builder withStorage(Storage storage) {
             this.storage = storage;
-            return this;
-        }
-
-        /**
-         * Set a new version parser used to parse version strings.
-         *
-         * @param versionParser Version parser
-         * @return this builder
-         */
-        public Builder withVersionParser(VersionParser versionParser) {
-            this.versionParser = versionParser;
             return this;
         }
 
@@ -299,7 +281,6 @@ public final class PrinceOfVersions {
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
                 configurationParser != null ? configurationParser : createDefaultParser(this.requirementChecker),
-                versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage != null ? storage : createDefaultStorage(context),
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig != null ? appConfig : createAppConfig(context)
@@ -320,7 +301,6 @@ public final class PrinceOfVersions {
             }
             return new PrinceOfVersions(
                 configurationParser != null ? configurationParser : createDefaultParser(null),
-                versionParser != null ? versionParser : createDefaultVersionParser(),
                 storage,
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig
