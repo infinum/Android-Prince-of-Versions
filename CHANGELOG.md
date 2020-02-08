@@ -8,6 +8,8 @@ _2018-11-07_
 - add support for synchronous update check
 - add call mechanism - from now it is possible to create a call instance in advance and `enqueue` or `execute` it later on
 
+_See the [Migration guide](https://github.com/infinum/Android-Prince-of-Versions/wiki/Migration-guide)._
+
 ## Version 2.1.0
 
 _2017-02-14_
