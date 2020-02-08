@@ -69,4 +69,5 @@ artifacts {
 apply from: '../tasks.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
+preBuild.dependsOn ':prince-of-versions:generateReadmePrince'
 
