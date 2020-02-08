@@ -1,4 +1,4 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.content.IntentSender;
@@ -18,16 +18,16 @@ public class GoogleInAppUpdateResumeSuccessListener implements OnSuccessListener
     private final Activity activity;
     private final AppUpdateManager appUpdateManager;
     private final UpdaterCallback updaterCallback;
-    private final UpdaterStateCallback flexiableListener;
+    private final InAppUpdateProcessCallback flexibleListener;
     private final GoogleInAppUpdateFlexibleHandler handler;
 
     GoogleInAppUpdateResumeSuccessListener(int requestCode, Activity activity, AppUpdateManager appUpdateManager,
-        UpdaterCallback updaterCallback, UpdaterStateCallback flexibleListener, GoogleInAppUpdateFlexibleHandler handler) {
+        UpdaterCallback updaterCallback, InAppUpdateProcessCallback flexibleListener, GoogleInAppUpdateFlexibleHandler handler) {
         this.requestCode = requestCode;
         this.activity = activity;
         this.appUpdateManager = appUpdateManager;
         this.updaterCallback = updaterCallback;
-        this.flexiableListener = flexibleListener;
+        this.flexibleListener = flexibleListener;
         this.handler = handler;
     }
 
@@ -35,7 +35,7 @@ public class GoogleInAppUpdateResumeSuccessListener implements OnSuccessListener
     public void onSuccess(AppUpdateInfo appUpdateInfo) {
         if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
             updateInProgress(appUpdateInfo);
-        } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE) ) {
+        } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
             notifyUser();
         }
     }
@@ -53,7 +53,7 @@ public class GoogleInAppUpdateResumeSuccessListener implements OnSuccessListener
         }
     }
 
-    private void notifyUser(){
-        flexiableListener.onDownloaded(handler);
+    private void notifyUser() {
+        flexibleListener.onDownloaded(handler);
     }
 }

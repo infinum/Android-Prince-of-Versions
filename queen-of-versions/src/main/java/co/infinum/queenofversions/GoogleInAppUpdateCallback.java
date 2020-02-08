@@ -1,4 +1,4 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
 import android.app.Activity;
 
@@ -9,9 +9,10 @@ import com.google.android.play.core.install.InstallStateUpdatedListener;
 import com.google.android.play.core.install.model.InstallErrorCode;
 import com.google.android.play.core.install.model.InstallStatus;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import co.infinum.princeofversions.UpdaterCallback;
 
@@ -20,9 +21,9 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     private int requestCode;
     private AppUpdateManager appUpdateManager;
     private Activity activity;
-    private UpdaterStateCallback flexibleStateListener;
+    private InAppUpdateProcessCallback flexibleStateListener;
 
-    public GoogleInAppUpdateCallback(int requestCode, Activity activity, UpdaterStateCallback listener) {
+    public GoogleInAppUpdateCallback(int requestCode, Activity activity, InAppUpdateProcessCallback listener) {
         this.requestCode = requestCode;
         this.activity = activity;
         this.appUpdateManager = AppUpdateManagerFactory.create(activity);
@@ -30,20 +31,19 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     }
 
     @Override
-    public void onNewUpdate(@NotNull String version, final boolean isMandatory, @NotNull Map<String, String> metadata) {
+    public void onNewUpdate(@Nullable String version, final boolean isMandatory, @Nullable Map<String, String> metadata) {
         String appVersionCode = metadata.get("version-code");
-        checkWithGoogleForAnUpdate(isMandatory,appVersionCode);
-
+        checkWithGoogleForAnUpdate(isMandatory, appVersionCode);
     }
 
     @Override
-    public void onNoUpdate(@NotNull Map<String, String> metadata) {
+    public void onNoUpdate(@Nullable Map<String, String> metadata) {
         String appVersionCode = metadata.get("version-code");
-        checkWithGoogleForAnUpdate(false,appVersionCode);
+        checkWithGoogleForAnUpdate(false, appVersionCode);
     }
 
     @Override
-    public void onError(@NotNull Throwable error) {
+    public void onError(@Nullable Throwable error) {
         flexibleStateListener.onFailed(new GoogleInAppUpdateException(error));
     }
 
@@ -78,23 +78,23 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
 
     private void checkErrorStates(InstallState installState) {
         if (installState.installErrorCode() == InstallErrorCode.ERROR_API_NOT_AVAILABLE) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.API_NOT_AVAILABLE));
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.API_NOT_AVAILABLE));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_DOWNLOAD_NOT_PRESENT) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.DOWNLOAD_NOT_PRESENT));
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.DOWNLOAD_NOT_PRESENT));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_NOT_ALLOWED) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.INSTALL_NOT_ALLOWED));
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.INSTALL_NOT_ALLOWED));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_UNAVAILABLE) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.INSTALL_UNAVAILABLE));
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.INSTALL_UNAVAILABLE));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INTERNAL_ERROR) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.INTERNAL_ERROR));
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.INTERNAL_ERROR));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INVALID_REQUEST) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.INVALID_REQUEST));
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.INVALID_REQUEST));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_UNKNOWN) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(GoogleException.ERROR_UNKNOWN));
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.ERROR_UNKNOWN));
         }
     }
 
-    private void checkWithGoogleForAnUpdate(boolean isMandatory, String appVersionCode){
+    private void checkWithGoogleForAnUpdate(boolean isMandatory, String appVersionCode) {
 
         appUpdateManager.getAppUpdateInfo()
             .addOnSuccessListener(

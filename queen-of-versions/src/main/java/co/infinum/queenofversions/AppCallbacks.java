@@ -1,4 +1,4 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.app.Application;
@@ -14,11 +14,11 @@ public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
     private final Activity activity;
     private final AppUpdateManager appUpdateManager;
     private final UpdaterCallback updaterCallback;
-    private final UpdaterStateCallback flexibleListener;
+    private final InAppUpdateProcessCallback flexibleListener;
     private final GoogleInAppUpdateFlexibleHandler handler;
 
     AppCallbacks(int requestCode, Activity activity, AppUpdateManager appUpdateManager,
-        UpdaterCallback updaterCallback, UpdaterStateCallback flexibleListener, GoogleInAppUpdateFlexibleHandler handler) {
+        UpdaterCallback updaterCallback, InAppUpdateProcessCallback flexibleListener, GoogleInAppUpdateFlexibleHandler handler) {
         this.requestCode = requestCode;
         this.activity = activity;
         this.appUpdateManager = appUpdateManager;
@@ -66,7 +66,8 @@ public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
         if (this.activity.equals(activity)) {
             appUpdateManager.getAppUpdateInfo()
                 .addOnSuccessListener(
-                    new GoogleInAppUpdateResumeSuccessListener(requestCode, activity, appUpdateManager, updaterCallback,flexibleListener,handler)
+                    new GoogleInAppUpdateResumeSuccessListener(requestCode, activity, appUpdateManager, updaterCallback, flexibleListener,
+                        handler)
                 )
                 .addOnFailureListener(new GoogleInAppUpdateFailureListener(updaterCallback));
         }
