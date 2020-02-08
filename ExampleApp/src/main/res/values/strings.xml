@@ -22,4 +22,6 @@
     <string name="open_custom_parser">Custom configuration parser example</string>
     <string name="open_stream_example">Stream loader example</string>
     <string name="open_call_usage">Common usage with Calls example</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="google_in_app_updates">Google in-app updates</string>
 </resources>

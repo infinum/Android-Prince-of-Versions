@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         Button callUsage = findViewById(R.id.btn_open_call_usage);
         Button customParser = findViewById(R.id.btn_open_custom_parser);
         Button stream = findViewById(R.id.btn_open_stream_example);
+        Button googleUpdates = findViewById(R.id.btn_open_google_inapp_updates);
         commonUsage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
                 onStreamLoaderClick();
             }
         });
+        googleUpdates.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onGoogleUpdatesClick();
+            }
+        });
     }
 
     private void onCommonUsageClick() {
@@ -62,4 +69,6 @@ public class MainActivity extends AppCompatActivity {
     private void onStreamLoaderClick() {
         startActivity(new Intent(this, StreamLoaderExample.class));
     }
-}
+
+    private void onGoogleUpdatesClick() { startActivity(new Intent(this,GoogleInAppUpdatesExample.class));}
+ }
