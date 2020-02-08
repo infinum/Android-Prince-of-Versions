@@ -1,10 +1,9 @@
 apply plugin: 'com.android.library'
-apply from: './quality.gradle'
 apply plugin: 'com.novoda.bintray-release'
 
 ext {
     publishedGroupId = 'co.infinum'
-    publishedArtifactName = 'prince-of-versions'
+    publishedArtifactName = 'queen-of-versions'
 }
 
 android {
@@ -24,22 +23,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    resourcePrefix 'prince_of_versions_'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation deps.semver
-    compileOnly deps.appcompat
-    compileOnly deps.fbannotations
-
-    testImplementation deps.junit
-    testImplementation deps.mockito
-    testImplementation deps.mockwebserver
-    testImplementation deps.assertj
-    testImplementation deps.json
-    testCompileOnly deps.fbannotations
+    api "co.infinum:prince-of-versions:$versions.prince"
+    implementation 'com.google.android.play:core:1.6.4'
 }
 
 group = publishedGroupId
@@ -69,5 +57,9 @@ artifacts {
 apply from: '../tasks.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
-preBuild.dependsOn ':prince-of-versions:generateReadmePrince'
+preBuild.dependsOn ':prince-of-versions:generateReadmeQueen'
 
+
+
+sourceCompatibility = "7"
+targetCompatibility = "7"
