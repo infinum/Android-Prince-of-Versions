@@ -26,12 +26,12 @@ public class CommonUsageExample extends AppCompatActivity {
         @Override
         public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
             toastIt(
-                    getString(
-                            R.string.update_available_msg,
-                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
-                            version
-                    ),
-                    Toast.LENGTH_SHORT
+                getString(
+                    R.string.update_available_msg,
+                    getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
+                    version
+                ),
+                Toast.LENGTH_SHORT
             );
         }
 
@@ -130,7 +130,7 @@ public class CommonUsageExample extends AppCompatActivity {
                 try {
                     Result result = updater.checkForUpdates(loader);
                     toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getVersion(),
-                            Toast.LENGTH_LONG);
+                        Toast.LENGTH_LONG);
                 } catch (Throwable throwable) {
                     toastItOnMainThread("Error occurred " + throwable.getMessage(), Toast.LENGTH_LONG);
                 }
