@@ -1,0 +1,1 @@
+'co.infinum:queen-of-versions:1.0.0'

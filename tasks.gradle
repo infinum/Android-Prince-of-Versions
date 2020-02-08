@@ -19,6 +19,25 @@ task generateReadme {
         def readmeFile = new File("${project.rootDir}/README.md")
         def content = readmeFile.text
         content = content.replaceAll("'co\\.infinum:prince-of-versions:.+?'", "'co.infinum:prince-of-versions:${versions.prince}'")
+        content = content.replaceAll("'co\\.infinum:queen-of-versions:.+?'","'co.infinum:queen-of-versions:${versions.queen}'")
+        readmeFile.setText(content)
+    }
+}
+
+task generateReadmePrince {
+    doFirst{
+        def readmeFile = new File("${project.rootDir}/prince-of-versions/README.md")
+        def content = readmeFile.text
+        content = content.replaceAll("'co\\.infinum:prince-of-versions:.+?'", "'co.infinum:prince-of-versions:${versions.prince}'")
+        readmeFile.setText(content)
+    }
+}
+
+task generateReadmeQueen {
+    doFirst{
+        def readmeFile = new File("${project.rootDir}/queen-of-versions/README.md")
+        def content = readmeFile.text
+        content = content.replaceAll("'co\\.infinum:queen-of-versions:.+?'","'co.infinum:queen-of-versions:${versions.queen}'")
         readmeFile.setText(content)
     }
 }
