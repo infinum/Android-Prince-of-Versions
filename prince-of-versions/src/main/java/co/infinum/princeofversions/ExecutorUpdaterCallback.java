@@ -24,7 +24,7 @@ final class ExecutorUpdaterCallback implements UpdaterCallback {
     }
 
     @Override
-    public void onNewUpdate(final String version, final boolean isMandatory, final Map<String, String> metadata) {
+    public void onNewUpdate(final int version, final boolean isMandatory, final Map<String, String> metadata) {
         executor.execute(new Runnable() {
             @Override
             public void run() {

@@ -8,12 +8,12 @@ import org.json.JSONObject;
 /**
  * Represent a concrete implementation of {@link RequirementChecker} that will be used by a default.
  */
-public class BasicRequirementChecker implements RequirementChecker {
+class PrinceOfVersionsDefaultRequirementsChecker implements RequirementChecker {
 
     /**
      * Minimum SDK for mandatory version
      */
-    private static final String MANDATORY_MIN_SDK = "requiredAndroidVersion";
+    private static final String REQUIRED_ANDROID_VERSION = "requiredAndroidVersion";
     private int sdkVersionCode = Build.VERSION.SDK_INT;
 
     /**
@@ -25,8 +25,8 @@ public class BasicRequirementChecker implements RequirementChecker {
      */
     @Override
     public boolean checkRequirements(JSONObject data) throws JSONException {
-        if (data.has(MANDATORY_MIN_SDK)) {
-            int minSdk = data.getInt(MANDATORY_MIN_SDK);
+        if (data.has(REQUIRED_ANDROID_VERSION)) {
+            int minSdk = data.getInt(REQUIRED_ANDROID_VERSION);
             return minSdk <= sdkVersionCode;
         } else {
             return false;

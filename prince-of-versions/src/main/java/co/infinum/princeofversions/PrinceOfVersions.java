@@ -3,6 +3,9 @@ package co.infinum.princeofversions;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Nullable;
@@ -44,7 +47,7 @@ public final class PrinceOfVersions {
      * @param context context which will be used for checking application version.
      */
     public PrinceOfVersions(Context context) {
-        this(createDefaultParser(null), createDefaultStorage(context),
+        this(createDefaultParser(Collections.<RequirementChecker>emptyList()), createDefaultStorage(context),
             createDefaultCallbackExecutor(),
             createAppConfig(context));
     }
@@ -53,17 +56,17 @@ public final class PrinceOfVersions {
      * Creates {@link PrinceOfVersions} using provided {@link Context} and {@link RequirementChecker}.
      *
      * @param context            context which will be used for checking application version
-     * @param requirementChecker Instance for custom requirement checking when parsing JSON
+     * @param requirementCheckers List of custom requirement chcekers used for pointing to the right configuration
      */
-    public PrinceOfVersions(Context context, @Nullable RequirementChecker requirementChecker) {
-        this(createDefaultParser(requirementChecker), createDefaultStorage(context),
+    public PrinceOfVersions(Context context, List<RequirementChecker> requirementCheckers) {
+        this(createDefaultParser(requirementCheckers), createDefaultStorage(context),
             createDefaultCallbackExecutor(),
             createAppConfig(context));
     }
 
     @VisibleForTesting
     PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
-        this(createDefaultParser(null), storage, callbackExecutor, appConfig);
+        this(createDefaultParser(Collections.<RequirementChecker>emptyList()), storage, callbackExecutor, appConfig);
     }
 
     private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
@@ -76,18 +79,16 @@ public final class PrinceOfVersions {
         this.appConfig = appConfig;
     }
 
-    private static ConfigurationParser createDefaultParser(@Nullable RequirementChecker requirementChecker) {
-        if (requirementChecker == null) {
-            return new JsonConfigurationParser(new BasicRequirementChecker());
-        } else {
-            return new JsonConfigurationParser(requirementChecker);
-        }
+    private static ConfigurationParser createDefaultParser(List<RequirementChecker> requirementCheckers) {
+        List<RequirementChecker> checkers = new ArrayList<>(requirementCheckers);
+        checkers.add(0, new PrinceOfVersionsDefaultRequirementsChecker());
+        return new JsonConfigurationParser(new PrinceOfVersionsCompositeRequirementsChecker(
+            checkers
+        ));
     }
 
     private static Storage createDefaultStorage(Context context) {
-        PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
-        PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
-        return new MigrationStorage(oldStorage, storage);
+        return new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
     }
 
     private static ApplicationConfiguration createAppConfig(Context context) {
@@ -213,8 +214,7 @@ public final class PrinceOfVersions {
         @Nullable
         private Executor callbackExecutor;
 
-        @Nullable
-        private RequirementChecker requirementChecker;
+        public final List<RequirementChecker> requirementCheckers = new ArrayList<>();
 
         /**
          * Set a new configuration parser used to parse configuration file into the model.
@@ -255,8 +255,8 @@ public final class PrinceOfVersions {
          * @param requirementsChecker Requirements checker
          * @return this builder
          */
-        public Builder withCustomRequirementsChecker(@Nullable RequirementChecker requirementsChecker) {
-            this.requirementChecker = requirementsChecker;
+        public Builder addRequirementsChecker(RequirementChecker requirementsChecker) {
+            this.requirementCheckers.add(requirementsChecker);
             return this;
         }
 
@@ -280,7 +280,7 @@ public final class PrinceOfVersions {
          */
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(this.requirementChecker),
+                configurationParser != null ? configurationParser : createDefaultParser(this.requirementCheckers),
                 storage != null ? storage : createDefaultStorage(context),
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig != null ? appConfig : createAppConfig(context)

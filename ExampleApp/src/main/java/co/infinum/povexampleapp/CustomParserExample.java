@@ -28,7 +28,7 @@ public class CustomParserExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, String> metadata) {
             toastIt(
                 getString(
                     R.string.update_available_msg,
@@ -84,7 +84,7 @@ public class CustomParserExample extends AppCompatActivity {
         /*  create new instance of updater using custom parser factory   */
         updater = new PrinceOfVersions.Builder().withParser(customParser).build(this);
         /*  create specific loader factory for loading from internet    */
-        loader = new NetworkLoader("http://pastebin.com/raw/c4c4pPyn");
+        loader = new NetworkLoader("https://pastebin.com/raw/c4c4pPyn");
         slowLoader = createSlowLoader(loader);
     }
 

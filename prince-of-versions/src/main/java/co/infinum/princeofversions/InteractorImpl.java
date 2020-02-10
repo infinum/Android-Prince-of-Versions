@@ -39,11 +39,11 @@ final class InteractorImpl implements Interactor {
                     int optionalVersion = optionalConfigVersion;
                     if (optionalVersion > mandatoryVersion) {
                         // optional update also exists and has greater version than mandatory
-                        return CheckResult.mandatoryUpdate(String.valueOf(optionalVersion), config.getMetadata());
+                        return CheckResult.mandatoryUpdate(optionalVersion, config.getMetadata());
                     }
                 }
                 // if there is no optional update or it isn't greater than mandatory - notify mandatory version
-                return CheckResult.mandatoryUpdate(String.valueOf(mandatoryVersion), config.getMetadata());
+                return CheckResult.mandatoryUpdate(mandatoryVersion, config.getMetadata());
             }
         }
 
@@ -51,11 +51,11 @@ final class InteractorImpl implements Interactor {
         if (optionalConfigVersion != null) {
             int optionalVersion = optionalConfigVersion;
             if (currentVersion < optionalVersion) {
-                return CheckResult.optionalUpdate(String.valueOf(optionalVersion), config.getOptionalNotificationType(),
+                return CheckResult.optionalUpdate(optionalVersion, config.getOptionalNotificationType(),
                     config.getMetadata());
             }
         }
 
-        return CheckResult.noUpdate(String.valueOf(currentVersion), config.getMetadata());
+        return CheckResult.noUpdate(currentVersion, config.getMetadata());
     }
 }

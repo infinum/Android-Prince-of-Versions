@@ -23,13 +23,23 @@ final class PrinceOfVersionsDefaultNamedPreferenceStorage implements Storage {
         });
     }
 
+    @Nullable
     @Override
-    public String lastNotifiedVersion(@Nullable String defaultValue) {
-        return sp.getString(KEY, defaultValue);
+    public Integer lastNotifiedVersion(@Nullable Integer defaultValue) {
+        try {
+            String value = sp.getString(KEY, String.valueOf(defaultValue));
+            if (value != null) {
+                return Integer.valueOf(value);
+            } else {
+                return null;
+            }
+        } catch (NumberFormatException invalid) {
+            return null;
+        }
     }
 
     @Override
-    public void rememberLastNotifiedVersion(@Nullable String version) {
-        sp.edit().putString(KEY, version).apply();
+    public void rememberLastNotifiedVersion(@Nullable Integer version) {
+        sp.edit().putString(KEY, String.valueOf(version)).apply();
     }
 }

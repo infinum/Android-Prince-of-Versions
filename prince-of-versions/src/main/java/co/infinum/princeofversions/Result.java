@@ -21,14 +21,14 @@ public final class Result {
     /**
      * Holds version string of update or if no update, application's version
      */
-    private String version;
+    private int version;
 
     /**
      * Metadata about update
      */
     private Map<String, String> metadata;
 
-    Result(UpdateStatus status, String version, Map<String, String> metadata) {
+    Result(UpdateStatus status, int version, Map<String, String> metadata) {
         this.status = status;
         this.version = version;
         this.metadata = metadata;
@@ -48,7 +48,7 @@ public final class Result {
      *
      * @return version of update
      */
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
@@ -75,7 +75,7 @@ public final class Result {
         if (getStatus() != result.getStatus()) {
             return false;
         }
-        if (!getVersion().equals(result.getVersion())) {
+        if (getVersion() != result.getVersion()) {
             return false;
         }
         return getMetadata().equals(result.getMetadata());
@@ -85,7 +85,7 @@ public final class Result {
     @Override
     public int hashCode() {
         int result = getStatus().hashCode();
-        result = 31 * result + getVersion().hashCode();
+        result = 31 * result + getVersion();
         result = 31 * result + getMetadata().hashCode();
         return result;
     }
