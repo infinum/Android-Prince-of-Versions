@@ -1,10 +1,10 @@
 apply plugin: 'com.android.library'
-apply from: './quality.gradle'
 apply plugin: 'com.novoda.bintray-release'
+apply from: './quality.gradle'
 
 ext {
     publishedGroupId = 'co.infinum'
-    publishedArtifactName = 'prince-of-versions'
+    publishedArtifactName = 'queen-of-versions'
 }
 
 android {
@@ -24,32 +24,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    resourcePrefix 'prince_of_versions_'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly deps.appcompat
+    api "co.infinum:prince-of-versions:$versions.prince"
+    implementation 'com.google.android.play:core:1.6.4'
     compileOnly deps.fbannotations
-
-    testImplementation deps.junit
-    testImplementation deps.mockito
-    testImplementation deps.mockwebserver
-    testImplementation deps.assertj
-    testImplementation deps.json
-    testCompileOnly deps.fbannotations
 }
 
 group = publishedGroupId
-version = versions.prince
+version = versions.queen
 
 // https://github.com/novoda/bintray-release/wiki/Configuration-of-the-publish-closure
 publish {
     userOrg = 'infinum'
     groupId = publishedGroupId
     artifactId = publishedArtifactName
-    publishVersion = versions.prince
+    publishVersion = versions.queen
     desc = 'Library checks for application updates using configuration from some resource.'
     website = 'https://github.com/infinum/Android-prince-of-versions'
     licences = ["Apache-2.0"]
@@ -68,5 +59,7 @@ artifacts {
 apply from: '../tasks.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
-preBuild.dependsOn ':prince-of-versions:generateReadmePrince'
+preBuild.dependsOn ':prince-of-versions:generateReadmeQueen'
 
+sourceCompatibility = "7"
+targetCompatibility = "7"
