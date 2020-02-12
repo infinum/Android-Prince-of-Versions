@@ -26,7 +26,5 @@ public interface GoogleAppUpdater {
 
     void notifyUser();
 
-    void wrongVersion();
-
     void cancel();
 }

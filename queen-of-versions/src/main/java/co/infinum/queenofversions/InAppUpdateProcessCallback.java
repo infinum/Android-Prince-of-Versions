@@ -21,6 +21,4 @@ public interface InAppUpdateProcessCallback {
     void onInstalling();
 
     void onRequiresUI();
-
-    void onWrongVersion();
 }

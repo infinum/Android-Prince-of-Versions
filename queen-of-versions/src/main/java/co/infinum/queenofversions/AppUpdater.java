@@ -8,7 +8,6 @@ import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.tasks.OnSuccessListener;
 
-
 public class AppUpdater implements GoogleAppUpdater {
 
     private final Activity activity;
@@ -131,11 +130,6 @@ public class AppUpdater implements GoogleAppUpdater {
         } catch (IntentSender.SendIntentException e) {
             flexibleStateListener.onFailed(e);
         }
-    }
-
-    @Override
-    public void wrongVersion() {
-        flexibleStateListener.onWrongVersion();
     }
 
     @Override

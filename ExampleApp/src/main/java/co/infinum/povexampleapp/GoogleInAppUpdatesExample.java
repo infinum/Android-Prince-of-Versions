@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-
-
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
@@ -83,16 +81,10 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAp
     }
 
     @Override
-    public void onWrongVersion() {
-        Toast.makeText(this, "Wrong version!", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onDownloaded(GoogleInAppUpdateFlexibleHandler handler) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();
     }
-
 
     /**
      * This method is called if by whatever reason the update is cancelled.

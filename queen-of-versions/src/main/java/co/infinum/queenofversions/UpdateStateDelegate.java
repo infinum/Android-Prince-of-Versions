@@ -80,13 +80,6 @@ public class UpdateStateDelegate implements InAppUpdateProcessCallback {
         }
     }
 
-    @Override
-    public void onWrongVersion() {
-        if (!isCanceled) {
-            listener.onWrongVersion();
-        }
-    }
-
     void cancel() {
         isCanceled = true;
     }

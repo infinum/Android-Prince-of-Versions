@@ -53,7 +53,7 @@ public final class PrinceOfVersions {
         this(createDefaultParser(), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
     }
 
-    public PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
         Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
             new InteractorImpl(configurationParser, versionParser),

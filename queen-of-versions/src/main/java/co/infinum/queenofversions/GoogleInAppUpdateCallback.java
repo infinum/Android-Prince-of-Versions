@@ -32,7 +32,8 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
 /**
  * This class represents the core component of Queen of Versions module.
  * <p>
- * The way to create instance of this class is by constructor with {@link Integer}, {@link Activity} and {@link InAppUpdateProcessCallback}
+ * The way to create instance of this class is by constructor with {@link Integer}, {@link Activity} and
+ * {@link InAppUpdateProcessCallback}
  * arguments.
  * </p>
  * <p>
@@ -67,8 +68,6 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * FLEXIBLE update == OPTIONAL update
  */
 public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateUpdatedListener, GoogleInAppUpdateFlexibleHandler {
-
-    private static final int UNSUPPORTED_VERSION = 3;
 
     private UpdateStateDelegate flexibleStateListener;
     private GoogleAppUpdater googleAppUpdater;
@@ -179,15 +178,11 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     void handleSuccess(@UpdateAvailability int updateAvailability, String princeVersionCode, int googleUpdateVersionCode,
         boolean isMandatory) {
         int updateType = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory);
-        if (updateType != UNSUPPORTED_VERSION) {
-            if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE && (updateType == AppUpdateType.FLEXIBLE
-                || updateType == AppUpdateType.IMMEDIATE)) {
-                googleAppUpdater.startUpdate(updateType);
-            } else {
-                googleAppUpdater.noUpdate();
-            }
+        if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE && (updateType == AppUpdateType.FLEXIBLE
+            || updateType == AppUpdateType.IMMEDIATE)) {
+            googleAppUpdater.startUpdate(updateType);
         } else {
-            googleAppUpdater.wrongVersion();
+            googleAppUpdater.noUpdate();
         }
     }
 
@@ -271,12 +266,7 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
                 return AppUpdateType.IMMEDIATE;
             }
         } else if (princeOfVersionsCode > googleVersionCode) {
-            if (appVersionCode
-                > googleVersionCode) { //This if shouldn't be possible in production. App version can't be lower than Google Play version.
-                return UNSUPPORTED_VERSION;
-            } else if (appVersionCode == googleVersionCode && isMandatory) {
-                return UNSUPPORTED_VERSION;
-            } else if (appVersionCode < googleVersionCode && isMandatory) {
+            if (appVersionCode < googleVersionCode && isMandatory) {
                 //TODO still have to figure out how to handle this kind of update
                 return AppUpdateType.FLEXIBLE;
             } else {
