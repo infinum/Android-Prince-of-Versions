@@ -1,4 +1,4 @@
-package com.infinum.queenofversions.util;
+package co.infinum.queenofversions.util;
 
 import java.util.AbstractMap;
 import java.util.HashMap;

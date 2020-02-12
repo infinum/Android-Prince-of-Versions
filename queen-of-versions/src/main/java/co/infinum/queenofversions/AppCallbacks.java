@@ -1,12 +1,8 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
-
-import com.google.android.play.core.appupdate.AppUpdateManager;
-
-import co.infinum.princeofversions.UpdaterCallback;
 
 public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
 

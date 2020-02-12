@@ -1,11 +1,11 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
-public class UpdateStateDelegate implements UpdaterStateCallback {
+public class UpdateStateDelegate implements InAppUpdateProcessCallback {
 
     private boolean isCanceled;
-    private UpdaterStateCallback listener;
+    private InAppUpdateProcessCallback listener;
 
-    UpdateStateDelegate(boolean isCanceled, UpdaterStateCallback listener) {
+    UpdateStateDelegate(boolean isCanceled, InAppUpdateProcessCallback listener) {
         this.isCanceled = isCanceled;
         this.listener = listener;
     }
@@ -82,7 +82,7 @@ public class UpdateStateDelegate implements UpdaterStateCallback {
 
     @Override
     public void onWrongVersion() {
-        if(!isCanceled){
+        if (!isCanceled) {
             listener.onWrongVersion();
         }
     }

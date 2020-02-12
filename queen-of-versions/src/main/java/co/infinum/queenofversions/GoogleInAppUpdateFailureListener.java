@@ -1,14 +1,12 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
 import com.google.android.play.core.tasks.OnFailureListener;
 
-import co.infinum.princeofversions.UpdaterCallback;
-
 public class GoogleInAppUpdateFailureListener implements OnFailureListener {
 
-    private final UpdaterStateCallback flexibleListener;
+    private final InAppUpdateProcessCallback flexibleListener;
 
-    GoogleInAppUpdateFailureListener(UpdaterStateCallback flexibleListener) {
+    GoogleInAppUpdateFailureListener(InAppUpdateProcessCallback flexibleListener) {
         this.flexibleListener = flexibleListener;
     }
 

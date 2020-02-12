@@ -1,4 +1,4 @@
-package com.infinum.queenofversions.mocks;
+package co.infinum.queenofversions.mocks;
 
 import com.google.android.play.core.install.InstallState;
 

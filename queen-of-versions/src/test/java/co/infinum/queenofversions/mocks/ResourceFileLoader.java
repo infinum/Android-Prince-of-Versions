@@ -1,6 +1,6 @@
-package com.infinum.queenofversions.mocks;
+package co.infinum.queenofversions.mocks;
 
-import com.infinum.queenofversions.util.ResourceUtils;
+import co.infinum.queenofversions.util.ResourceUtils;
 
 import co.infinum.princeofversions.Loader;
 

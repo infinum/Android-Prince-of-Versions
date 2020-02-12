@@ -25,7 +25,6 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation deps.appcompat
-    implementation project(':prince-of-versions')
     implementation project(':queen-of-versions')
 
     compileOnly deps.fbannotations

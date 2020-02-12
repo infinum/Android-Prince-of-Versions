@@ -1,12 +1,10 @@
-package com.infinum.queenofversions;
+package co.infinum.queenofversions;
 
 import com.google.android.play.core.install.InstallState;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallErrorCode;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
-import com.infinum.queenofversions.mocks.MockInstallState;
-import com.infinum.queenofversions.mocks.ResourceFileLoader;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,19 +16,19 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.Map;
 
-import co.infinum.princeofversions.PrinceOfVersions;
-import co.infinum.princeofversions.Storage;
-import co.infinum.princeofversions.mocks.MockApplicationConfiguration;
-import co.infinum.princeofversions.mocks.MockStorage;
-import co.infinum.princeofversions.mocks.SingleThreadExecutor;
+import co.infinum.queenofversions.mocks.MockInstallState;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static co.infinum.queenofversions.InAppUpdateError.API_NOT_AVAILABLE;
+import static co.infinum.queenofversions.InAppUpdateError.DOWNLOAD_NOT_PRESENT;
+import static co.infinum.queenofversions.InAppUpdateError.ERROR_UNKNOWN;
+import static co.infinum.queenofversions.InAppUpdateError.INSTALL_NOT_ALLOWED;
+import static co.infinum.queenofversions.InAppUpdateError.INSTALL_UNAVAILABLE;
+import static co.infinum.queenofversions.InAppUpdateError.INTERNAL_ERROR;
+import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,7 +43,7 @@ public class QueenOfVersionsTest {
     GoogleAppUpdater googleAppUpdater;
 
     @Mock
-    UpdaterStateCallback updaterStateCallback;
+    InAppUpdateProcessCallback updaterStateCallback;
 
     private static Throwable anyThrowable() {
         return any(Throwable.class);
@@ -264,7 +262,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onFailed(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getError() == GoogleException.API_NOT_AVAILABLE;
+                return argument.getMessage().equals(API_NOT_AVAILABLE.name());
             }
         }));
     }
@@ -279,7 +277,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onFailed(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getError() == GoogleException.DOWNLOAD_NOT_PRESENT;
+                return argument.getMessage().equals(DOWNLOAD_NOT_PRESENT.name());
             }
         }));
     }
@@ -294,7 +292,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onFailed(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getError() == GoogleException.INSTALL_NOT_ALLOWED;
+                return argument.getMessage().equals(INSTALL_NOT_ALLOWED.name());
             }
         }));
     }
@@ -309,7 +307,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onFailed(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getError() == GoogleException.INSTALL_UNAVAILABLE;
+                return argument.getMessage().equals(INSTALL_UNAVAILABLE.name());
             }
         }));
     }
@@ -324,7 +322,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onFailed(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getError() == GoogleException.INTERNAL_ERROR;
+                return argument.getMessage().equals(INTERNAL_ERROR.name());
             }
         }));
     }
@@ -339,7 +337,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onFailed(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getError() == GoogleException.INVALID_REQUEST;
+                return argument.getMessage().equals(INVALID_REQUEST.name());
             }
         }));
     }
@@ -354,7 +352,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onFailed(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getError() == GoogleException.ERROR_UNKNOWN;
+                return argument.getMessage().equals(ERROR_UNKNOWN.name());
             }
         }));
     }

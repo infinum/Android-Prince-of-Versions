@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
+apply from: './quality.gradle'
 
 ext {
     publishedGroupId = 'co.infinum'
@@ -26,13 +27,10 @@ android {
 }
 
 dependencies {
-    implementation project(':prince-of-versions')
+    api "co.infinum:prince-of-versions:$versions.prince"
     implementation 'com.google.android.play:core:1.6.4'
-    implementation 'org.jetbrains:annotations-java5:16.0.1'
-
-
-    compileOnly deps.appcompat
     compileOnly deps.fbannotations
+    compileOnly deps.appcompat
 
     testImplementation deps.junit
     testImplementation deps.mockito
@@ -40,18 +38,18 @@ dependencies {
     testImplementation deps.assertj
     testImplementation deps.json
     testCompileOnly deps.fbannotations
-    testCompile project(path: ':prince-of-versions')
+    implementation 'org.jetbrains:annotations-java5:15.0'
 }
 
 group = publishedGroupId
-version = versions.prince
+version = versions.queen
 
 // https://github.com/novoda/bintray-release/wiki/Configuration-of-the-publish-closure
 publish {
     userOrg = 'infinum'
     groupId = publishedGroupId
     artifactId = publishedArtifactName
-    publishVersion = versions.prince
+    publishVersion = versions.queen
     desc = 'Library checks for application updates using configuration from some resource.'
     website = 'https://github.com/infinum/Android-prince-of-versions'
     licences = ["Apache-2.0"]
@@ -70,6 +68,7 @@ artifacts {
 apply from: '../tasks.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
+preBuild.dependsOn ':prince-of-versions:generateReadmeQueen'
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
