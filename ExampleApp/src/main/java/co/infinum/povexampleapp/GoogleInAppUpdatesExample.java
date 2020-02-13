@@ -8,12 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import co.infinum.princeofversions.Loader;
+import co.infinum.princeofversions.NetworkLoader;
+import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.queenofversions.GoogleInAppUpdateCallback;
 import co.infinum.queenofversions.GoogleInAppUpdateFlexibleHandler;
 import co.infinum.queenofversions.InAppUpdateProcessCallback;
-
-import co.infinum.princeofversions.NetworkLoader;
-import co.infinum.princeofversions.PrinceOfVersions;
 
 public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAppUpdateProcessCallback {
 
@@ -22,6 +22,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAp
 
     private GoogleInAppUpdateCallback googleInAppUpdateCallback;
     private PrinceOfVersions princeOfVersions;
+    private Loader loader;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +32,8 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAp
         initUI();
 
         princeOfVersions = new PrinceOfVersions.Builder().build(this);
-        googleInAppUpdateCallback = new GoogleInAppUpdateCallback(REQUEST_CODE, this, this);
+        googleInAppUpdateCallback = new GoogleInAppUpdateCallback(REQUEST_CODE, this, this, BuildConfig.VERSION_CODE);
+        loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
     }
 
     private void initUI() {
@@ -45,7 +47,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAp
     }
 
     private void onCheckUpdatesClick() {
-        princeOfVersions.checkForUpdates(new NetworkLoader("http://pastebin.com/raw/QFGjJrLP"), googleInAppUpdateCallback);
+        princeOfVersions.checkForUpdates(loader, googleInAppUpdateCallback);
     }
 
     /**
@@ -78,13 +80,11 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAp
         Toast.makeText(this, "Requires UI!", Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * This method is called when Google updater finished downloading an update. It only works for Flexible updates,
-     * because on Immediate the update is installed automatically, where as on Flexible you have choice to install update whenever you
-     * or your user wants.
-     *
-     * @param handler it's used to complete update without directly sending a of Google app updater via method
-     */
+    @Override
+    public void onMandatoryUpdateNotAvailable() {
+        Toast.makeText(this, "Mandatory update is not available on Google!", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void onDownloaded(GoogleInAppUpdateFlexibleHandler handler) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();

@@ -1,52 +1,144 @@
 package co.infinum.queenofversions;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.support.annotation.VisibleForTesting;
 
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.android.play.core.install.InstallState;
 import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallErrorCode;
 import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
 
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
+import co.infinum.princeofversions.PrinceOfVersions;
+import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.UpdaterCallback;
 
+import static co.infinum.queenofversions.InAppUpdateError.API_NOT_AVAILABLE;
+import static co.infinum.queenofversions.InAppUpdateError.DOWNLOAD_NOT_PRESENT;
+import static co.infinum.queenofversions.InAppUpdateError.ERROR_UNKNOWN;
+import static co.infinum.queenofversions.InAppUpdateError.INSTALL_NOT_ALLOWED;
+import static co.infinum.queenofversions.InAppUpdateError.INSTALL_UNAVAILABLE;
+import static co.infinum.queenofversions.InAppUpdateError.INTERNAL_ERROR;
+import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
+
+/**
+ * This class represents the core component of Queen of Versions module.
+ * <p>
+ * The way to create instance of this class is by constructor with {@link Integer}, {@link Activity} and
+ * {@link InAppUpdateProcessCallback}
+ * arguments.
+ * </p>
+ * <p>
+ * This callback is an upgrade to {@link UpdaterCallback}. The upgrade is integration of
+ * {@link AppUpdateManager} to {@link PrinceOfVersions}. In this upgrade we are using Google's new way of handling updates from Google
+ * Play Store and still keeping {@link PrinceOfVersions} for better update management. The problem with new Google's way is that we are
+ * not in
+ * position to determine if the update on Google Play Store is mandatory or optional. That's why for determination of the nature of the
+ * update we are using {@link PrinceOfVersions}.
+ * </p>
+ * <p>
+ * This class is used in the same manner as {@link UpdaterCallback}, by passing it to {@link PrinceOfVersions}. After the result is
+ * computed, it is provided through one of UpdaterCallback's overridden methods. The difference is that now after every checkUpdates we
+ * are also checking with Google's {@link AppUpdateManager}, but using the app update type (mandatory or optional)
+ * from {@link PrinceOfVersions}.
+ * </p>
+ * Here is a most common usage of this callback:
+ * <pre>
+ *          {@link PrinceOfVersions} princeOfVersion = new {@link PrinceOfVersions}(context);
+ *          {@link GoogleInAppUpdateCallback} googleCallback = new {@link GoogleInAppUpdateCallback}(requestCode,activity,listener,
+ *          appVersionCode);
+ *
+ *          {@link PrinceOfVersionsCancelable} cancelable = princeOfVersion.checkForUpdates("http://example.com/some/update.json",
+ *          googleCallback); // start checking for an update...
+ * </pre>
+ * <p>
+ * IMPORTANT DISTINCTIONS: Throughout this module we are using definitions of app update types interchangeably, because the same definition
+ * of update type is named differently on JSON and on Google Play Store, hence this warning.
+ * <p>
+ * For example:
+ * MANDATORY update == IMMEDIATE update
+ * FLEXIBLE update == OPTIONAL update
+ */
 public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateUpdatedListener, GoogleInAppUpdateFlexibleHandler {
 
-    private int requestCode;
-    private AppUpdateManager appUpdateManager;
-    private Activity activity;
-    private InAppUpdateProcessCallback flexibleStateListener;
+    private UpdateStateDelegate flexibleStateListener;
+    private GoogleAppUpdater googleAppUpdater;
+    private final int appVersionCode;
 
-    public GoogleInAppUpdateCallback(int requestCode, Activity activity, InAppUpdateProcessCallback listener) {
-        this.requestCode = requestCode;
-        this.activity = activity;
-        this.appUpdateManager = AppUpdateManagerFactory.create(activity);
-        this.flexibleStateListener = listener;
+    /**
+     * Creates {@link GoogleInAppUpdateCallback} using provided {@link Activity}, {@link InAppUpdateProcessCallback} and two integers
+     * that represent requestCode and appVersionCode.
+     *
+     * @param requestCode    integer that can be used for {@link Intent} identification in onActivityResult method
+     * @param activity       activity is used for purposes of Google's in-app updates methods that are used in this library
+     * @param listener       listener is used as callback for notifying update statuses during update
+     * @param appVersionCode integer that represents version of an application that's currently running
+     */
+    public GoogleInAppUpdateCallback(int requestCode, Activity activity, InAppUpdateProcessCallback listener, int appVersionCode) {
+        this.flexibleStateListener = new UpdateStateDelegate(false, listener);
+        this.appVersionCode = appVersionCode;
+        this.googleAppUpdater = new AppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
+            flexibleStateListener,
+            this);
     }
 
-    @Override
-    public void onNewUpdate(@Nullable String version, final boolean isMandatory, @Nullable Map<String, String> metadata) {
-        String appVersionCode = metadata.get("version-code");
-        checkWithGoogleForAnUpdate(isMandatory, appVersionCode);
+    @VisibleForTesting
+    GoogleInAppUpdateCallback(int requestCode, GoogleAppUpdater appUpdater, InAppUpdateProcessCallback flexibleStateListener,
+        int appVersionCode) {
+        this.flexibleStateListener = new UpdateStateDelegate(false, flexibleStateListener);
+        this.appVersionCode = appVersionCode;
+        this.googleAppUpdater = appUpdater;
     }
 
+    /**
+     * Method is called when {@link PrinceOfVersions} finds new update for current application.
+     *
+     * @param version     Version string of available update.
+     * @param isMandatory Determines if update is mandatory or just optional, true if update is mandatory, false if it is optional.
+     * @param metadata    Metadata accompanying the update
+     */
     @Override
-    public void onNoUpdate(@Nullable Map<String, String> metadata) {
-        String appVersionCode = metadata.get("version-code");
-        checkWithGoogleForAnUpdate(false, appVersionCode);
+    public void onNewUpdate(@NotNull String version, final boolean isMandatory, @NotNull Map<String, String> metadata) {
+        String princeVersionCode = metadata.get("version-code");
+        checkWithGoogleForAnUpdate(isMandatory, princeVersionCode);
     }
 
+    /**
+     * Method is called if {@link PrinceOfVersions} successfully determines that there is no updates. However, although there may not be
+     * any updates on {@link PrinceOfVersions}, we will still check on Google Play Store with presupposition that there is no
+     * MANDATORY updates on Google Play Store, hence why we are passing false as {@param isMandatory}.
+     *
+     * @param metadata Metadata accompanying no update message
+     */
     @Override
-    public void onError(@Nullable Throwable error) {
+    public void onNoUpdate(@NotNull Map<String, String> metadata) {
+        String princeVersionCode = metadata.get("version-code");
+        checkWithGoogleForAnUpdate(false, princeVersionCode);
+    }
+
+    /**
+     * Method is called if was some error on {@link PrinceOfVersions} while checking for an update.
+     *
+     * @param error Throwable that describes error occurred.
+     */
+    @Override
+    public void onError(@NotNull Throwable error) {
         flexibleStateListener.onFailed(new GoogleInAppUpdateException(error));
     }
 
+    /**
+     * Method that is called during Google's FLEXIBLE in-app update.
+     *
+     * @param installState Google's object with which we can determine in which stage of update is our update
+     */
     @Override
     public void onStateUpdate(InstallState installState) {
         if (installState.installStatus() == InstallStatus.DOWNLOADED) {
@@ -72,44 +164,134 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
 
     @Override
     public void completeUpdate() {
-        appUpdateManager.completeUpdate();
-        appUpdateManager.unregisterListener(this);
+        googleAppUpdater.completeUpdate();
     }
 
-    private void checkErrorStates(InstallState installState) {
-        if (installState.installErrorCode() == InstallErrorCode.ERROR_API_NOT_AVAILABLE) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.API_NOT_AVAILABLE));
-        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_DOWNLOAD_NOT_PRESENT) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.DOWNLOAD_NOT_PRESENT));
-        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_NOT_ALLOWED) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.INSTALL_NOT_ALLOWED));
-        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_UNAVAILABLE) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.INSTALL_UNAVAILABLE));
-        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INTERNAL_ERROR) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.INTERNAL_ERROR));
-        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INVALID_REQUEST) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.INVALID_REQUEST));
-        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_UNKNOWN) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(InAppUpdateError.ERROR_UNKNOWN));
+    /**
+     * Method is called if we have successful update check on Google Play Store.
+     *
+     * @param updateAvailability      Determines the availability of update we have on Google Play Store
+     * @param princeVersionCode       Version code of the application we have have on our JSON that {@link PrinceOfVersions} parses
+     * @param googleUpdateVersionCode Version code of the application we have on Google Play Store
+     * @param isMandatory             Determines if the update we have on our JSON file is MANDATORY or OPTIONAL
+     */
+    void handleSuccess(@UpdateAvailability int updateAvailability, String princeVersionCode, int googleUpdateVersionCode,
+        boolean isMandatory) {
+        VersionCode versionCode = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory);
+        if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
+            if (versionCode == VersionCode.FLEXIBLE) {
+                googleAppUpdater.startUpdate(AppUpdateType.FLEXIBLE);
+            } else if (versionCode == VersionCode.IMMEDIATE) {
+                googleAppUpdater.startUpdate(AppUpdateType.IMMEDIATE);
+            } else if (versionCode == VersionCode.FLEXIBLE_NOT_AVAILABLE) {
+                googleAppUpdater.mandatoryUpdateNotAvailable();
+            }
+        } else {
+            googleAppUpdater.noUpdate();
         }
     }
 
-    private void checkWithGoogleForAnUpdate(boolean isMandatory, String appVersionCode) {
+    //This method is called when you leave app during an immediate update, but also it checks if user has left app during flexible update
+    //In case of flexible update we notify user about downloaded update so he can do install it or whatever
 
-        appUpdateManager.getAppUpdateInfo()
-            .addOnSuccessListener(
-                new GoogleInAppUpdateSuccessListener(
-                    requestCode,
-                    activity,
-                    isMandatory,
-                    appUpdateManager,
-                    flexibleStateListener,
-                    appVersionCode,
-                    this,
-                    this,
-                    this
-                )
-            )
-            .addOnFailureListener(new GoogleInAppUpdateFailureListener(this));
+    //TODO check this because I'm pretty sure this won't even be called in case of FLEXIBLE update because we are not registering this
+    // flow for FLEXIBLE update!
+
+    /**
+     * Method is called when user leaves the application during Google's IMMEDIATE update. When user leaves during IMMEDIATE update we
+     * want to continue our update process.
+     *
+     * @param updateAvailability Determines the availability of update we have on Google Play Store
+     * @param installStatus      Google's object with which we can determine in which stage of update is our update
+     * @param isFlexible         don't know
+     */
+    void handleResumeSuccess(@UpdateAvailability int updateAvailability, @InstallStatus int installStatus, boolean isFlexible) {
+        if (updateAvailability == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+            googleAppUpdater.restartUpdate();
+        } else if (installStatus == InstallStatus.DOWNLOADED && isFlexible) {
+            googleAppUpdater.notifyUser();
+        }
     }
+
+    /**
+     * Method that is called when update has failed.
+     *
+     * @param installState Google's object with which we can determine in which stage of update is our update
+     */
+    private void checkErrorStates(InstallState installState) {
+        if (installState.installErrorCode() == InstallErrorCode.ERROR_API_NOT_AVAILABLE) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(API_NOT_AVAILABLE));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_DOWNLOAD_NOT_PRESENT) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(DOWNLOAD_NOT_PRESENT));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_NOT_ALLOWED) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(INSTALL_NOT_ALLOWED));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_UNAVAILABLE) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(INSTALL_UNAVAILABLE));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INTERNAL_ERROR) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(INTERNAL_ERROR));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INVALID_REQUEST) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(INVALID_REQUEST));
+        } else if (installState.installErrorCode() == InstallErrorCode.ERROR_UNKNOWN) {
+            flexibleStateListener.onFailed(new GoogleInAppUpdateException(ERROR_UNKNOWN));
+        }
+    }
+
+    /**
+     * Method that is called every time we check for an update. Whether there is or isn't an update on {@link PrinceOfVersions} we are
+     * still going to check with Google to be sure.
+     *
+     * @param isMandatory       Determines if the update we are checking for is MANDATORY or OPTIONAL
+     * @param princeVersionCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
+     */
+    private void checkWithGoogleForAnUpdate(boolean isMandatory, String princeVersionCode) {
+        googleAppUpdater.initGoogleUpdate(isMandatory, princeVersionCode);
+    }
+
+    /**
+     * Method that is used to check what kind of update do we want to invoke on Google Play Store. Depending on version codes
+     * on JSON file, application  and Google Play Store, we can invoke FLEXIBLE or IMMEDIATE update on Google Play Store.
+     *
+     * @param princeVersionCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
+     * @param googleVersionCode Version code that we got from Google Play Store
+     * @param isMandatory       Determines whether the update we have is MANDATORY or OPTIONAL
+     * @return Returns an {@link AppUpdateType} depending on version codes we have
+     */
+    private VersionCode checkVersionCode(String princeVersionCode, int googleVersionCode, boolean isMandatory) {
+        int princeOfVersionsCode;
+        if (princeVersionCode == null) {
+            return VersionCode.FLEXIBLE;
+        } else {
+            princeOfVersionsCode = Integer.parseInt(princeVersionCode);
+        }
+
+        if (princeOfVersionsCode <= googleVersionCode && isMandatory) {
+            if (appVersionCode > princeOfVersionsCode) {
+                return VersionCode.FLEXIBLE;
+            } else {
+                return VersionCode.IMMEDIATE;
+            }
+        } else if (princeOfVersionsCode > googleVersionCode) {
+            if (appVersionCode < googleVersionCode && isMandatory) {
+                return VersionCode.FLEXIBLE_NOT_AVAILABLE;
+            } else {
+                return VersionCode.FLEXIBLE;
+            }
+        } else {
+            return VersionCode.FLEXIBLE;
+        }
+    }
+
+    /**
+     * Method that is called when you want to cancel listener on your Google's in-app update.
+     * By calling this method we are stopping responses from {@link InstallStateUpdatedListener}.
+     */
+    public void cancel() {
+        flexibleStateListener.cancel();
+    }
+}
+
+enum VersionCode {
+    FLEXIBLE,
+    IMMEDIATE,
+    FLEXIBLE_NOT_AVAILABLE
 }
