@@ -5,6 +5,7 @@ import android.support.annotation.VisibleForTesting;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,41 +106,86 @@ final class JsonConfigurationParser implements ConfigurationParser {
         return builder.build();
     }
 
-    //TODO this parser needs to be changed in order to fit new JSON
     private void parseToBuilder(JSONObject data, PrinceOfVersionsConfig.Builder builder) throws JSONException {
+        Object meta = null;
+        if (data.has(META)) {
+            meta = data.get(META);
+            if (meta instanceof JSONObject) {
+                builder.withMetadata(jsonObjectToMap((JSONObject) meta));
+            }
+        }
         if (data.has(ANDROID)) {
-            JSONArray android = data.getJSONArray(ANDROID);
-            for (int i = 0; i < android.length(); i++) {
-                JSONObject update = android.getJSONObject(i);
-                if (update.has(REQUIREMENTS)) {
-                    JSONObject requirements = update.getJSONObject(REQUIREMENTS);
-                    if (requirementChecker.checkRequirements(requirements)) {
-                        if (update.has(MINIMUM_VERSION)) {
-                            int min = update.getInt(MINIMUM_VERSION);
-                            builder.withMandatoryVersion(min);
-                        }
-                        if (update.has(LATEST_VERSION)) {
-                            int latest = update.getInt(LATEST_VERSION);
-                            builder.withOptionalVersion(latest);
-                        }
-                        if (update.has(NOTIFICATION)) {
-                            String notification = update.getString(NOTIFICATION);
-                            builder.withOptionalNotificationType(
-                                notification != null && notification.equalsIgnoreCase(NOTIFICATION_ALWAYS) ? NotificationType.ALWAYS
-                                    : NotificationType.ONCE);
-                        }
-                        break;
+            Object json = new JSONTokener(data.get(ANDROID).toString()).nextValue();
+            if (json instanceof JSONArray) {
+                JSONArray android = data.getJSONArray(ANDROID);
+                for (int i = 0; i < android.length(); i++) {
+                    JSONObject update = android.getJSONObject(i);
+                    if (parseJsonUpdate(update, builder, meta)) {
+                        return; //return after finding the first feasible update
                     }
                 }
+            } else if (json instanceof JSONObject) {
+                parseJsonUpdate(data.getJSONObject(ANDROID), builder, meta);
             }
         } else {
             throw new IllegalStateException("Config resource does not contain android key");
         }
-        if (data.has(META)) {
-            Object meta = data.get(META);
-            if (meta instanceof JSONObject) {
-                builder.withMetadata(jsonObjectToMap((JSONObject) meta));
+    }
+
+    private void mergeUpdateMetaWithDefaultMeta(Object meta, JSONObject update, PrinceOfVersionsConfig.Builder builder) throws
+        JSONException {
+        Object updateMeta;
+        if (meta == null) {
+            if (update.has(META)) {
+                updateMeta = update.get(META);
+                if (updateMeta instanceof JSONObject) {
+                    builder.withMetadata(jsonObjectToMap((JSONObject) updateMeta));
+                }
             }
+        } else {
+            if (update.has(META)) {
+                updateMeta = update.get(META);
+                if (updateMeta instanceof JSONObject) {
+                    Map<String, String> metaMap = jsonObjectToMap((JSONObject) meta);
+                    Map<String, String> updateMetaMap = jsonObjectToMap((JSONObject) updateMeta);
+                    metaMap.putAll(updateMetaMap);
+                    builder.withMetadata(metaMap);
+                }
+            }
+        }
+    }
+
+    private void saveFirstAcceptableUpdate(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws JSONException {
+        if (update.has(MINIMUM_VERSION)) {
+            int min = update.getInt(MINIMUM_VERSION);
+            builder.withMandatoryVersion(min);
+        }
+        if (update.has(LATEST_VERSION)) {
+            int latest = update.getInt(LATEST_VERSION);
+            builder.withOptionalVersion(latest);
+        }
+        if (update.has(NOTIFICATION)) {
+            String notification = update.getString(NOTIFICATION);
+            builder.withOptionalNotificationType(
+                notification != null && notification.equalsIgnoreCase(NOTIFICATION_ALWAYS) ? NotificationType.ALWAYS
+                    : NotificationType.ONCE);
+        }
+    }
+
+    private boolean parseJsonUpdate(JSONObject update, PrinceOfVersionsConfig.Builder builder, Object meta) throws
+        JSONException {
+        if (update.has(REQUIREMENTS)) {
+            JSONObject requirements = update.getJSONObject(REQUIREMENTS);
+            if (requirementChecker.checkRequirements(requirements)) {
+                saveFirstAcceptableUpdate(update, builder);
+                mergeUpdateMetaWithDefaultMeta(meta, update, builder);
+                return true;
+            }
+            return false;
+        } else {
+            saveFirstAcceptableUpdate(update, builder);
+            mergeUpdateMetaWithDefaultMeta(meta, update, builder);
+            return true;
         }
     }
 

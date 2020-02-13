@@ -129,6 +129,7 @@ public final class PrinceOfVersionsConfig {
 
         /**
          * Set a new mandatory version string.
+         *
          * @param mandatoryVersion Mandatory version name
          * @return this builder
          */
@@ -139,6 +140,7 @@ public final class PrinceOfVersionsConfig {
 
         /**
          * Set a new optional version string.
+         *
          * @param optionalVersion Optional version name
          * @return this builder
          */
@@ -149,6 +151,7 @@ public final class PrinceOfVersionsConfig {
 
         /**
          * Set a new notification type of optional update.
+         *
          * @param optionalNotificationType Notification type
          * @return this builder
          */
@@ -159,6 +162,7 @@ public final class PrinceOfVersionsConfig {
 
         /**
          * Set new metadata about the update.
+         *
          * @param metadata String to string map
          * @return this builder
          */
@@ -169,6 +173,7 @@ public final class PrinceOfVersionsConfig {
 
         /**
          * Create the {@link PrinceOfVersionsConfig} instance using the configured values.
+         *
          * @return A new {@link PrinceOfVersionsConfig} instance
          */
         public PrinceOfVersionsConfig build() {

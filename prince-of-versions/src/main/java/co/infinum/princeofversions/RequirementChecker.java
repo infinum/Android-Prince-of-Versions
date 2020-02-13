@@ -15,5 +15,4 @@ public interface RequirementChecker {
      * @return true or false depending if the data matched requirements
      */
     boolean checkRequirements(JSONObject data) throws JSONException;
-
 }
