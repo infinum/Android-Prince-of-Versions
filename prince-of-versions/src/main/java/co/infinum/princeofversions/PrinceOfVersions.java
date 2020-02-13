@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  * there you can specify custom {@link Executor}, class which should run process, usually on background thread.
  * With this approach checkForUpdates method returns {@link PrinceOfVersionsCancelable} object which you can use to cancel request.
  * </p>
- *
+ * <p>
  * Here is code for most common usage of this library
  * <pre>
  *         {@link PrinceOfVersions} updater = new {@link PrinceOfVersions}(context);
@@ -49,7 +49,7 @@ public final class PrinceOfVersions {
     }
 
     @VisibleForTesting
-    PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
+    public PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this(createDefaultParser(), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
     }
 
@@ -136,7 +136,7 @@ public final class PrinceOfVersions {
     }
 
     @VisibleForTesting
-    PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
+    public PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
         return presenter.check(loader, executor, callback, appConfig);
     }
 

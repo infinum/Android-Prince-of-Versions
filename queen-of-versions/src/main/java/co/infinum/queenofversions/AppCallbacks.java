@@ -4,27 +4,12 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-import com.google.android.play.core.appupdate.AppUpdateManager;
-
-import co.infinum.princeofversions.UpdaterCallback;
-
 public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
 
-    private final int requestCode;
-    private final Activity activity;
-    private final AppUpdateManager appUpdateManager;
-    private final UpdaterCallback updaterCallback;
-    private final InAppUpdateProcessCallback flexibleListener;
-    private final GoogleInAppUpdateFlexibleHandler handler;
+    private final GoogleAppUpdater googleAppUpdater;
 
-    AppCallbacks(int requestCode, Activity activity, AppUpdateManager appUpdateManager,
-        UpdaterCallback updaterCallback, InAppUpdateProcessCallback flexibleListener, GoogleInAppUpdateFlexibleHandler handler) {
-        this.requestCode = requestCode;
-        this.activity = activity;
-        this.appUpdateManager = appUpdateManager;
-        this.updaterCallback = updaterCallback;
-        this.flexibleListener = flexibleListener;
-        this.handler = handler;
+    AppCallbacks(GoogleAppUpdater googleAppUpdater) {
+        this.googleAppUpdater = googleAppUpdater;
     }
 
     @Override
@@ -63,13 +48,6 @@ public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
     }
 
     private void resumeAppUpdate(Activity activity) {
-        if (this.activity.equals(activity)) {
-            appUpdateManager.getAppUpdateInfo()
-                .addOnSuccessListener(
-                    new GoogleInAppUpdateResumeSuccessListener(requestCode, activity, appUpdateManager, updaterCallback, flexibleListener,
-                        handler)
-                )
-                .addOnFailureListener(new GoogleInAppUpdateFailureListener(updaterCallback));
-        }
+        googleAppUpdater.resumeUpdate(activity);
     }
 }
