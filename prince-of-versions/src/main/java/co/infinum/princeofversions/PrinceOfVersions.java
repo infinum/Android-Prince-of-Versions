@@ -300,7 +300,7 @@ public final class PrinceOfVersions {
                     "You must define storage and application configuration if you don't provide Context.");
             }
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(null),
+                configurationParser != null ? configurationParser : createDefaultParser(Collections.<RequirementChecker>emptyList()),
                 storage,
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig
