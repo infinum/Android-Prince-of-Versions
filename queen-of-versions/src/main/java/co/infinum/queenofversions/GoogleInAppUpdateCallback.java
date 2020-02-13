@@ -177,10 +177,15 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
      */
     void handleSuccess(@UpdateAvailability int updateAvailability, String princeVersionCode, int googleUpdateVersionCode,
         boolean isMandatory) {
-        int updateType = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory);
-        if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE && (updateType == AppUpdateType.FLEXIBLE
-            || updateType == AppUpdateType.IMMEDIATE)) {
-            googleAppUpdater.startUpdate(updateType);
+        VersionCode versionCode = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory);
+        if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
+            if (versionCode == VersionCode.FLEXIBLE) {
+                googleAppUpdater.startUpdate(AppUpdateType.FLEXIBLE);
+            } else if (versionCode == VersionCode.IMMEDIATE) {
+                googleAppUpdater.startUpdate(AppUpdateType.IMMEDIATE);
+            } else if (versionCode == VersionCode.FLEXIBLE_NOT_AVAILABLE) {
+                googleAppUpdater.mandatoryUpdateNotAvailable();
+            }
         } else {
             googleAppUpdater.noUpdate();
         }
@@ -251,31 +256,28 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
      * @param isMandatory       Determines whether the update we have is MANDATORY or OPTIONAL
      * @return Returns an {@link AppUpdateType} depending on version codes we have
      */
-    private int checkVersionCode(String princeVersionCode, int googleVersionCode, boolean isMandatory) {
+    private VersionCode checkVersionCode(String princeVersionCode, int googleVersionCode, boolean isMandatory) {
         int princeOfVersionsCode;
         if (princeVersionCode == null) {
-            return AppUpdateType.FLEXIBLE;
+            return VersionCode.FLEXIBLE;
         } else {
             princeOfVersionsCode = Integer.parseInt(princeVersionCode);
         }
 
         if (princeOfVersionsCode <= googleVersionCode && isMandatory) {
             if (appVersionCode > princeOfVersionsCode) {
-                return AppUpdateType.FLEXIBLE;
+                return VersionCode.FLEXIBLE;
             } else {
-                return AppUpdateType.IMMEDIATE;
+                return VersionCode.IMMEDIATE;
             }
         } else if (princeOfVersionsCode > googleVersionCode) {
             if (appVersionCode < googleVersionCode && isMandatory) {
-                //TODO still have to figure out how to handle this kind of update
-                return AppUpdateType.FLEXIBLE;
+                return VersionCode.FLEXIBLE_NOT_AVAILABLE;
             } else {
-                //TODO for now we should offer flexible,but in future we will add mandatory list that will check if google update is
-                // mandatory
-                return AppUpdateType.FLEXIBLE;
+                return VersionCode.FLEXIBLE;
             }
         } else {
-            return AppUpdateType.FLEXIBLE;
+            return VersionCode.FLEXIBLE;
         }
     }
 
@@ -286,4 +288,10 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     public void cancel() {
         flexibleStateListener.cancel();
     }
+}
+
+enum VersionCode {
+    FLEXIBLE,
+    IMMEDIATE,
+    FLEXIBLE_NOT_AVAILABLE
 }

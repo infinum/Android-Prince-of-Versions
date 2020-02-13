@@ -81,6 +81,11 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAp
     }
 
     @Override
+    public void onMandatoryUpdateNotAvailable() {
+        Toast.makeText(this, "Mandatory update is not available on Google!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onDownloaded(GoogleInAppUpdateFlexibleHandler handler) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();

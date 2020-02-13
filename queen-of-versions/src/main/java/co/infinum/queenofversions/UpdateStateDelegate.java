@@ -80,6 +80,13 @@ public class UpdateStateDelegate implements InAppUpdateProcessCallback {
         }
     }
 
+    @Override
+    public void onMandatoryUpdateNotAvailable() {
+        if (!isCanceled) {
+            listener.onMandatoryUpdateNotAvailable();
+        }
+    }
+
     void cancel() {
         isCanceled = true;
     }

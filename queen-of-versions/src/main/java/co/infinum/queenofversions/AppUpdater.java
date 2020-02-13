@@ -59,6 +59,11 @@ public class AppUpdater implements GoogleAppUpdater {
     }
 
     @Override
+    public void mandatoryUpdateNotAvailable() {
+        flexibleStateListener.onMandatoryUpdateNotAvailable();
+    }
+
+    @Override
     public void startFlexibleFlow(AppUpdateInfo appUpdateInfo) {
         try {
             appUpdateManager.startUpdateFlowForResult(

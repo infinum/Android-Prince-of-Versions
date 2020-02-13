@@ -394,7 +394,7 @@ public class QueenOfVersionsTest {
             new GoogleInAppUpdateCallback(200, googleAppUpdater, updaterStateCallback, 10);
         googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "12", 11, true);
 
-        verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
+        verify(googleAppUpdater, times(1)).mandatoryUpdateNotAvailable();
     }
 
     @Test

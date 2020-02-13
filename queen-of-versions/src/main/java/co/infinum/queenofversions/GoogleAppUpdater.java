@@ -26,5 +26,7 @@ public interface GoogleAppUpdater {
 
     void notifyUser();
 
+    void mandatoryUpdateNotAvailable();
+
     void cancel();
 }

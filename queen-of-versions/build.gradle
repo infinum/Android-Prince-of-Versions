@@ -39,6 +39,7 @@ dependencies {
     testImplementation deps.json
     testCompileOnly deps.fbannotations
     implementation 'org.jetbrains:annotations-java5:15.0'
+    implementation 'org.jetbrains:annotations-java5:15.0'
 }
 
 group = publishedGroupId
