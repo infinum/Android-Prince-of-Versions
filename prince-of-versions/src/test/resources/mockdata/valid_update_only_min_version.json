@@ -8,5 +8,8 @@
   },
   "android": {
     "minimum_version": "1.2.3"
+  },
+  "android2": {
+    "forceUpdate": 123
   }
 }

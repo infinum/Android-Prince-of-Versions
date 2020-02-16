@@ -17,6 +17,7 @@ import co.infinum.princeofversions.mocks.SingleThreadExecutor;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -54,7 +55,7 @@ public class PresenterTest {
 
     @Test
     public void testMandatoryUpdate() throws Throwable {
-        CheckResult checkResult = CheckResult.mandatoryUpdate("1.0.0", DEFAULT_METADATA);
+        CheckResult checkResult = CheckResult.mandatoryUpdate(10, DEFAULT_METADATA);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
         Result result = presenter.run(loader, appConfig);
@@ -70,7 +71,7 @@ public class PresenterTest {
 
     @Test
     public void testNoUpdate() throws Throwable {
-        CheckResult checkResult = CheckResult.noUpdate("1.0.0", DEFAULT_METADATA);
+        CheckResult checkResult = CheckResult.noUpdate(10, DEFAULT_METADATA);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
         Result result = presenter.run(loader, appConfig);
@@ -81,13 +82,13 @@ public class PresenterTest {
             checkResult.metadata()
         ));
 
-        verify(storage, times(0)).rememberLastNotifiedVersion(anyString());
+        verify(storage, times(0)).rememberLastNotifiedVersion(anyInt());
     }
 
     @Test
     public void testOptionalUpdateWhenNotNotifiedUpdate() throws Throwable {
-        CheckResult checkResult = CheckResult.optionalUpdate("1.0.2", NotificationType.ONCE, DEFAULT_METADATA);
-        when(storage.lastNotifiedVersion(null)).thenReturn("1.0.1");
+        CheckResult checkResult = CheckResult.optionalUpdate(12, NotificationType.ONCE, DEFAULT_METADATA);
+        when(storage.lastNotifiedVersion(null)).thenReturn(11);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
         Result result = presenter.run(loader, appConfig);
@@ -103,8 +104,8 @@ public class PresenterTest {
 
     @Test
     public void testMandatoryUpdateAlreadyNotifiedUpdateWithAlways() throws Throwable {
-        CheckResult checkResult = CheckResult.optionalUpdate("1.0.2", NotificationType.ALWAYS, DEFAULT_METADATA);
-        when(storage.lastNotifiedVersion(null)).thenReturn("1.0.2");
+        CheckResult checkResult = CheckResult.optionalUpdate(12, NotificationType.ALWAYS, DEFAULT_METADATA);
+        when(storage.lastNotifiedVersion(null)).thenReturn(12);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
         Result result = presenter.run(loader, appConfig);
@@ -120,8 +121,8 @@ public class PresenterTest {
 
     @Test
     public void testMandatoryUpdateAlreadyNotifiedUpdateWithOnce() throws Throwable {
-        CheckResult checkResult = CheckResult.optionalUpdate("1.0.2", NotificationType.ONCE, DEFAULT_METADATA);
-        when(storage.lastNotifiedVersion(null)).thenReturn("1.0.2");
+        CheckResult checkResult = CheckResult.optionalUpdate(12, NotificationType.ONCE, DEFAULT_METADATA);
+        when(storage.lastNotifiedVersion(null)).thenReturn(12);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
         Result result = presenter.run(loader, appConfig);
@@ -132,13 +133,13 @@ public class PresenterTest {
             checkResult.metadata()
         ));
 
-        verify(storage, times(0)).rememberLastNotifiedVersion(anyString());
+        verify(storage, times(0)).rememberLastNotifiedVersion(anyInt());
     }
 
     @Test
     public void testSyncCheckMandatory() throws Throwable {
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.MANDATORY, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.MANDATORY, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(ApplicationConfiguration.class))).thenCallRealMethod();
 
@@ -150,7 +151,7 @@ public class PresenterTest {
     @Test
     public void testSyncCheckOptional() throws Throwable {
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.OPTIONAL, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.OPTIONAL, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(ApplicationConfiguration.class))).thenCallRealMethod();
 
@@ -162,7 +163,7 @@ public class PresenterTest {
     @Test
     public void testSyncCheckNoUpdate() throws Throwable {
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.NO_UPDATE, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.NO_UPDATE, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(ApplicationConfiguration.class))).thenCallRealMethod();
 
@@ -175,7 +176,7 @@ public class PresenterTest {
     public void testAsyncCheckMandatory() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.MANDATORY, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.MANDATORY, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
@@ -192,7 +193,7 @@ public class PresenterTest {
     public void testAsyncCheckOptional() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.OPTIONAL, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.OPTIONAL, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
@@ -209,7 +210,7 @@ public class PresenterTest {
     public void testAsyncCheckNoUpdate() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.NO_UPDATE, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.NO_UPDATE, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
@@ -217,7 +218,7 @@ public class PresenterTest {
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
 
-        verify(callback, times(0)).onNewUpdate(anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        verify(callback, times(0)).onNewUpdate(anyInt(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(1)).onNoUpdate(expected.getMetadata());
         verify(callback, times(0)).onError(any(Throwable.class));
     }
@@ -226,7 +227,7 @@ public class PresenterTest {
     public void testAsyncCheckNoUpdateCancel() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.NO_UPDATE, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.NO_UPDATE, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
@@ -239,7 +240,7 @@ public class PresenterTest {
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
 
-        verify(callback, times(0)).onNewUpdate(anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        verify(callback, times(0)).onNewUpdate(anyInt(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(0)).onError(any(Throwable.class));
     }
@@ -248,7 +249,7 @@ public class PresenterTest {
     public void testAsyncCheckMandatoryUpdateCancel() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.MANDATORY, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.MANDATORY, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
@@ -261,7 +262,7 @@ public class PresenterTest {
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
 
-        verify(callback, times(0)).onNewUpdate(anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        verify(callback, times(0)).onNewUpdate(anyInt(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(0)).onError(any(Throwable.class));
     }
@@ -270,7 +271,7 @@ public class PresenterTest {
     public void testAsyncCheckOptionalUpdateCancel() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
         PresenterImpl mock = mock(PresenterImpl.class);
-        Result expected = new Result(UpdateStatus.OPTIONAL, "1.0.0", new HashMap<String, String>());
+        Result expected = new Result(UpdateStatus.OPTIONAL, 10, new HashMap<String, String>());
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
@@ -283,7 +284,7 @@ public class PresenterTest {
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
 
-        verify(callback, times(0)).onNewUpdate(anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        verify(callback, times(0)).onNewUpdate(anyInt(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(0)).onError(any(Throwable.class));
     }
@@ -300,7 +301,7 @@ public class PresenterTest {
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
 
-        verify(callback, times(0)).onNewUpdate(anyString(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
+        verify(callback, times(0)).onNewUpdate(anyInt(), anyBoolean(), ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap());
         verify(callback, times(1)).onError(throwable);
     }

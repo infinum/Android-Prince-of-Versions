@@ -17,14 +17,14 @@ final class CheckResult {
 
     private UpdateStatus status;
 
-    private int updateVersion;
+    private Integer updateVersion;
 
     @Nullable
     private NotificationType notificationType;
 
     private Map<String, String> metadata;
 
-    private CheckResult(UpdateStatus status, int updateVersion, @Nullable NotificationType notificationType,
+    private CheckResult(UpdateStatus status, Integer updateVersion, @Nullable NotificationType notificationType,
         Map<String, String> metadata) {
         this.status = status;
         this.updateVersion = updateVersion;
@@ -32,15 +32,15 @@ final class CheckResult {
         this.metadata = metadata;
     }
 
-    static CheckResult mandatoryUpdate(int version, Map<String, String> metadata) {
+    static CheckResult mandatoryUpdate(Integer version, Map<String, String> metadata) {
         return new CheckResult(UpdateStatus.MANDATORY, version, null, metadata);
     }
 
-    static CheckResult optionalUpdate(int version, NotificationType notificationType, Map<String, String> metadata) {
+    static CheckResult optionalUpdate(Integer version, NotificationType notificationType, Map<String, String> metadata) {
         return new CheckResult(UpdateStatus.OPTIONAL, version, notificationType, metadata);
     }
 
-    static CheckResult noUpdate(int version, Map<String, String> metadata) {
+    static CheckResult noUpdate(Integer version, Map<String, String> metadata) {
         return new CheckResult(UpdateStatus.NO_UPDATE, version, null, metadata);
     }
 

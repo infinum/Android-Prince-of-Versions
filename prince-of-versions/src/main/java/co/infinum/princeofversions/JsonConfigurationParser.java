@@ -1,6 +1,7 @@
 package co.infinum.princeofversions;
 
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;

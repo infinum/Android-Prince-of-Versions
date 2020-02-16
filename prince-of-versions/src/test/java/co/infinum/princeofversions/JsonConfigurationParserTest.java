@@ -16,12 +16,16 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class JsonConfigurationParserTest {
 
+
+
     private JsonConfigurationParser parser;
 
     @Before
     public void setUp() {
-        parser = new JsonConfigurationParser();
+        parser = new JsonConfigurationParser(new PrinceOfVersionsDefaultRequirementsChecker());
     }
+
+    /*
 
     @After
     public void tearDown() {
@@ -304,6 +308,6 @@ public class JsonConfigurationParserTest {
                         .withMandatoryVersion("1.2.3")
                         .build()
         );
-    }
+    }*/
 
 }

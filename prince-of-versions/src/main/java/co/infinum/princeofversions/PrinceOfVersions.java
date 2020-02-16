@@ -69,6 +69,11 @@ public final class PrinceOfVersions {
         this(createDefaultParser(Collections.<RequirementChecker>emptyList()), storage, callbackExecutor, appConfig);
     }
 
+    @VisibleForTesting
+    PrinceOfVersions(Storage storage,Executor callbackExecutor, ApplicationConfiguration appConfig, List<RequirementChecker> checkers){
+        this(createMockedParser(checkers),storage,callbackExecutor,appConfig);
+    }
+
     private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
         Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
@@ -84,6 +89,13 @@ public final class PrinceOfVersions {
         checkers.add(0, new PrinceOfVersionsDefaultRequirementsChecker());
         return new JsonConfigurationParser(new PrinceOfVersionsCompositeRequirementsChecker(
             checkers
+        ));
+    }
+
+    @VisibleForTesting
+    private static ConfigurationParser createMockedParser(List<RequirementChecker> requirementCheckers){
+        return new JsonConfigurationParser(new PrinceOfVersionsCompositeRequirementsChecker(
+            requirementCheckers
         ));
     }
 
