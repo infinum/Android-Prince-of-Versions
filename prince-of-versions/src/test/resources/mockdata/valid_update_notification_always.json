@@ -14,8 +14,8 @@
     }
   },
   "android2": {
-    "forceUpdate": 123,
-    "lastVersionAvailable": 245,
-    "notifyLastVersion": "ALWAYS"
+    "required_version": 123,
+    "last_version_available": 245,
+    "notify_last_version_frequency": "ALWAYS"
   }
 }

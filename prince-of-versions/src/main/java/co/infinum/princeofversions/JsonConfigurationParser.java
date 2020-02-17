@@ -1,7 +1,6 @@
 package co.infinum.princeofversions;
 
 import android.support.annotation.VisibleForTesting;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,17 +71,17 @@ final class JsonConfigurationParser implements ConfigurationParser {
     /**
      * Minimum version key
      */
-    private static final String MINIMUM_VERSION = "forceUpdate";
+    private static final String MINIMUM_VERSION = "required_version";
 
     /**
      * Latest version key
      */
-    private static final String LATEST_VERSION = "lastVersionAvailable";
+    private static final String LATEST_VERSION = "last_version_available";
 
     /**
      * Notification type key
      */
-    private static final String NOTIFICATION = "notifyLastVersion";
+    private static final String NOTIFICATION = "notify_last_version_frequency";
 
     /**
      * Metadata key
@@ -125,8 +124,13 @@ final class JsonConfigurationParser implements ConfigurationParser {
                         return; //return after finding the first feasible update
                     }
                 }
+                if (android.length() > 0) {
+                    throw new RequirementsNotSatisfiedException("No feasible updates in JSON!");
+                }
             } else if (json instanceof JSONObject) {
-                parseJsonUpdate(data.getJSONObject(ANDROID), builder, meta);
+                if (!parseJsonUpdate(data.getJSONObject(ANDROID), builder, meta)) {
+                    throw new RequirementsNotSatisfiedException("JSON update is not feasible!");
+                }
             }
         } else {
             throw new IllegalStateException("Config resource does not contain android key");

@@ -7,5 +7,13 @@
       "notification_type": "ONCE",
       "min_sdk": 14
     }
+  },
+  "android2": {
+    "required_version": 123,
+    "last_version_available": 245,
+    "notify_last_version_frequency": "ONCE",
+    "requirements": {
+      "required_os_version": 14
+    }
   }
 }

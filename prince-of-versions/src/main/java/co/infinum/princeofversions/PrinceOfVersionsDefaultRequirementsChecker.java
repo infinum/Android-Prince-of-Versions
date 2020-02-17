@@ -13,7 +13,7 @@ class PrinceOfVersionsDefaultRequirementsChecker implements RequirementChecker {
     /**
      * Minimum SDK for mandatory version
      */
-    private static final String REQUIRED_ANDROID_VERSION = "requiredAndroidVersion";
+    private static final String REQUIRED_ANDROID_VERSION = "required_os_version";
     private int sdkVersionCode = Build.VERSION.SDK_INT;
 
     /**
@@ -23,6 +23,7 @@ class PrinceOfVersionsDefaultRequirementsChecker implements RequirementChecker {
      * @param data Json data that contains all requirements for new update
      * @return true or false depending if are required requirements matched
      */
+
     @Override
     public boolean checkRequirements(JSONObject data) throws JSONException {
         if (data.has(REQUIRED_ANDROID_VERSION)) {

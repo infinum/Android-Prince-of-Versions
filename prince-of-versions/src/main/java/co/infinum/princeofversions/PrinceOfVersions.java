@@ -55,7 +55,7 @@ public final class PrinceOfVersions {
     /**
      * Creates {@link PrinceOfVersions} using provided {@link Context} and {@link RequirementChecker}.
      *
-     * @param context            context which will be used for checking application version
+     * @param context             context which will be used for checking application version
      * @param requirementCheckers List of custom requirement chcekers used for pointing to the right configuration
      */
     public PrinceOfVersions(Context context, List<RequirementChecker> requirementCheckers) {
@@ -70,8 +70,8 @@ public final class PrinceOfVersions {
     }
 
     @VisibleForTesting
-    PrinceOfVersions(Storage storage,Executor callbackExecutor, ApplicationConfiguration appConfig, List<RequirementChecker> checkers){
-        this(createMockedParser(checkers),storage,callbackExecutor,appConfig);
+    PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig, List<RequirementChecker> checkers) {
+        this(createMockedParser(checkers), storage, callbackExecutor, appConfig);
     }
 
     private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
@@ -93,7 +93,7 @@ public final class PrinceOfVersions {
     }
 
     @VisibleForTesting
-    private static ConfigurationParser createMockedParser(List<RequirementChecker> requirementCheckers){
+    private static ConfigurationParser createMockedParser(List<RequirementChecker> requirementCheckers) {
         return new JsonConfigurationParser(new PrinceOfVersionsCompositeRequirementsChecker(
             requirementCheckers
         ));
@@ -157,7 +157,7 @@ public final class PrinceOfVersions {
      * @param callback Callback to notify result.
      * @return instance through which is possible to cancel the call.
      */
-    public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
+    PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
         return checkForUpdatesInternal(executor, loader, new ExecutorUpdaterCallback(callback, callbackExecutor));
     }
 

@@ -16,7 +16,7 @@ public class MockDefaultRequirementChecker implements RequirementChecker {
     /**
      * Minimum SDK for mandatory version
      */
-    private static final String REQUIRED_ANDROID_VERSION = "requiredAndroidVersion";
+    private static final String REQUIRED_ANDROID_VERSION = "required_os_version";
     private int sdkVersionCode;
 
     public MockDefaultRequirementChecker(ApplicationConfiguration appConfig){
