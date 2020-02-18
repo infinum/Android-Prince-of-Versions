@@ -754,7 +754,7 @@ public class PrinceOfVersionsTest {
     @Test(expected = Throwable.class)
     public void testCheckingOptionalUpdateWithHugeSdkValuesSync() throws Throwable {
         Storage storage = new MockStorage();
-        MockApplicationConfiguration appConfig = new MockApplicationConfiguration(241,16);
+        MockApplicationConfiguration appConfig = new MockApplicationConfiguration(241, 16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
@@ -780,6 +780,7 @@ public class PrinceOfVersionsTest {
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(11);
     }
 
+    /*
     @Test
     public void testCheckingOptionalUpdateWithSingleSdkValueSync() throws Throwable {
         Storage storage = new MockStorage();

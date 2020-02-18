@@ -66,7 +66,12 @@ final class JsonConfigurationParser implements ConfigurationParser {
     /**
      * Android key
      */
-    private static final String ANDROID = "android2";
+    private static final String ANDROID = "android";
+
+    /**
+     * Android2 key
+     */
+    private static final String ANDROID2 = "android2";
 
     /**
      * Minimum version key
@@ -114,26 +119,33 @@ final class JsonConfigurationParser implements ConfigurationParser {
                 builder.withMetadata(jsonObjectToMap((JSONObject) meta));
             }
         }
-        if (data.has(ANDROID)) {
-            Object json = new JSONTokener(data.get(ANDROID).toString()).nextValue();
-            if (json instanceof JSONArray) {
-                JSONArray android = data.getJSONArray(ANDROID);
-                for (int i = 0; i < android.length(); i++) {
-                    JSONObject update = android.getJSONObject(i);
-                    if (parseJsonUpdate(update, builder, meta)) {
-                        return; //return after finding the first feasible update
-                    }
-                }
-                if (android.length() > 0) {
-                    throw new RequirementsNotSatisfiedException("No feasible updates in JSON!");
-                }
-            } else if (json instanceof JSONObject) {
-                if (!parseJsonUpdate(data.getJSONObject(ANDROID), builder, meta)) {
-                    throw new RequirementsNotSatisfiedException("JSON update is not feasible!");
-                }
-            }
+        if (data.has(ANDROID2)) {
+            handleAndroidJsonUpdate(data, builder, meta, ANDROID2);
+        } else if (data.has(ANDROID)) {
+            handleAndroidJsonUpdate(data, builder, meta, ANDROID);
         } else {
             throw new IllegalStateException("Config resource does not contain android key");
+        }
+    }
+
+    private void handleAndroidJsonUpdate(JSONObject data, PrinceOfVersionsConfig.Builder builder, Object meta, String androidKey) throws
+        JSONException {
+        Object json = new JSONTokener(data.get(androidKey).toString()).nextValue();
+        if (json instanceof JSONArray) {
+            JSONArray android = data.getJSONArray(androidKey);
+            for (int i = 0; i < android.length(); i++) {
+                JSONObject update = android.getJSONObject(i);
+                if (parseJsonUpdate(update, builder, meta)) {
+                    return; //return after finding the first feasible update
+                }
+            }
+            if (android.length() > 0) {
+                throw new RequirementsNotSatisfiedException("No feasible updates in JSON!");
+            }
+        } else if (json instanceof JSONObject) {
+            if (!parseJsonUpdate(data.getJSONObject(androidKey), builder, meta)) {
+                throw new RequirementsNotSatisfiedException("JSON update is not feasible!");
+            }
         }
     }
 
