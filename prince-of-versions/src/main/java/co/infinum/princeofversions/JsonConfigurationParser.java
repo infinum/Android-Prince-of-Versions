@@ -140,11 +140,11 @@ final class JsonConfigurationParser implements ConfigurationParser {
                 }
             }
             if (android.length() > 0) {
-                throw new RequirementsNotSatisfiedException("No feasible updates in JSON!");
+                throw new RequirementsNotSatisfiedException(jsonObjectToMap((JSONObject) meta));
             }
         } else if (json instanceof JSONObject) {
             if (!parseJsonUpdate(data.getJSONObject(androidKey), builder, meta)) {
-                throw new RequirementsNotSatisfiedException("JSON update is not feasible!");
+                throw new RequirementsNotSatisfiedException(jsonObjectToMap((JSONObject) meta));
             }
         }
     }
