@@ -24,7 +24,7 @@ public class CommonUsageExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, Object> metadata) {
             toastIt(
                 getString(
                     R.string.update_available_msg,
@@ -36,7 +36,7 @@ public class CommonUsageExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate(@NonNull Map<String, String> metadata) {
+        public void onNoUpdate(@NonNull Map<String, Object> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 
@@ -72,7 +72,7 @@ public class CommonUsageExample extends AppCompatActivity {
         /*  create new instance of updater */
         updater = new PrinceOfVersions.Builder().addRequirementsChecker(requirementsChecker).build(this);
         /*  create specific loader factory for loading from internet  */
-        loader = new NetworkLoader("https://pastebin.com/raw/BqRRFgFS");
+        loader = new NetworkLoader("https://pastebin.com/raw/4pVYKz0r");
         slowLoader = createSlowLoader(loader);
     }
 

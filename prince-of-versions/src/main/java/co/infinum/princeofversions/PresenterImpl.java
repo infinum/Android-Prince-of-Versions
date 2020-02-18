@@ -45,7 +45,6 @@ class PresenterImpl implements Presenter {
                         }
                     }
                 } catch (Throwable t) {
-                    System.out.println(t);
                     if (!call.isCanceled()) {
                         callback.onError(t);
                     }

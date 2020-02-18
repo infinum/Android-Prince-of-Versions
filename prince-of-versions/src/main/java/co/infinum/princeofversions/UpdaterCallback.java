@@ -17,13 +17,13 @@ public interface UpdaterCallback {
      * @param isMandatory Determines if update is mandatory or just optional, true if update is mandatory, false if it is optional.
      * @param metadata    Metadata accompanying the update
      */
-    void onNewUpdate(int version, boolean isMandatory, Map<String, String> metadata);
+    void onNewUpdate(int version, boolean isMandatory, Map<String, Object> metadata);
 
     /**
      * Method is called when update check is finished successfully, but there is no new update available.
      * @param metadata   Metadata accompanying no update message
      */
-    void onNoUpdate(Map<String, String> metadata);
+    void onNoUpdate(Map<String, Object> metadata);
 
     /**
      * Method is called when there was some error while computing update check.

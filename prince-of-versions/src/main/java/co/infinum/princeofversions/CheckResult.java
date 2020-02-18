@@ -22,25 +22,25 @@ final class CheckResult {
     @Nullable
     private NotificationType notificationType;
 
-    private Map<String, String> metadata;
+    private Map<String, Object> metadata;
 
     private CheckResult(UpdateStatus status, Integer updateVersion, @Nullable NotificationType notificationType,
-        Map<String, String> metadata) {
+        Map<String, Object> metadata) {
         this.status = status;
         this.updateVersion = updateVersion;
         this.notificationType = notificationType;
         this.metadata = metadata;
     }
 
-    static CheckResult mandatoryUpdate(Integer version, Map<String, String> metadata) {
+    static CheckResult mandatoryUpdate(Integer version, Map<String, Object> metadata) {
         return new CheckResult(UpdateStatus.MANDATORY, version, null, metadata);
     }
 
-    static CheckResult optionalUpdate(Integer version, NotificationType notificationType, Map<String, String> metadata) {
+    static CheckResult optionalUpdate(Integer version, NotificationType notificationType, Map<String, Object> metadata) {
         return new CheckResult(UpdateStatus.OPTIONAL, version, notificationType, metadata);
     }
 
-    static CheckResult noUpdate(Integer version, Map<String, String> metadata) {
+    static CheckResult noUpdate(Integer version, Map<String, Object> metadata) {
         return new CheckResult(UpdateStatus.NO_UPDATE, version, null, metadata);
     }
 
@@ -73,7 +73,7 @@ final class CheckResult {
         return status;
     }
 
-    Map<String, String> metadata() {
+    Map<String, Object> metadata() {
         return metadata;
     }
 

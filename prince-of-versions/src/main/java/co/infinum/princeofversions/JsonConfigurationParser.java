@@ -163,8 +163,8 @@ final class JsonConfigurationParser implements ConfigurationParser {
             if (update.has(META)) {
                 updateMeta = update.get(META);
                 if (updateMeta instanceof JSONObject) {
-                    Map<String, String> metaMap = jsonObjectToMap((JSONObject) meta);
-                    Map<String, String> updateMetaMap = jsonObjectToMap((JSONObject) updateMeta);
+                    Map<String, Object> metaMap = jsonObjectToMap((JSONObject) meta);
+                    Map<String, Object> updateMetaMap = jsonObjectToMap((JSONObject) updateMeta);
                     metaMap.putAll(updateMetaMap);
                     builder.withMetadata(metaMap);
                 }
@@ -207,15 +207,13 @@ final class JsonConfigurationParser implements ConfigurationParser {
     }
 
     @VisibleForTesting
-    Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
-        Map<String, String> map = new HashMap<>();
+    Map<String, Object> jsonObjectToMap(JSONObject object) throws JSONException {
+        Map<String, Object> map = new HashMap<>();
         Iterator<String> metadataIterator = object.keys();
         while (metadataIterator.hasNext()) {
             String key = metadataIterator.next();
             Object value = object.get(key);
-            if (value instanceof String) {
-                map.put(key, (String) value);
-            }
+            map.put(key, value);
         }
         return map;
     }

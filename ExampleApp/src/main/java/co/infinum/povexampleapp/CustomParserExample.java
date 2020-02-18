@@ -28,7 +28,7 @@ public class CustomParserExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, Object> metadata) {
             toastIt(
                 getString(
                     R.string.update_available_msg,
@@ -40,7 +40,7 @@ public class CustomParserExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate(@NonNull Map<String, String> metadata) {
+        public void onNoUpdate(@NonNull Map<String, Object> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 

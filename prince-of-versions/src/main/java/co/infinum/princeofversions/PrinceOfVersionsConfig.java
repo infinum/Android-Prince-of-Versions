@@ -31,13 +31,13 @@ public final class PrinceOfVersionsConfig {
     /**
      * Metadata of the update configuration
      */
-    private final Map<String, String> metadata;
+    private final Map<String, Object> metadata;
 
     PrinceOfVersionsConfig(
         int mandatoryVersion,
         int optionalVersion,
         @Nonnull NotificationType optionalNotificationType,
-        @Nonnull Map<String, String> metadata) {
+        @Nonnull Map<String, Object> metadata) {
 
         this.mandatoryVersion = (mandatoryVersion > 0) ? mandatoryVersion : null;
         this.optionalVersion = (optionalVersion > 0) ? optionalVersion : null;
@@ -59,7 +59,7 @@ public final class PrinceOfVersionsConfig {
         return optionalNotificationType;
     }
 
-    Map<String, String> getMetadata() {
+    Map<String, Object> getMetadata() {
         return metadata;
     }
 
@@ -122,7 +122,7 @@ public final class PrinceOfVersionsConfig {
         private NotificationType optionalNotificationType;
 
         @Nullable
-        private Map<String, String> metadata;
+        private Map<String, Object> metadata;
 
         public Builder() {
         }
@@ -166,7 +166,7 @@ public final class PrinceOfVersionsConfig {
          * @param metadata String to string map
          * @return this builder
          */
-        public Builder withMetadata(Map<String, String> metadata) {
+        public Builder withMetadata(Map<String, Object> metadata) {
             this.metadata = metadata;
             return this;
         }
@@ -181,7 +181,7 @@ public final class PrinceOfVersionsConfig {
                 mandatoryVersion,
                 optionalVersion,
                 optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
-                metadata != null ? metadata : new HashMap<String, String>());
+                metadata != null ? metadata : new HashMap<String, Object>());
         }
     }
 }
