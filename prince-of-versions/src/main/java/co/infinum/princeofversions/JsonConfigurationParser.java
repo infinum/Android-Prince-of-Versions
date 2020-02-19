@@ -214,13 +214,13 @@ final class JsonConfigurationParser implements ConfigurationParser {
     }
 
     @VisibleForTesting
-    Map<String, Object> jsonObjectToMap(JSONObject object) throws JSONException {
-        Map<String, Object> map = new HashMap<>();
+    Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
+        Map<String, String> map = new HashMap<>();
         Iterator<String> metadataIterator = object.keys();
         while (metadataIterator.hasNext()) {
             String key = metadataIterator.next();
             Object value = object.get(key);
-            map.put(key, value);
+            map.put(key, String.valueOf(value));
         }
         return map;
     }

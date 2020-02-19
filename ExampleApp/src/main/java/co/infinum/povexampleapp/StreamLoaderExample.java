@@ -24,7 +24,7 @@ public class StreamLoaderExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, Object> metadata) {
+        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, String> metadata) {
             toastIt(
                 getString(
                     R.string.update_available_msg,
@@ -36,7 +36,7 @@ public class StreamLoaderExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate(@NonNull Map<String, Object> metadata) {
+        public void onNoUpdate(@NonNull Map<String, String> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 

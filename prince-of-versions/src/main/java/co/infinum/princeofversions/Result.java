@@ -26,9 +26,9 @@ public final class Result {
     /**
      * Metadata about update
      */
-    private Map<String, Object> metadata;
+    private Map<String, String> metadata;
 
-    Result(UpdateStatus status, int version, Map<String, Object> metadata) {
+    Result(UpdateStatus status, int version, Map<String, String> metadata) {
         this.status = status;
         this.version = version;
         this.metadata = metadata;
@@ -57,7 +57,7 @@ public final class Result {
      *
      * @return metadata of update
      */
-    public Map<String, Object> getMetadata() {
+    public Map<String, String> getMetadata() {
         return metadata;
     }
 
