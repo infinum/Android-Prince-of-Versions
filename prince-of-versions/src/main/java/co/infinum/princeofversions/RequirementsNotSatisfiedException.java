@@ -22,6 +22,6 @@ class RequirementsNotSatisfiedException extends IllegalStateException {
 
     @Override
     public String toString() {
-        return metadata.toString();
+        return "RequirementsNotSatisfiedException " + metadata.toString();
     }
 }
