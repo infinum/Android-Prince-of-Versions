@@ -106,8 +106,8 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
      * @param metadata    Metadata accompanying the update
      */
     @Override
-    public void onNewUpdate(@NotNull int version, final boolean isMandatory, @NotNull Map<String, Object> metadata) {
-        String princeVersionCode = (String) metadata.get("version-code");
+    public void onNewUpdate(@NotNull int version, final boolean isMandatory, @NotNull Map<String, String> metadata) {
+        String princeVersionCode = metadata.get("version-code");
         checkWithGoogleForAnUpdate(isMandatory, princeVersionCode);
     }
 
@@ -119,8 +119,8 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
      * @param metadata Metadata accompanying no update message
      */
     @Override
-    public void onNoUpdate(@NotNull Map<String, Object> metadata) {
-        String princeVersionCode = (String) metadata.get("version-code");
+    public void onNoUpdate(@NotNull Map<String, String> metadata) {
+        String princeVersionCode = metadata.get("version-code");
         checkWithGoogleForAnUpdate(false, princeVersionCode);
     }
 

@@ -10,13 +10,13 @@ class RequirementsNotSatisfiedException extends IllegalStateException {
     /**
      * Default metadata from root object in JSON file
      */
-    private Map<String, Object> metadata;
+    private Map<String, String> metadata;
 
-    RequirementsNotSatisfiedException(Map<String, Object> metadata) {
+    RequirementsNotSatisfiedException(Map<String, String> metadata) {
         this.metadata = metadata;
     }
 
-    public Map<String, Object> getMetadata() {
+    public Map<String, String> getMetadata() {
         return metadata;
     }
 
