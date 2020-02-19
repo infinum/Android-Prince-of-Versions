@@ -55,7 +55,7 @@ public class CommonUsageExample extends AppCompatActivity {
 
     private PrinceOfVersionsCancelable cancelable;
 
-    private PrinceRequirementsChecker requirementsChecker = new PrinceRequirementsChecker();
+    private ExampleRequirementsChecker requirementsChecker = new ExampleRequirementsChecker();
 
     /**
      * This instance represents a very slow loader, just to give you enough time to invoke cancel option.

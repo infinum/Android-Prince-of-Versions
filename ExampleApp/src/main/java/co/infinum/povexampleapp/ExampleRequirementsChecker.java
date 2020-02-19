@@ -9,7 +9,7 @@ import co.infinum.princeofversions.RequirementChecker;
  * Example of custom requirements checker
  */
 
-public class PrinceRequirementsChecker implements RequirementChecker {
+public class ExampleRequirementsChecker implements RequirementChecker {
 
     /**
      * Minimum SDK for mandatory version
