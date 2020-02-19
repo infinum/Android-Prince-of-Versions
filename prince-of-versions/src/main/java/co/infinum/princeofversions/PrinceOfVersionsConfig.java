@@ -1,6 +1,5 @@
 package co.infinum.princeofversions;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -182,7 +181,7 @@ public final class PrinceOfVersionsConfig {
                 mandatoryVersion,
                 optionalVersion,
                 optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
-                metadata != null ? metadata : new HashMap<String, String>());
+                metadata);
         }
     }
 }
