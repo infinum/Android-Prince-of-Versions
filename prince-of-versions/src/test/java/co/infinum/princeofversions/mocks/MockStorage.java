@@ -1,25 +1,28 @@
 package co.infinum.princeofversions.mocks;
 
+import javax.annotation.Nullable;
+
 import co.infinum.princeofversions.Storage;
 
 public class MockStorage implements Storage {
 
-    private String value;
+    private Integer value;
 
     public MockStorage() {
     }
 
-    public MockStorage(String value) {
+    public MockStorage(int value) {
         this.value = value;
     }
 
+    @Nullable
     @Override
-    public String lastNotifiedVersion(String defaultValue) {
+    public Integer lastNotifiedVersion(@Nullable Integer defaultValue) {
         return value != null ? value : defaultValue;
     }
 
     @Override
-    public void rememberLastNotifiedVersion(String version) {
+    public void rememberLastNotifiedVersion(@Nullable Integer version) {
         this.value = version;
     }
 }

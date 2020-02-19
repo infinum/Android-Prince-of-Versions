@@ -2,14 +2,13 @@ package co.infinum.princeofversions;
 
 import android.support.annotation.VisibleForTesting;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * This class represents parser for parsing loaded update configuration in <a href="http://www.json.org/">JSON</a> format.
@@ -66,44 +65,42 @@ final class JsonConfigurationParser implements ConfigurationParser {
     /**
      * Android key
      */
-    private static final String ANDROID = "android";
+    private static final String ANDROID_FALLBACK_KEY = "android";
+
+    /**
+     * Android2 key
+     */
+    private static final String ANDROID_KEY = "android2";
 
     /**
      * Minimum version key
      */
-    private static final String MINIMUM_VERSION = "minimum_version";
+    private static final String MINIMUM_VERSION = "required_version";
 
     /**
      * Latest version key
      */
-    private static final String LATEST_VERSION = "latest_version";
+    private static final String LATEST_VERSION = "last_version_available";
 
     /**
      * Notification type key
      */
-    private static final String NOTIFICATION = "notification_type";
-
-    /**
-     * Optional update version key
-     */
-    private static final String VERSION = "version";
+    private static final String NOTIFICATION = "notify_last_version_frequency";
 
     /**
      * Metadata key
      */
     private static final String META = "meta";
 
-    /**
-     * Minimum SDK for mandatory version
-     */
-    private static final String MANDATORY_MIN_SDK = "minimum_version_min_sdk";
-
-    /**
-     * Minimum SDK for optional version
-     */
-    private static final String OPTIONAL_MIN_SDK = "min_sdk";
-
     private static final String NOTIFICATION_ALWAYS = "always";
+
+    private static final String REQUIREMENTS = "requirements";
+
+    private RequirementChecker requirementChecker;
+
+    JsonConfigurationParser(RequirementChecker requirementChecker) {
+        this.requirementChecker = requirementChecker;
+    }
 
     @Override
     public PrinceOfVersionsConfig parse(String content) throws Throwable {
@@ -114,63 +111,117 @@ final class JsonConfigurationParser implements ConfigurationParser {
     }
 
     private void parseToBuilder(JSONObject data, PrinceOfVersionsConfig.Builder builder) throws JSONException {
-        if (data.has(ANDROID)) {
-            JSONObject android = data.getJSONObject(ANDROID);
-            if (android.has(MINIMUM_VERSION)) {
-                String min = android.getString(MINIMUM_VERSION);
-                if (isNonEmpty(min)) {
-                    builder.withMandatoryVersion(min);
-                }
-            }
-            if (android.has(MANDATORY_MIN_SDK)) {
-                builder.withMandatoryMinSdk(android.getInt(MANDATORY_MIN_SDK));
-            }
-            if (android.has(LATEST_VERSION)) {
-                JSONObject updateObject = android.getJSONObject(LATEST_VERSION);
-                if (updateObject.has(VERSION)) {
-                    String latest = updateObject.getString(VERSION);
-                    if (isNonEmpty(latest)) {
-                        builder.withOptionalVersion(latest);
-                    }
-                }
-                if (updateObject.has(OPTIONAL_MIN_SDK)) {
-                    builder.withOptionalMinSdk(updateObject.getInt(OPTIONAL_MIN_SDK));
-                }
-                if (updateObject.has(NOTIFICATION)) {
-                    String notification = updateObject.getString(NOTIFICATION);
-                    builder.withOptionalNotificationType(
-                            notification != null && notification.equalsIgnoreCase(NOTIFICATION_ALWAYS) ? NotificationType.ALWAYS
-                                    : NotificationType.ONCE);
-                }
-            }
-        } else {
-            throw new IllegalStateException("Config resource does not contain android key");
-        }
+        Object meta = null;
         if (data.has(META)) {
-            Object meta = data.get(META);
+            meta = data.get(META);
             if (meta instanceof JSONObject) {
                 builder.withMetadata(jsonObjectToMap((JSONObject) meta));
             }
         }
+        if (data.has(ANDROID_KEY)) {
+            handleAndroidJsonUpdate(data, builder, meta, ANDROID_KEY);
+        } else if (data.has(ANDROID_FALLBACK_KEY)) {
+            handleAndroidJsonUpdate(data, builder, meta, ANDROID_FALLBACK_KEY);
+        } else {
+            throw new IllegalStateException("Config resource does not contain android key");
+        }
+    }
+
+    private void handleAndroidJsonUpdate(JSONObject data, PrinceOfVersionsConfig.Builder builder, Object meta, String androidKey) throws
+        JSONException {
+        Object json = data.get(androidKey);
+        if (json instanceof JSONArray) {
+            JSONArray android = data.getJSONArray(androidKey);
+            for (int i = 0; i < android.length(); i++) {
+                JSONObject update = android.getJSONObject(i);
+                if (parseJsonUpdate(update, builder)) {
+                    return; //return after finding the first feasible update
+                }
+            }
+            if (android.length() > 0) {
+                throw new RequirementsNotSatisfiedException(jsonObjectToMap((JSONObject) meta));
+            } else {
+                throw new IllegalArgumentException("JSON doesn't contain any feasible update. Check JSON update format!");
+            }
+        } else if (json instanceof JSONObject) {
+            if (!parseJsonUpdate(data.getJSONObject(androidKey), builder)) {
+                throw new RequirementsNotSatisfiedException(jsonObjectToMap((JSONObject) meta));
+            }
+        }
+    }
+
+    private void mergeUpdateMetaWithDefaultMeta(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws
+        JSONException {
+        Object updateMeta;
+        if (update.has(META)) {
+            updateMeta = update.get(META);
+            if (updateMeta instanceof JSONObject) {
+                builder.withMetadata(jsonObjectToMap((JSONObject) updateMeta));
+            }
+        }
+    }
+
+    private void saveFirstAcceptableUpdate(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws JSONException {
+        if (update.has(MINIMUM_VERSION)) {
+            Object min = update.get(MINIMUM_VERSION);
+            if (min instanceof Integer) {
+                builder.withMandatoryVersion((Integer) min);
+            } else {
+                throw new IllegalArgumentException("In update configuration " + MINIMUM_VERSION + " it should be int, but the actual "
+                    + "value is "
+                    + update.get(MINIMUM_VERSION).toString());
+            }
+        }
+        if (update.has(LATEST_VERSION)) {
+            Object latest = update.get(LATEST_VERSION);
+            if (latest instanceof Integer) {
+                builder.withOptionalVersion((Integer) latest);
+            } else {
+                throw new IllegalArgumentException("In update configuration " + LATEST_VERSION + " it should be int, but the actual "
+                    + "value is "
+                    + update.get(LATEST_VERSION).toString());
+            }
+        }
+        if (update.has(NOTIFICATION)) {
+            Object notification = update.get(NOTIFICATION);
+            if (notification instanceof String) {
+                builder.withOptionalNotificationType(
+                    ((String) notification).equalsIgnoreCase(NOTIFICATION_ALWAYS) ? NotificationType.ALWAYS
+                        : NotificationType.ONCE);
+            } else {
+                throw new IllegalArgumentException("In update configuration " + NOTIFICATION + " it should be String, but the actual "
+                    + "value is "
+                    + update.get(NOTIFICATION).toString());
+            }
+        }
+    }
+
+    private boolean parseJsonUpdate(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws
+        JSONException {
+        if (update.has(REQUIREMENTS)) {
+            JSONObject requirements = update.getJSONObject(REQUIREMENTS);
+            if (requirementChecker.checkRequirements(requirements)) {
+                saveFirstAcceptableUpdate(update, builder);
+                mergeUpdateMetaWithDefaultMeta(update, builder);
+                return true;
+            }
+            return false;
+        } else {
+            saveFirstAcceptableUpdate(update, builder);
+            mergeUpdateMetaWithDefaultMeta(update, builder);
+            return true;
+        }
     }
 
     @VisibleForTesting
-    Map<String, String> jsonObjectToMap(JSONObject object) throws JSONException {
-        Map<String, String> map = new HashMap<>();
+    Map<String, Object> jsonObjectToMap(JSONObject object) throws JSONException {
+        Map<String, Object> map = new HashMap<>();
         Iterator<String> metadataIterator = object.keys();
         while (metadataIterator.hasNext()) {
             String key = metadataIterator.next();
             Object value = object.get(key);
-            if (value instanceof String) {
-                map.put(key, (String) value);
-            }
+            map.put(key, value);
         }
         return map;
     }
-
-    @VisibleForTesting
-    boolean isNonEmpty(@Nullable String value) {
-        return value != null && value.trim().length() > 0 && !value.trim().toLowerCase().equals("null");
-    }
-
 }

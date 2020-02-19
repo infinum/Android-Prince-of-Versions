@@ -30,7 +30,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation deps.semver
     compileOnly deps.appcompat
     compileOnly deps.fbannotations
 

@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         Button customParser = findViewById(R.id.btn_open_custom_parser);
         Button stream = findViewById(R.id.btn_open_stream_example);
         Button googleUpdates = findViewById(R.id.btn_open_google_inapp_updates);
+        Button customChecker = findViewById(R.id.btn_open_custom_checker);
         commonUsage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
                 onGoogleUpdatesClick();
             }
         });
+        customChecker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCustomCheckerClick();
+            }
+        });
     }
 
     private void onCommonUsageClick() {
@@ -70,5 +77,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, StreamLoaderExample.class));
     }
 
-    private void onGoogleUpdatesClick() { startActivity(new Intent(this,GoogleInAppUpdatesExample.class));}
- }
+    private void onGoogleUpdatesClick() {
+        startActivity(new Intent(this, GoogleInAppUpdatesExample.class));
+    }
+
+    private void onCustomCheckerClick() {
+        startActivity(new Intent(this, CustomRequirementCheckerExample.class));
+    }
+}

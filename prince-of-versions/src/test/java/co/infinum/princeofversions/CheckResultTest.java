@@ -9,7 +9,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class CheckResultTest {
 
-    private static final String DEFAULT_VERSION = "version";
+    private static final int DEFAULT_VERSION = 1;
 
     private static final Map<String, String> DEFAULT_METADATA = new HashMap<>();
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +21,7 @@ import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.Result;
 import co.infinum.princeofversions.UpdaterCallback;
 
-public class CommonUsageExample extends AppCompatActivity {
+public class CustomRequirementCheckerExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
@@ -56,21 +57,26 @@ public class CommonUsageExample extends AppCompatActivity {
     private PrinceOfVersionsCancelable cancelable;
 
     /**
+     * Custom Requirements checker that we are using to demonstrate how can you check custom requirements on your JSON file
+     */
+    private ExampleRequirementsChecker requirementsChecker = new ExampleRequirementsChecker();
+
+    /**
      * This instance represents a very slow loader, just to give you enough time to invoke cancel option.
      */
     private Loader slowLoader;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_common_usage);
 
         initUI();
 
         /*  create new instance of updater */
-        updater = new PrinceOfVersions.Builder().build(this);
+        updater = new PrinceOfVersions.Builder().addRequirementsChecker(requirementsChecker).build(this);
         /*  create specific loader factory for loading from internet  */
-        loader = new NetworkLoader("https://pastebin.com/raw/4pVYKz0r");
+        loader = new NetworkLoader("https://pastebin.com/raw/Tvjc7WSv");
         slowLoader = createSlowLoader(loader);
     }
 
@@ -85,6 +91,7 @@ public class CommonUsageExample extends AppCompatActivity {
         Button btnCancelTest = findViewById(R.id.btnCancelTest);
         Button btnCancel = findViewById(R.id.btnCancel);
         Button btnCheckSync = findViewById(R.id.btnCheckSync);
+
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,8 +163,14 @@ public class CommonUsageExample extends AppCompatActivity {
         this.cancelable = cancelable;
     }
 
-    private void toastIt(final String message, final int duration) {
-        Toast.makeText(getApplicationContext(), message, duration).show();
+    private Loader createSlowLoader(final Loader loader) {
+        return new Loader() {
+            @Override
+            public String load() throws Throwable {
+                Thread.sleep(2000);
+                return loader.load();
+            }
+        };
     }
 
     private void toastItOnMainThread(final String message, final int duration) {
@@ -169,13 +182,7 @@ public class CommonUsageExample extends AppCompatActivity {
         });
     }
 
-    private Loader createSlowLoader(final Loader loader) {
-        return new Loader() {
-            @Override
-            public String load() throws Throwable {
-                Thread.sleep(2000);
-                return loader.load();
-            }
-        };
+    private void toastIt(final String message, final int duration) {
+        Toast.makeText(getApplicationContext(), message, duration).show();
     }
 }

@@ -24,19 +24,19 @@ public class StreamLoaderExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, Object> metadata) {
             toastIt(
-                    getString(
-                            R.string.update_available_msg,
-                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
-                            version
-                    ),
-                    Toast.LENGTH_SHORT
+                getString(
+                    R.string.update_available_msg,
+                    getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
+                    version
+                ),
+                Toast.LENGTH_SHORT
             );
         }
 
         @Override
-        public void onNoUpdate(@NonNull Map<String, String> metadata) {
+        public void onNoUpdate(@NonNull Map<String, Object> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 
@@ -103,7 +103,7 @@ public class StreamLoaderExample extends AppCompatActivity {
     private void onCheckClick() {
         /*  call check for updates for start checking and remember return value if you need cancel option    */
         PrinceOfVersionsCancelable cancelable = updater
-                .checkForUpdates(new StreamLoader(getResources().openRawResource(R.raw.update)), defaultCallback);
+            .checkForUpdates(new StreamLoader(getResources().openRawResource(R.raw.update)), defaultCallback);
         replaceCancelable(cancelable);
     }
 
@@ -115,7 +115,7 @@ public class StreamLoaderExample extends AppCompatActivity {
                 try {
                     Result result = updater.checkForUpdates(new StreamLoader(getResources().openRawResource(R.raw.update)));
                     toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getVersion(),
-                            Toast.LENGTH_LONG);
+                        Toast.LENGTH_LONG);
                 } catch (Throwable throwable) {
                     toastItOnMainThread("Error occurred " + throwable.getMessage(), Toast.LENGTH_LONG);
                 }
@@ -128,7 +128,7 @@ public class StreamLoaderExample extends AppCompatActivity {
         /*  same call as few lines higher, but using another loader, this one is very slow loader just to demonstrate cancel
         functionality. */
         PrinceOfVersionsCancelable cancelable = updater
-                .checkForUpdates(createSlowLoader(new StreamLoader(getResources().openRawResource(R.raw.update))), defaultCallback);
+            .checkForUpdates(createSlowLoader(new StreamLoader(getResources().openRawResource(R.raw.update))), defaultCallback);
         replaceCancelable(cancelable);
     }
 

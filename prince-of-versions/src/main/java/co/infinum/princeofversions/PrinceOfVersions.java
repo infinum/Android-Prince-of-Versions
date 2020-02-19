@@ -3,6 +3,9 @@ package co.infinum.princeofversions;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Nullable;
@@ -44,37 +47,60 @@ public final class PrinceOfVersions {
      * @param context context which will be used for checking application version.
      */
     public PrinceOfVersions(Context context) {
-        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createDefaultCallbackExecutor(),
+        this(createDefaultParser(Collections.<RequirementChecker>emptyList()), createDefaultStorage(context),
+            createDefaultCallbackExecutor(),
+            createAppConfig(context));
+    }
+
+    /**
+     * Creates {@link PrinceOfVersions} using provided {@link Context} and {@link RequirementChecker}.
+     *
+     * @param context             context which will be used for checking application version
+     * @param requirementCheckers List of custom requirement chcekers used for pointing to the right configuration
+     */
+    public PrinceOfVersions(Context context, List<RequirementChecker> requirementCheckers) {
+        this(createDefaultParser(requirementCheckers), createDefaultStorage(context),
+            createDefaultCallbackExecutor(),
             createAppConfig(context));
     }
 
     @VisibleForTesting
-    public PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
-        this(createDefaultParser(), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
+    PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
+        this(createDefaultParser(Collections.<RequirementChecker>emptyList()), storage, callbackExecutor, appConfig);
     }
 
-    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+    @VisibleForTesting
+    PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig, List<RequirementChecker> checkers) {
+        this(createMockedParser(checkers), storage, callbackExecutor, appConfig);
+    }
+
+    private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
         Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
-            new InteractorImpl(configurationParser, versionParser),
+            new InteractorImpl(configurationParser),
             storage
         );
         this.callbackExecutor = callbackExecutor;
         this.appConfig = appConfig;
     }
 
-    private static ConfigurationParser createDefaultParser() {
-        return new JsonConfigurationParser();
+    private static ConfigurationParser createDefaultParser(List<RequirementChecker> requirementCheckers) {
+        List<RequirementChecker> checkers = new ArrayList<>(requirementCheckers);
+        checkers.add(0, new PrinceOfVersionsDefaultRequirementsChecker());
+        return new JsonConfigurationParser(new PrinceOfVersionsCompositeRequirementsChecker(
+            checkers
+        ));
+    }
+
+    @VisibleForTesting
+    private static ConfigurationParser createMockedParser(List<RequirementChecker> requirementCheckers) {
+        return new JsonConfigurationParser(new PrinceOfVersionsCompositeRequirementsChecker(
+            requirementCheckers
+        ));
     }
 
     private static Storage createDefaultStorage(Context context) {
-        PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
-        PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
-        return new MigrationStorage(oldStorage, storage);
-    }
-
-    private static VersionParser createDefaultVersionParser() {
-        return new PrinceOfVersionsDefaultVersionParser();
+        return new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
     }
 
     private static ApplicationConfiguration createAppConfig(Context context) {
@@ -131,12 +157,12 @@ public final class PrinceOfVersions {
      * @param callback Callback to notify result.
      * @return instance through which is possible to cancel the call.
      */
-    public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
+    PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
         return checkForUpdatesInternal(executor, loader, new ExecutorUpdaterCallback(callback, callbackExecutor));
     }
 
     @VisibleForTesting
-    public PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
+    PrinceOfVersionsCancelable checkForUpdatesInternal(Executor executor, Loader loader, UpdaterCallback callback) {
         return presenter.check(loader, executor, callback, appConfig);
     }
 
@@ -195,13 +221,12 @@ public final class PrinceOfVersions {
         private Storage storage;
 
         @Nullable
-        private VersionParser versionParser;
-
-        @Nullable
         private ApplicationConfiguration appConfig;
 
         @Nullable
         private Executor callbackExecutor;
+
+        public final List<RequirementChecker> requirementCheckers = new ArrayList<>();
 
         /**
          * Set a new configuration parser used to parse configuration file into the model.
@@ -226,17 +251,6 @@ public final class PrinceOfVersions {
         }
 
         /**
-         * Set a new version parser used to parse version strings.
-         *
-         * @param versionParser Version parser
-         * @return this builder
-         */
-        public Builder withVersionParser(VersionParser versionParser) {
-            this.versionParser = versionParser;
-            return this;
-        }
-
-        /**
          * Set a new callback executor which runs callback code on specific thread.
          *
          * @param callbackExecutor Callback executor
@@ -244,6 +258,17 @@ public final class PrinceOfVersions {
          */
         public Builder withCallbackExecutor(@Nullable final Executor callbackExecutor) {
             this.callbackExecutor = callbackExecutor;
+            return this;
+        }
+
+        /**
+         * Set a new custom requirements checker that's used in process of parsing JSON
+         *
+         * @param requirementsChecker Requirements checker
+         * @return this builder
+         */
+        public Builder addRequirementsChecker(RequirementChecker requirementsChecker) {
+            this.requirementCheckers.add(requirementsChecker);
             return this;
         }
 
@@ -267,8 +292,7 @@ public final class PrinceOfVersions {
          */
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(),
-                versionParser != null ? versionParser : createDefaultVersionParser(),
+                configurationParser != null ? configurationParser : createDefaultParser(this.requirementCheckers),
                 storage != null ? storage : createDefaultStorage(context),
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig != null ? appConfig : createAppConfig(context)
@@ -288,8 +312,7 @@ public final class PrinceOfVersions {
                     "You must define storage and application configuration if you don't provide Context.");
             }
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(),
-                versionParser != null ? versionParser : createDefaultVersionParser(),
+                configurationParser != null ? configurationParser : createDefaultParser(Collections.<RequirementChecker>emptyList()),
                 storage,
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig

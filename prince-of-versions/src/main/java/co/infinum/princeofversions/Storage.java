@@ -14,13 +14,13 @@ public interface Storage {
      * @return Previously saved last notified version if exists or defaultValue if does not exist.
      */
     @Nullable
-    String lastNotifiedVersion(@Nullable String defaultValue);
+    Integer lastNotifiedVersion(@Nullable Integer defaultValue);
 
     /**
      * Save last notified version.
      *
      * @param version Version to be saved.
      */
-    void rememberLastNotifiedVersion(@Nullable String version);
+    void rememberLastNotifiedVersion(@Nullable Integer version);
 
 }

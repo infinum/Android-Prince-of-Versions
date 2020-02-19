@@ -22,13 +22,13 @@ import co.infinum.princeofversions.UpdaterCallback;
 
 public class CallUsageExample extends AppCompatActivity {
 
-    private static final String VERSIONS_FILE_URL = "http://pastebin.com/raw/QFGjJrLP";
+    private static final String VERSIONS_FILE_URL = "https://pastebin.com/raw/QFGjJrLP";
 
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, Object> metadata) {
             toastIt(
                 getString(
                     R.string.update_available_msg,
@@ -40,7 +40,7 @@ public class CallUsageExample extends AppCompatActivity {
         }
 
         @Override
-        public void onNoUpdate(@NonNull Map<String, String> metadata) {
+        public void onNoUpdate(@NonNull Map<String, Object> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 

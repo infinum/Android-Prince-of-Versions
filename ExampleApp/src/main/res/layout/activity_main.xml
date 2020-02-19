@@ -35,6 +35,12 @@
         android:text="@string/open_stream_example" />
 
     <Button
+        android:id="@+id/btn_open_custom_checker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/custom_requirements_checker_example"/>
+
+    <Button
         android:id="@+id/btn_open_google_inapp_updates"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

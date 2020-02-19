@@ -17,30 +17,30 @@ final class CheckResult {
 
     private UpdateStatus status;
 
-    private String updateVersion;
+    private Integer updateVersion;
 
     @Nullable
     private NotificationType notificationType;
 
-    private Map<String, String> metadata;
+    private Map<String, Object> metadata;
 
-    private CheckResult(UpdateStatus status, String updateVersion, @Nullable NotificationType notificationType,
-        Map<String, String> metadata) {
+    private CheckResult(UpdateStatus status, Integer updateVersion, @Nullable NotificationType notificationType,
+        Map<String, Object> metadata) {
         this.status = status;
         this.updateVersion = updateVersion;
         this.notificationType = notificationType;
         this.metadata = metadata;
     }
 
-    static CheckResult mandatoryUpdate(String version, Map<String, String> metadata) {
+    static CheckResult mandatoryUpdate(Integer version, Map<String, Object> metadata) {
         return new CheckResult(UpdateStatus.MANDATORY, version, null, metadata);
     }
 
-    static CheckResult optionalUpdate(String version, NotificationType notificationType, Map<String, String> metadata) {
+    static CheckResult optionalUpdate(Integer version, NotificationType notificationType, Map<String, Object> metadata) {
         return new CheckResult(UpdateStatus.OPTIONAL, version, notificationType, metadata);
     }
 
-    static CheckResult noUpdate(String version, Map<String, String> metadata) {
+    static CheckResult noUpdate(Integer version, Map<String, Object> metadata) {
         return new CheckResult(UpdateStatus.NO_UPDATE, version, null, metadata);
     }
 
@@ -48,7 +48,7 @@ final class CheckResult {
         return UpdateStatus.MANDATORY.equals(status) || UpdateStatus.OPTIONAL.equals(status);
     }
 
-    String getUpdateVersion() {
+    int getUpdateVersion() {
         return updateVersion;
     }
 
@@ -73,7 +73,7 @@ final class CheckResult {
         return status;
     }
 
-    Map<String, String> metadata() {
+    Map<String, Object> metadata() {
         return metadata;
     }
 
@@ -91,21 +91,21 @@ final class CheckResult {
         if (status != result.status) {
             return false;
         }
-        if (getUpdateVersion() != null ? !getUpdateVersion().equals(result.getUpdateVersion()) : result.getUpdateVersion() != null) {
+        if (getUpdateVersion() != (result.getUpdateVersion())) {
             return false;
         }
         if (notificationType != result.notificationType) {
             return false;
         }
-        return metadata != null ? metadata.equals(result.metadata) : result.metadata == null;
+        return metadata.equals(result.metadata);
     }
 
     @Override
     public int hashCode() {
-        int result = status != null ? status.hashCode() : 0;
-        result = 31 * result + (getUpdateVersion() != null ? getUpdateVersion().hashCode() : 0);
+        int result = status.hashCode();
+        result = 31 * result + (getUpdateVersion());
         result = 31 * result + (getNotificationType() != null ? getNotificationType().hashCode() : 0);
-        result = 31 * result + (metadata != null ? metadata.hashCode() : 0);
+        result = 31 * result + (metadata.hashCode());
         return result;
     }
 }

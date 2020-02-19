@@ -28,19 +28,19 @@ public class CustomParserExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
+        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, Object> metadata) {
             toastIt(
-                    getString(
-                            R.string.update_available_msg,
-                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
-                            version
-                    ),
-                    Toast.LENGTH_SHORT
+                getString(
+                    R.string.update_available_msg,
+                    getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
+                    version
+                ),
+                Toast.LENGTH_SHORT
             );
         }
 
         @Override
-        public void onNoUpdate(@NonNull Map<String, String> metadata) {
+        public void onNoUpdate(@NonNull Map<String, Object> metadata) {
             toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
         }
 
@@ -71,7 +71,7 @@ public class CustomParserExample extends AppCompatActivity {
 
         @Override
         public PrinceOfVersionsConfig parse(@Nonnull String value) throws Throwable {
-            return new PrinceOfVersionsConfig.Builder().withMandatoryVersion(new JSONObject(value).getString(MINIMUM_VERSION)).build();
+            return new PrinceOfVersionsConfig.Builder().withMandatoryVersion(new JSONObject(value).getInt(MINIMUM_VERSION)).build();
         }
     };
 
@@ -84,7 +84,7 @@ public class CustomParserExample extends AppCompatActivity {
         /*  create new instance of updater using custom parser factory   */
         updater = new PrinceOfVersions.Builder().withParser(customParser).build(this);
         /*  create specific loader factory for loading from internet    */
-        loader = new NetworkLoader("http://pastebin.com/raw/c4c4pPyn");
+        loader = new NetworkLoader("https://pastebin.com/raw/c4c4pPyn");
         slowLoader = createSlowLoader(loader);
     }
 
@@ -139,7 +139,7 @@ public class CustomParserExample extends AppCompatActivity {
                 try {
                     Result result = updater.checkForUpdates(loader);
                     toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getVersion(),
-                            Toast.LENGTH_LONG);
+                        Toast.LENGTH_LONG);
                 } catch (Throwable throwable) {
                     toastItOnMainThread("Error occurred " + throwable.getMessage(), Toast.LENGTH_LONG);
                 }
