@@ -32,13 +32,13 @@ public final class PrinceOfVersionsConfig {
     /**
      * Metadata of the update configuration
      */
-    private final Map<String, Object> metadata;
+    private final Map<String, String> metadata;
 
     PrinceOfVersionsConfig(
         int mandatoryVersion,
         int optionalVersion,
         @Nonnull NotificationType optionalNotificationType,
-        @Nonnull Map<String, Object> metadata) {
+        @Nonnull Map<String, String> metadata) {
 
         this.mandatoryVersion = (mandatoryVersion > 0) ? mandatoryVersion : null;
         this.optionalVersion = (optionalVersion > 0) ? optionalVersion : null;
@@ -60,7 +60,7 @@ public final class PrinceOfVersionsConfig {
         return optionalNotificationType;
     }
 
-    Map<String, Object> getMetadata() {
+    Map<String, String> getMetadata() {
         return metadata;
     }
 
@@ -123,9 +123,10 @@ public final class PrinceOfVersionsConfig {
         private NotificationType optionalNotificationType;
 
         @Nullable
-        private Map<String, Object> metadata = Collections.emptyMap();
+        private Map<String, String> metadata;
 
         public Builder() {
+            this.metadata = new HashMap<>();
         }
 
         /**
@@ -167,8 +168,9 @@ public final class PrinceOfVersionsConfig {
          * @param metadata String to string map
          * @return this builder
          */
-        public Builder withMetadata(Map<String, Object> metadata) {
-            this.metadata.putAll(metadata);
+        public Builder withMetadata(Map<String, String> metadata) {
+            metadata.putAll(this.metadata);
+            this.metadata = metadata;
             return this;
         }
 
@@ -182,7 +184,7 @@ public final class PrinceOfVersionsConfig {
                 mandatoryVersion,
                 optionalVersion,
                 optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
-                metadata != null ? metadata : new HashMap<String, Object>());
+                metadata != null ? metadata : new HashMap<String, String>());
         }
     }
 }
