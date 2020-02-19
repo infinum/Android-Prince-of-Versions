@@ -76,7 +76,7 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
         /*  create new instance of updater */
         updater = new PrinceOfVersions.Builder().addRequirementsChecker(requirementsChecker).build(this);
         /*  create specific loader factory for loading from internet  */
-        loader = new NetworkLoader("https://pastebin.com/raw/Tvjc7WSv");
+        loader = new NetworkLoader("https://pastebin.com/raw/02vaigGm");
         slowLoader = createSlowLoader(loader);
     }
 

@@ -1,5 +1,7 @@
 package co.infinum.princeofversions;
 
+import android.util.Log;
+
 final class InteractorImpl implements Interactor {
 
     private ConfigurationParser configurationParser;
@@ -17,6 +19,7 @@ final class InteractorImpl implements Interactor {
     public CheckResult check(final Loader loader, final ApplicationConfiguration appConfig) throws Throwable {
         String content = loader.load();
         PrinceOfVersionsConfig config = configurationParser.parse(content);
+        Log.d("META:",config.getMetadata().toString());
 
         int currentVersion = appConfig.version();
 

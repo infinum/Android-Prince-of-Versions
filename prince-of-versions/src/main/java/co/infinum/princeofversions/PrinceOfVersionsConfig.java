@@ -122,7 +122,6 @@ public final class PrinceOfVersionsConfig {
         @Nullable
         private NotificationType optionalNotificationType;
 
-        @Nullable
         private Map<String, String> metadata;
 
         public Builder() {
@@ -169,8 +168,7 @@ public final class PrinceOfVersionsConfig {
          * @return this builder
          */
         public Builder withMetadata(Map<String, String> metadata) {
-            metadata.putAll(this.metadata);
-            this.metadata = metadata;
+            this.metadata.putAll(metadata);
             return this;
         }
 
