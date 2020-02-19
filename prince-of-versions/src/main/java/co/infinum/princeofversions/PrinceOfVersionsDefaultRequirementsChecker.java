@@ -27,8 +27,15 @@ class PrinceOfVersionsDefaultRequirementsChecker implements RequirementChecker {
     @Override
     public boolean checkRequirements(JSONObject data) throws JSONException {
         if (data.has(REQUIRED_ANDROID_VERSION)) {
-            int minSdk = data.getInt(REQUIRED_ANDROID_VERSION);
-            return minSdk <= sdkVersionCode;
+            Object minSdk = data.get(REQUIRED_ANDROID_VERSION);
+            if (minSdk instanceof Integer) {
+                return (Integer) minSdk <= sdkVersionCode;
+            } else {
+                throw new IllegalArgumentException(
+                    "In update configuration " + REQUIRED_ANDROID_VERSION + " it should be int, but the actual "
+                        + "value is "
+                        + data.get(REQUIRED_ANDROID_VERSION).toString());
+            }
         } else {
             return false;
         }

@@ -167,7 +167,11 @@ public final class PrinceOfVersionsConfig {
          * @return this builder
          */
         public Builder withMetadata(Map<String, Object> metadata) {
-            this.metadata = metadata;
+            if (this.metadata == null) {
+                this.metadata = metadata;
+            } else {
+                this.metadata.putAll(metadata);
+            }
             return this;
         }
 

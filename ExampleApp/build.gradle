@@ -28,5 +28,4 @@ dependencies {
     implementation project(':queen-of-versions')
 
     compileOnly deps.fbannotations
-    compile project(path: ':prince-of-versions')
 }

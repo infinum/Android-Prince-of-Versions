@@ -13,7 +13,6 @@ class RequirementsNotSatisfiedException extends IllegalStateException {
     private Map<String, Object> metadata;
 
     RequirementsNotSatisfiedException(Map<String, Object> metadata) {
-        super();
         this.metadata = metadata;
     }
 
