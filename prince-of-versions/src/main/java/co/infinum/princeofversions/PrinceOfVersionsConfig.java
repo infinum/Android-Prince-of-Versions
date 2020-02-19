@@ -122,10 +122,10 @@ public final class PrinceOfVersionsConfig {
         @Nullable
         private NotificationType optionalNotificationType;
 
-        @Nullable
-        private Map<String, Object> metadata = Collections.emptyMap();
+        private Map<String, Object> metadata;
 
         public Builder() {
+            this.metadata = new HashMap<>();
         }
 
         /**
