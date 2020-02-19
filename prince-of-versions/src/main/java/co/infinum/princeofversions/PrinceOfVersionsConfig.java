@@ -121,11 +121,7 @@ public final class PrinceOfVersionsConfig {
         @Nullable
         private NotificationType optionalNotificationType;
 
-        private Map<String, String> metadata;
-
-        public Builder() {
-            this.metadata = new HashMap<>();
-        }
+        private Map<String, Object> metadata = new HashMap<>();
 
         /**
          * Set a new mandatory version string.
