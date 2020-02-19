@@ -23,7 +23,6 @@ class PrinceOfVersionsCompositeRequirementsChecker implements RequirementChecker
                     return false;
                 }
             } catch (Exception e) {
-                e.fillInStackTrace();
                 return false;
             }
         }

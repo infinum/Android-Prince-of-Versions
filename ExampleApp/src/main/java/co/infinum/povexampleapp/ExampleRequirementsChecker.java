@@ -19,7 +19,6 @@ public class ExampleRequirementsChecker implements RequirementChecker {
     @Override
     public boolean checkRequirements(JSONObject data) throws JSONException {
         if (data.has(REQUIRED_LETTER_LENGTH)) {
-            int bok = Integer.parseInt("bok");
             int min = data.getInt(REQUIRED_LETTER_LENGTH);
             return min == 5;
         }
