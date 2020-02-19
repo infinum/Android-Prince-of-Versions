@@ -83,6 +83,7 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        onCancelClick();
     }
 
     private void initUI() {

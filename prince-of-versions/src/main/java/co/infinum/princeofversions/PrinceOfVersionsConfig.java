@@ -1,5 +1,6 @@
 package co.infinum.princeofversions;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,7 +123,7 @@ public final class PrinceOfVersionsConfig {
         private NotificationType optionalNotificationType;
 
         @Nullable
-        private Map<String, Object> metadata;
+        private Map<String, Object> metadata = Collections.emptyMap();
 
         public Builder() {
         }
@@ -167,11 +168,7 @@ public final class PrinceOfVersionsConfig {
          * @return this builder
          */
         public Builder withMetadata(Map<String, Object> metadata) {
-            if (this.metadata == null) {
-                this.metadata = metadata;
-            } else {
-                this.metadata.putAll(metadata);
-            }
+            this.metadata.putAll(metadata);
             return this;
         }
 
