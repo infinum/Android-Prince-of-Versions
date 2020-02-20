@@ -23,6 +23,8 @@ final class InteractorImpl implements Interactor {
         Integer mandatoryConfigVersion = config.getMandatoryVersion();
         Integer optionalConfigVersion = config.getOptionalVersion();
 
+        UpdateInfo updateInfo = new UpdateInfo(mandatoryConfigVersion, optionalConfigVersion, config.getRequirements(), currentVersion);
+
         if (mandatoryConfigVersion == null && optionalConfigVersion == null) {
             // neither mandatory nor optional version is provided
             throw new IllegalStateException("Both mandatory and optional version are null.");
@@ -39,11 +41,12 @@ final class InteractorImpl implements Interactor {
                     int optionalVersion = optionalConfigVersion;
                     if (optionalVersion > mandatoryVersion) {
                         // optional update also exists and has greater version than mandatory
-                        return CheckResult.mandatoryUpdate(optionalVersion, config.getMetadata());
+
+                        return CheckResult.mandatoryUpdate(optionalVersion, config.getMetadata(), updateInfo);
                     }
                 }
                 // if there is no optional update or it isn't greater than mandatory - notify mandatory version
-                return CheckResult.mandatoryUpdate(mandatoryVersion, config.getMetadata());
+                return CheckResult.mandatoryUpdate(mandatoryVersion, config.getMetadata(), updateInfo);
             }
         }
 
@@ -52,10 +55,10 @@ final class InteractorImpl implements Interactor {
             int optionalVersion = optionalConfigVersion;
             if (currentVersion < optionalVersion) {
                 return CheckResult.optionalUpdate(optionalVersion, config.getOptionalNotificationType(),
-                    config.getMetadata());
+                    config.getMetadata(), updateInfo);
             }
         }
 
-        return CheckResult.noUpdate(currentVersion, config.getMetadata());
+        return CheckResult.noUpdate(currentVersion, config.getMetadata(), updateInfo);
     }
 }

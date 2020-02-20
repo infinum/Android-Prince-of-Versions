@@ -33,16 +33,23 @@ public final class PrinceOfVersionsConfig {
      */
     private final Map<String, String> metadata;
 
+    /**
+     * Requirements from the ongoing update
+     */
+    private final Map<String, String> requirements;
+
     PrinceOfVersionsConfig(
         int mandatoryVersion,
         int optionalVersion,
         @Nonnull NotificationType optionalNotificationType,
-        @Nonnull Map<String, String> metadata) {
+        @Nonnull Map<String, String> metadata,
+        @Nonnull Map<String, String> requirements) {
 
         this.mandatoryVersion = (mandatoryVersion > 0) ? mandatoryVersion : null;
         this.optionalVersion = (optionalVersion > 0) ? optionalVersion : null;
         this.optionalNotificationType = optionalNotificationType;
         this.metadata = metadata;
+        this.requirements = requirements;
     }
 
     @Nullable
@@ -61,6 +68,10 @@ public final class PrinceOfVersionsConfig {
 
     Map<String, String> getMetadata() {
         return metadata;
+    }
+
+    Map<String, String> getRequirements() {
+        return requirements;
     }
 
     @Override
@@ -121,6 +132,9 @@ public final class PrinceOfVersionsConfig {
         @Nullable
         private NotificationType optionalNotificationType;
 
+        @Nullable
+        private Map<String, String> requirements;
+
         private Map<String, String> metadata;
 
         public Builder() {
@@ -172,6 +186,17 @@ public final class PrinceOfVersionsConfig {
         }
 
         /**
+         * Set new requirements about the update
+         *
+         * @param requirements String to string map
+         * @return this builder
+         */
+        public Builder withRequirements(Map<String, String> requirements) {
+            this.requirements = requirements;
+            return this;
+        }
+
+        /**
          * Create the {@link PrinceOfVersionsConfig} instance using the configured values.
          *
          * @return A new {@link PrinceOfVersionsConfig} instance
@@ -181,7 +206,8 @@ public final class PrinceOfVersionsConfig {
                 mandatoryVersion,
                 optionalVersion,
                 optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
-                metadata);
+                metadata,
+                requirements != null ? requirements : new HashMap<String, String>());
         }
     }
 }

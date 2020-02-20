@@ -1,6 +1,5 @@
 package co.infinum.princeofversions;
 
-import java.util.Map;
 import java.util.concurrent.Executor;
 
 /**
@@ -24,21 +23,11 @@ final class ExecutorUpdaterCallback implements UpdaterCallback {
     }
 
     @Override
-    public void onNewUpdate(final int version, final boolean isMandatory, final Map<String, String> metadata) {
+    public void onSuccess(final UpdateResult result) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                callback.onNewUpdate(version, isMandatory, metadata);
-            }
-        });
-    }
-
-    @Override
-    public void onNoUpdate(final Map<String, String> metadata) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                callback.onNoUpdate(metadata);
+                callback.onSuccess(result);
             }
         });
     }

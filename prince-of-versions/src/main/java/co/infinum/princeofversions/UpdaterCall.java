@@ -30,7 +30,7 @@ public final class UpdaterCall implements PrinceOfVersionsCall {
     }
 
     @Override
-    public Result execute() throws Throwable {
+    public UpdateResult execute() throws Throwable {
         if (executed.getAndSet(true)) {
             throw new IllegalStateException("Already executed!");
         }

@@ -203,6 +203,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
             if (requirementChecker.checkRequirements(requirements)) {
                 saveFirstAcceptableUpdate(update, builder);
                 mergeUpdateMetaWithDefaultMeta(update, builder);
+                builder.withRequirements(jsonObjectToMap(requirements));
                 return true;
             }
             return false;

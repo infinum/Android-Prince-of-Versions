@@ -19,7 +19,7 @@ public interface PrinceOfVersionsCall extends PrinceOfVersionsCancelable {
      *                   configuration content, while any other error would signal either invalid update configuration or inability to
      *                   compare versions correctly
      */
-    Result execute() throws Throwable;
+    UpdateResult execute() throws Throwable;
 
     /**
      * Asynchronously starts the update check and notify {@code callback} of its response or if an error

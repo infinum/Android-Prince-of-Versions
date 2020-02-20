@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 /**
  * Intermediate result of update check. This result contains following data:
  * <ul>
- * <li>Update status (one of MANDATORY, OPTIONAL or NO_UPDATE)</li>
+ * <li>Update status (one of REQUIRED_UPDATE_NEEDED, NEW_UPDATE_AVAILABLE or NO_UPDATE_AVAILABLE)</li>
  * <li>Update version</li>
  * <li>Notification type (ONCE or ALWAYS)</li>
  * <li>Metadata</li>
@@ -24,28 +24,32 @@ final class CheckResult {
 
     private Map<String, String> metadata;
 
+    private UpdateInfo info;
+
     private CheckResult(UpdateStatus status, Integer updateVersion, @Nullable NotificationType notificationType,
-        Map<String, String> metadata) {
+        Map<String, String> metadata, UpdateInfo updateInfo) {
         this.status = status;
         this.updateVersion = updateVersion;
         this.notificationType = notificationType;
         this.metadata = metadata;
+        this.info = updateInfo;
     }
 
-    static CheckResult mandatoryUpdate(Integer version, Map<String, String> metadata) {
-        return new CheckResult(UpdateStatus.MANDATORY, version, null, metadata);
+    static CheckResult mandatoryUpdate(Integer version, Map<String, String> metadata, UpdateInfo updateInfo) {
+        return new CheckResult(UpdateStatus.REQUIRED_UPDATE_NEEDED, version, null, metadata, updateInfo);
     }
 
-    static CheckResult optionalUpdate(Integer version, NotificationType notificationType, Map<String, String> metadata) {
-        return new CheckResult(UpdateStatus.OPTIONAL, version, notificationType, metadata);
+    static CheckResult optionalUpdate(Integer version, NotificationType notificationType, Map<String, String> metadata,
+        UpdateInfo updateInfo) {
+        return new CheckResult(UpdateStatus.NEW_UPDATE_AVAILABLE, version, notificationType, metadata, updateInfo);
     }
 
-    static CheckResult noUpdate(Integer version, Map<String, String> metadata) {
-        return new CheckResult(UpdateStatus.NO_UPDATE, version, null, metadata);
+    static CheckResult noUpdate(Integer version, Map<String, String> metadata, UpdateInfo updateInfo) {
+        return new CheckResult(UpdateStatus.NO_UPDATE_AVAILABLE, version, null, metadata, updateInfo);
     }
 
     boolean hasUpdate() {
-        return UpdateStatus.MANDATORY.equals(status) || UpdateStatus.OPTIONAL.equals(status);
+        return UpdateStatus.REQUIRED_UPDATE_NEEDED.equals(status) || UpdateStatus.NEW_UPDATE_AVAILABLE.equals(status);
     }
 
     int getUpdateVersion() {
@@ -54,10 +58,14 @@ final class CheckResult {
 
     boolean isOptional() {
         if (hasUpdate()) {
-            return UpdateStatus.OPTIONAL.equals(status);
+            return UpdateStatus.NEW_UPDATE_AVAILABLE.equals(status);
         } else {
             throw new UnsupportedOperationException("There is no update available.");
         }
+    }
+
+    public UpdateInfo getInfo() {
+        return info;
     }
 
     @Nullable

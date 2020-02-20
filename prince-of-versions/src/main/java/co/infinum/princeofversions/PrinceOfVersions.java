@@ -173,7 +173,7 @@ public final class PrinceOfVersions {
      * @return result of update check.
      * @throws Throwable if error occurred.
      */
-    public Result checkForUpdates(String url) throws Throwable {
+    public UpdateResult checkForUpdates(String url) throws Throwable {
         return checkForUpdates(new NetworkLoader(url));
     }
 
@@ -184,7 +184,7 @@ public final class PrinceOfVersions {
      * @return result of update check.
      * @throws Throwable if error occurred.
      */
-    public Result checkForUpdates(Loader loader) throws Throwable {
+    public UpdateResult checkForUpdates(Loader loader) throws Throwable {
         return presenter.check(loader, appConfig);
     }
 

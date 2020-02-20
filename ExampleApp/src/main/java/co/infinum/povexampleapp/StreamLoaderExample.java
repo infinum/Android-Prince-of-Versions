@@ -3,41 +3,47 @@ package co.infinum.povexampleapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
-import co.infinum.princeofversions.Result;
 import co.infinum.princeofversions.StreamLoader;
+import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdaterCallback;
 
 public class StreamLoaderExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, String> metadata) {
-            toastIt(
-                getString(
-                    R.string.update_available_msg,
-                    getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
-                    version
-                ),
-                Toast.LENGTH_SHORT
-            );
-        }
-
-        @Override
-        public void onNoUpdate(@NonNull Map<String, String> metadata) {
-            toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
+        public void onSuccess(UpdateResult result) {
+            switch (result.getStatus()) {
+                case REQUIRED_UPDATE_NEEDED:
+                    toastIt(
+                        getString(
+                            R.string.update_available_msg,
+                            getString(R.string.mandatory),
+                            result.getInfo().getLastVersionAvailable()
+                        ),
+                        Toast.LENGTH_SHORT
+                    );
+                case NEW_UPDATE_AVAILABLE:
+                    toastIt(
+                        getString(
+                            R.string.update_available_msg,
+                            getString(R.string.not_mandatory),
+                            result.getInfo().getLastVersionAvailable()
+                        ),
+                        Toast.LENGTH_SHORT
+                    );
+                case NO_UPDATE_AVAILABLE:
+                    toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
+            }
         }
 
         @Override
@@ -113,8 +119,9 @@ public class StreamLoaderExample extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Result result = updater.checkForUpdates(new StreamLoader(getResources().openRawResource(R.raw.update)));
-                    toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getVersion(),
+                    UpdateResult result = updater.checkForUpdates(new StreamLoader(getResources().openRawResource(R.raw.update)));
+                    toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getInfo()
+                            .getLastVersionAvailable(),
                         Toast.LENGTH_LONG);
                 } catch (Throwable throwable) {
                     toastItOnMainThread("Error occurred " + throwable.getMessage(), Toast.LENGTH_LONG);

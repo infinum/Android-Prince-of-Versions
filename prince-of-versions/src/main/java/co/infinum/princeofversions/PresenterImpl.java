@@ -4,7 +4,9 @@ import android.support.annotation.VisibleForTesting;
 
 import java.util.concurrent.Executor;
 
-import static co.infinum.princeofversions.UpdateStatus.MANDATORY;
+import static co.infinum.princeofversions.UpdateStatus.NEW_UPDATE_AVAILABLE;
+import static co.infinum.princeofversions.UpdateStatus.NO_UPDATE_AVAILABLE;
+import static co.infinum.princeofversions.UpdateStatus.REQUIRED_UPDATE_NEEDED;
 
 class PresenterImpl implements Presenter {
 
@@ -18,7 +20,7 @@ class PresenterImpl implements Presenter {
     }
 
     @Override
-    public Result check(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
+    public UpdateResult check(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         return run(loader, appConfig);
     }
 
@@ -30,19 +32,9 @@ class PresenterImpl implements Presenter {
             @Override
             public void run() {
                 try {
-                    Result result = PresenterImpl.this.run(loader, appConfig);
+                    UpdateResult result = PresenterImpl.this.run(loader, appConfig);
                     if (!call.isCanceled()) {
-                        switch (result.getStatus()) {
-                            case MANDATORY:
-                                callback.onNewUpdate(result.getVersion(), true, result.getMetadata());
-                                break;
-                            case OPTIONAL:
-                                callback.onNewUpdate(result.getVersion(), false, result.getMetadata());
-                                break;
-                            case NO_UPDATE:
-                                callback.onNoUpdate(result.getMetadata());
-                            default:
-                        }
+                        callback.onSuccess(result);
                     }
                 } catch (Throwable t) {
                     if (!call.isCanceled()) {
@@ -55,13 +47,13 @@ class PresenterImpl implements Presenter {
     }
 
     @VisibleForTesting
-    Result run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
+    UpdateResult run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         CheckResult result = interactor.check(loader, appConfig);
         switch (result.status()) {
-            case MANDATORY:
+            case REQUIRED_UPDATE_NEEDED:
                 storage.rememberLastNotifiedVersion(result.getUpdateVersion());
-                return new Result(MANDATORY, result.getUpdateVersion(), result.metadata());
-            case OPTIONAL:
+                return new UpdateResult(result.getInfo(), result.metadata(), REQUIRED_UPDATE_NEEDED);
+            case NEW_UPDATE_AVAILABLE:
                 Integer lastNotifiedVersion = storage.lastNotifiedVersion(null);
                 boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion.equals(result.getUpdateVersion());
                 boolean alreadyNotifiedUpdateAvailable = lastNotifiedVersion != null && lastNotifiedVersion
@@ -70,11 +62,11 @@ class PresenterImpl implements Presenter {
                     alreadyNotifiedUpdateAvailable && NotificationType.ALWAYS.equals(result.getNotificationType())
                 )) {
                     storage.rememberLastNotifiedVersion(result.getUpdateVersion());
-                    return new Result(UpdateStatus.OPTIONAL, result.getUpdateVersion(), result.metadata());
+                    return new UpdateResult(result.getInfo(), result.metadata(), NEW_UPDATE_AVAILABLE);
                 }
-            case NO_UPDATE:
+            case NO_UPDATE_AVAILABLE:
             default:
-                return new Result(UpdateStatus.NO_UPDATE, result.getUpdateVersion(), result.metadata());
+                return new UpdateResult(result.getInfo(), result.metadata(), NO_UPDATE_AVAILABLE);
         }
     }
 
