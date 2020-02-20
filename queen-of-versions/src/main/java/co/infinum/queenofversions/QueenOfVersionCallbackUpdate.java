@@ -33,7 +33,7 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * This class represents the core component of Queen of Versions module.
  * <p>
  * The way to create instance of this class is by constructor with {@link Integer}, {@link Activity} and
- * {@link InAppUpdateProcessCallback}
+ * {@link QueenOfVersionsCallback}
  * arguments.
  * </p>
  * <p>
@@ -53,7 +53,7 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * Here is a most common usage of this callback:
  * <pre>
  *          {@link PrinceOfVersions} princeOfVersion = new {@link PrinceOfVersions}(context);
- *          {@link GoogleInAppUpdateCallback} googleCallback = new {@link GoogleInAppUpdateCallback}(requestCode,activity,listener,
+ *          {@link QueenOfVersionCallbackUpdate} googleCallback = new {@link QueenOfVersionCallbackUpdate}(requestCode,activity,listener,
  *          appVersionCode);
  *
  *          {@link PrinceOfVersionsCancelable} cancelable = princeOfVersion.checkForUpdates("http://example.com/some/update.json",
@@ -67,14 +67,14 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * MANDATORY update == IMMEDIATE update
  * FLEXIBLE update == OPTIONAL update
  */
-public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateUpdatedListener, GoogleInAppUpdateFlexibleHandler {
+public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersionFlexibleUpdateHandler {
 
     private UpdateStateDelegate flexibleStateListener;
     private GoogleAppUpdater googleAppUpdater;
     private final int appVersionCode;
 
     /**
-     * Creates {@link GoogleInAppUpdateCallback} using provided {@link Activity}, {@link InAppUpdateProcessCallback} and two integers
+     * Creates {@link QueenOfVersionCallbackUpdate} using provided {@link Activity}, {@link QueenOfVersionsCallback} and two integers
      * that represent requestCode and appVersionCode.
      *
      * @param requestCode    integer that can be used for {@link Intent} identification in onActivityResult method
@@ -82,16 +82,16 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
      * @param listener       listener is used as callback for notifying update statuses during update
      * @param appVersionCode integer that represents version of an application that's currently running
      */
-    public GoogleInAppUpdateCallback(int requestCode, Activity activity, InAppUpdateProcessCallback listener, int appVersionCode) {
+    public QueenOfVersionCallbackUpdate(int requestCode, Activity activity, QueenOfVersionsCallback listener, int appVersionCode) {
         this.flexibleStateListener = new UpdateStateDelegate(false, listener);
         this.appVersionCode = appVersionCode;
-        this.googleAppUpdater = new AppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
+        this.googleAppUpdater = new QueenOfVersionsAppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
             flexibleStateListener,
             this);
     }
 
     @VisibleForTesting
-    GoogleInAppUpdateCallback(int requestCode, GoogleAppUpdater appUpdater, InAppUpdateProcessCallback flexibleStateListener,
+    QueenOfVersionCallbackUpdate(int requestCode, GoogleAppUpdater appUpdater, QueenOfVersionsCallback flexibleStateListener,
         int appVersionCode) {
         this.flexibleStateListener = new UpdateStateDelegate(false, flexibleStateListener);
         this.appVersionCode = appVersionCode;
@@ -288,10 +288,11 @@ public class GoogleInAppUpdateCallback implements UpdaterCallback, InstallStateU
     public void cancel() {
         flexibleStateListener.cancel();
     }
-}
 
-enum VersionCode {
-    FLEXIBLE,
-    IMMEDIATE,
-    FLEXIBLE_NOT_AVAILABLE
+    enum VersionCode {
+        FLEXIBLE,
+        IMMEDIATE,
+        FLEXIBLE_NOT_AVAILABLE
+    }
+
 }

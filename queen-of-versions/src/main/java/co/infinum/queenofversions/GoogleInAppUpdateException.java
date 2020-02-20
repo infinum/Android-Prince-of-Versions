@@ -1,12 +1,12 @@
 package co.infinum.queenofversions;
 
-class GoogleInAppUpdateException extends Exception {
+public class GoogleInAppUpdateException extends Exception {
 
-    GoogleInAppUpdateException(InAppUpdateError exception) {
-        super(exception.name());
+    GoogleInAppUpdateException(InAppUpdateError error) {
+        super(error.name());
     }
 
-    GoogleInAppUpdateException(Throwable error) {
-        super(error.getMessage());
+    GoogleInAppUpdateException(Throwable exception) {
+        super(exception);
     }
 }

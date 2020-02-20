@@ -8,18 +8,18 @@ import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.tasks.OnSuccessListener;
 
-public class AppUpdater implements GoogleAppUpdater {
+class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
 
     private final Activity activity;
     private final AppUpdateManager appUpdateManager;
     private final int requestCode;
     private final UpdateStateDelegate flexibleStateListener;
-    private final GoogleInAppUpdateCallback callback;
+    private final QueenOfVersionCallbackUpdate callback;
 
     private AppUpdateInfo appUpdateInfo;
 
-    AppUpdater(Activity activity, AppUpdateManager appUpdateManager, int requestCode,
-        UpdateStateDelegate flexibleStateListener, GoogleInAppUpdateCallback callback) {
+    QueenOfVersionsAppUpdater(Activity activity, AppUpdateManager appUpdateManager, int requestCode,
+        UpdateStateDelegate flexibleStateListener, QueenOfVersionCallbackUpdate callback) {
         this.activity = activity;
         this.appUpdateManager = appUpdateManager;
         this.requestCode = requestCode;
@@ -34,7 +34,7 @@ public class AppUpdater implements GoogleAppUpdater {
                 new OnSuccessListener<AppUpdateInfo>() {
                     @Override
                     public void onSuccess(AppUpdateInfo appUpdateInfo) {
-                        AppUpdater.this.appUpdateInfo = appUpdateInfo;
+                        QueenOfVersionsAppUpdater.this.appUpdateInfo = appUpdateInfo;
                         callback.handleSuccess(appUpdateInfo.updateAvailability(), versionCode, appUpdateInfo.availableVersionCode(),
                             isMandatory);
                     }
@@ -95,7 +95,7 @@ public class AppUpdater implements GoogleAppUpdater {
     @Override
     public void registerImmediateFlow() {
         activity.getApplication().registerActivityLifecycleCallbacks(
-            new AppCallbacks(this)
+            new QueenOfVersionsActivityLifecycleCallback(this)
         );
     }
 
@@ -113,7 +113,7 @@ public class AppUpdater implements GoogleAppUpdater {
                     new OnSuccessListener<AppUpdateInfo>() {
                         @Override
                         public void onSuccess(AppUpdateInfo appUpdateInfo) {
-                            AppUpdater.this.appUpdateInfo = appUpdateInfo;
+                            QueenOfVersionsAppUpdater.this.appUpdateInfo = appUpdateInfo;
                             callback.handleResumeSuccess(appUpdateInfo.updateAvailability(), appUpdateInfo.installStatus(),
                                 appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE));
                         }

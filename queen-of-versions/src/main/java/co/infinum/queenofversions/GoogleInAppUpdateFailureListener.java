@@ -4,9 +4,9 @@ import com.google.android.play.core.tasks.OnFailureListener;
 
 public class GoogleInAppUpdateFailureListener implements OnFailureListener {
 
-    private final InAppUpdateProcessCallback flexibleListener;
+    private final QueenOfVersionsCallback flexibleListener;
 
-    GoogleInAppUpdateFailureListener(InAppUpdateProcessCallback flexibleListener) {
+    GoogleInAppUpdateFailureListener(QueenOfVersionsCallback flexibleListener) {
         this.flexibleListener = flexibleListener;
     }
 

@@ -1,8 +1,8 @@
 package co.infinum.queenofversions;
 
-public interface InAppUpdateProcessCallback {
+public interface QueenOfVersionsCallback {
 
-    void onDownloaded(GoogleInAppUpdateFlexibleHandler handler);
+    void onDownloaded(QueenOfVersionFlexibleUpdateHandler handler);
 
     void onCanceled();
 
