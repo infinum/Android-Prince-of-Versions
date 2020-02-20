@@ -10,28 +10,28 @@ import javax.annotation.Nullable;
 public class UpdateInfo {
 
     /**
-     * @param requiredVersion is required_version from selected object
+     * requiredVersion is required_version from selected object
      */
     @Nullable
-    private int requiredVersion;
+    private Integer requiredVersion;
 
     /**
-     * @param lastVersionAvailable is last_version_available from selected object
+     * lastVersionAvailable is last_version_available from selected object
      */
     @Nullable
-    private int lastVersionAvailable;
+    private Integer lastVersionAvailable;
 
     /**
-     * @param requirements is the map of requirements from selected object
+     * requirements is the map of requirements from selected object
      */
     private Map<String, String> requirements;
 
     /**
-     * @param installedVersion is versionCode of currently installed application
+     * installedVersion is versionCode of currently installed application
      */
     private int installedVersion;
 
-    public UpdateInfo(int requiredVersion, int lastVersionAvailable, Map<String, String> requirements, int installedVersion) {
+    UpdateInfo(@Nullable Integer requiredVersion, @Nullable Integer lastVersionAvailable, Map<String, String> requirements, int installedVersion) {
         this.requiredVersion = requiredVersion;
         this.lastVersionAvailable = lastVersionAvailable;
         this.requirements = requirements;
@@ -42,11 +42,13 @@ public class UpdateInfo {
         return installedVersion;
     }
 
-    public int getLastVersionAvailable() {
+    @Nullable
+    public Integer getLastVersionAvailable() {
         return lastVersionAvailable;
     }
 
-    public int getRequiredVersion() {
+    @Nullable
+    public Integer getRequiredVersion() {
         return requiredVersion;
     }
 

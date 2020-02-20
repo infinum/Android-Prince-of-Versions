@@ -52,21 +52,21 @@ class PresenterImpl implements Presenter {
         switch (result.status()) {
             case REQUIRED_UPDATE_NEEDED:
                 storage.rememberLastNotifiedVersion(result.getUpdateVersion());
-                return new UpdateResult(result.getInfo(), result.metadata(), REQUIRED_UPDATE_NEEDED);
+                return new UpdateResult(result.getInfo(), result.metadata(), REQUIRED_UPDATE_NEEDED, result.getUpdateVersion());
             case NEW_UPDATE_AVAILABLE:
                 Integer lastNotifiedVersion = storage.lastNotifiedVersion(null);
                 boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion.equals(result.getUpdateVersion());
-                boolean alreadyNotifiedUpdateAvailable = lastNotifiedVersion != null && lastNotifiedVersion
-                    .equals(result.getUpdateVersion());
+                boolean alreadyNotifiedUpdateAvailable =
+                    lastNotifiedVersion != null && lastNotifiedVersion.equals(result.getUpdateVersion());
                 if (notNotifiedUpdateAvailable || (
                     alreadyNotifiedUpdateAvailable && NotificationType.ALWAYS.equals(result.getNotificationType())
                 )) {
                     storage.rememberLastNotifiedVersion(result.getUpdateVersion());
-                    return new UpdateResult(result.getInfo(), result.metadata(), NEW_UPDATE_AVAILABLE);
+                    return new UpdateResult(result.getInfo(), result.metadata(), NEW_UPDATE_AVAILABLE, result.getUpdateVersion());
                 }
             case NO_UPDATE_AVAILABLE:
             default:
-                return new UpdateResult(result.getInfo(), result.metadata(), NO_UPDATE_AVAILABLE);
+                return new UpdateResult(result.getInfo(), result.metadata(), NO_UPDATE_AVAILABLE, result.getUpdateVersion());
         }
     }
 

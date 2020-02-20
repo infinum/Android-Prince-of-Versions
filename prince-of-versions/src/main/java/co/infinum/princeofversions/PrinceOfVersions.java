@@ -59,7 +59,7 @@ public final class PrinceOfVersions {
     @VisibleForTesting
     PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig,
         Map<String, RequirementChecker> checkers) {
-        this(createDefaultParser(checkers), storage, callbackExecutor, appConfig);
+        this(createMockedParser(checkers), storage, callbackExecutor, appConfig);
     }
 
     private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
@@ -81,6 +81,12 @@ public final class PrinceOfVersions {
 
     private static ConfigurationParser createDefaultParser() {
         return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor());
+    }
+
+    private static ConfigurationParser createMockedParser(Map<String, RequirementChecker> requirementCheckers) {
+        return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor(
+            requirementCheckers
+        ));
     }
 
     private static Storage createDefaultStorage(Context context) {
