@@ -200,7 +200,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
         JSONException {
         if (update.has(REQUIREMENTS)) {
             JSONObject requirements = update.getJSONObject(REQUIREMENTS);
-            if (requirementChecker.checkRequirements(requirements)) {
+            if (requirementChecker.checkRequirements(requirements.toString())) {
                 saveFirstAcceptableUpdate(update, builder);
                 mergeUpdateMetaWithDefaultMeta(update, builder);
                 return true;
