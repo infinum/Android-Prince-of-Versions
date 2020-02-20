@@ -1,5 +1,7 @@
 package co.infinum.princeofversions;
 
+import android.support.annotation.NonNull;
+
 import java.util.concurrent.Executor;
 
 /**
@@ -23,7 +25,7 @@ final class ExecutorUpdaterCallback implements UpdaterCallback {
     }
 
     @Override
-    public void onSuccess(final UpdateResult result) {
+    public void onSuccess(@NonNull final UpdateResult result) {
         executor.execute(new Runnable() {
             @Override
             public void run() {

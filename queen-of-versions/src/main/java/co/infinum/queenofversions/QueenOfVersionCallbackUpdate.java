@@ -2,6 +2,7 @@ package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import com.google.android.play.core.appupdate.AppUpdateManager;
@@ -105,7 +106,7 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * on Google Play store.
      */
     @Override
-    public void onSuccess(UpdateResult result) {
+    public void onSuccess(@NonNull UpdateResult result) {
         if (result.getStatus() == UpdateStatus.REQUIRED_UPDATE_NEEDED) {
             checkWithGoogleForAnUpdate(true, String.valueOf(result.getInfo().getLastVersionAvailable()));
         } else {

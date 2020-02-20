@@ -3,6 +3,7 @@ package co.infinum.povexampleapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +22,7 @@ public class StreamLoaderExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onSuccess(UpdateResult result) {
+        public void onSuccess(@NonNull UpdateResult result) {
             switch (result.getStatus()) {
                 case REQUIRED_UPDATE_NEEDED:
                     toastIt(
