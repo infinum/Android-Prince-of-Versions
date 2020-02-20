@@ -52,7 +52,6 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
 
         @Override
         public void onError(@Nonnull Throwable throwable) {
-            throwable.printStackTrace();
             toastIt(String.format(getString(R.string.update_exception), throwable.getMessage()), Toast.LENGTH_SHORT);
         }
     };
@@ -64,11 +63,6 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
     private Loader loader;
 
     private PrinceOfVersionsCancelable cancelable;
-
-    /**
-     * Custom Requirements checker that we are using to demonstrate how can you check custom requirements on your JSON file
-     */
-    private ExampleRequirementsChecker requirementsChecker = new ExampleRequirementsChecker();
 
     /**
      * This instance represents a very slow loader, just to give you enough time to invoke cancel option.
@@ -83,9 +77,12 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
         initUI();
 
         /*  create new instance of updater */
-        updater = new PrinceOfVersions.Builder().addRequirementsChecker(requirementsChecker).build(this);
+        updater = new PrinceOfVersions.Builder()
+            .addRequirementsChecker("requiredNumberOfLetters", new ExampleRequirementsChecker())
+            .build(this);
+
         /*  create specific loader factory for loading from internet  */
-        loader = new NetworkLoader("https://pastebin.com/raw/g46vFvz9");
+        loader = new NetworkLoader("https://pastebin.com/raw/qBk6Psf8");
         slowLoader = createSlowLoader(loader);
     }
 

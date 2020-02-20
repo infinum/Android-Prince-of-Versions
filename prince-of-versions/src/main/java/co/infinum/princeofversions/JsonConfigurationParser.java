@@ -96,10 +96,10 @@ final class JsonConfigurationParser implements ConfigurationParser {
 
     private static final String REQUIREMENTS = "requirements";
 
-    private RequirementChecker requirementChecker;
+    private final PrinceOfVersionsRequirementsProcessor requirementsProcessor;
 
-    JsonConfigurationParser(RequirementChecker requirementChecker) {
-        this.requirementChecker = requirementChecker;
+    JsonConfigurationParser(PrinceOfVersionsRequirementsProcessor requirementsProcessor) {
+        this.requirementsProcessor = requirementsProcessor;
     }
 
     @Override
@@ -196,22 +196,38 @@ final class JsonConfigurationParser implements ConfigurationParser {
         }
     }
 
-    private boolean parseJsonUpdate(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws
-        JSONException {
+    private boolean parseJsonUpdate(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws JSONException {
         if (update.has(REQUIREMENTS)) {
-            JSONObject requirements = update.getJSONObject(REQUIREMENTS);
-            if (requirementChecker.checkRequirements(requirements)) {
-                saveFirstAcceptableUpdate(update, builder);
-                mergeUpdateMetaWithDefaultMeta(update, builder);
-                builder.withRequirements(jsonObjectToMap(requirements));
+            JSONObject requirementsJson = update.getJSONObject(REQUIREMENTS);
+            if (requirementsJson != null) {
+                Map<String, String> requirements = parseRequirements(requirementsJson);
+                if (requirementsProcessor.areRequirementsSatisfied(requirements)) {
+                    saveFirstAcceptableUpdate(update, builder);
+                    mergeUpdateMetaWithDefaultMeta(update, builder);
+                    builder.withRequirements(requirements);
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
                 return true;
             }
-            return false;
         } else {
             saveFirstAcceptableUpdate(update, builder);
             mergeUpdateMetaWithDefaultMeta(update, builder);
             return true;
         }
+    }
+
+    private Map<String, String> parseRequirements(JSONObject requirementsJson) throws JSONException {
+        Map<String, String> requirements = new HashMap<>();
+        Iterator<String> it = requirementsJson.keys();
+        while (it.hasNext()) {
+            String key = it.next();
+            String value = requirementsJson.getString(key);
+            requirements.put(key, value);
+        }
+        return requirements;
     }
 
     @VisibleForTesting

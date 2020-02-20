@@ -1,19 +1,20 @@
 package co.infinum.princeofversions;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Exception for cases where there is no update with requirements satisfied
  */
-class RequirementsNotSatisfiedException extends IllegalStateException {
+public class RequirementsNotSatisfiedException extends IllegalStateException {
 
     /**
      * Default metadata from root object in JSON file
      */
-    private Map<String, String> metadata;
+    private final Map<String, String> metadata;
 
-    RequirementsNotSatisfiedException(Map<String, String> metadata) {
-        this.metadata = metadata;
+    RequirementsNotSatisfiedException(final Map<String, String> metadata) {
+        this.metadata = new HashMap<>(metadata);
     }
 
     public Map<String, String> getMetadata() {
@@ -22,6 +23,8 @@ class RequirementsNotSatisfiedException extends IllegalStateException {
 
     @Override
     public String toString() {
-        return "RequirementsNotSatisfiedException " + metadata.toString();
+        return "RequirementsNotSatisfiedException{"
+            + "metadata=" + metadata
+            + '}';
     }
 }
