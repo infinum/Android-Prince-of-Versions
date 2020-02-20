@@ -1,17 +1,17 @@
 package co.infinum.queenofversions;
 
-public class UpdateStateDelegate implements InAppUpdateProcessCallback {
+class UpdateStateDelegate implements QueenOfVersionsCallback {
 
     private boolean isCanceled;
-    private InAppUpdateProcessCallback listener;
+    private QueenOfVersionsCallback listener;
 
-    UpdateStateDelegate(boolean isCanceled, InAppUpdateProcessCallback listener) {
+    UpdateStateDelegate(boolean isCanceled, QueenOfVersionsCallback listener) {
         this.isCanceled = isCanceled;
         this.listener = listener;
     }
 
     @Override
-    public void onDownloaded(GoogleInAppUpdateFlexibleHandler handler) {
+    public void onDownloaded(QueenOfVersionFlexibleUpdateHandler handler) {
         if (!isCanceled) {
             listener.onDownloaded(handler);
         }

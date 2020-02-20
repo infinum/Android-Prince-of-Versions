@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-public class AppCallbacks implements Application.ActivityLifecycleCallbacks {
+class QueenOfVersionsActivityLifecycleCallback implements Application.ActivityLifecycleCallbacks {
 
     private final GoogleAppUpdater googleAppUpdater;
 
-    AppCallbacks(GoogleAppUpdater googleAppUpdater) {
+    QueenOfVersionsActivityLifecycleCallback(GoogleAppUpdater googleAppUpdater) {
         this.googleAppUpdater = googleAppUpdater;
     }
 

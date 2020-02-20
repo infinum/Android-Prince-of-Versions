@@ -11,16 +11,16 @@ import android.widget.Toast;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
-import co.infinum.queenofversions.GoogleInAppUpdateCallback;
-import co.infinum.queenofversions.GoogleInAppUpdateFlexibleHandler;
-import co.infinum.queenofversions.InAppUpdateProcessCallback;
+import co.infinum.queenofversions.QueenOfVersionCallbackUpdate;
+import co.infinum.queenofversions.QueenOfVersionFlexibleUpdateHandler;
+import co.infinum.queenofversions.QueenOfVersionsCallback;
 
-public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAppUpdateProcessCallback {
+public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersionsCallback {
 
     private static final String TAG = "GoogleInAppUpdates";
     private final int REQUEST_CODE = 420;
 
-    private GoogleInAppUpdateCallback googleInAppUpdateCallback;
+    private QueenOfVersionCallbackUpdate googleInAppUpdateCallback;
     private PrinceOfVersions princeOfVersions;
     private Loader loader;
 
@@ -32,7 +32,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAp
         initUI();
 
         princeOfVersions = new PrinceOfVersions.Builder().build(this);
-        googleInAppUpdateCallback = new GoogleInAppUpdateCallback(REQUEST_CODE, this, this, BuildConfig.VERSION_CODE);
+        googleInAppUpdateCallback = new QueenOfVersionCallbackUpdate(REQUEST_CODE, this, this, BuildConfig.VERSION_CODE);
         loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
     }
 
@@ -86,7 +86,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements InAp
     }
 
     @Override
-    public void onDownloaded(GoogleInAppUpdateFlexibleHandler handler) {
+    public void onDownloaded(QueenOfVersionFlexibleUpdateHandler handler) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();
     }

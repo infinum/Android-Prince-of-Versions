@@ -1,6 +1,6 @@
 package co.infinum.queenofversions;
 
-public interface GoogleInAppUpdateFlexibleHandler {
+public interface QueenOfVersionFlexibleUpdateHandler {
 
     void completeUpdate();
 }
