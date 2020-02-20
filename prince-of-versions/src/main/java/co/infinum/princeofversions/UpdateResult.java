@@ -10,22 +10,22 @@ public class UpdateResult {
     /**
      * Merged metadata from JSON
      */
-    private Map<String, String> metadata;
+    private final Map<String, String> metadata;
 
     /**
      * Update configuration values used to check
      */
-    private UpdateInfo info;
+    private final UpdateInfo info;
 
     /**
      * Resolution of the update check
      */
-    private UpdateStatus status;
+    private final UpdateStatus status;
 
     /**
      * The biggest version it is possible to update to, or current version of the app if it isn't possible to update
      */
-    private int updateVersion;
+    private final int updateVersion;
 
     public UpdateResult(UpdateInfo info, Map<String, String> metadata, UpdateStatus status, int updateVersion) {
         this.info = info;

@@ -13,23 +13,23 @@ public class UpdateInfo {
      * requiredVersion is required_version from selected object
      */
     @Nullable
-    private Integer requiredVersion;
+    private final Integer requiredVersion;
 
     /**
      * lastVersionAvailable is last_version_available from selected object
      */
     @Nullable
-    private Integer lastVersionAvailable;
+    private final Integer lastVersionAvailable;
 
     /**
      * requirements is the map of requirements from selected object
      */
-    private Map<String, String> requirements;
+    private final Map<String, String> requirements;
 
     /**
      * installedVersion is versionCode of currently installed application
      */
-    private int installedVersion;
+    private final int installedVersion;
 
     UpdateInfo(@Nullable Integer requiredVersion, @Nullable Integer lastVersionAvailable, Map<String, String> requirements, int installedVersion) {
         this.requiredVersion = requiredVersion;
