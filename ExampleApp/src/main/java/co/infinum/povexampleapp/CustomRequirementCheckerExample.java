@@ -23,8 +23,6 @@ import co.infinum.princeofversions.UpdaterCallback;
 
 public class CustomRequirementCheckerExample extends AppCompatActivity {
 
-    private static final String REQUIRED_LETTER_LENGTH = "requiredNumberOfLetters";
-
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
         public void onNewUpdate(@NonNull int version, boolean isMandatory, @NonNull Map<String, String> metadata) {
@@ -45,7 +43,6 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
 
         @Override
         public void onError(@Nonnull Throwable throwable) {
-            throwable.printStackTrace();
             toastIt(String.format(getString(R.string.update_exception), throwable.getMessage()), Toast.LENGTH_SHORT);
         }
     };
@@ -57,11 +54,6 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
     private Loader loader;
 
     private PrinceOfVersionsCancelable cancelable;
-
-    /**
-     * Custom Requirements checker that we are using to demonstrate how can you check custom requirements on your JSON file
-     */
-    private ExampleRequirementsChecker requirementsChecker = new ExampleRequirementsChecker();
 
     /**
      * This instance represents a very slow loader, just to give you enough time to invoke cancel option.
@@ -76,9 +68,12 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
         initUI();
 
         /*  create new instance of updater */
-        updater = new PrinceOfVersions.Builder().addRequirementsChecker(REQUIRED_LETTER_LENGTH,requirementsChecker).build(this);
+        updater = new PrinceOfVersions.Builder()
+            .addRequirementsChecker("requiredNumberOfLetters", new ExampleRequirementsChecker())
+            .build(this);
+
         /*  create specific loader factory for loading from internet  */
-        loader = new NetworkLoader("https://pastebin.com/raw/5FdYHwwY");
+        loader = new NetworkLoader("https://pastebin.com/raw/qBk6Psf8");
         slowLoader = createSlowLoader(loader);
     }
 

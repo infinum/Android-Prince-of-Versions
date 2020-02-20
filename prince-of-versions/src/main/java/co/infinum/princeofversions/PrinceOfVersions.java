@@ -3,7 +3,6 @@ package co.infinum.princeofversions;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -40,7 +39,6 @@ public final class PrinceOfVersions {
     private final Presenter presenter;
     private final ApplicationConfiguration appConfig;
     private final Executor callbackExecutor;
-    private static final String REQUIRED_ANDROID_VERSION = "required_os_version";
 
     /**
      * Creates {@link PrinceOfVersions} using provided {@link Context}.
@@ -48,32 +46,20 @@ public final class PrinceOfVersions {
      * @param context context which will be used for checking application version.
      */
     public PrinceOfVersions(Context context) {
-        this(createDefaultParser(Collections.<RequirementChecker, String>emptyMap()), createDefaultStorage(context),
-            createDefaultCallbackExecutor(),
-            createAppConfig(context));
-    }
-
-    /**
-     * Creates {@link PrinceOfVersions} using provided {@link Context} and {@link RequirementChecker}.
-     *
-     * @param context             context which will be used for checking application version
-     * @param requirementCheckers List of custom requirement chcekers used for pointing to the right configuration
-     */
-    public PrinceOfVersions(Context context, Map<RequirementChecker, String> requirementCheckers) {
-        this(createDefaultParser(requirementCheckers), createDefaultStorage(context),
+        this(createDefaultParser(), createDefaultStorage(context),
             createDefaultCallbackExecutor(),
             createAppConfig(context));
     }
 
     @VisibleForTesting
     PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
-        this(createDefaultParser(Collections.<RequirementChecker, String>emptyMap()), storage, callbackExecutor, appConfig);
+        this(createDefaultParser(), storage, callbackExecutor, appConfig);
     }
 
     @VisibleForTesting
     PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig,
-        Map<RequirementChecker, String> checkers) {
-        this(createMockedParser(checkers), storage, callbackExecutor, appConfig);
+        Map<String, RequirementChecker> checkers) {
+        this(createDefaultParser(checkers), storage, callbackExecutor, appConfig);
     }
 
     private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
@@ -86,18 +72,15 @@ public final class PrinceOfVersions {
         this.appConfig = appConfig;
     }
 
-    private static ConfigurationParser createDefaultParser(Map<RequirementChecker, String> requirementCheckers) {
-        requirementCheckers.put(new PrinceOfVersionsDefaultRequirementsChecker(), REQUIRED_ANDROID_VERSION);
-        return new JsonConfigurationParser(new PrinceOfVersionsCompositeRequirementsChecker(
+    private static ConfigurationParser createDefaultParser(Map<String, RequirementChecker> requirementCheckers) {
+        requirementCheckers.put(PrinceOfVersionsDefaultRequirementsChecker.KEY, new PrinceOfVersionsDefaultRequirementsChecker());
+        return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor(
             requirementCheckers
         ));
     }
 
-    @VisibleForTesting
-    private static ConfigurationParser createMockedParser(Map<RequirementChecker, String> requirementCheckers) {
-        return new JsonConfigurationParser(new PrinceOfVersionsCompositeRequirementsChecker(
-            requirementCheckers
-        ));
+    private static ConfigurationParser createDefaultParser() {
+        return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor());
     }
 
     private static Storage createDefaultStorage(Context context) {
@@ -215,19 +198,16 @@ public final class PrinceOfVersions {
      */
     public static class Builder {
 
+        private final Map<String, RequirementChecker> requirementCheckers = new HashMap<>();
+
         @Nullable
         private ConfigurationParser configurationParser;
-
         @Nullable
         private Storage storage;
-
         @Nullable
         private ApplicationConfiguration appConfig;
-
         @Nullable
         private Executor callbackExecutor;
-
-        private final Map<RequirementChecker, String> requirementCheckers = new HashMap<>();
 
         /**
          * Set a new configuration parser used to parse configuration file into the model.
@@ -263,14 +243,25 @@ public final class PrinceOfVersions {
         }
 
         /**
-         * Set a new custom requirements checker that's used in process of parsing JSON
+         * Add a new custom requirements checker that's used in process of parsing JSON
          *
          * @param requirementsChecker Requirements checker
-         * @param key Key with which we are going to get a wanted requirement from JSON
+         * @param key                 Key with which we are going to get a wanted requirement from JSON
          * @return this builder
          */
         public Builder addRequirementsChecker(String key, RequirementChecker requirementsChecker) {
-            this.requirementCheckers.put(requirementsChecker, key);
+            this.requirementCheckers.put(key, requirementsChecker);
+            return this;
+        }
+
+        /**
+         * Remove custom requirements checker that's used in process of parsing JSON
+         *
+         * @param key                 Key with which we are going to get a wanted requirement from JSON
+         * @return this builder
+         */
+        public Builder removeRequirementsChecker(String key) {
+            this.requirementCheckers.remove(key);
             return this;
         }
 
@@ -294,7 +285,7 @@ public final class PrinceOfVersions {
          */
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(this.requirementCheckers),
+                configurationParser != null ? configurationParser : createDefaultParser(requirementCheckers),
                 storage != null ? storage : createDefaultStorage(context),
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig != null ? appConfig : createAppConfig(context)
@@ -314,7 +305,7 @@ public final class PrinceOfVersions {
                     "You must define storage and application configuration if you don't provide Context.");
             }
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(Collections.<RequirementChecker, String>emptyMap()),
+                configurationParser != null ? configurationParser : createDefaultParser(requirementCheckers),
                 storage,
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig

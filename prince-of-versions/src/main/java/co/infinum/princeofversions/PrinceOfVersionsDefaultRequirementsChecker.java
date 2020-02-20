@@ -7,10 +7,7 @@ import android.os.Build;
  */
 class PrinceOfVersionsDefaultRequirementsChecker implements RequirementChecker {
 
-    /**
-     * Minimum SDK for mandatory version
-     */
-    private int sdkVersionCode = Build.VERSION.SDK_INT;
+    static final String KEY = "required_os_version";
 
     /**
      * Basic implementation of this method that is going to be used by default.
@@ -23,6 +20,6 @@ class PrinceOfVersionsDefaultRequirementsChecker implements RequirementChecker {
     @Override
     public boolean checkRequirements(String value) {
         int minSdk = Integer.parseInt(value);
-        return minSdk <= sdkVersionCode;
+        return minSdk <= Build.VERSION.SDK_INT;
     }
 }

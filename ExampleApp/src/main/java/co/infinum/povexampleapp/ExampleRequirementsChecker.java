@@ -1,18 +1,16 @@
 package co.infinum.povexampleapp;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.support.annotation.NonNull;
 
 import co.infinum.princeofversions.RequirementChecker;
 
 /**
- * Example of custom requirements checker
+ * Custom Requirements checker used to demonstrate checking of custom requirements in JSON file
  */
-
 public class ExampleRequirementsChecker implements RequirementChecker {
 
     @Override
-    public boolean checkRequirements(String value) {
+    public boolean checkRequirements(@NonNull String value) {
         int min = Integer.parseInt(value);
         return min == 5;
     }
