@@ -23,7 +23,8 @@ final class InteractorImpl implements Interactor {
         Integer mandatoryConfigVersion = config.getMandatoryVersion();
         Integer optionalConfigVersion = config.getOptionalVersion();
 
-        UpdateInfo updateInfo = new UpdateInfo(mandatoryConfigVersion, optionalConfigVersion, config.getRequirements(), currentVersion);
+        UpdateInfo updateInfo =
+            new UpdateInfo(config.getMandatoryVersion(), config.getOptionalVersion(), config.getRequirements(), currentVersion);
 
         if (mandatoryConfigVersion == null && optionalConfigVersion == null) {
             // neither mandatory nor optional version is provided

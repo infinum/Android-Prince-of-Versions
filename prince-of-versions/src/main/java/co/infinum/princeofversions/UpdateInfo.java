@@ -31,7 +31,8 @@ public class UpdateInfo {
      */
     private final int installedVersion;
 
-    UpdateInfo(@Nullable Integer requiredVersion, @Nullable Integer lastVersionAvailable, Map<String, String> requirements, int installedVersion) {
+    UpdateInfo(@Nullable Integer requiredVersion, @Nullable Integer lastVersionAvailable, Map<String, String> requirements,
+        int installedVersion) {
         this.requiredVersion = requiredVersion;
         this.lastVersionAvailable = lastVersionAvailable;
         this.requirements = requirements;
