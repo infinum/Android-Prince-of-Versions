@@ -18,6 +18,7 @@
     <string name="pastebin_url">Enter sample URL</string>
     <string name="pastebin_url_part">http://pastebin.com/raw/</string>
     <string name="open_common_usage">Common usage example</string>
+    <string name="open_kotlin_common_usage">Kotlin usage example</string>
     <string name="open_network_with_login">Custom network loader with login</string>
     <string name="open_custom_parser">Custom configuration parser example</string>
     <string name="open_stream_example">Stream loader example</string>

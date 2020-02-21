@@ -17,6 +17,12 @@
         android:text="@string/open_common_usage" />
 
     <Button
+        android:id="@+id/btn_open_kotlin_common_usage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/open_kotlin_common_usage" />
+
+    <Button
         android:id="@+id/btn_open_call_usage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

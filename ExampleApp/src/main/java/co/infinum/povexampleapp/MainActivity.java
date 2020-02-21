@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initUI() {
         Button commonUsage = findViewById(R.id.btn_open_common_usage);
+        Button kotlinUsage = findViewById(R.id.btn_open_kotlin_common_usage);
         Button callUsage = findViewById(R.id.btn_open_call_usage);
         Button customParser = findViewById(R.id.btn_open_custom_parser);
         Button stream = findViewById(R.id.btn_open_stream_example);
@@ -27,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onCommonUsageClick();
+            }
+        });
+        kotlinUsage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onKotlinCommonUsageClick();
             }
         });
         callUsage.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void onCommonUsageClick() {
         startActivity(new Intent(this, CommonUsageExample.class));
+    }
+
+    private void onKotlinCommonUsageClick() {
+        startActivity(new Intent(this, KotlinCommonExample.class));
     }
 
     private void onCallUsageClick() {

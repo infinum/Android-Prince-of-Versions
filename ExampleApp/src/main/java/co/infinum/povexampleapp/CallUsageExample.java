@@ -37,6 +37,7 @@ public class CallUsageExample extends AppCompatActivity {
                         ),
                         Toast.LENGTH_SHORT
                     );
+                    break;
                 case NEW_UPDATE_AVAILABLE:
                     toastIt(
                         getString(
@@ -46,8 +47,10 @@ public class CallUsageExample extends AppCompatActivity {
                         ),
                         Toast.LENGTH_SHORT
                     );
+                    break;
                 case NO_UPDATE_AVAILABLE:
                     toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
+                    break;
             }
         }
 

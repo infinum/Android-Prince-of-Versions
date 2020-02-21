@@ -46,7 +46,7 @@ public class UpdateResult {
         return status;
     }
 
-    public int updateVersion() {
+    public int getUpdateVersion() {
         return updateVersion;
     }
 
