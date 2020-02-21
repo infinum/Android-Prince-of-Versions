@@ -14,8 +14,6 @@ import com.google.android.play.core.install.model.InstallErrorCode;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 
-import org.jetbrains.annotations.NotNull;
-
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.UpdateResult;
@@ -120,7 +118,7 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * @param error Throwable that describes error occurred.
      */
     @Override
-    public void onError(@NotNull Throwable error) {
+    public void onError(@NonNull Throwable error) {
         flexibleStateListener.onFailed(new GoogleInAppUpdateException(error));
     }
 
