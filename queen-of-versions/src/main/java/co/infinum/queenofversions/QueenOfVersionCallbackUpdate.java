@@ -2,6 +2,7 @@ package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import com.google.android.play.core.appupdate.AppUpdateManager;
@@ -15,10 +16,10 @@ import com.google.android.play.core.install.model.UpdateAvailability;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
+import co.infinum.princeofversions.UpdateResult;
+import co.infinum.princeofversions.UpdateStatus;
 import co.infinum.princeofversions.UpdaterCallback;
 
 import static co.infinum.queenofversions.InAppUpdateError.API_NOT_AVAILABLE;
@@ -64,8 +65,8 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * of update type is named differently on JSON and on Google Play Store, hence this warning.
  * <p>
  * For example:
- * MANDATORY update == IMMEDIATE update
- * FLEXIBLE update == OPTIONAL update
+ * REQUIRED_UPDATE_NEEDED update == IMMEDIATE update
+ * FLEXIBLE update == NEW_UPDATE_AVAILABLE update
  */
 public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersionFlexibleUpdateHandler {
 
@@ -99,29 +100,18 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
     }
 
     /**
-     * Method is called when {@link PrinceOfVersions} finds new update for current application.
-     *
-     * @param version     Version string of available update.
-     * @param isMandatory Determines if update is mandatory or just optional, true if update is mandatory, false if it is optional.
-     * @param metadata    Metadata accompanying the update
+     * Method is called if {@link PrinceOfVersions} successfully finishes update check. Whatever the outcome is, we are always
+     * checking with Google play for new update.However, the reason why are we still using {@link PrinceOfVersions} for update
+     * determination is because of the {@param isMandatory} which helps us to determine if we want to invoke IMMEDIATE or FLEXIBLE update
+     * on Google Play store.
      */
     @Override
-    public void onNewUpdate(@NotNull int version, final boolean isMandatory, @NotNull Map<String, String> metadata) {
-        String princeVersionCode = metadata.get("version-code");
-        checkWithGoogleForAnUpdate(isMandatory, princeVersionCode);
-    }
-
-    /**
-     * Method is called if {@link PrinceOfVersions} successfully determines that there is no updates. However, although there may not be
-     * any updates on {@link PrinceOfVersions}, we will still check on Google Play Store with presupposition that there is no
-     * MANDATORY updates on Google Play Store, hence why we are passing false as {@param isMandatory}.
-     *
-     * @param metadata Metadata accompanying no update message
-     */
-    @Override
-    public void onNoUpdate(@NotNull Map<String, String> metadata) {
-        String princeVersionCode = metadata.get("version-code");
-        checkWithGoogleForAnUpdate(false, princeVersionCode);
+    public void onSuccess(@NonNull UpdateResult result) {
+        if (result.getStatus() == UpdateStatus.REQUIRED_UPDATE_NEEDED) {
+            checkWithGoogleForAnUpdate(true, String.valueOf(result.getInfo().getLastVersionAvailable()));
+        } else {
+            checkWithGoogleForAnUpdate(false, String.valueOf(result.getInfo().getLastVersionAvailable()));
+        }
     }
 
     /**
@@ -173,7 +163,7 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * @param updateAvailability      Determines the availability of update we have on Google Play Store
      * @param princeVersionCode       Version code of the application we have have on our JSON that {@link PrinceOfVersions} parses
      * @param googleUpdateVersionCode Version code of the application we have on Google Play Store
-     * @param isMandatory             Determines if the update we have on our JSON file is MANDATORY or OPTIONAL
+     * @param isMandatory             Determines if the update we have on our JSON file is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      */
     void handleSuccess(@UpdateAvailability int updateAvailability, String princeVersionCode, int googleUpdateVersionCode,
         boolean isMandatory) {
@@ -240,7 +230,7 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * Method that is called every time we check for an update. Whether there is or isn't an update on {@link PrinceOfVersions} we are
      * still going to check with Google to be sure.
      *
-     * @param isMandatory       Determines if the update we are checking for is MANDATORY or OPTIONAL
+     * @param isMandatory       Determines if the update we are checking for is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      * @param princeVersionCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
      */
     private void checkWithGoogleForAnUpdate(boolean isMandatory, String princeVersionCode) {
@@ -253,7 +243,7 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      *
      * @param princeVersionCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
      * @param googleVersionCode Version code that we got from Google Play Store
-     * @param isMandatory       Determines whether the update we have is MANDATORY or OPTIONAL
+     * @param isMandatory       Determines whether the update we have is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      * @return Returns an {@link AppUpdateType} depending on version codes we have
      */
     private VersionCode checkVersionCode(String princeVersionCode, int googleVersionCode, boolean isMandatory) {
@@ -294,5 +284,4 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
         IMMEDIATE,
         FLEXIBLE_NOT_AVAILABLE
     }
-
 }

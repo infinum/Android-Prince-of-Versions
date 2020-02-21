@@ -59,7 +59,7 @@ public final class PrinceOfVersions {
     @VisibleForTesting
     PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig,
         Map<String, RequirementChecker> checkers) {
-        this(createDefaultParser(checkers), storage, callbackExecutor, appConfig);
+        this(createMockedParser(checkers), storage, callbackExecutor, appConfig);
     }
 
     private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
@@ -81,6 +81,12 @@ public final class PrinceOfVersions {
 
     private static ConfigurationParser createDefaultParser() {
         return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor());
+    }
+
+    private static ConfigurationParser createMockedParser(Map<String, RequirementChecker> requirementCheckers) {
+        return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor(
+            requirementCheckers
+        ));
     }
 
     private static Storage createDefaultStorage(Context context) {
@@ -157,7 +163,7 @@ public final class PrinceOfVersions {
      * @return result of update check.
      * @throws Throwable if error occurred.
      */
-    public Result checkForUpdates(String url) throws Throwable {
+    public UpdateResult checkForUpdates(String url) throws Throwable {
         return checkForUpdates(new NetworkLoader(url));
     }
 
@@ -168,7 +174,7 @@ public final class PrinceOfVersions {
      * @return result of update check.
      * @throws Throwable if error occurred.
      */
-    public Result checkForUpdates(Loader loader) throws Throwable {
+    public UpdateResult checkForUpdates(Loader loader) throws Throwable {
         return presenter.check(loader, appConfig);
     }
 

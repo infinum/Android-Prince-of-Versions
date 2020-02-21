@@ -6,8 +6,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -21,7 +19,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -62,7 +59,7 @@ public class PrinceOfVersionsTest {
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_no_notification.json"));
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -91,7 +88,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_notification_always.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -120,7 +117,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_notification_always.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -148,7 +145,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_only_min_version.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(200);
     }
 
@@ -176,7 +173,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -205,7 +202,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -234,7 +231,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.MANDATORY);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -263,7 +260,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -292,7 +289,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -320,7 +317,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
     }
 
@@ -347,7 +344,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(300);
     }
 
@@ -449,7 +446,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_notification_always.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(300);
     }
 
@@ -476,7 +473,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_only_min_version.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(300);
     }
 
@@ -503,7 +500,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
     }
 
@@ -557,7 +554,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_no_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -592,7 +589,7 @@ public class PrinceOfVersionsTest {
             Collections.<RequirementChecker>singletonList(checker));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.MANDATORY);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -627,7 +624,7 @@ public class PrinceOfVersionsTest {
             Collections.<RequirementChecker>singletonList(checker));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_single_sdk_value.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -692,7 +689,7 @@ public class PrinceOfVersionsTest {
             Collections.<RequirementChecker>singletonList(checker));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.MANDATORY);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -727,7 +724,7 @@ public class PrinceOfVersionsTest {
             Collections.<RequirementChecker>singletonList(checker));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(245);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(245);
     }
@@ -788,7 +785,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_single_sdk_value.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(11);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(11);
     }
@@ -817,7 +814,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_single_sdk_value.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(11);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(11);
     }
@@ -846,7 +843,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_mandatory_update.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.MANDATORY);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
         assertThat(result.getVersion()).isEqualTo(11);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(11);
     }
@@ -874,7 +871,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full_b_with_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(11);
     }
 
@@ -902,7 +899,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full_b_with_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(11);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(11);
     }
@@ -930,7 +927,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full_with_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(10);
     }
 
@@ -957,7 +954,7 @@ public class PrinceOfVersionsTest {
             16));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_big_increase_in_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(10);
     }
 
@@ -984,7 +981,7 @@ public class PrinceOfVersionsTest {
             12));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_same_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(5);
     }
 
@@ -1012,7 +1009,7 @@ public class PrinceOfVersionsTest {
             14));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_small_sdk_values.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.MANDATORY);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
         assertThat(result.getVersion()).isEqualTo(7);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(7);
     }
@@ -1041,7 +1038,7 @@ public class PrinceOfVersionsTest {
             23));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(11);
         assertThat(storage.lastNotifiedVersion(null)).isEqualTo(11);
     }
@@ -1069,7 +1066,7 @@ public class PrinceOfVersionsTest {
             20));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(10);
     }
 
@@ -1096,7 +1093,7 @@ public class PrinceOfVersionsTest {
             20));
         Result result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_no_min_version.json"));
 
-        assertThat(result.getStatus()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getVersion()).isEqualTo(11);
     }*/
 }

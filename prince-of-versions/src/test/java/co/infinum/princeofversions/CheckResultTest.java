@@ -171,21 +171,21 @@ public class CheckResultTest {
     public void checkStatusMandatory() {
         CheckResult result = CheckResult.mandatoryUpdate(DEFAULT_VERSION, DEFAULT_METADATA);
 
-        assertThat(result.status()).isEqualTo(UpdateStatus.MANDATORY);
+        assertThat(result.status()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
     }
 
     @Test
     public void checkStatusOptional() {
         CheckResult result = CheckResult.optionalUpdate(DEFAULT_VERSION, NotificationType.ALWAYS, DEFAULT_METADATA);
 
-        assertThat(result.status()).isEqualTo(UpdateStatus.OPTIONAL);
+        assertThat(result.status()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
     }
 
     @Test
     public void checkStatusNoUpdate() {
         CheckResult result = CheckResult.noUpdate(DEFAULT_VERSION, DEFAULT_METADATA);
 
-        assertThat(result.status()).isEqualTo(UpdateStatus.NO_UPDATE);
+        assertThat(result.status()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
     }
 
     @Test

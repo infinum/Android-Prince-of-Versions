@@ -3,7 +3,6 @@ package co.infinum.princeofversions;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -33,16 +32,23 @@ public final class PrinceOfVersionsConfig {
      */
     private final Map<String, String> metadata;
 
-    PrinceOfVersionsConfig(
-        int mandatoryVersion,
-        int optionalVersion,
-        @Nonnull NotificationType optionalNotificationType,
-        @Nonnull Map<String, String> metadata) {
+    /**
+     * Requirements from the ongoing update
+     */
+    private final Map<String, String> requirements;
 
-        this.mandatoryVersion = (mandatoryVersion > 0) ? mandatoryVersion : null;
-        this.optionalVersion = (optionalVersion > 0) ? optionalVersion : null;
+    PrinceOfVersionsConfig(
+        @Nullable Integer mandatoryVersion,
+        @Nullable Integer optionalVersion,
+        NotificationType optionalNotificationType,
+        Map<String, String> metadata,
+        Map<String, String> requirements) {
+
+        this.mandatoryVersion = mandatoryVersion;
+        this.optionalVersion = optionalVersion;
         this.optionalNotificationType = optionalNotificationType;
         this.metadata = metadata;
+        this.requirements = requirements;
     }
 
     @Nullable
@@ -61,6 +67,10 @@ public final class PrinceOfVersionsConfig {
 
     Map<String, String> getMetadata() {
         return metadata;
+    }
+
+    Map<String, String> getRequirements() {
+        return requirements;
     }
 
     @Override
@@ -113,13 +123,16 @@ public final class PrinceOfVersionsConfig {
     public static class Builder {
 
         @Nullable
-        private int mandatoryVersion;
+        private Integer mandatoryVersion;
 
         @Nullable
-        private int optionalVersion;
+        private Integer optionalVersion;
 
         @Nullable
         private NotificationType optionalNotificationType;
+
+        @Nullable
+        private Map<String, String> requirements;
 
         private Map<String, String> metadata;
 
@@ -133,7 +146,7 @@ public final class PrinceOfVersionsConfig {
          * @param mandatoryVersion Mandatory version name
          * @return this builder
          */
-        public Builder withMandatoryVersion(int mandatoryVersion) {
+        public Builder withMandatoryVersion(@Nullable Integer mandatoryVersion) {
             this.mandatoryVersion = mandatoryVersion;
             return this;
         }
@@ -144,7 +157,7 @@ public final class PrinceOfVersionsConfig {
          * @param optionalVersion Optional version name
          * @return this builder
          */
-        public Builder withOptionalVersion(int optionalVersion) {
+        public Builder withOptionalVersion(@Nullable Integer optionalVersion) {
             this.optionalVersion = optionalVersion;
             return this;
         }
@@ -172,6 +185,17 @@ public final class PrinceOfVersionsConfig {
         }
 
         /**
+         * Set new requirements about the update
+         *
+         * @param requirements String to string map
+         * @return this builder
+         */
+        public Builder withRequirements(Map<String, String> requirements) {
+            this.requirements = requirements;
+            return this;
+        }
+
+        /**
          * Create the {@link PrinceOfVersionsConfig} instance using the configured values.
          *
          * @return A new {@link PrinceOfVersionsConfig} instance
@@ -181,7 +205,8 @@ public final class PrinceOfVersionsConfig {
                 mandatoryVersion,
                 optionalVersion,
                 optionalNotificationType != null ? optionalNotificationType : NotificationType.ONCE,
-                metadata);
+                metadata,
+                requirements != null ? requirements : new HashMap<String, String>());
         }
     }
 }
