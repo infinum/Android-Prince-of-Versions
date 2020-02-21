@@ -22,35 +22,12 @@ public class JsonConfigurationParserTest {
 
     @Before
     public void setUp() {
-        parser = new JsonConfigurationParser(new PrinceOfVersionsDefaultRequirementsChecker());
+        parser = new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor());
     }
-
-    /*
 
     @After
     public void tearDown() {
         parser = null;
-    }
-
-    @Test
-    public void testIsNonEmptyWithValue() {
-        assertThat(parser.isNonEmpty("value")).isTrue();
-    }
-
-    @Test
-    public void testIsNonEmptyWithEmpty() {
-        assertThat(parser.isNonEmpty("")).isFalse();
-    }
-
-
-    @Test
-    public void testIsNonEmptyWithSpace() {
-        assertThat(parser.isNonEmpty(" ")).isFalse();
-    }
-
-    @Test
-    public void testIsNonEmptyWithNull() {
-        assertThat(parser.isNonEmpty("null")).isFalse();
     }
 
     @Test
@@ -77,22 +54,12 @@ public class JsonConfigurationParserTest {
         ).isEqualTo(
                 MapUtil.from(
                         entry("key1", "value1"),
-                        entry("key2", "value2")
+                        entry("key2", "value2"),
+                        entry("key3","true"),
+                        entry("key4","0"),
+                        entry("key5","[0,1]"),
+                        entry("key6","{}")
                 )
-        );
-    }
-
-    @Test
-    public void invalidUpdateInvalidVersion() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("invalid_update_invalid_version.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2")
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
         );
     }
 
@@ -118,13 +85,14 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
+                        .withMandatoryVersion(123)
+                        .withOptionalVersion(245)
                         .withOptionalNotificationType(NotificationType.ONCE)
                         .build()
         );
     }
 
+    /*
     @Test
     public void validUpdateFullBJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_b.json"));

@@ -1,5 +1,7 @@
 package co.infinum.princeofversions;
 
+import android.support.annotation.Nullable;
+
 import java.util.Map;
 
 /**
@@ -58,5 +60,28 @@ public class UpdateResult {
             + ", status=" + status
             + ", updateVersion=" + updateVersion
             + '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof UpdateResult)) {
+            return false;
+        }
+
+        UpdateResult result = (UpdateResult) obj;
+
+        if (this.status != result.status) {
+            return false;
+        }
+        if (this.updateVersion != result.updateVersion()) {
+            return false;
+        }
+        if (!this.info.equals(result.getInfo())) {
+            return false;
+        }
+        return metadata.equals(result.metadata);
     }
 }

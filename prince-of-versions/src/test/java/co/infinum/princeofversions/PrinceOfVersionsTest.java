@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PrinceOfVersionsTest {
+    /*
 
     @Mock
     UpdaterCallback callback;
@@ -375,6 +376,7 @@ public class PrinceOfVersionsTest {
         princeOfVersions.checkForUpdates(new ResourceFileLoader("invalid_update_invalid_version.json"));
     } */
 
+    /*
     @Test
     public void testCheckingInvalidContentNoAndroidKey() {
         Storage storage = new MockStorage();
@@ -530,6 +532,7 @@ public class PrinceOfVersionsTest {
         princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
     }*/
 
+    /*
     @Test
     public void testCheckingWhenUpdateShouldBeMade() {
         Storage storage = new MockStorage();

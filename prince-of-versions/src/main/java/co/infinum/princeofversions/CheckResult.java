@@ -1,5 +1,7 @@
 package co.infinum.princeofversions;
 
+import android.support.annotation.NonNull;
+
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -115,5 +117,10 @@ final class CheckResult {
         result = 31 * result + (getNotificationType() != null ? getNotificationType().hashCode() : 0);
         result = 31 * result + (metadata.hashCode());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return this.status + " " + this.info + " " + this.metadata + " " + this.notificationType;
     }
 }

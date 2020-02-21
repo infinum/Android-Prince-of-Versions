@@ -66,4 +66,27 @@ public class UpdateInfo {
             + ", Requirements =" + requirements
             + '}';
     }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof UpdateInfo)) {
+            return false;
+        }
+
+        UpdateInfo result = (UpdateInfo) obj;
+
+        if (this.installedVersion != result.getInstalledVersion()) {
+            return false;
+        }
+        if (this.requiredVersion != (result.requiredVersion)) {
+            return false;
+        }
+        if (this.lastVersionAvailable != result.getLastVersionAvailable()) {
+            return false;
+        }
+        return this.requirements.equals(result.getRequirements());
+    }
 }
