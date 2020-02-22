@@ -1,6 +1,7 @@
 package co.infinum.princeofversions;
 
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -81,12 +82,26 @@ public class UpdateInfo {
         if (this.installedVersion != result.getInstalledVersion()) {
             return false;
         }
-        if (this.requiredVersion != (result.requiredVersion)) {
-            return false;
+        if (this.getRequiredVersion() != null) {
+            if (!this.getRequiredVersion().equals(result.getRequiredVersion())) {
+                return false;
+            }
+        } else {
+            if (result.getRequiredVersion() != null) {
+                return false;
+            }
         }
-        if (this.lastVersionAvailable != result.getLastVersionAvailable()) {
-            return false;
+
+        if (this.getLastVersionAvailable() != null) {
+            if (!this.getLastVersionAvailable().equals(result.getLastVersionAvailable())) {
+                return false;
+            }
+        } else {
+            if (result.getLastVersionAvailable() != null) {
+                return false;
+            }
         }
+
         return this.requirements.equals(result.getRequirements());
     }
 
