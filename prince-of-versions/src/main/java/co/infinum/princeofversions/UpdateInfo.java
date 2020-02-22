@@ -1,7 +1,6 @@
 package co.infinum.princeofversions;
 
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
