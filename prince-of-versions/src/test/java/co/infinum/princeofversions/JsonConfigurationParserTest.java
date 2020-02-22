@@ -92,65 +92,6 @@ public class JsonConfigurationParserTest {
         );
     }
 
-    /*
-    @Test
-    public void validUpdateFullBJson() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_b.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3-b12")
-                        .withOptionalVersion("2.4.5-b45")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
-        );
-    }
-
-    @Test
-    public void validUpdateFullBWithSdkValues() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_b_with_sdk_values.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3-b12")
-                        .withMandatoryMinSdk(15)
-                        .withOptionalVersion("2.4.5-b45")
-                        .withOptionalMinSdk(16)
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
-        );
-    }
-
-    @Test
-    public void validUpdateFullBetaJson() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3-beta2")
-                        .withOptionalVersion("2.4.5-beta3")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
-        );
-    }
-
-    @Test
-    public void validUpdateFullRcJson() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_rc.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3-rc2")
-                        .withOptionalVersion("2.4.5-rc3")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
-        );
-    }
-
     @Test
     public void validUpdateFullWithMetadataJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_metadata.json"));
@@ -158,8 +99,8 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
+                        .withMandatoryVersion(123)
+                        .withOptionalVersion(245)
                         .withOptionalNotificationType(NotificationType.ONCE)
                         .withMetadata(MapUtil.from(
                                 entry("key1", "value1"),
@@ -176,8 +117,8 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
+                        .withMandatoryVersion(123)
+                        .withOptionalVersion(245)
                         .withOptionalNotificationType(NotificationType.ONCE)
                         .withMetadata(new HashMap<String, String>())
                         .build()
@@ -196,8 +137,8 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
+                        .withMandatoryVersion(123)
+                        .withOptionalVersion(245)
                         .withOptionalNotificationType(NotificationType.ONCE)
                         .withMetadata(new HashMap<String, String>())
                         .build()
@@ -211,14 +152,16 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withMandatoryMinSdk(15)
-                        .withOptionalVersion("2.4.0")
-                        .withOptionalMinSdk(17)
+                        .withMandatoryVersion(123)
+                        .withOptionalVersion(240)
+                        .withRequirements(MapUtil.from(
+                            entry("required_os_version","17")
+                        ))
                         .withOptionalNotificationType(NotificationType.ONCE)
                         .build()
         );
     }
+
 
     @Test
     public void noMandatoryVersionJson() throws Throwable {
@@ -227,7 +170,7 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withOptionalVersion("2.4.5")
+                        .withOptionalVersion(245)
                         .withOptionalNotificationType(NotificationType.ONCE)
                         .build()
         );
@@ -240,8 +183,8 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
+                        .withMandatoryVersion(123)
+                        .withOptionalVersion(245)
                         .withOptionalNotificationType(NotificationType.ONCE)
                         .build()
         );
@@ -254,14 +197,14 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
+                        .withMandatoryVersion(123)
+                        .withOptionalVersion(245)
                         .withOptionalNotificationType(NotificationType.ALWAYS)
                         .build()
         );
     }
 
-    @Test(expected = JSONException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void mandatoryVersionNullJson() throws Throwable {
         parser.parse(ResourceUtils.readFromFile("valid_update_null_min_version.json"));
     }
@@ -273,9 +216,9 @@ public class JsonConfigurationParserTest {
                 config
         ).isEqualTo(
                 new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
+                        .withMandatoryVersion(123)
                         .build()
         );
-    }*/
+    }
 
 }

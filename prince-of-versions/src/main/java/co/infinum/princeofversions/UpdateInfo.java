@@ -89,4 +89,13 @@ public class UpdateInfo {
         }
         return this.requirements.equals(result.getRequirements());
     }
+
+    @Override
+    public int hashCode() {
+        int result = requirements.hashCode();
+        result = 31 * result + getInstalledVersion();
+        result = 31 * result + (getLastVersionAvailable() != null ? getLastVersionAvailable() : 0);
+        result = 31 * result + (getRequiredVersion() != null ? getRequiredVersion() : 0);
+        return result;
+    }
 }

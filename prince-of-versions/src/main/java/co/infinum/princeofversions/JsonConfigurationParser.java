@@ -155,40 +155,48 @@ final class JsonConfigurationParser implements ConfigurationParser {
     }
 
     private void mergeUpdateMetaWithDefaultMeta(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws JSONException {
-        Object updateMeta = update.get(META);
-        if (updateMeta instanceof JSONObject) {
-            builder.withMetadata(jsonObjectToMap((JSONObject) updateMeta));
+        if (update.has(META)) {
+            Object updateMeta = update.get(META);
+            if (updateMeta instanceof JSONObject) {
+                builder.withMetadata(jsonObjectToMap((JSONObject) updateMeta));
+            }
         }
     }
 
     private void saveFirstAcceptableUpdate(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws JSONException {
-        Object minimumVersionJson = update.get(MINIMUM_VERSION);
-        if (minimumVersionJson instanceof Integer) {
-            builder.withMandatoryVersion((Integer) minimumVersionJson);
-        } else {
-            throw new IllegalArgumentException("In update configuration " + MINIMUM_VERSION + " it should be int, but the actual "
-                + "value is "
-                + update.get(MINIMUM_VERSION).toString());
+        if (update.has(MINIMUM_VERSION)) {
+            Object minimumVersionJson = update.get(MINIMUM_VERSION);
+            if (minimumVersionJson instanceof Integer) {
+                builder.withMandatoryVersion((Integer) minimumVersionJson);
+            } else {
+                throw new IllegalArgumentException("In update configuration " + MINIMUM_VERSION + " it should be int, but the actual "
+                    + "value is "
+                    + update.get(MINIMUM_VERSION).toString());
+            }
         }
-        Object latestVersionJson = update.get(LATEST_VERSION);
-        if (latestVersionJson instanceof Integer) {
-            builder.withOptionalVersion((Integer) latestVersionJson);
-        } else {
-            throw new IllegalArgumentException("In update configuration " + LATEST_VERSION + " it should be int, but the actual "
-                + "value is "
-                + update.get(LATEST_VERSION).toString());
+        if (update.has(LATEST_VERSION)) {
+            Object latestVersionJson = update.get(LATEST_VERSION);
+            if (latestVersionJson instanceof Integer) {
+                builder.withOptionalVersion((Integer) latestVersionJson);
+            } else {
+                throw new IllegalArgumentException("In update configuration " + LATEST_VERSION + " it should be int, but the actual "
+                    + "value is "
+                    + update.get(LATEST_VERSION).toString());
+            }
         }
-        Object notificationTypeJson = update.get(NOTIFICATION);
-        if (notificationTypeJson instanceof String) {
-            builder.withOptionalNotificationType(
-                ((String) notificationTypeJson).equalsIgnoreCase(NOTIFICATION_ALWAYS)
-                    ? NotificationType.ALWAYS
-                    : NotificationType.ONCE
-            );
-        } else {
-            throw new IllegalArgumentException("In update configuration " + NOTIFICATION + " it should be String, but the actual "
-                + "value is "
-                + update.get(NOTIFICATION).toString());
+        if (update.has(NOTIFICATION)) {
+            Object notificationTypeJson = update.get(NOTIFICATION);
+            if (notificationTypeJson instanceof String) {
+                builder.withOptionalNotificationType(
+                    ((String) notificationTypeJson).equalsIgnoreCase(NOTIFICATION_ALWAYS)
+                        ? NotificationType.ALWAYS
+                        : NotificationType.ONCE
+                );
+            } else {
+                throw new IllegalArgumentException("In update configuration " + NOTIFICATION + " it should be String, but the actual "
+                    + "value is "
+                    + update.get(NOTIFICATION).toString());
+            }
         }
     }
 
@@ -216,8 +224,8 @@ final class JsonConfigurationParser implements ConfigurationParser {
         Iterator<String> it = requirementsJson.keys();
         while (it.hasNext()) {
             String key = it.next();
-            String value = requirementsJson.getString(key);
-            requirements.put(key, value);
+            Object value = requirementsJson.get(key);
+            requirements.put(key, String.valueOf(value));
         }
         return requirements;
     }

@@ -76,12 +76,20 @@ public class UpdateResult {
         if (this.status != result.status) {
             return false;
         }
-        if (this.updateVersion != result.updateVersion()) {
+        if (this.updateVersion != result.getUpdateVersion()) {
             return false;
         }
         if (!this.info.equals(result.getInfo())) {
             return false;
         }
         return metadata.equals(result.metadata);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = status.hashCode();
+        result = 31 * result + info.hashCode();
+        result = 31 * result + metadata.hashCode();
+        return result;
     }
 }
