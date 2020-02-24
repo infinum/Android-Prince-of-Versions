@@ -17,6 +17,7 @@ implementation 'co.infinum:prince-of-versions:3.0.0'
   * Accepts **custom loader** for loading update configuration resource.
   * Use predefined parser for parsing update configuration in **JSON format**.
   * Accept **custom parser** for parsing update configuration.
+  * Accept **custom requirements** for different updates.
   * Make **asynchronous** update check and use **callback** for notifying result.
   * Supports **synchronous** update check.
   * Loading and verifying versions happens **outside of the UI thread**.
@@ -26,26 +27,31 @@ implementation 'co.infinum:prince-of-versions:3.0.0'
 
 ### Default parser and JSON file
 
-If you use default parsers, version in your application and in the JSON configuration has to follow [Semantic Versioning](http://semver.org/). JSON configuration should follow a structure from bellow:
+JSON configuration should follow a structure from bellow:
 
 ```json
 {
-	"ios": {
-		"minimum_version": "1.2.3",
-		"latest_version": {
-			"version": "2.4.5",
-			"notification_type": "ALWAYS"
+	"android": [{
+		"required_version": 10,
+		"last_version_available":12,
+		"notify_last_version_frequency":"ONCE",
+		"requirements":{
+		   "required_os_version":18
+		},
+		"meta":{
+		   "key1":"value3"
 		}
-	},
-	"android": {
-		"minimum_version": "1.2.3",
-		"minimum_version_min_sdk": 15,
-		"latest_version": {
-			"version": "2.4.5",
-			"notification_type": "ONCE",
-			"min_sdk":18
+	},{
+		"required_version": 10,
+		"last_version_available":13,
+		"notify_last_version_frequency":"ONCE",
+		"requirements":{
+		   "required_os_version":19
+		},
+		"meta":{
+		   "key2":"value4"
 		}
-	},
+	}],
 	"meta": {
 		"key1": "value1",
 		"key2": "value2"
@@ -54,16 +60,19 @@ If you use default parsers, version in your application and in the JSON configur
 ```
 The most important part of the configuration for Android applications is <code>android</code> object. All properties in the object are optional.
 
-Property <code>minimum_version</code> specifies the mandatory version of application, eg. if application has version lower than <code>minimum_version</code> - mandatory update will be notified. Semantic of mandatory update is that application has to be updated before any further use. Because of that, if mandatory update exists it will be notified on each update check.
+As it is shown, the <code>android</code> property contains a JSON array of updates, where the library is parsing them one by one and selecting the first acceptable update. If there is no <code>requirement</code> field, that means the first update in an array, but usually, it just means the first update that satisfies all the conditions. 
 
-<code>minumum_version_min_sdk</code> represents the minimum Android version a device has to support to be able to update to mandatory version. Eg. If <code>minimum_version_min_sdk</code> is set to <code>15</code>, a device has to have at least Android version 15 or above to be able to receive an update.
+Metadata from the selected update has an advantage over the default metadata, and when there is a metadata conflict, its resolved by overriding the same fields by values from the selected update. E.g. if the first update gets selected then the final metadata will have these keys: <code> key1: value3 </code> and <code> key2: value2 </code>. In case when there is no conflict of keys in metadata, then we are just merging default metadata with selected update metadata.
 
-Property <code>latest_version</code> contains object that holds informations about optional update.  
-<code>version</code> property defines a version of the latest optional update. If application has version lower than <code>version</code> - optional update will be notified.  
-<code>min_sdk</code> property defines minimum Android version required to be able to update to optional version.  
+Property <code>required_version</code> specifies the mandatory version of application, eg. if application has version lower than <code>required_version</code> - mandatory update will be notified. Semantic of mandatory update is that application has to be updated before any further use. Because of that, if mandatory update exists it will be notified on each update check.
+
+Property <code>last_version_available</code> defines a version of the latest optional update. If application has version
+lower that <code>last_version_available</code> - optional update will be notified.  
 Depending on <code>notification_type</code> property, application can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you only first time for a specific version. In every following check the library would notify <code>onNoUpdate</code> for that specific version. This setting applies only for optional update and has no effect in case of mandatory update. Default value for this property is <code>ONCE</code>.
 
-Key-value pairs under <code>meta</code> key are optional <code>String</code> metadata which any amount can be sent accompanying the required fields.
+<code>requirements</code> propery contains an object of different update requirements. Default requirement is <code>required_os_version</code>. <code>required_os_version</code> represents the minimum Android version a device has to support to be able to update to last available version. Eg. If <code>required_os_version</code> is set to <code>18</code>, a device has to have at least Android version 18 or above to be able to receive an update. Apart from default <code>required_os_version</code>, <code>requirements</code> can contain a variety of different and customizable requirements specific for each update.
+
+Key-value pairs under <code>meta</code> key are optional <code>String</code> metadata which any amount can be sent accompanying the required fields. 
 
 ## Examples
 
@@ -77,18 +86,14 @@ PrinceOfVersions updater = new PrinceOfVersions(this);
 
 2. Create a loader factory for loading from the network passing resource URL.
 ```java
-Loader loader = new NetworkLoader("http://pastebin.com/raw/41N8stUD");
+Loader loader = new NetworkLoader("https://pastebin.com/raw/DL1cR4u4");
 ```
 
 3. Create a concrete callback to get the update check results by implementing <code>UpdaterCallback</code> interface.
 ```java
 UpdaterCallback callback = new UpdaterCallback() {
     @Override
-    public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
-    }
-
-    @Override
-    public void onNoUpdate(Map<String, String> metadata) {
+    public void onSuccess(UpdateResult result) {
     }
 
     @Override
@@ -109,7 +114,7 @@ In version 3.0.0 a new UpdaterCall API has been introduced.
 
 1. Create a new <code>PrinceOfVersionsCall</code> instance.
 ```java
-PrinceOfVersionsCall call = updater.newCall("http://pastebin.com/raw/41N8stUD");
+PrinceOfVersionsCall call = updater.newCall("https://pastebin.com/raw/DL1cR4u4");
 
 // If you have previously created a Loader instance, you can use it to create a PrinceOfVersionsCall instance.
 PrinceOfVersionsCall call = updater.newCall(loader);
@@ -119,25 +124,21 @@ PrinceOfVersionsCall call = updater.newCall(loader);
 ```java
 call.enqueue(new UpdaterCallback() {
     @Override
-    public void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata) {
+    public void onSuccess(UpdateResult result) {
     }
-
-    @Override
-    public void onNoUpdate(Map<String, String> metadata) {
-    }
-
+    
     @Override
     public void onError(Throwable throwable) {
     }
 });
 ```
 
-3. If you want to use the call in a synchronous manner call the <code>execute</code> method. It returns a <code>Result</code> object containing the version check results.
+3. If you want to use the call in a synchronous manner call the <code>execute</code> method. It returns a <code>UpdateResult</code> object containing the version check results.
 ```java
 try {
-    Result result = call.execute();
+    UpdateResult result = call.execute();
     // result.getStatus() returns MANDATORY, OPTIONAL or NO_UPDATE
-    // result.getVersion() returns version of an update
+    // result.getInfo() returns update info 
     // result.getMetadata() returns metadata about the update
 } catch (Throwable throwable) {
     // handle error
