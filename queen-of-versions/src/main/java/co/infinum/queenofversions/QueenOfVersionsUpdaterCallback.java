@@ -53,8 +53,8 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * Here is a most common usage of this callback:
  * <pre>
  *          {@link PrinceOfVersions} princeOfVersion = new {@link PrinceOfVersions}(context);
- *          {@link QueenOfVersionsUpdaterCallback} googleCallback = new {@link QueenOfVersionsUpdaterCallback}(requestCode,activity,listener,
- *          appVersionCode);
+ *          {@link QueenOfVersionsUpdaterCallback} googleCallback
+ *              = new {@link QueenOfVersionsUpdaterCallback}(requestCode, activity, listener, appVersionCode);
  *
  *          {@link PrinceOfVersionsCancelable} cancelable = princeOfVersion.checkForUpdates("http://example.com/some/update.json",
  *          googleCallback); // start checking for an update...

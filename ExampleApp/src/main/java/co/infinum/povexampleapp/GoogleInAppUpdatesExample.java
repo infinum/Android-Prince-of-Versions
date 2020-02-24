@@ -1,6 +1,5 @@
 package co.infinum.povexampleapp;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,6 @@ import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.queenofversions.QueenOfVersions;
 import co.infinum.queenofversions.QueenOfVersionsFlexibleUpdateHandler;
-import co.infinum.queenofversions.QueenOfVersionsUpdaterCallback;
 
 public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersions.Callback {
 

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static co.infinum.queenofversions.InAppUpdateError.API_NOT_AVAILABLE;
@@ -26,6 +27,7 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -86,12 +88,22 @@ public class QueenOfVersionsTest {
     }
 
     @Test
-    public void testGettingErrorOnPrinceCallback() {
-        QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
-                new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.onError(new Throwable("Error"));
+    public void testGettingErrorOnPrinceCallback() throws Throwable {
+        OnPrinceOfVersionsError onError = Mockito.mock(OnPrinceOfVersionsError.class);
+        OnPrinceOfVersionsSuccess onSuccess = Mockito.mock(OnPrinceOfVersionsSuccess.class);
 
-        verify(updaterStateCallback, times(1)).onError(any(GoogleInAppUpdateException.class));
+        QueenOfVersionsUpdaterCallback googleInAppUpdateCallback = new QueenOfVersionsUpdaterCallback(
+                200,
+                googleAppUpdater,
+                updaterStateCallback,
+                10,
+                onSuccess,
+                onError
+        );
+        Throwable error = new Throwable("Error");
+        googleInAppUpdateCallback.onError(error);
+
+        verify(onError, times(1)).continueUpdateCheckAsStatus(eq(error));
     }
 
     @Test
