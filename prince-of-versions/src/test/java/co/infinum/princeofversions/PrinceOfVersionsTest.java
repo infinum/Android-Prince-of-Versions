@@ -340,24 +340,6 @@ public class PrinceOfVersionsTest {
         assertThat(result.getUpdateVersion()).isEqualTo(300);
     }
 
-    // We can't really test this cause there is no formal definition for wrong version with integers.
-    /*
-    @Test
-    public void testCheckingInvalidContentWithInvalidVersion() {
-        Storage storage = new MockStorage();
-        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
-        princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("invalid_update_invalid_version.json"),
-            callback
-        );
-
-        verify(callback, times(0)).onNewUpdate(anyInt(), anyBoolean(), anyMap());
-        verify(callback, times(1)).onError(anyThrowable());
-        verify(callback, times(0)).onNoUpdate(anyMap());
-    } */
-
     @Test(expected = Throwable.class)
     public void testCheckingInvalidContentWithInvalidVersionSync() throws Throwable {
         Storage storage = new MockStorage();
@@ -489,32 +471,6 @@ public class PrinceOfVersionsTest {
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getUpdateVersion()).isEqualTo(245);
     }
-    /*
-    //We can't test this also because there isn't really a way of defining App version "wrong" with integers.
-    /*
-    @Test
-    public void testCheckingWhenCurrentAppVersionIsInvalid() {
-        Storage storage = new MockStorage();
-        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
-        princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
-        );
-
-        verify(callback, times(0)).onNewUpdate(anyInt(), anyBoolean(), anyMap());
-        verify(callback, times(1)).onError(anyThrowable());
-        verify(callback, times(0)).onNoUpdate(anyMap());
-    }
-
-    @Test(expected = Throwable.class)
-    public void testCheckingWhenCurrentAppVersionIsInvalidSync() throws Throwable {
-        Storage storage = new MockStorage();
-        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(10,
-            16));
-        princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
-    }*/
 
     @Test
     public void testCheckingWhenUpdateShouldBeMade() {
