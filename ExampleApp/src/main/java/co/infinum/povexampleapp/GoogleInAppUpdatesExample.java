@@ -1,5 +1,6 @@
 package co.infinum.povexampleapp;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -32,7 +33,11 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
         initUI();
 
         princeOfVersions = new PrinceOfVersions.Builder().build(this);
-        googleInAppUpdateCallback = new QueenOfVersionCallbackUpdate(REQUEST_CODE, this, this, BuildConfig.VERSION_CODE);
+        try {
+            googleInAppUpdateCallback = new QueenOfVersionCallbackUpdate(REQUEST_CODE, this, this);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
     }
 

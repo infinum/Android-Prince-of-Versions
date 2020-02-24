@@ -12,5 +12,8 @@
       "version": "2.4.5-b45",
       "notification_type": "ONCE"
     }
+  },
+  "android2": {
+
   }
 }

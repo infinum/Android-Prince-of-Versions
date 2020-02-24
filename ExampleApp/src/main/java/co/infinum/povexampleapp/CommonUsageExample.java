@@ -80,7 +80,7 @@ public class CommonUsageExample extends AppCompatActivity {
         /*  create new instance of updater */
         updater = new PrinceOfVersions.Builder().build(this);
         /*  create specific loader factory for loading from internet  */
-        loader = new NetworkLoader("https://pastebin.com/raw/4pVYKz0r");
+        loader = new NetworkLoader("https://pastebin.com/raw/DL1cR4u4");
         slowLoader = createSlowLoader(loader);
     }
 

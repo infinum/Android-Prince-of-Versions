@@ -8,6 +8,8 @@ import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.tasks.OnSuccessListener;
 
+import co.infinum.princeofversions.UpdateInfo;
+
 class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
 
     private final Activity activity;
@@ -28,7 +30,7 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
     }
 
     @Override
-    public void initGoogleUpdate(final boolean isMandatory, final String versionCode) {
+    public void initGoogleUpdate(final boolean isMandatory, final int versionCode, final UpdateInfo updateInfo) {
         appUpdateManager.getAppUpdateInfo()
             .addOnSuccessListener(
                 new OnSuccessListener<AppUpdateInfo>() {
@@ -36,7 +38,7 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
                     public void onSuccess(AppUpdateInfo appUpdateInfo) {
                         QueenOfVersionsAppUpdater.this.appUpdateInfo = appUpdateInfo;
                         callback.handleSuccess(appUpdateInfo.updateAvailability(), versionCode, appUpdateInfo.availableVersionCode(),
-                            isMandatory);
+                            isMandatory, updateInfo);
                     }
                 }
             )

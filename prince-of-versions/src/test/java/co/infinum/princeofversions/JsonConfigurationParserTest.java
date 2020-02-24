@@ -6,8 +6,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 
+import co.infinum.princeofversions.mocks.MockApplicationConfiguration;
+import co.infinum.princeofversions.mocks.MockDefaultRequirementChecker;
 import co.infinum.princeofversions.util.MapUtil;
 import co.infinum.princeofversions.util.ResourceUtils;
 
@@ -16,41 +19,18 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class JsonConfigurationParserTest {
 
-
+    private static final String DEFAULT_OS_VERSION = "required_os_version";
 
     private JsonConfigurationParser parser;
 
     @Before
     public void setUp() {
-        parser = new JsonConfigurationParser(new PrinceOfVersionsDefaultRequirementsChecker());
+        parser = new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor());
     }
-
-    /*
 
     @After
     public void tearDown() {
         parser = null;
-    }
-
-    @Test
-    public void testIsNonEmptyWithValue() {
-        assertThat(parser.isNonEmpty("value")).isTrue();
-    }
-
-    @Test
-    public void testIsNonEmptyWithEmpty() {
-        assertThat(parser.isNonEmpty("")).isFalse();
-    }
-
-
-    @Test
-    public void testIsNonEmptyWithSpace() {
-        assertThat(parser.isNonEmpty(" ")).isFalse();
-    }
-
-    @Test
-    public void testIsNonEmptyWithNull() {
-        assertThat(parser.isNonEmpty("null")).isFalse();
     }
 
     @Test
@@ -61,38 +41,28 @@ public class JsonConfigurationParserTest {
     @Test
     public void checkJsonToStringMap() throws Throwable {
         assertThat(
-                parser.jsonObjectToMap(new JSONObject(ResourceUtils.readFromFile("json_obj_string.json")))
+            parser.jsonObjectToMap(new JSONObject(ResourceUtils.readFromFile("json_obj_string.json")))
         ).isEqualTo(
-                MapUtil.from(
-                        entry("key1", "value1"),
-                        entry("key2", "value2")
-                )
+            MapUtil.from(
+                entry("key1", "value1"),
+                entry("key2", "value2")
+            )
         );
     }
 
     @Test
     public void checkComplexJsonToStringMap() throws Throwable {
         assertThat(
-                parser.jsonObjectToMap(new JSONObject(ResourceUtils.readFromFile("json_obj_string_complex.json")))
+            parser.jsonObjectToMap(new JSONObject(ResourceUtils.readFromFile("json_obj_string_complex.json")))
         ).isEqualTo(
-                MapUtil.from(
-                        entry("key1", "value1"),
-                        entry("key2", "value2")
-                )
-        );
-    }
-
-    @Test
-    public void invalidUpdateInvalidVersion() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("invalid_update_invalid_version.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2")
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
+            MapUtil.from(
+                entry("key1", "value1"),
+                entry("key2", "value2"),
+                entry("key3", "true"),
+                entry("key4", "0"),
+                entry("key5", "[0,1]"),
+                entry("key6", "{}")
+            )
         );
     }
 
@@ -115,71 +85,13 @@ public class JsonConfigurationParserTest {
     public void validUpdateFullJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
-        );
-    }
-
-    @Test
-    public void validUpdateFullBJson() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_b.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3-b12")
-                        .withOptionalVersion("2.4.5-b45")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
-        );
-    }
-
-    @Test
-    public void validUpdateFullBWithSdkValues() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_b_with_sdk_values.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3-b12")
-                        .withMandatoryMinSdk(15)
-                        .withOptionalVersion("2.4.5-b45")
-                        .withOptionalMinSdk(16)
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
-        );
-    }
-
-    @Test
-    public void validUpdateFullBetaJson() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_beta.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3-beta2")
-                        .withOptionalVersion("2.4.5-beta3")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
-        );
-    }
-
-    @Test
-    public void validUpdateFullRcJson() throws Throwable {
-        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_rc.json"));
-        assertThat(
-                config
-        ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3-rc2")
-                        .withOptionalVersion("2.4.5-rc3")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .withOptionalNotificationType(NotificationType.ONCE)
+                .build()
         );
     }
 
@@ -187,17 +99,17 @@ public class JsonConfigurationParserTest {
     public void validUpdateFullWithMetadataJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_metadata.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .withMetadata(MapUtil.from(
-                                entry("key1", "value1"),
-                                entry("key2", "value2")
-                        ))
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .withOptionalNotificationType(NotificationType.ONCE)
+                .withMetadata(MapUtil.from(
+                    entry("key1", "value1"),
+                    entry("key2", "value2")
+                ))
+                .build()
         );
     }
 
@@ -205,14 +117,14 @@ public class JsonConfigurationParserTest {
     public void validUpdateFullWithEmptyMetadataJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_metadata_empty.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .withMetadata(new HashMap<String, String>())
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .withOptionalNotificationType(NotificationType.ONCE)
+                .withMetadata(new HashMap<String, String>())
+                .build()
         );
     }
 
@@ -225,14 +137,14 @@ public class JsonConfigurationParserTest {
     public void validUpdateFullWithNullMetadataJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_metadata_null.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .withMetadata(new HashMap<String, String>())
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .withOptionalNotificationType(NotificationType.ONCE)
+                .withMetadata(new HashMap<String, String>())
+                .build()
         );
     }
 
@@ -240,15 +152,16 @@ public class JsonConfigurationParserTest {
     public void validUpdateFullWithSdkValuesJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_sdk_values.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withMandatoryMinSdk(15)
-                        .withOptionalVersion("2.4.0")
-                        .withOptionalMinSdk(17)
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(240)
+                .withRequirements(MapUtil.from(
+                    entry("required_os_version", "17")
+                ))
+                .withOptionalNotificationType(NotificationType.ONCE)
+                .build()
         );
     }
 
@@ -256,12 +169,12 @@ public class JsonConfigurationParserTest {
     public void noMandatoryVersionJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_no_min_version.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withOptionalVersion(245)
+                .withOptionalNotificationType(NotificationType.ONCE)
+                .build()
         );
     }
 
@@ -269,13 +182,13 @@ public class JsonConfigurationParserTest {
     public void validUpdateNoNotificationJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_no_notification.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ONCE)
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .withOptionalNotificationType(NotificationType.ONCE)
+                .build()
         );
     }
 
@@ -283,17 +196,17 @@ public class JsonConfigurationParserTest {
     public void validUpdateAlwaysNotificationJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_notification_always.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .withOptionalVersion("2.4.5")
-                        .withOptionalNotificationType(NotificationType.ALWAYS)
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .withOptionalNotificationType(NotificationType.ALWAYS)
+                .build()
         );
     }
 
-    @Test(expected = JSONException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void mandatoryVersionNullJson() throws Throwable {
         parser.parse(ResourceUtils.readFromFile("valid_update_null_min_version.json"));
     }
@@ -302,12 +215,91 @@ public class JsonConfigurationParserTest {
     public void validUpdateOnlyMandatoryJson() throws Throwable {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_only_min_version.json"));
         assertThat(
-                config
+            config
         ).isEqualTo(
-                new PrinceOfVersionsConfig.Builder()
-                        .withMandatoryVersion("1.2.3")
-                        .build()
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .build()
         );
-    }*/
+    }
 
+    @Test
+    public void validUpdateWithJsonArray() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_array.json"));
+        assertThat(
+            config
+        ).isEqualTo(
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .build()
+        );
+    }
+
+    @Test
+    public void validUpdateWithMergingMetadata() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_array_with_metadata.json"));
+        assertThat(
+            config
+        ).isEqualTo(
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .withMetadata(MapUtil.from(
+                    entry("x", "10"),
+                    entry("z", "3")
+                ))
+                .build());
+    }
+
+    @Test
+    public void validUpdateWithOverridingMetadata() throws Throwable {
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_array_with_overriding_metadata.json"));
+        assertThat(
+            config
+        ).isEqualTo(
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(245)
+                .withMetadata(MapUtil.from(
+                    entry("x", "10")
+                ))
+                .build());
+    }
+
+    @Test(expected = Throwable.class)
+    public void invalidUpdateWithStringLatestVersion() throws Throwable {
+        parser.parse(ResourceUtils.readFromFile("invalid_update_with_string_version.json"));
+    }
+
+    @Test(expected = Throwable.class)
+    public void invalidUpdateWithIntNotification() throws Throwable {
+        parser.parse(ResourceUtils.readFromFile("invalid_update_with_int_notification_type.json"));
+    }
+
+    @Test
+    public void validUpdateWithRequirements() throws Throwable {
+        MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(200, 13);
+        MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
+        PrinceOfVersionsRequirementsProcessor processor =
+            new PrinceOfVersionsRequirementsProcessor(Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+        JsonConfigurationParser parser =
+            new JsonConfigurationParser(processor);
+
+        PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_array_with_requirements.json"));
+        assertThat(
+            config
+        ).isEqualTo(
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(123)
+                .withOptionalVersion(246)
+                .build());
+    }
+
+    @Test(expected = Throwable.class)
+    public void invalidDataInDefaultRequirementChecker() throws JSONException {
+        MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(200,13);
+        MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
+        checker.checkRequirements("not integer");
+    }
 }

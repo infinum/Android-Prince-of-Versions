@@ -116,4 +116,9 @@ final class CheckResult {
         result = 31 * result + (metadata.hashCode());
         return result;
     }
+
+    @Override
+    public String toString() {
+        return this.status + " " + this.info + " " + this.metadata + " " + this.notificationType;
+    }
 }

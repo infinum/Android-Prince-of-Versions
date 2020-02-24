@@ -9,27 +9,22 @@ import co.infinum.princeofversions.ApplicationConfiguration;
 import co.infinum.princeofversions.RequirementChecker;
 
 /**
- *  Mocked default requirement checker that represents a implementation {@link RequirementChecker} that will be used for Unit tests
+ * Mocked default requirement checker that represents a implementation {@link RequirementChecker} that will be used for Unit tests
  */
 public class MockDefaultRequirementChecker implements RequirementChecker {
 
     /**
      * Minimum SDK for mandatory version
      */
-    private static final String REQUIRED_ANDROID_VERSION = "required_os_version";
     private int sdkVersionCode;
 
-    public MockDefaultRequirementChecker(ApplicationConfiguration appConfig){
+    public MockDefaultRequirementChecker(ApplicationConfiguration appConfig) {
         this.sdkVersionCode = appConfig.sdkVersionCode();
     }
 
     @Override
-    public boolean checkRequirements(JSONObject data) throws JSONException {
-        if (data.has(REQUIRED_ANDROID_VERSION)) {
-            int minSdk = data.getInt(REQUIRED_ANDROID_VERSION);
-            return minSdk <= this.sdkVersionCode;
-        } else {
-            return false;
-        }
+    public boolean checkRequirements(String value) throws JSONException {
+        int minSdk = Integer.parseInt(value);
+        return minSdk <= this.sdkVersionCode;
     }
 }

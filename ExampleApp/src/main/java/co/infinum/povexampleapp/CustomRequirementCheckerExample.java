@@ -83,7 +83,7 @@ public class CustomRequirementCheckerExample extends AppCompatActivity {
             .build(this);
 
         /*  create specific loader factory for loading from internet  */
-        loader = new NetworkLoader("https://pastebin.com/raw/qBk6Psf8");
+        loader = new NetworkLoader("https://pastebin.com/raw/VMgd71VH");
         slowLoader = createSlowLoader(loader);
     }
 

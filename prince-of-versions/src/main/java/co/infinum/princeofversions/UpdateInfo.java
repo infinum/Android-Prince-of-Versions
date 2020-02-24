@@ -66,4 +66,50 @@ public class UpdateInfo {
             + ", Requirements =" + requirements
             + '}';
     }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof UpdateInfo)) {
+            return false;
+        }
+
+        UpdateInfo result = (UpdateInfo) obj;
+
+        if (this.installedVersion != result.getInstalledVersion()) {
+            return false;
+        }
+        if (this.getRequiredVersion() != null) {
+            if (!this.getRequiredVersion().equals(result.getRequiredVersion())) {
+                return false;
+            }
+        } else {
+            if (result.getRequiredVersion() != null) {
+                return false;
+            }
+        }
+
+        if (this.getLastVersionAvailable() != null) {
+            if (!this.getLastVersionAvailable().equals(result.getLastVersionAvailable())) {
+                return false;
+            }
+        } else {
+            if (result.getLastVersionAvailable() != null) {
+                return false;
+            }
+        }
+
+        return this.requirements.equals(result.getRequirements());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = requirements.hashCode();
+        result = 31 * result + getInstalledVersion();
+        result = 31 * result + (getLastVersionAvailable() != null ? getLastVersionAvailable() : 0);
+        result = 31 * result + (getRequiredVersion() != null ? getRequiredVersion() : 0);
+        return result;
+    }
 }
