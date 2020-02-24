@@ -1,6 +1,6 @@
 package co.infinum.queenofversions;
 
-public interface QueenOfVersionFlexibleUpdateHandler {
+public interface QueenOfVersionsFlexibleUpdateHandler {
 
     void completeUpdate();
 }

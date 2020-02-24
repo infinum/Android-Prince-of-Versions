@@ -1,17 +1,17 @@
 package co.infinum.queenofversions;
 
-class UpdateStateDelegate implements QueenOfVersionsCallback {
+class UpdateStateDelegate implements QueenOfVersions.Callback {
 
     private boolean isCanceled;
-    private QueenOfVersionsCallback listener;
+    private QueenOfVersions.Callback listener;
 
-    UpdateStateDelegate(boolean isCanceled, QueenOfVersionsCallback listener) {
+    UpdateStateDelegate(boolean isCanceled, QueenOfVersions.Callback listener) {
         this.isCanceled = isCanceled;
         this.listener = listener;
     }
 
     @Override
-    public void onDownloaded(QueenOfVersionFlexibleUpdateHandler handler) {
+    public void onDownloaded(QueenOfVersionsFlexibleUpdateHandler handler) {
         if (!isCanceled) {
             listener.onDownloaded(handler);
         }
@@ -46,9 +46,9 @@ class UpdateStateDelegate implements QueenOfVersionsCallback {
     }
 
     @Override
-    public void onFailed(Exception exception) {
+    public void onError(Throwable throwable) {
         if (!isCanceled) {
-            listener.onFailed(exception);
+            listener.onError(throwable);
         }
     }
 
@@ -81,9 +81,9 @@ class UpdateStateDelegate implements QueenOfVersionsCallback {
     }
 
     @Override
-    public void onMandatoryUpdateNotAvailable() {
+    public void onMandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion) {
         if (!isCanceled) {
-            listener.onMandatoryUpdateNotAvailable();
+            listener.onMandatoryUpdateNotAvailable(mandatoryVersion, availableVersion);
         }
     }
 

@@ -5,10 +5,11 @@ import android.app.Activity;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 
 import co.infinum.princeofversions.UpdateInfo;
+import javax.annotation.Nullable;
 
 public interface GoogleAppUpdater {
 
-    void initGoogleUpdate(boolean isMandatory, int version, UpdateInfo updateInfo);
+    void initGoogleUpdate(boolean isMandatory, @Nullable Integer version, @Nullable UpdateInfo updateInfo);
 
     void startUpdate(int updateType);
 
@@ -28,7 +29,7 @@ public interface GoogleAppUpdater {
 
     void notifyUser();
 
-    void mandatoryUpdateNotAvailable();
+    void mandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion);
 
     void cancel();
 }

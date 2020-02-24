@@ -3,9 +3,13 @@ package co.infinum.queenofversions;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-
+import co.infinum.princeofversions.PrinceOfVersions;
+import co.infinum.princeofversions.PrinceOfVersionsCancelable;
+import co.infinum.princeofversions.UpdateInfo;
+import co.infinum.princeofversions.UpdateResult;
+import co.infinum.princeofversions.UpdateStatus;
+import co.infinum.princeofversions.UpdaterCallback;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.android.play.core.install.InstallState;
@@ -14,13 +18,8 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallErrorCode;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
-
-import co.infinum.princeofversions.PrinceOfVersions;
-import co.infinum.princeofversions.PrinceOfVersionsCancelable;
-import co.infinum.princeofversions.UpdateInfo;
-import co.infinum.princeofversions.UpdateResult;
-import co.infinum.princeofversions.UpdateStatus;
-import co.infinum.princeofversions.UpdaterCallback;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static co.infinum.queenofversions.InAppUpdateError.API_NOT_AVAILABLE;
 import static co.infinum.queenofversions.InAppUpdateError.DOWNLOAD_NOT_PRESENT;
@@ -34,7 +33,7 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * This class represents the core component of Queen of Versions module.
  * <p>
  * The way to create instance of this class is by constructor with {@link Integer}, {@link Activity} and
- * {@link QueenOfVersionsCallback}
+ * {@link QueenOfVersionsUpdaterCallback}
  * arguments.
  * </p>
  * <p>
@@ -54,7 +53,7 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * Here is a most common usage of this callback:
  * <pre>
  *          {@link PrinceOfVersions} princeOfVersion = new {@link PrinceOfVersions}(context);
- *          {@link QueenOfVersionCallbackUpdate} googleCallback = new {@link QueenOfVersionCallbackUpdate}(requestCode,activity,listener,
+ *          {@link QueenOfVersionsUpdaterCallback} googleCallback = new {@link QueenOfVersionsUpdaterCallback}(requestCode,activity,listener,
  *          appVersionCode);
  *
  *          {@link PrinceOfVersionsCancelable} cancelable = princeOfVersion.checkForUpdates("http://example.com/some/update.json",
@@ -68,35 +67,77 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * REQUIRED_UPDATE_NEEDED update == IMMEDIATE update
  * FLEXIBLE update == NEW_UPDATE_AVAILABLE update
  */
-public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersionFlexibleUpdateHandler {
+public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersionsFlexibleUpdateHandler {
 
-    private UpdateStateDelegate flexibleStateListener;
-    private GoogleAppUpdater googleAppUpdater;
     private final int appVersionCode;
 
+    private UpdateStateDelegate flexibleStateListener;
+
+    private GoogleAppUpdater googleAppUpdater;
+
+    private OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess;
+
+    private OnPrinceOfVersionsError onPrinceOfVersionsError;
+
     /**
-     * Creates {@link QueenOfVersionCallbackUpdate} using provided {@link Activity}, {@link QueenOfVersionsCallback} and two integers
+     * Creates {@link QueenOfVersionsUpdaterCallback} using provided {@link Activity}, {@link QueenOfVersions.Callback} and two integers
      * that represent requestCode and appVersionCode.
      *
      * @param requestCode integer that can be used for {@link Intent} identification in onActivityResult method
      * @param activity    activity is used for purposes of Google's in-app updates methods that are used in this library
      * @param listener    listener is used as callback for notifying update statuses during update
      */
-    public QueenOfVersionCallbackUpdate(int requestCode, Activity activity, QueenOfVersionsCallback listener) throws
-        PackageManager.NameNotFoundException {
+    public QueenOfVersionsUpdaterCallback(
+            int requestCode,
+            Activity activity,
+            QueenOfVersions.Callback listener,
+            OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess,
+            OnPrinceOfVersionsError onPrinceOfVersionsError
+    ) {
         this.flexibleStateListener = new UpdateStateDelegate(false, listener);
         this.googleAppUpdater = new QueenOfVersionsAppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
-            flexibleStateListener,
-            this);
-        this.appVersionCode = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode;
+                flexibleStateListener,
+                this);
+        try {
+            this.appVersionCode = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new IllegalStateException("Could not find package name", e);
+        }
+        this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
+        this.onPrinceOfVersionsError = onPrinceOfVersionsError;
     }
 
     @VisibleForTesting
-    QueenOfVersionCallbackUpdate(int requestCode, GoogleAppUpdater appUpdater, QueenOfVersionsCallback flexibleStateListener,
-        int appVersionCode) {
+    QueenOfVersionsUpdaterCallback(
+            int requestCode,
+            GoogleAppUpdater appUpdater,
+            QueenOfVersions.Callback flexibleStateListener,
+            int appVersionCode,
+            OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess,
+            OnPrinceOfVersionsError onPrinceOfVersionsError
+    ) {
         this.flexibleStateListener = new UpdateStateDelegate(false, flexibleStateListener);
         this.appVersionCode = appVersionCode;
         this.googleAppUpdater = appUpdater;
+        this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
+        this.onPrinceOfVersionsError = onPrinceOfVersionsError;
+    }
+
+    @VisibleForTesting
+    QueenOfVersionsUpdaterCallback(
+            int requestCode,
+            GoogleAppUpdater appUpdater,
+            QueenOfVersions.Callback flexibleStateListener,
+            int appVersionCode
+    ) {
+        this(
+                requestCode,
+                appUpdater,
+                flexibleStateListener,
+                appVersionCode,
+                new QueenOfVersions.QueenOnPrinceOfVersionsSuccess(),
+                new QueenOfVersions.QueenOnPrinceOfVersionsError()
+        );
     }
 
     /**
@@ -109,11 +150,12 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      */
 
     @Override
-    public void onSuccess(@NonNull UpdateResult result) {
-        if (result.getStatus() == UpdateStatus.REQUIRED_UPDATE_NEEDED) {
-            checkWithGoogleForAnUpdate(true, result.getUpdateVersion(), result.getInfo());
-        } else {
-            checkWithGoogleForAnUpdate(false, result.getUpdateVersion(), result.getInfo());
+    public void onSuccess(@Nonnull UpdateResult result) {
+        try {
+            UpdateStatus status = onPrinceOfVersionsSuccess.handleUpdateResultAsStatus(result);
+            continueUpdateCheckBasedOnStatus(status, result);
+        } catch (Throwable error) {
+            flexibleStateListener.onError(error);
         }
     }
 
@@ -123,8 +165,34 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * @param error Throwable that describes error occurred.
      */
     @Override
-    public void onError(@NonNull Throwable error) {
-        flexibleStateListener.onFailed(new GoogleInAppUpdateException(error));
+    public void onError(@Nonnull Throwable error) {
+        try {
+            UpdateStatus status = onPrinceOfVersionsError.continueUpdateCheckAsStatus(error);
+            continueUpdateCheckBasedOnStatus(status, null);
+        } catch (Throwable rethrown) {
+            flexibleStateListener.onError(rethrown);
+        }
+    }
+
+    private void continueUpdateCheckBasedOnStatus(UpdateStatus status, @Nullable UpdateResult result) {
+        switch (status) {
+            case NEW_UPDATE_AVAILABLE:
+                checkWithGoogleForAnUpdate(
+                        false,
+                        result != null ? result.getUpdateVersion() : null,
+                        result != null ? result.getInfo() : null
+                );
+                break;
+            case REQUIRED_UPDATE_NEEDED:
+                checkWithGoogleForAnUpdate(
+                        true,
+                        result != null ? result.getUpdateVersion() : null,
+                        result != null ? result.getInfo() : null
+                );
+                break;
+            default:
+                flexibleStateListener.onNoUpdate();
+        }
     }
 
     /**
@@ -168,8 +236,8 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * @param googleUpdateVersionCode Version code of the application we have on Google Play Store
      * @param isMandatory             Determines if the update we have on our JSON file is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      */
-    void handleSuccess(@UpdateAvailability int updateAvailability, int princeVersionCode, int googleUpdateVersionCode,
-        boolean isMandatory, UpdateInfo updateInfo) {
+    void handleSuccess(@UpdateAvailability int updateAvailability, @Nullable Integer princeVersionCode, int googleUpdateVersionCode,
+            boolean isMandatory, @Nullable UpdateInfo updateInfo) {
         if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
             VersionCode versionCode = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory, updateInfo);
             if (versionCode == VersionCode.FLEXIBLE) {
@@ -177,7 +245,15 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
             } else if (versionCode == VersionCode.IMMEDIATE) {
                 googleAppUpdater.startUpdate(AppUpdateType.IMMEDIATE);
             } else if (versionCode == VersionCode.IMMEDIATE_NOT_AVAILABLE) {
-                googleAppUpdater.mandatoryUpdateNotAvailable();
+                Integer requiredVersion = updateInfo != null ? updateInfo.getRequiredVersion() : null;
+                if (requiredVersion != null) {
+                    googleAppUpdater.mandatoryUpdateNotAvailable(requiredVersion, googleUpdateVersionCode);
+                } else {
+                    googleAppUpdater.noUpdate();
+                }
+            } else {
+                // Shouldn't happen if we cover all cases of @VersionCode
+                googleAppUpdater.noUpdate();
             }
         } else {
             googleAppUpdater.noUpdate();
@@ -213,19 +289,19 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      */
     private void checkErrorStates(InstallState installState) {
         if (installState.installErrorCode() == InstallErrorCode.ERROR_API_NOT_AVAILABLE) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(API_NOT_AVAILABLE));
+            flexibleStateListener.onError(new GoogleInAppUpdateException(API_NOT_AVAILABLE));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_DOWNLOAD_NOT_PRESENT) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(DOWNLOAD_NOT_PRESENT));
+            flexibleStateListener.onError(new GoogleInAppUpdateException(DOWNLOAD_NOT_PRESENT));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_NOT_ALLOWED) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(INSTALL_NOT_ALLOWED));
+            flexibleStateListener.onError(new GoogleInAppUpdateException(INSTALL_NOT_ALLOWED));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INSTALL_UNAVAILABLE) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(INSTALL_UNAVAILABLE));
+            flexibleStateListener.onError(new GoogleInAppUpdateException(INSTALL_UNAVAILABLE));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INTERNAL_ERROR) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(INTERNAL_ERROR));
+            flexibleStateListener.onError(new GoogleInAppUpdateException(INTERNAL_ERROR));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_INVALID_REQUEST) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(INVALID_REQUEST));
+            flexibleStateListener.onError(new GoogleInAppUpdateException(INVALID_REQUEST));
         } else if (installState.installErrorCode() == InstallErrorCode.ERROR_UNKNOWN) {
-            flexibleStateListener.onFailed(new GoogleInAppUpdateException(ERROR_UNKNOWN));
+            flexibleStateListener.onError(new GoogleInAppUpdateException(ERROR_UNKNOWN));
         }
     }
 
@@ -237,7 +313,7 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * @param princeVersionCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
      * @param updateInfo        All information about the update that {@link PrinceOfVersions} got from parsing JSON file
      */
-    private void checkWithGoogleForAnUpdate(boolean isMandatory, int princeVersionCode, UpdateInfo updateInfo) {
+    private void checkWithGoogleForAnUpdate(boolean isMandatory, @Nullable Integer princeVersionCode, @Nullable UpdateInfo updateInfo) {
         googleAppUpdater.initGoogleUpdate(isMandatory, princeVersionCode, updateInfo);
     }
 
@@ -250,12 +326,25 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * @param isMandatory          Determines whether the update we have is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      * @return Returns an {@link AppUpdateType} depending on version codes we have
      */
-    private VersionCode checkVersionCode(int princeOfVersionsCode, int googleVersionCode, boolean isMandatory, UpdateInfo updateInfo) {
+    private VersionCode checkVersionCode(
+            @Nullable Integer princeOfVersionsCode,
+            int googleVersionCode,
+            boolean isMandatory,
+            @Nullable UpdateInfo updateInfo
+    ) {
+        if (princeOfVersionsCode == null) {
+            if (isMandatory) {
+                return VersionCode.IMMEDIATE;
+            } else {
+                return VersionCode.FLEXIBLE;
+            }
+        }
+
         if (princeOfVersionsCode <= googleVersionCode && isMandatory) {
             return VersionCode.IMMEDIATE;
         } else if (princeOfVersionsCode > googleVersionCode) {
             if (appVersionCode < googleVersionCode && isMandatory) {
-                if (updateInfo.getRequiredVersion() != null) {
+                if (updateInfo != null && updateInfo.getRequiredVersion() != null) {
                     if (updateInfo.getRequiredVersion() <= googleVersionCode) {
                         return VersionCode.IMMEDIATE;
                     } else {

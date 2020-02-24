@@ -2,26 +2,30 @@ package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.content.IntentSender;
-
+import co.infinum.princeofversions.UpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.tasks.OnSuccessListener;
-
-import co.infinum.princeofversions.UpdateInfo;
+import javax.annotation.Nullable;
 
 class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
 
     private final Activity activity;
-    private final AppUpdateManager appUpdateManager;
-    private final int requestCode;
-    private final UpdateStateDelegate flexibleStateListener;
-    private final QueenOfVersionCallbackUpdate callback;
 
+    private final AppUpdateManager appUpdateManager;
+
+    private final int requestCode;
+
+    private final UpdateStateDelegate flexibleStateListener;
+
+    private final QueenOfVersionsUpdaterCallback callback;
+
+    @Nullable
     private AppUpdateInfo appUpdateInfo;
 
     QueenOfVersionsAppUpdater(Activity activity, AppUpdateManager appUpdateManager, int requestCode,
-        UpdateStateDelegate flexibleStateListener, QueenOfVersionCallbackUpdate callback) {
+            UpdateStateDelegate flexibleStateListener, QueenOfVersionsUpdaterCallback callback) {
         this.activity = activity;
         this.appUpdateManager = appUpdateManager;
         this.requestCode = requestCode;
@@ -30,19 +34,16 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
     }
 
     @Override
-    public void initGoogleUpdate(final boolean isMandatory, final int versionCode, final UpdateInfo updateInfo) {
-        appUpdateManager.getAppUpdateInfo()
-            .addOnSuccessListener(
-                new OnSuccessListener<AppUpdateInfo>() {
+    public void initGoogleUpdate(final boolean isMandatory, @Nullable final Integer versionCode, @Nullable final UpdateInfo updateInfo) {
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(new OnSuccessListener<AppUpdateInfo>() {
                     @Override
                     public void onSuccess(AppUpdateInfo appUpdateInfo) {
                         QueenOfVersionsAppUpdater.this.appUpdateInfo = appUpdateInfo;
                         callback.handleSuccess(appUpdateInfo.updateAvailability(), versionCode, appUpdateInfo.availableVersionCode(),
-                            isMandatory, updateInfo);
+                                isMandatory, updateInfo);
                     }
                 }
-            )
-            .addOnFailureListener(new GoogleInAppUpdateFailureListener(flexibleStateListener));
+        ).addOnFailureListener(new GoogleInAppUpdateFailureListener(flexibleStateListener));
     }
 
     @Override
@@ -61,21 +62,21 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
     }
 
     @Override
-    public void mandatoryUpdateNotAvailable() {
-        flexibleStateListener.onMandatoryUpdateNotAvailable();
+    public void mandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion) {
+        flexibleStateListener.onMandatoryUpdateNotAvailable(mandatoryVersion, availableVersion);
     }
 
     @Override
     public void startFlexibleFlow(AppUpdateInfo appUpdateInfo) {
         try {
             appUpdateManager.startUpdateFlowForResult(
-                appUpdateInfo,
-                AppUpdateType.FLEXIBLE,
-                activity,
-                requestCode
+                    appUpdateInfo,
+                    AppUpdateType.FLEXIBLE,
+                    activity,
+                    requestCode
             );
         } catch (IntentSender.SendIntentException e) {
-            flexibleStateListener.onFailed(e);
+            flexibleStateListener.onError(e);
         }
     }
 
@@ -83,21 +84,21 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
     public void startImmediateFlow(AppUpdateInfo appUpdateInfo) {
         try {
             appUpdateManager.startUpdateFlowForResult(
-                appUpdateInfo,
-                AppUpdateType.IMMEDIATE,
-                activity,
-                requestCode
+                    appUpdateInfo,
+                    AppUpdateType.IMMEDIATE,
+                    activity,
+                    requestCode
             );
             registerImmediateFlow();
         } catch (IntentSender.SendIntentException e) {
-            flexibleStateListener.onFailed(e);
+            flexibleStateListener.onError(e);
         }
     }
 
     @Override
     public void registerImmediateFlow() {
         activity.getApplication().registerActivityLifecycleCallbacks(
-            new QueenOfVersionsActivityLifecycleCallback(this)
+                new QueenOfVersionsActivityLifecycleCallback(this)
         );
     }
 
@@ -111,17 +112,17 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
     public void resumeUpdate(Activity activity) {
         if (this.activity.equals(activity)) {
             appUpdateManager.getAppUpdateInfo()
-                .addOnSuccessListener(
-                    new OnSuccessListener<AppUpdateInfo>() {
-                        @Override
-                        public void onSuccess(AppUpdateInfo appUpdateInfo) {
-                            QueenOfVersionsAppUpdater.this.appUpdateInfo = appUpdateInfo;
-                            callback.handleResumeSuccess(appUpdateInfo.updateAvailability(), appUpdateInfo.installStatus(),
-                                appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE));
-                        }
-                    }
-                )
-                .addOnFailureListener(new GoogleInAppUpdateFailureListener(flexibleStateListener));
+                    .addOnSuccessListener(
+                            new OnSuccessListener<AppUpdateInfo>() {
+                                @Override
+                                public void onSuccess(AppUpdateInfo appUpdateInfo) {
+                                    QueenOfVersionsAppUpdater.this.appUpdateInfo = appUpdateInfo;
+                                    callback.handleResumeSuccess(appUpdateInfo.updateAvailability(), appUpdateInfo.installStatus(),
+                                            appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE));
+                                }
+                            }
+                    )
+                    .addOnFailureListener(new GoogleInAppUpdateFailureListener(flexibleStateListener));
         }
     }
 
@@ -129,13 +130,13 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
     public void restartUpdate() {
         try {
             appUpdateManager.startUpdateFlowForResult(
-                appUpdateInfo,
-                AppUpdateType.IMMEDIATE,
-                activity,
-                requestCode
+                    appUpdateInfo,
+                    AppUpdateType.IMMEDIATE,
+                    activity,
+                    requestCode
             );
         } catch (IntentSender.SendIntentException e) {
-            flexibleStateListener.onFailed(e);
+            flexibleStateListener.onError(e);
         }
     }
 

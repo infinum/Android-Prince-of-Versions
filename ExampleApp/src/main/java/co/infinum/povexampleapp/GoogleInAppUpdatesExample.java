@@ -8,21 +8,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
-import co.infinum.queenofversions.QueenOfVersionCallbackUpdate;
-import co.infinum.queenofversions.QueenOfVersionFlexibleUpdateHandler;
-import co.infinum.queenofversions.QueenOfVersionsCallback;
+import co.infinum.queenofversions.QueenOfVersions;
+import co.infinum.queenofversions.QueenOfVersionsFlexibleUpdateHandler;
+import co.infinum.queenofversions.QueenOfVersionsUpdaterCallback;
 
-public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersionsCallback {
+public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersions.Callback {
 
     private static final String TAG = "GoogleInAppUpdates";
     private final int REQUEST_CODE = 420;
 
-    private QueenOfVersionCallbackUpdate googleInAppUpdateCallback;
     private PrinceOfVersions princeOfVersions;
+    private QueenOfVersions queenOfVersions;
     private Loader loader;
 
     @Override
@@ -33,11 +32,10 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
         initUI();
 
         princeOfVersions = new PrinceOfVersions.Builder().build(this);
-        try {
-            googleInAppUpdateCallback = new QueenOfVersionCallbackUpdate(REQUEST_CODE, this, this);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        queenOfVersions = new QueenOfVersions.Builder()
+                .withCallback(this)
+                .withRequestCode(REQUEST_CODE)
+                .build(this);
         loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
     }
 
@@ -52,7 +50,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     }
 
     private void onCheckUpdatesClick() {
-        princeOfVersions.checkForUpdates(loader, googleInAppUpdateCallback);
+        princeOfVersions.checkForUpdates(loader, queenOfVersions.getPrinceOfVersionsCallback());
     }
 
     /**
@@ -86,12 +84,12 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     }
 
     @Override
-    public void onMandatoryUpdateNotAvailable() {
+    public void onMandatoryUpdateNotAvailable(int requiredVersion, int availableVersion) {
         Toast.makeText(this, "Mandatory update is not available on Google!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onDownloaded(QueenOfVersionFlexibleUpdateHandler handler) {
+    public void onDownloaded(QueenOfVersionsFlexibleUpdateHandler handler) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();
     }
@@ -133,11 +131,11 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     /**
      * This method is called if something went wrong during an update.
      *
-     * @param exception instance of exception that caused update to fail
+     * @param throwable instance of exception that caused update to fail
      */
     @Override
-    public void onFailed(Exception exception) {
+    public void onError(Throwable throwable) {
         Toast.makeText(this, "Failed updated! Check log!", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Exception:", exception.fillInStackTrace());
+        Log.d(TAG, "Exception:", throwable.fillInStackTrace());
     }
 }
