@@ -2,6 +2,7 @@ package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
@@ -16,6 +17,7 @@ import com.google.android.play.core.install.model.UpdateAvailability;
 
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
+import co.infinum.princeofversions.UpdateInfo;
 import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdateStatus;
 import co.infinum.princeofversions.UpdaterCallback;
@@ -76,17 +78,17 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * Creates {@link QueenOfVersionCallbackUpdate} using provided {@link Activity}, {@link QueenOfVersionsCallback} and two integers
      * that represent requestCode and appVersionCode.
      *
-     * @param requestCode    integer that can be used for {@link Intent} identification in onActivityResult method
-     * @param activity       activity is used for purposes of Google's in-app updates methods that are used in this library
-     * @param listener       listener is used as callback for notifying update statuses during update
-     * @param appVersionCode integer that represents version of an application that's currently running
+     * @param requestCode integer that can be used for {@link Intent} identification in onActivityResult method
+     * @param activity    activity is used for purposes of Google's in-app updates methods that are used in this library
+     * @param listener    listener is used as callback for notifying update statuses during update
      */
-    public QueenOfVersionCallbackUpdate(int requestCode, Activity activity, QueenOfVersionsCallback listener, int appVersionCode) {
+    public QueenOfVersionCallbackUpdate(int requestCode, Activity activity, QueenOfVersionsCallback listener) throws
+        PackageManager.NameNotFoundException {
         this.flexibleStateListener = new UpdateStateDelegate(false, listener);
-        this.appVersionCode = appVersionCode;
         this.googleAppUpdater = new QueenOfVersionsAppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
             flexibleStateListener,
             this);
+        this.appVersionCode = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode;
     }
 
     @VisibleForTesting
@@ -98,17 +100,20 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
     }
 
     /**
-     * Method is called if {@link PrinceOfVersions} successfully finishes update check. Whatever the outcome is, we are always
-     * checking with Google play for new update.However, the reason why are we still using {@link PrinceOfVersions} for update
-     * determination is because of the {@param isMandatory} which helps us to determine if we want to invoke IMMEDIATE or FLEXIBLE update
-     * on Google Play store.
+     * OnSuccess method is called when {@link PrinceOfVersions} successfully finishes update check. There are two successful outcomes.
+     * Firstly, the could be a new update and that new update can be REQUIRED_NEW_UPDATE that corresponds to IMMEDIATE, or it could be
+     * NEW_UPDATE_AVAILABLE that corresponds to FLEXIBLE update. Secondly, there could be no update on {@link PrinceOfVersions}. However,
+     * no matter what is the outcome, whether there is or there is not an update, we are still going to check with the Google's Play
+     * store if there is an update. The only change is that for a REQUIRED_NEW_UPDATE flag, we are invoking IMMEDIATE update on Google,
+     * but for everything else we are invoking FLEXIBLE update.
      */
+
     @Override
     public void onSuccess(@NonNull UpdateResult result) {
         if (result.getStatus() == UpdateStatus.REQUIRED_UPDATE_NEEDED) {
-            checkWithGoogleForAnUpdate(true, String.valueOf(result.getInfo().getLastVersionAvailable()));
+            checkWithGoogleForAnUpdate(true, result.getUpdateVersion(), result.getInfo());
         } else {
-            checkWithGoogleForAnUpdate(false, String.valueOf(result.getInfo().getLastVersionAvailable()));
+            checkWithGoogleForAnUpdate(false, result.getUpdateVersion(), result.getInfo());
         }
     }
 
@@ -163,15 +168,15 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      * @param googleUpdateVersionCode Version code of the application we have on Google Play Store
      * @param isMandatory             Determines if the update we have on our JSON file is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      */
-    void handleSuccess(@UpdateAvailability int updateAvailability, String princeVersionCode, int googleUpdateVersionCode,
-        boolean isMandatory) {
-        VersionCode versionCode = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory);
+    void handleSuccess(@UpdateAvailability int updateAvailability, int princeVersionCode, int googleUpdateVersionCode,
+        boolean isMandatory, UpdateInfo updateInfo) {
         if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
+            VersionCode versionCode = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory, updateInfo);
             if (versionCode == VersionCode.FLEXIBLE) {
                 googleAppUpdater.startUpdate(AppUpdateType.FLEXIBLE);
             } else if (versionCode == VersionCode.IMMEDIATE) {
                 googleAppUpdater.startUpdate(AppUpdateType.IMMEDIATE);
-            } else if (versionCode == VersionCode.FLEXIBLE_NOT_AVAILABLE) {
+            } else if (versionCode == VersionCode.IMMEDIATE_NOT_AVAILABLE) {
                 googleAppUpdater.mandatoryUpdateNotAvailable();
             }
         } else {
@@ -230,37 +235,35 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
      *
      * @param isMandatory       Determines if the update we are checking for is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      * @param princeVersionCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
+     * @param updateInfo        All information about the update that {@link PrinceOfVersions} got from parsing JSON file
      */
-    private void checkWithGoogleForAnUpdate(boolean isMandatory, String princeVersionCode) {
-        googleAppUpdater.initGoogleUpdate(isMandatory, princeVersionCode);
+    private void checkWithGoogleForAnUpdate(boolean isMandatory, int princeVersionCode, UpdateInfo updateInfo) {
+        googleAppUpdater.initGoogleUpdate(isMandatory, princeVersionCode, updateInfo);
     }
 
     /**
      * Method that is used to check what kind of update do we want to invoke on Google Play Store. Depending on version codes
      * on JSON file, application  and Google Play Store, we can invoke FLEXIBLE or IMMEDIATE update on Google Play Store.
      *
-     * @param princeVersionCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
-     * @param googleVersionCode Version code that we got from Google Play Store
-     * @param isMandatory       Determines whether the update we have is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
+     * @param princeOfVersionsCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
+     * @param googleVersionCode    Version code that we got from Google Play Store
+     * @param isMandatory          Determines whether the update we have is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      * @return Returns an {@link AppUpdateType} depending on version codes we have
      */
-    private VersionCode checkVersionCode(String princeVersionCode, int googleVersionCode, boolean isMandatory) {
-        int princeOfVersionsCode;
-        if (princeVersionCode == null) {
-            return VersionCode.FLEXIBLE;
-        } else {
-            princeOfVersionsCode = Integer.parseInt(princeVersionCode);
-        }
-
+    private VersionCode checkVersionCode(int princeOfVersionsCode, int googleVersionCode, boolean isMandatory, UpdateInfo updateInfo) {
         if (princeOfVersionsCode <= googleVersionCode && isMandatory) {
-            if (appVersionCode > princeOfVersionsCode) {
-                return VersionCode.FLEXIBLE;
-            } else {
-                return VersionCode.IMMEDIATE;
-            }
+            return VersionCode.IMMEDIATE;
         } else if (princeOfVersionsCode > googleVersionCode) {
             if (appVersionCode < googleVersionCode && isMandatory) {
-                return VersionCode.FLEXIBLE_NOT_AVAILABLE;
+                if (updateInfo.getRequiredVersion() != null) {
+                    if (updateInfo.getRequiredVersion() <= googleVersionCode) {
+                        return VersionCode.IMMEDIATE;
+                    } else {
+                        return VersionCode.IMMEDIATE_NOT_AVAILABLE;
+                    }
+                } else {
+                    return VersionCode.IMMEDIATE_NOT_AVAILABLE;
+                }
             } else {
                 return VersionCode.FLEXIBLE;
             }
@@ -280,6 +283,6 @@ public class QueenOfVersionCallbackUpdate implements UpdaterCallback, InstallSta
     enum VersionCode {
         FLEXIBLE,
         IMMEDIATE,
-        FLEXIBLE_NOT_AVAILABLE
+        IMMEDIATE_NOT_AVAILABLE
     }
 }

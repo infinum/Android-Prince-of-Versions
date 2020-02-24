@@ -14,6 +14,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
 
+import co.infinum.princeofversions.UpdateInfo;
+import co.infinum.princeofversions.UpdateResult;
+import co.infinum.princeofversions.UpdateStatus;
 import co.infinum.queenofversions.mocks.MockInstallState;
 
 import static co.infinum.queenofversions.InAppUpdateError.API_NOT_AVAILABLE;
@@ -43,6 +46,9 @@ public class QueenOfVersionsTest {
     @Mock
     QueenOfVersionsCallback updaterStateCallback;
 
+    @Mock
+    UpdateInfo updateInfo;
+
     /**
      * Testing GoogleInAppUpdateCallback
      */
@@ -60,9 +66,11 @@ public class QueenOfVersionsTest {
     public void testStartingGoogleInAppUpdaterWhenThereIsNewUpdate() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.onNewUpdate("2.0.0", true, Collections.<String, String>emptyMap());
+        UpdateResult updateResult = new UpdateResult(updateInfo, Collections.<String, String>emptyMap(),
+            UpdateStatus.REQUIRED_UPDATE_NEEDED, 200);
+        googleInAppUpdateCallback.onSuccess(updateResult);
 
-        verify(googleAppUpdater, times(1)).initGoogleUpdate(anyBoolean(), nullable(String.class));
+        verify(googleAppUpdater, times(1)).initGoogleUpdate(true, 200, updateInfo);
         verify(googleAppUpdater, times(0)).completeUpdate();
     }
 
@@ -74,9 +82,11 @@ public class QueenOfVersionsTest {
     public void testStartingGoogleInAppUpdaterIfThereIsNoNewUpdate() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.onNoUpdate(Collections.<String, String>emptyMap());
+        UpdateResult updateResult = new UpdateResult(updateInfo, Collections.<String, String>emptyMap(),
+            UpdateStatus.NO_UPDATE_AVAILABLE, 200);
+        googleInAppUpdateCallback.onSuccess(updateResult);
 
-        verify(googleAppUpdater, times(1)).initGoogleUpdate(false, null);
+        verify(googleAppUpdater, times(1)).initGoogleUpdate(false, 200, updateInfo);
         verify(googleAppUpdater, times(0)).completeUpdate();
     }
 
@@ -354,7 +364,7 @@ public class QueenOfVersionsTest {
     public void testPrinceAndGoogleSameVersionMandatory() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "11", 11, true);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 11, true, updateInfo);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.IMMEDIATE);
     }
@@ -363,7 +373,7 @@ public class QueenOfVersionsTest {
     public void testPrinceAndGoogleSameVersionOptional() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "11", 11, false);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 11, false, updateInfo);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
     }
@@ -372,7 +382,7 @@ public class QueenOfVersionsTest {
     public void testPrinceLowerVersionThanGoogleMandatory() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "11", 12, true);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, true, updateInfo);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.IMMEDIATE);
     }
@@ -381,7 +391,7 @@ public class QueenOfVersionsTest {
     public void testPrinceLowerVersionThanGoogleOptional() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "11", 12, false);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateInfo);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
     }
@@ -390,16 +400,16 @@ public class QueenOfVersionsTest {
     public void testPrinceHigherVersionThanGoogleMandatory() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "12", 11, true);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 12, 11, true, updateInfo);
 
-        verify(googleAppUpdater, times(1)).mandatoryUpdateNotAvailable();
+        verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.IMMEDIATE);
     }
 
     @Test
     public void testPrinceHigherVersionThanGoogleOptional() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "11", 12, false);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateInfo);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
     }
@@ -408,16 +418,16 @@ public class QueenOfVersionsTest {
     public void testPrinceLowerVersionThanGoogleAndAppMandatory() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 11);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "10", 12, true);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 10, 12, true, updateInfo);
 
-        verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
+        verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.IMMEDIATE);
     }
 
     @Test
     public void testPrinceLowerVersionThanGoogleAndAppOptional() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 10);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, "11", 12, false);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateInfo);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
     }
@@ -426,7 +436,7 @@ public class QueenOfVersionsTest {
     public void testAppHigherVersionThanGoogleButLowerThanPrinceMandatory() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 11);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, "12", 10, true);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 12, 10, true, updateInfo);
 
         verify(googleAppUpdater, times(0)).startUpdate(anyInt());
     }
@@ -435,19 +445,20 @@ public class QueenOfVersionsTest {
     public void testAppHigherVersionThanGoogleButLowerThanPrinceOptional() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 11);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, "12", 10, false);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 12, 10, false, updateInfo);
 
         verify(googleAppUpdater, times(0)).startUpdate(anyInt());
     }
 
+    /*
     @Test
     public void testInvalidVersionOnPrinceOfVersions() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 11);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, null, 10, true);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, null, 10, true, updateInfo);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
-    }
+    }*/
 
     /**
      * Testing GoogleInAppUpdateFailure listener
@@ -490,7 +501,7 @@ public class QueenOfVersionsTest {
     public void testNoUpdateFromGoogleOrPrince() {
         QueenOfVersionCallbackUpdate googleInAppUpdateCallback =
             new QueenOfVersionCallbackUpdate(200, googleAppUpdater, updaterStateCallback, 11);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, "11", 11, true);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 11, 11, true, updateInfo);
 
         verify(googleAppUpdater, times(1)).noUpdate();
     }

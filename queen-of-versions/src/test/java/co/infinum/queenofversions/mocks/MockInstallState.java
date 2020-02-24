@@ -21,6 +21,16 @@ public class MockInstallState extends InstallState {
     }
 
     @Override
+    public long bytesDownloaded() {
+        return 0;
+    }
+
+    @Override
+    public long totalBytesToDownload() {
+        return 0;
+    }
+
+    @Override
     public int installErrorCode() {
         return installErrorCode;
     }
@@ -30,13 +40,4 @@ public class MockInstallState extends InstallState {
         return null;
     }
 
-    @Override
-    public long a() {
-        return 0;
-    }
-
-    @Override
-    public long b() {
-        return 0;
-    }
 }
