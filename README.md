@@ -138,7 +138,7 @@ call.enqueue(new UpdaterCallback() {
 try {
     UpdateResult result = call.execute();
     // result.getStatus() returns MANDATORY, OPTIONAL or NO_UPDATE
-    // result.getInfo() returns update info 
+// result.getInfo() returns update info - the information extracted from the configuration and used to check if the update exists
     // result.getMetadata() returns metadata about the update
 } catch (Throwable throwable) {
     // handle error
