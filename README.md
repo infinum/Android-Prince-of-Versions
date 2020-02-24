@@ -60,7 +60,7 @@ JSON configuration should follow a structure from bellow:
 ```
 The most important part of the configuration for Android applications is <code>android</code> object. All properties in the object are optional.
 
-As it is shown, the <code>android</code> property contains a JSON array of updates, where the library is parsing them one by one and selecting the first acceptable update. If there is no <code>requirement</code> field, that means the first update in an array, but usually, it just means the first update that satisfies all the conditions. 
+As it is shown, the <code>android</code> (or additionally <code>android2</code> if there is a need to support old configuration with <android> key) property contains a JSON array of updates, where the library is parsing them one by one and selecting the first acceptable update. If there is no <code>requirement</code> field, that means the first update in an array, but usually, it just means the first update that satisfies all the conditions. 
 
 Metadata from the selected update has an advantage over the default metadata, and when there is a metadata conflict, its resolved by overriding the same fields by values from the selected update. E.g. if the first update gets selected then the final metadata will have these keys: <code> key1: value3 </code> and <code> key2: value2 </code>. In case when there is no conflict of keys in metadata, then we are just merging default metadata with selected update metadata.
 
