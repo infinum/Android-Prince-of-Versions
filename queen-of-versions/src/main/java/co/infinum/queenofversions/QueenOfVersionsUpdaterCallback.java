@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.VisibleForTesting;
+import co.infinum.princeofversions.NotificationType;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
+import co.infinum.princeofversions.Storage;
 import co.infinum.princeofversions.UpdateInfo;
 import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdateStatus;
@@ -71,13 +73,15 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
 
     private final int appVersionCode;
 
-    private UpdateStateDelegate flexibleStateListener;
+    private final UpdateStateDelegate flexibleStateListener;
 
-    private GoogleAppUpdater googleAppUpdater;
+    private final GoogleAppUpdater googleAppUpdater;
 
-    private OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess;
+    private final OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess;
 
-    private OnPrinceOfVersionsError onPrinceOfVersionsError;
+    private final OnPrinceOfVersionsError onPrinceOfVersionsError;
+
+    private final Storage storage;
 
     /**
      * Creates {@link QueenOfVersionsUpdaterCallback} using provided {@link Activity}, {@link QueenOfVersions.Callback} and two integers
@@ -92,7 +96,8 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
             Activity activity,
             QueenOfVersions.Callback listener,
             OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess,
-            OnPrinceOfVersionsError onPrinceOfVersionsError
+            OnPrinceOfVersionsError onPrinceOfVersionsError,
+            Storage storage
     ) {
         this.flexibleStateListener = new UpdateStateDelegate(false, listener);
         this.googleAppUpdater = new QueenOfVersionsAppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
@@ -105,6 +110,7 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
         }
         this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
         this.onPrinceOfVersionsError = onPrinceOfVersionsError;
+        this.storage = storage;
     }
 
     @VisibleForTesting
@@ -114,13 +120,15 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
             QueenOfVersions.Callback flexibleStateListener,
             int appVersionCode,
             OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess,
-            OnPrinceOfVersionsError onPrinceOfVersionsError
+            OnPrinceOfVersionsError onPrinceOfVersionsError,
+            Storage storage
     ) {
         this.flexibleStateListener = new UpdateStateDelegate(false, flexibleStateListener);
         this.appVersionCode = appVersionCode;
         this.googleAppUpdater = appUpdater;
         this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
         this.onPrinceOfVersionsError = onPrinceOfVersionsError;
+        this.storage = storage;
     }
 
     @VisibleForTesting
@@ -128,7 +136,8 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
             int requestCode,
             GoogleAppUpdater appUpdater,
             QueenOfVersions.Callback flexibleStateListener,
-            int appVersionCode
+            int appVersionCode,
+            Storage storage
     ) {
         this(
                 requestCode,
@@ -136,7 +145,8 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
                 flexibleStateListener,
                 appVersionCode,
                 new QueenOfVersions.QueenOnPrinceOfVersionsSuccess(),
-                new QueenOfVersions.QueenOnPrinceOfVersionsError()
+                new QueenOfVersions.QueenOnPrinceOfVersionsError(),
+                storage
         );
     }
 
@@ -239,12 +249,18 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
     void handleSuccess(@UpdateAvailability int updateAvailability, @Nullable Integer princeVersionCode, int googleUpdateVersionCode,
             boolean isMandatory, @Nullable UpdateInfo updateInfo) {
         if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
-            VersionCode versionCode = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory, updateInfo);
-            if (versionCode == VersionCode.FLEXIBLE) {
+            UpdateResolution updateResolution = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory, updateInfo);
+            updateResolution = relaxResolution(
+                    updateResolution,
+                    // default to once if there is no update info because of any error
+                    updateInfo != null ? updateInfo.getNotificationFrequency() : NotificationType.ONCE,
+                    googleUpdateVersionCode
+            );
+            if (updateResolution == UpdateResolution.FLEXIBLE) {
                 googleAppUpdater.startUpdate(AppUpdateType.FLEXIBLE);
-            } else if (versionCode == VersionCode.IMMEDIATE) {
+            } else if (updateResolution == UpdateResolution.IMMEDIATE) {
                 googleAppUpdater.startUpdate(AppUpdateType.IMMEDIATE);
-            } else if (versionCode == VersionCode.IMMEDIATE_NOT_AVAILABLE) {
+            } else if (updateResolution == UpdateResolution.IMMEDIATE_NOT_AVAILABLE) {
                 Integer requiredVersion = updateInfo != null ? updateInfo.getRequiredVersion() : null;
                 if (requiredVersion != null) {
                     googleAppUpdater.mandatoryUpdateNotAvailable(requiredVersion, googleUpdateVersionCode);
@@ -326,7 +342,7 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
      * @param isMandatory          Determines whether the update we have is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      * @return Returns an {@link AppUpdateType} depending on version codes we have
      */
-    private VersionCode checkVersionCode(
+    private UpdateResolution checkVersionCode(
             @Nullable Integer princeOfVersionsCode,
             int googleVersionCode,
             boolean isMandatory,
@@ -334,30 +350,52 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
     ) {
         if (princeOfVersionsCode == null) {
             if (isMandatory) {
-                return VersionCode.IMMEDIATE;
+                return UpdateResolution.IMMEDIATE;
             } else {
-                return VersionCode.FLEXIBLE;
+                return UpdateResolution.FLEXIBLE;
             }
         }
 
         if (princeOfVersionsCode <= googleVersionCode && isMandatory) {
-            return VersionCode.IMMEDIATE;
+            return UpdateResolution.IMMEDIATE;
         } else if (princeOfVersionsCode > googleVersionCode) {
             if (appVersionCode < googleVersionCode && isMandatory) {
                 if (updateInfo != null && updateInfo.getRequiredVersion() != null) {
                     if (updateInfo.getRequiredVersion() <= googleVersionCode) {
-                        return VersionCode.IMMEDIATE;
+                        return UpdateResolution.IMMEDIATE;
                     } else {
-                        return VersionCode.IMMEDIATE_NOT_AVAILABLE;
+                        return UpdateResolution.IMMEDIATE_NOT_AVAILABLE;
                     }
                 } else {
-                    return VersionCode.IMMEDIATE_NOT_AVAILABLE;
+                    return UpdateResolution.IMMEDIATE_NOT_AVAILABLE;
                 }
             } else {
-                return VersionCode.FLEXIBLE;
+                return UpdateResolution.FLEXIBLE;
             }
         } else {
-            return VersionCode.FLEXIBLE;
+            return UpdateResolution.FLEXIBLE;
+        }
+    }
+
+    private UpdateResolution relaxResolution(UpdateResolution current, NotificationType notificationFrequency, int googleVersionCode) {
+        switch (current) {
+            case IMMEDIATE:
+            case IMMEDIATE_NOT_AVAILABLE:
+                return current;
+            case FLEXIBLE:
+                if (notificationFrequency == NotificationType.ONCE) {
+                    Integer lastNotifiedVersion = storage.lastNotifiedVersion(null);
+                    if (lastNotifiedVersion != null && lastNotifiedVersion.equals(googleVersionCode)) {
+                        return UpdateResolution.SKIP;
+                    } else {
+                        return UpdateResolution.FLEXIBLE;
+                    }
+                } else {
+                    return UpdateResolution.FLEXIBLE;
+                }
+            case SKIP:
+            default:
+                return UpdateResolution.SKIP;
         }
     }
 
@@ -369,9 +407,10 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
         flexibleStateListener.cancel();
     }
 
-    enum VersionCode {
+    enum UpdateResolution {
         FLEXIBLE,
         IMMEDIATE,
-        IMMEDIATE_NOT_AVAILABLE
+        IMMEDIATE_NOT_AVAILABLE,
+        SKIP
     }
 }

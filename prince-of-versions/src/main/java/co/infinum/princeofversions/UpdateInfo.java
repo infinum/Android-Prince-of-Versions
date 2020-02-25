@@ -1,7 +1,6 @@
 package co.infinum.princeofversions;
 
 import java.util.Map;
-
 import javax.annotation.Nullable;
 
 /**
@@ -31,12 +30,23 @@ public class UpdateInfo {
      */
     private final int installedVersion;
 
-    UpdateInfo(@Nullable Integer requiredVersion, @Nullable Integer lastVersionAvailable, Map<String, String> requirements,
-        int installedVersion) {
+    /**
+     * frequency of update reports
+     */
+    private final NotificationType notificationFrequency;
+
+    UpdateInfo(
+            @Nullable Integer requiredVersion,
+            @Nullable Integer lastVersionAvailable,
+            Map<String, String> requirements,
+            int installedVersion,
+            NotificationType notificationFrequency
+    ) {
         this.requiredVersion = requiredVersion;
         this.lastVersionAvailable = lastVersionAvailable;
         this.requirements = requirements;
         this.installedVersion = installedVersion;
+        this.notificationFrequency = notificationFrequency;
     }
 
     public int getInstalledVersion() {
@@ -57,14 +67,18 @@ public class UpdateInfo {
         return requirements;
     }
 
+    public NotificationType getNotificationFrequency() {
+        return notificationFrequency;
+    }
+
     @Override
     public String toString() {
         return "Info{"
-            + "Installed version =" + installedVersion
-            + ", Required version ='" + requiredVersion + '\''
-            + ", Last version ='" + lastVersionAvailable + '\''
-            + ", Requirements =" + requirements
-            + '}';
+                + "Installed version =" + installedVersion
+                + ", Required version ='" + requiredVersion + '\''
+                + ", Last version ='" + lastVersionAvailable + '\''
+                + ", Requirements =" + requirements
+                + '}';
     }
 
     @Override

@@ -1,6 +1,7 @@
 package co.infinum.queenofversions;
 
 import android.app.Activity;
+import co.infinum.princeofversions.Storage;
 import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdateStatus;
 import co.infinum.princeofversions.UpdaterCallback;
@@ -145,6 +146,9 @@ public class QueenOfVersions {
         private int requestCode = DEFAULT_REQUEST_CODE;
 
         @Nullable
+        private Storage storage = null;
+
+        @Nullable
         private OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess;
 
         @Nullable
@@ -220,13 +224,19 @@ public class QueenOfVersions {
             return this;
         }
 
+        public Builder withStorage(Storage storage) {
+            this.storage = storage;
+            return this;
+        }
+
         public QueenOfVersions build(Activity activity) {
             return new QueenOfVersions(new QueenOfVersionsUpdaterCallback(
                     requestCode,
                     activity,
                     adapter,
                     onPrinceOfVersionsSuccess != null ? onPrinceOfVersionsSuccess : new QueenOnPrinceOfVersionsSuccess(),
-                    onPrinceOfVersionsError != null ? onPrinceOfVersionsError : new QueenOnPrinceOfVersionsError()
+                    onPrinceOfVersionsError != null ? onPrinceOfVersionsError : new QueenOnPrinceOfVersionsError(),
+                    storage != null ? storage : new QueenOfVersionsDefaultNamedPreferenceStorage(activity)
             ));
         }
     }
