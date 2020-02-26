@@ -69,7 +69,7 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * REQUIRED_UPDATE_NEEDED update == IMMEDIATE update
  * FLEXIBLE update == NEW_UPDATE_AVAILABLE update
  */
-public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersionsFlexibleUpdateHandler {
+public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersions.UpdateHandler {
 
     private final int appVersionCode;
 
@@ -184,24 +184,28 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
         }
     }
 
-    private void continueUpdateCheckBasedOnStatus(UpdateStatus status, @Nullable UpdateResult result) {
+    @VisibleForTesting
+    void continueUpdateCheckBasedOnStatus(UpdateStatus status, @Nullable UpdateResult result) {
         switch (status) {
             case NEW_UPDATE_AVAILABLE:
                 checkWithGoogleForAnUpdate(
                         false,
                         result != null ? result.getUpdateVersion() : null,
-                        result != null ? result.getInfo() : null
+                        result
                 );
                 break;
             case REQUIRED_UPDATE_NEEDED:
                 checkWithGoogleForAnUpdate(
                         true,
                         result != null ? result.getUpdateVersion() : null,
-                        result != null ? result.getInfo() : null
+                        result
                 );
                 break;
             default:
-                flexibleStateListener.onNoUpdate();
+                flexibleStateListener.onNoUpdate(
+                        result != null ? result.getMetadata() : null,
+                        result != null ? result.getInfo() : null
+                );
         }
     }
 
@@ -221,13 +225,13 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
         } else if (installState.installStatus() == InstallStatus.DOWNLOADING) {
             flexibleStateListener.onDownloading();
         } else if (installState.installStatus() == InstallStatus.REQUIRES_UI_INTENT) {
-            flexibleStateListener.onRequiresUI();
+            // shouldn't happen, let's ignore it for now
         } else if (installState.installStatus() == InstallStatus.INSTALLED) {
             flexibleStateListener.onInstalled();
         } else if (installState.installStatus() == InstallStatus.PENDING) {
             flexibleStateListener.onPending();
         } else if (installState.installStatus() == InstallStatus.UNKNOWN) {
-            flexibleStateListener.onUnknown();
+            flexibleStateListener.onError(new QueenOfVersions.UnknownVersionException());
         } else if (installState.installStatus() == InstallStatus.FAILED) {
             checkErrorStates(installState);
         }
@@ -247,9 +251,11 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
      * @param isMandatory             Determines if the update we have on our JSON file is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      */
     void handleSuccess(@UpdateAvailability int updateAvailability, @Nullable Integer princeVersionCode, int googleUpdateVersionCode,
-            boolean isMandatory, @Nullable UpdateInfo updateInfo) {
+            boolean isMandatory, @Nullable UpdateResult updateResult) {
+        UpdateInfo updateInfo = updateResult != null ? updateResult.getInfo() : null;
+
         if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
-            UpdateResolution updateResolution = checkVersionCode(princeVersionCode, googleUpdateVersionCode, isMandatory, updateInfo);
+            UpdateResolution updateResolution = checkUpdateResolution(princeVersionCode, googleUpdateVersionCode, isMandatory, updateInfo);
             updateResolution = relaxResolution(
                     updateResolution,
                     // default to once if there is no update info because of any error
@@ -263,16 +269,25 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
             } else if (updateResolution == UpdateResolution.IMMEDIATE_NOT_AVAILABLE) {
                 Integer requiredVersion = updateInfo != null ? updateInfo.getRequiredVersion() : null;
                 if (requiredVersion != null) {
-                    googleAppUpdater.mandatoryUpdateNotAvailable(requiredVersion, googleUpdateVersionCode);
+                    googleAppUpdater.mandatoryUpdateNotAvailable(requiredVersion, googleUpdateVersionCode, updateResult.getMetadata(), updateInfo);
                 } else {
-                    googleAppUpdater.noUpdate();
+                    googleAppUpdater.noUpdate(
+                            updateResult != null ? updateResult.getMetadata() : null,
+                            updateInfo
+                    );
                 }
             } else {
                 // Shouldn't happen if we cover all cases of @VersionCode
-                googleAppUpdater.noUpdate();
+                googleAppUpdater.noUpdate(
+                        updateResult != null ? updateResult.getMetadata() : null,
+                        updateInfo
+                );
             }
         } else {
-            googleAppUpdater.noUpdate();
+            googleAppUpdater.noUpdate(
+                    updateResult != null ? updateResult.getMetadata() : null,
+                    updateInfo
+            );
         }
     }
 
@@ -327,10 +342,10 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
      *
      * @param isMandatory       Determines if the update we are checking for is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      * @param princeVersionCode Version code that we got from {@link PrinceOfVersions} after parsing JSON file
-     * @param updateInfo        All information about the update that {@link PrinceOfVersions} got from parsing JSON file
+     * @param updateResult        All information about the update that {@link PrinceOfVersions} got from parsing JSON file
      */
-    private void checkWithGoogleForAnUpdate(boolean isMandatory, @Nullable Integer princeVersionCode, @Nullable UpdateInfo updateInfo) {
-        googleAppUpdater.initGoogleUpdate(isMandatory, princeVersionCode, updateInfo);
+    private void checkWithGoogleForAnUpdate(boolean isMandatory, @Nullable Integer princeVersionCode, @Nullable UpdateResult updateResult) {
+        googleAppUpdater.initGoogleUpdate(isMandatory, princeVersionCode, updateResult);
     }
 
     /**
@@ -342,7 +357,7 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
      * @param isMandatory          Determines whether the update we have is REQUIRED_UPDATE_NEEDED or NEW_UPDATE_AVAILABLE
      * @return Returns an {@link AppUpdateType} depending on version codes we have
      */
-    private UpdateResolution checkVersionCode(
+    private UpdateResolution checkUpdateResolution(
             @Nullable Integer princeOfVersionsCode,
             int googleVersionCode,
             boolean isMandatory,

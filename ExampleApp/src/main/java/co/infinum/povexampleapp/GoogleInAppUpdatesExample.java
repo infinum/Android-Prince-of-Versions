@@ -10,16 +10,20 @@ import android.widget.Toast;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
+import co.infinum.princeofversions.UpdateInfo;
 import co.infinum.queenofversions.QueenOfVersions;
-import co.infinum.queenofversions.QueenOfVersionsFlexibleUpdateHandler;
+import java.util.Map;
 
 public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersions.Callback {
 
     private static final String TAG = "GoogleInAppUpdates";
+
     private final int REQUEST_CODE = 420;
 
     private PrinceOfVersions princeOfVersions;
+
     private QueenOfVersions queenOfVersions;
+
     private Loader loader;
 
     @Override
@@ -56,7 +60,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
      * is a new update on Google Play store.
      */
     @Override
-    public void onNoUpdate() {
+    public void onNoUpdate(Map<String, String> metadata, UpdateInfo updateInfo) {
         Toast.makeText(this, "No updates!", Toast.LENGTH_SHORT).show();
     }
 
@@ -77,17 +81,17 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     }
 
     @Override
-    public void onRequiresUI() {
-        Toast.makeText(this, "Requires UI!", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onMandatoryUpdateNotAvailable(int requiredVersion, int availableVersion) {
+    public void onMandatoryUpdateNotAvailable(
+            int requiredVersion,
+            int availableVersion,
+            Map<String, String> metadata,
+            UpdateInfo updateInfo
+    ) {
         Toast.makeText(this, "Mandatory update is not available on Google!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onDownloaded(QueenOfVersionsFlexibleUpdateHandler handler) {
+    public void onDownloaded(QueenOfVersions.UpdateHandler handler) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();
     }
@@ -115,15 +119,6 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     @Override
     public void onPending() {
         Toast.makeText(this, "Update pending...", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * This method is called if there is an unknown behaviour of the update. This can happen if there where was update available,
-     * but during the updating something was unknown or there was some kind of unreported error.
-     */
-    @Override
-    public void onUnknown() {
-        Toast.makeText(this, "Unknown status!", Toast.LENGTH_SHORT).show();
     }
 
     /**

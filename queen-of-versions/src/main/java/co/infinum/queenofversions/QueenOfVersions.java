@@ -2,9 +2,11 @@ package co.infinum.queenofversions;
 
 import android.app.Activity;
 import co.infinum.princeofversions.Storage;
+import co.infinum.princeofversions.UpdateInfo;
 import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdateStatus;
 import co.infinum.princeofversions.UpdaterCallback;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 public class QueenOfVersions {
@@ -25,7 +27,7 @@ public class QueenOfVersions {
 
         Callback DEFAULT = new Callback() {
             @Override
-            public void onDownloaded(QueenOfVersionsFlexibleUpdateHandler handler) {
+            public void onDownloaded(QueenOfVersions.UpdateHandler handler) {
                 handler.completeUpdate();
             }
 
@@ -45,17 +47,12 @@ public class QueenOfVersions {
             }
 
             @Override
-            public void onUnknown() {
-                // no-op
-            }
-
-            @Override
             public void onError(Throwable throwable) {
                 // no-op
             }
 
             @Override
-            public void onNoUpdate() {
+            public void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo) {
                 // no-op
             }
 
@@ -70,17 +67,17 @@ public class QueenOfVersions {
             }
 
             @Override
-            public void onRequiresUI() {
-                // no-op
-            }
-
-            @Override
-            public void onMandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion) {
-                // no-op
+            public void onMandatoryUpdateNotAvailable(
+                    int mandatoryVersion,
+                    int availableVersion,
+                    Map<String, String> metadata,
+                    UpdateInfo updateInfo
+            ) {
+                onNoUpdate(metadata, updateInfo);
             }
         };
 
-        void onDownloaded(QueenOfVersionsFlexibleUpdateHandler handler);
+        void onDownloaded(QueenOfVersions.UpdateHandler handler);
 
         void onCanceled();
 
@@ -88,34 +85,44 @@ public class QueenOfVersions {
 
         void onPending();
 
-        void onUnknown();
-
+        /**
+         * This method is called if there is an unknown behaviour of the update. This can happen if there was an update available,
+         * but during the updating something was unknown or there was some kind of unreported error.
+         */
         void onError(Throwable throwable);
 
-        void onNoUpdate();
+        void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo);
 
         void onDownloading();
 
         void onInstalling();
 
-        void onRequiresUI();
-
-        void onMandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion);
+        void onMandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion, Map<String, String> metadata, UpdateInfo updateInfo);
     }
 
-    interface OnDownloaded {
+    public interface OnDownloaded {
 
-        void onAction(QueenOfVersionsFlexibleUpdateHandler handler);
+        void onAction(QueenOfVersions.UpdateHandler handler);
     }
 
-    interface OnError {
+    public interface OnError {
 
         void onError(Throwable error);
     }
 
-    interface OnMandatoryUpdateNotAvailable {
+    public interface OnMandatoryUpdateNotAvailable {
 
-        void onAction(int mandatoryVersion, int availableVersion);
+        void onAction(int mandatoryVersion, int availableVersion, Map<String, String> metadata, UpdateInfo updateInfo);
+    }
+
+    public interface OnNoUpdate {
+
+        void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo);
+    }
+
+    public interface UpdateHandler {
+
+        void completeUpdate();
     }
 
     static class QueenOnPrinceOfVersionsSuccess implements OnPrinceOfVersionsSuccess {
@@ -184,12 +191,7 @@ public class QueenOfVersions {
             return this;
         }
 
-        public Builder withOnUnknownError(Runnable onUnknownError) {
-            adapter.withOnUnknownError(onUnknownError);
-            return this;
-        }
-
-        public Builder withOnNoUpdate(Runnable onNoUpdate) {
+        public Builder withOnNoUpdate(OnNoUpdate onNoUpdate) {
             adapter.withOnNoUpdate(onNoUpdate);
             return this;
         }
@@ -258,13 +260,10 @@ public class QueenOfVersions {
         private Runnable onPending;
 
         @Nullable
-        private Runnable onUnknownError;
-
-        @Nullable
         private OnError onError;
 
         @Nullable
-        private Runnable onNoUpdate;
+        private OnNoUpdate onNoUpdate;
 
         @Nullable
         private Runnable onDownloading;
@@ -307,11 +306,7 @@ public class QueenOfVersions {
             this.onError = onError;
         }
 
-        void withOnUnknownError(Runnable onUnknownError) {
-            this.onUnknownError = onUnknownError;
-        }
-
-        void withOnNoUpdate(Runnable onNoUpdate) {
+        void withOnNoUpdate(OnNoUpdate onNoUpdate) {
             this.onNoUpdate = onNoUpdate;
         }
 
@@ -328,7 +323,7 @@ public class QueenOfVersions {
         }
 
         @Override
-        public void onDownloaded(QueenOfVersionsFlexibleUpdateHandler handler) {
+        public void onDownloaded(QueenOfVersions.UpdateHandler handler) {
             if (onDownloaded != null) {
                 onDownloaded.onAction(handler);
             } else {
@@ -364,15 +359,6 @@ public class QueenOfVersions {
         }
 
         @Override
-        public void onUnknown() {
-            if (onUnknownError != null) {
-                onUnknownError.run();
-            } else {
-                fallback.onUnknown();
-            }
-        }
-
-        @Override
         public void onError(Throwable throwable) {
             if (onError != null) {
                 onError.onError(throwable);
@@ -382,11 +368,11 @@ public class QueenOfVersions {
         }
 
         @Override
-        public void onNoUpdate() {
+        public void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo) {
             if (onNoUpdate != null) {
-                onNoUpdate.run();
+                onNoUpdate.onNoUpdate(metadata, updateInfo);
             } else {
-                fallback.onNoUpdate();
+                fallback.onNoUpdate(metadata, updateInfo);
             }
         }
 
@@ -409,17 +395,21 @@ public class QueenOfVersions {
         }
 
         @Override
-        public void onRequiresUI() {
-            // no-op
-        }
-
-        @Override
-        public void onMandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion) {
+        public void onMandatoryUpdateNotAvailable(
+                int mandatoryVersion,
+                int availableVersion,
+                Map<String, String> metadata,
+                UpdateInfo updateInfo
+        ) {
             if (onMandatoryUpdateNotAvailable != null) {
-                onMandatoryUpdateNotAvailable.onAction(mandatoryVersion, availableVersion);
+                onMandatoryUpdateNotAvailable.onAction(mandatoryVersion, availableVersion, metadata, updateInfo);
             } else {
-                fallback.onMandatoryUpdateNotAvailable(mandatoryVersion, availableVersion);
+                fallback.onMandatoryUpdateNotAvailable(mandatoryVersion, availableVersion, metadata, updateInfo);
             }
         }
+    }
+
+    public static class UnknownVersionException extends Exception {
+
     }
 }

@@ -1,5 +1,6 @@
 package co.infinum.princeofversions;
 
+import android.support.annotation.VisibleForTesting;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -35,7 +36,8 @@ public class UpdateInfo {
      */
     private final NotificationType notificationFrequency;
 
-    UpdateInfo(
+    @VisibleForTesting
+    public UpdateInfo(
             @Nullable Integer requiredVersion,
             @Nullable Integer lastVersionAvailable,
             Map<String, String> requirements,

@@ -1,8 +1,12 @@
 package co.infinum.queenofversions;
 
+import co.infinum.princeofversions.UpdateInfo;
+import java.util.Map;
+
 class UpdateStateDelegate implements QueenOfVersions.Callback {
 
     private boolean isCanceled;
+
     private QueenOfVersions.Callback listener;
 
     UpdateStateDelegate(boolean isCanceled, QueenOfVersions.Callback listener) {
@@ -11,7 +15,7 @@ class UpdateStateDelegate implements QueenOfVersions.Callback {
     }
 
     @Override
-    public void onDownloaded(QueenOfVersionsFlexibleUpdateHandler handler) {
+    public void onDownloaded(QueenOfVersions.UpdateHandler handler) {
         if (!isCanceled) {
             listener.onDownloaded(handler);
         }
@@ -39,13 +43,6 @@ class UpdateStateDelegate implements QueenOfVersions.Callback {
     }
 
     @Override
-    public void onUnknown() {
-        if (!isCanceled) {
-            listener.onUnknown();
-        }
-    }
-
-    @Override
     public void onError(Throwable throwable) {
         if (!isCanceled) {
             listener.onError(throwable);
@@ -53,9 +50,9 @@ class UpdateStateDelegate implements QueenOfVersions.Callback {
     }
 
     @Override
-    public void onNoUpdate() {
+    public void onNoUpdate(Map<String, String> metadata, UpdateInfo updateInfo) {
         if (!isCanceled) {
-            listener.onNoUpdate();
+            listener.onNoUpdate(metadata, updateInfo);
         }
     }
 
@@ -74,16 +71,14 @@ class UpdateStateDelegate implements QueenOfVersions.Callback {
     }
 
     @Override
-    public void onRequiresUI() {
+    public void onMandatoryUpdateNotAvailable(
+            int mandatoryVersion,
+            int availableVersion,
+            Map<String, String> metadata,
+            UpdateInfo updateInfo
+    ) {
         if (!isCanceled) {
-            listener.onRequiresUI();
-        }
-    }
-
-    @Override
-    public void onMandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion) {
-        if (!isCanceled) {
-            listener.onMandatoryUpdateNotAvailable(mandatoryVersion, availableVersion);
+            listener.onMandatoryUpdateNotAvailable(mandatoryVersion, availableVersion, metadata, updateInfo);
         }
     }
 

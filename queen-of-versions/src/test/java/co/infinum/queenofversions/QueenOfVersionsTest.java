@@ -14,6 +14,7 @@ import java.util.Collections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -36,13 +37,13 @@ import static org.mockito.Mockito.verify;
 public class QueenOfVersionsTest {
 
     @Mock
-    QueenOfVersionsUpdaterCallback googleInAppUpdateCallback;
-
-    @Mock
     GoogleAppUpdater googleAppUpdater;
 
     @Mock
     QueenOfVersions.Callback updaterStateCallback;
+
+    @Mock
+    UpdateResult updateResult;
 
     @Mock
     UpdateInfo updateInfo;
@@ -67,11 +68,11 @@ public class QueenOfVersionsTest {
     public void testStartingGoogleInAppUpdaterWhenThereIsNewUpdate() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        UpdateResult updateResult = new UpdateResult(updateInfo, Collections.<String, String>emptyMap(),
+        UpdateResult updateResult = new UpdateResult(this.updateInfo, Collections.<String, String>emptyMap(),
                 UpdateStatus.REQUIRED_UPDATE_NEEDED, 200);
         googleInAppUpdateCallback.onSuccess(updateResult);
 
-        verify(googleAppUpdater, times(1)).initGoogleUpdate(true, 200, updateInfo);
+        verify(googleAppUpdater, times(1)).initGoogleUpdate(true, 200, updateResult);
         verify(googleAppUpdater, times(0)).completeUpdate();
     }
 
@@ -83,11 +84,11 @@ public class QueenOfVersionsTest {
     public void testStartingGoogleInAppUpdaterIfThereIsNoNewUpdate() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        UpdateResult updateResult = new UpdateResult(updateInfo, Collections.<String, String>emptyMap(),
+        UpdateResult updateResult = new UpdateResult(this.updateInfo, Collections.<String, String>emptyMap(),
                 UpdateStatus.NO_UPDATE_AVAILABLE, 200);
         googleInAppUpdateCallback.onSuccess(updateResult);
 
-        verify(googleAppUpdater, times(1)).initGoogleUpdate(false, 200, updateInfo);
+        verify(googleAppUpdater, times(1)).initGoogleUpdate(false, 200, updateResult);
         verify(googleAppUpdater, times(0)).completeUpdate();
     }
 
@@ -118,16 +119,14 @@ public class QueenOfVersionsTest {
         InstallState installState = new MockInstallState(InstallStatus.DOWNLOADED, InstallErrorCode.NO_ERROR);
         googleInAppUpdateCallback.onStateUpdate(installState);
 
-        verify(updaterStateCallback, times(1)).onDownloaded(any(QueenOfVersionsFlexibleUpdateHandler.class));
+        verify(updaterStateCallback, times(1)).onDownloaded(any(QueenOfVersions.UpdateHandler.class));
         verify(updaterStateCallback, times(0)).onCanceled();
-        verify(updaterStateCallback, times(0)).onNoUpdate();
+        verify(updaterStateCallback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
         verify(updaterStateCallback, times(0)).onError(any(GoogleInAppUpdateException.class));
-        verify(updaterStateCallback, times(0)).onRequiresUI();
         verify(updaterStateCallback, times(0)).onDownloading();
         verify(updaterStateCallback, times(0)).onInstalling();
         verify(updaterStateCallback, times(0)).onInstalled();
         verify(updaterStateCallback, times(0)).onPending();
-        verify(updaterStateCallback, times(0)).onUnknown();
     }
 
     @Test
@@ -137,16 +136,14 @@ public class QueenOfVersionsTest {
         InstallState installState = new MockInstallState(InstallStatus.CANCELED, InstallErrorCode.NO_ERROR);
         googleInAppUpdateCallback.onStateUpdate(installState);
 
-        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersionsFlexibleUpdateHandler.class));
+        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersions.UpdateHandler.class));
         verify(updaterStateCallback, times(1)).onCanceled();
-        verify(updaterStateCallback, times(0)).onNoUpdate();
+        verify(updaterStateCallback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
         verify(updaterStateCallback, times(0)).onError(any(GoogleInAppUpdateException.class));
-        verify(updaterStateCallback, times(0)).onRequiresUI();
         verify(updaterStateCallback, times(0)).onDownloading();
         verify(updaterStateCallback, times(0)).onInstalling();
         verify(updaterStateCallback, times(0)).onInstalled();
         verify(updaterStateCallback, times(0)).onPending();
-        verify(updaterStateCallback, times(0)).onUnknown();
     }
 
     @Test
@@ -156,16 +153,14 @@ public class QueenOfVersionsTest {
         InstallState installState = new MockInstallState(InstallStatus.INSTALLING, InstallErrorCode.NO_ERROR);
         googleInAppUpdateCallback.onStateUpdate(installState);
 
-        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersionsFlexibleUpdateHandler.class));
+        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersions.UpdateHandler.class));
         verify(updaterStateCallback, times(0)).onCanceled();
-        verify(updaterStateCallback, times(0)).onNoUpdate();
+        verify(updaterStateCallback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
         verify(updaterStateCallback, times(0)).onError(any(GoogleInAppUpdateException.class));
-        verify(updaterStateCallback, times(0)).onRequiresUI();
         verify(updaterStateCallback, times(0)).onDownloading();
         verify(updaterStateCallback, times(1)).onInstalling();
         verify(updaterStateCallback, times(0)).onInstalled();
         verify(updaterStateCallback, times(0)).onPending();
-        verify(updaterStateCallback, times(0)).onUnknown();
     }
 
     @Test
@@ -175,16 +170,14 @@ public class QueenOfVersionsTest {
         InstallState installState = new MockInstallState(InstallStatus.INSTALLED, InstallErrorCode.NO_ERROR);
         googleInAppUpdateCallback.onStateUpdate(installState);
 
-        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersionsFlexibleUpdateHandler.class));
+        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersions.UpdateHandler.class));
         verify(updaterStateCallback, times(0)).onCanceled();
-        verify(updaterStateCallback, times(0)).onNoUpdate();
+        verify(updaterStateCallback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
         verify(updaterStateCallback, times(0)).onError(any(GoogleInAppUpdateException.class));
-        verify(updaterStateCallback, times(0)).onRequiresUI();
         verify(updaterStateCallback, times(0)).onDownloading();
         verify(updaterStateCallback, times(0)).onInstalling();
         verify(updaterStateCallback, times(1)).onInstalled();
         verify(updaterStateCallback, times(0)).onPending();
-        verify(updaterStateCallback, times(0)).onUnknown();
     }
 
     @Test
@@ -194,16 +187,14 @@ public class QueenOfVersionsTest {
         InstallState installState = new MockInstallState(InstallStatus.PENDING, InstallErrorCode.NO_ERROR);
         googleInAppUpdateCallback.onStateUpdate(installState);
 
-        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersionsFlexibleUpdateHandler.class));
+        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersions.UpdateHandler.class));
         verify(updaterStateCallback, times(0)).onCanceled();
-        verify(updaterStateCallback, times(0)).onNoUpdate();
+        verify(updaterStateCallback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
         verify(updaterStateCallback, times(0)).onError(any(GoogleInAppUpdateException.class));
-        verify(updaterStateCallback, times(0)).onRequiresUI();
         verify(updaterStateCallback, times(0)).onDownloading();
         verify(updaterStateCallback, times(0)).onInstalling();
         verify(updaterStateCallback, times(0)).onInstalled();
         verify(updaterStateCallback, times(1)).onPending();
-        verify(updaterStateCallback, times(0)).onUnknown();
     }
 
     @Test
@@ -213,16 +204,14 @@ public class QueenOfVersionsTest {
         InstallState installState = new MockInstallState(InstallStatus.UNKNOWN, InstallErrorCode.NO_ERROR);
         googleInAppUpdateCallback.onStateUpdate(installState);
 
-        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersionsFlexibleUpdateHandler.class));
+        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersions.UpdateHandler.class));
         verify(updaterStateCallback, times(0)).onCanceled();
-        verify(updaterStateCallback, times(0)).onNoUpdate();
+        verify(updaterStateCallback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
         verify(updaterStateCallback, times(0)).onError(any(GoogleInAppUpdateException.class));
-        verify(updaterStateCallback, times(0)).onRequiresUI();
         verify(updaterStateCallback, times(0)).onDownloading();
         verify(updaterStateCallback, times(0)).onInstalling();
         verify(updaterStateCallback, times(0)).onInstalled();
         verify(updaterStateCallback, times(0)).onPending();
-        verify(updaterStateCallback, times(1)).onUnknown();
     }
 
     @Test
@@ -232,16 +221,14 @@ public class QueenOfVersionsTest {
         InstallState installState = new MockInstallState(InstallStatus.DOWNLOADING, InstallErrorCode.NO_ERROR);
         googleInAppUpdateCallback.onStateUpdate(installState);
 
-        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersionsFlexibleUpdateHandler.class));
+        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersions.UpdateHandler.class));
         verify(updaterStateCallback, times(0)).onCanceled();
-        verify(updaterStateCallback, times(0)).onNoUpdate();
+        verify(updaterStateCallback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
         verify(updaterStateCallback, times(0)).onError(any(GoogleInAppUpdateException.class));
-        verify(updaterStateCallback, times(0)).onRequiresUI();
         verify(updaterStateCallback, times(1)).onDownloading();
         verify(updaterStateCallback, times(0)).onInstalling();
         verify(updaterStateCallback, times(0)).onInstalled();
         verify(updaterStateCallback, times(0)).onPending();
-        verify(updaterStateCallback, times(0)).onUnknown();
     }
 
     @Test
@@ -251,16 +238,14 @@ public class QueenOfVersionsTest {
         InstallState installState = new MockInstallState(InstallStatus.REQUIRES_UI_INTENT, InstallErrorCode.NO_ERROR);
         googleInAppUpdateCallback.onStateUpdate(installState);
 
-        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersionsFlexibleUpdateHandler.class));
+        verify(updaterStateCallback, times(0)).onDownloaded(any(QueenOfVersions.UpdateHandler.class));
         verify(updaterStateCallback, times(0)).onCanceled();
-        verify(updaterStateCallback, times(0)).onNoUpdate();
+        verify(updaterStateCallback, times(0)).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
         verify(updaterStateCallback, times(0)).onError(any(GoogleInAppUpdateException.class));
-        verify(updaterStateCallback, times(1)).onRequiresUI();
         verify(updaterStateCallback, times(0)).onDownloading();
         verify(updaterStateCallback, times(0)).onInstalling();
         verify(updaterStateCallback, times(0)).onInstalled();
         verify(updaterStateCallback, times(0)).onPending();
-        verify(updaterStateCallback, times(0)).onUnknown();
     }
 
     @Test
@@ -376,7 +361,7 @@ public class QueenOfVersionsTest {
     public void testPrinceAndGoogleSameVersionMandatory() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 11, true, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 11, true, updateResult);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.IMMEDIATE);
     }
@@ -385,7 +370,7 @@ public class QueenOfVersionsTest {
     public void testPrinceAndGoogleSameVersionOptional() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 11, false, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 11, false, updateResult);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
     }
@@ -394,7 +379,7 @@ public class QueenOfVersionsTest {
     public void testPrinceLowerVersionThanGoogleMandatory() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, true, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, true, updateResult);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.IMMEDIATE);
     }
@@ -403,7 +388,7 @@ public class QueenOfVersionsTest {
     public void testPrinceLowerVersionThanGoogleOptional() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateResult);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
     }
@@ -412,7 +397,8 @@ public class QueenOfVersionsTest {
     public void testPrinceHigherVersionThanGoogleMandatory() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 12, 11, true, updateInfo);
+        UpdateResult result = new UpdateResult(updateInfo, Collections.<String, String>emptyMap(), UpdateStatus.REQUIRED_UPDATE_NEEDED, 12);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 12, 11, true, result);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.IMMEDIATE);
     }
@@ -421,7 +407,7 @@ public class QueenOfVersionsTest {
     public void testPrinceHigherVersionThanGoogleOptional() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateResult);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
     }
@@ -430,7 +416,7 @@ public class QueenOfVersionsTest {
     public void testPrinceLowerVersionThanGoogleAndAppMandatory() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 11, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 10, 12, true, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 10, 12, true, updateResult);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.IMMEDIATE);
     }
@@ -439,7 +425,7 @@ public class QueenOfVersionsTest {
     public void testPrinceLowerVersionThanGoogleAndAppOptional() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 10, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_AVAILABLE, 11, 12, false, updateResult);
 
         verify(googleAppUpdater, times(1)).startUpdate(AppUpdateType.FLEXIBLE);
     }
@@ -448,7 +434,7 @@ public class QueenOfVersionsTest {
     public void testAppHigherVersionThanGoogleButLowerThanPrinceMandatory() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 11, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 12, 10, true, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 12, 10, true, updateResult);
 
         verify(googleAppUpdater, times(0)).startUpdate(anyInt());
     }
@@ -457,7 +443,7 @@ public class QueenOfVersionsTest {
     public void testAppHigherVersionThanGoogleButLowerThanPrinceOptional() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 11, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 12, 10, false, updateInfo);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 12, 10, false, updateResult);
 
         verify(googleAppUpdater, times(0)).startUpdate(anyInt());
     }
@@ -503,8 +489,10 @@ public class QueenOfVersionsTest {
     public void testNoUpdateFromGoogleOrPrince() {
         QueenOfVersionsUpdaterCallback googleInAppUpdateCallback =
                 new QueenOfVersionsUpdaterCallback(200, googleAppUpdater, updaterStateCallback, 11, storage);
-        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 11, 11, true, updateInfo);
 
-        verify(googleAppUpdater, times(1)).noUpdate();
+        UpdateResult result = new UpdateResult(updateInfo, Collections.<String, String>emptyMap(), UpdateStatus.NO_UPDATE_AVAILABLE, 11);
+        googleInAppUpdateCallback.handleSuccess(UpdateAvailability.UPDATE_NOT_AVAILABLE, 11, 11, true, result);
+
+        verify(googleAppUpdater, times(1)).noUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
     }
 }
