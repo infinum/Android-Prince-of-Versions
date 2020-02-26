@@ -74,7 +74,12 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
     }
 
     @Override
-    public void mandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion, Map<String, String> metadata, UpdateInfo updateInfo) {
+    public void mandatoryUpdateNotAvailable(
+            int mandatoryVersion,
+            int availableVersion,
+            Map<String, String> metadata,
+            UpdateInfo updateInfo
+    ) {
         flexibleStateListener.onMandatoryUpdateNotAvailable(mandatoryVersion, availableVersion, metadata, updateInfo);
     }
 

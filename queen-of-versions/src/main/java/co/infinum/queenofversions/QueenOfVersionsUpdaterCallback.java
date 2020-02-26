@@ -269,7 +269,12 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
             } else if (updateResolution == UpdateResolution.IMMEDIATE_NOT_AVAILABLE) {
                 Integer requiredVersion = updateInfo != null ? updateInfo.getRequiredVersion() : null;
                 if (requiredVersion != null) {
-                    googleAppUpdater.mandatoryUpdateNotAvailable(requiredVersion, googleUpdateVersionCode, updateResult.getMetadata(), updateInfo);
+                    googleAppUpdater.mandatoryUpdateNotAvailable(
+                            requiredVersion,
+                            googleUpdateVersionCode,
+                            updateResult.getMetadata(),
+                            updateInfo
+                    );
                 } else {
                     googleAppUpdater.noUpdate(
                             updateResult != null ? updateResult.getMetadata() : null,
