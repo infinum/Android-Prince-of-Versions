@@ -266,8 +266,10 @@ class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpd
                     googleUpdateVersionCode
             );
             if (updateResolution == UpdateResolution.FLEXIBLE) {
+                storage.rememberLastNotifiedVersion(googleUpdateVersionCode);
                 googleAppUpdater.startUpdate(AppUpdateType.FLEXIBLE);
             } else if (updateResolution == UpdateResolution.IMMEDIATE) {
+                storage.rememberLastNotifiedVersion(googleUpdateVersionCode);
                 googleAppUpdater.startUpdate(AppUpdateType.IMMEDIATE);
             } else if (updateResolution == UpdateResolution.IMMEDIATE_NOT_AVAILABLE) {
                 Integer requiredVersion = updateInfo != null ? updateInfo.getRequiredVersion() : null;
