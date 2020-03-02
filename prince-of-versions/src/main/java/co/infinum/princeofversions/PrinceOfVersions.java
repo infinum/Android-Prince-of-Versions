@@ -147,7 +147,7 @@ public final class PrinceOfVersions {
      * @param callback Callback to notify result.
      * @return instance through which is possible to cancel the call.
      */
-    PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
+    public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, UpdaterCallback callback) {
         return checkForUpdatesInternal(executor, loader, new ExecutorUpdaterCallback(callback, callbackExecutor));
     }
 

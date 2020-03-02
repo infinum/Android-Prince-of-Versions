@@ -2,14 +2,15 @@ package co.infinum.queenofversions;
 
 import co.infinum.princeofversions.UpdateInfo;
 import java.util.Map;
+import javax.annotation.Nullable;
 
-class UpdateStateDelegate implements QueenOfVersions.Callback {
+class QueenOfVersionsCancelableCallback implements QueenOfVersions.Callback {
 
     private boolean isCanceled;
 
     private QueenOfVersions.Callback listener;
 
-    UpdateStateDelegate(boolean isCanceled, QueenOfVersions.Callback listener) {
+    QueenOfVersionsCancelableCallback(boolean isCanceled, QueenOfVersions.Callback listener) {
         this.isCanceled = isCanceled;
         this.listener = listener;
     }
@@ -50,7 +51,7 @@ class UpdateStateDelegate implements QueenOfVersions.Callback {
     }
 
     @Override
-    public void onNoUpdate(Map<String, String> metadata, UpdateInfo updateInfo) {
+    public void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo) {
         if (!isCanceled) {
             listener.onNoUpdate(metadata, updateInfo);
         }
@@ -84,5 +85,9 @@ class UpdateStateDelegate implements QueenOfVersions.Callback {
 
     void cancel() {
         isCanceled = true;
+    }
+
+    boolean isCanceled() {
+        return isCanceled;
     }
 }

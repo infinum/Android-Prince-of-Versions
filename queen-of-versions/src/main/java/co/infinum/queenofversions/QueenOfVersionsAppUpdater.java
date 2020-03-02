@@ -19,7 +19,7 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
 
     private final int requestCode;
 
-    private final UpdateStateDelegate flexibleStateListener;
+    private final QueenOfVersionsCancelableCallback flexibleStateListener;
 
     private final QueenOfVersionsUpdaterCallback callback;
 
@@ -27,7 +27,7 @@ class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
     private AppUpdateInfo appUpdateInfo;
 
     QueenOfVersionsAppUpdater(Activity activity, AppUpdateManager appUpdateManager, int requestCode,
-            UpdateStateDelegate flexibleStateListener, QueenOfVersionsUpdaterCallback callback) {
+            QueenOfVersionsCancelableCallback flexibleStateListener, QueenOfVersionsUpdaterCallback callback) {
         this.activity = activity;
         this.appUpdateManager = appUpdateManager;
         this.requestCode = requestCode;

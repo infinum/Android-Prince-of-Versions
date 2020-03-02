@@ -69,11 +69,11 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * REQUIRED_UPDATE_NEEDED update == IMMEDIATE update
  * FLEXIBLE update == NEW_UPDATE_AVAILABLE update
  */
-public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersions.UpdateHandler {
+class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersions.UpdateHandler {
 
     private final int appVersionCode;
 
-    private final UpdateStateDelegate flexibleStateListener;
+    private final QueenOfVersionsCancelableCallback flexibleStateListener;
 
     private final GoogleAppUpdater googleAppUpdater;
 
@@ -91,7 +91,7 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
      * @param activity    activity is used for purposes of Google's in-app updates methods that are used in this library
      * @param listener    listener is used as callback for notifying update statuses during update
      */
-    public QueenOfVersionsUpdaterCallback(
+    QueenOfVersionsUpdaterCallback(
             int requestCode,
             Activity activity,
             QueenOfVersions.Callback listener,
@@ -99,7 +99,7 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
             OnPrinceOfVersionsError onPrinceOfVersionsError,
             Storage storage
     ) {
-        this.flexibleStateListener = new UpdateStateDelegate(false, listener);
+        this.flexibleStateListener = new QueenOfVersionsCancelableCallback(false, listener);
         this.googleAppUpdater = new QueenOfVersionsAppUpdater(activity, AppUpdateManagerFactory.create(activity), requestCode,
                 flexibleStateListener,
                 this);
@@ -123,7 +123,7 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
             OnPrinceOfVersionsError onPrinceOfVersionsError,
             Storage storage
     ) {
-        this.flexibleStateListener = new UpdateStateDelegate(false, flexibleStateListener);
+        this.flexibleStateListener = new QueenOfVersionsCancelableCallback(false, flexibleStateListener);
         this.appVersionCode = appVersionCode;
         this.googleAppUpdater = appUpdater;
         this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
@@ -184,7 +184,6 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
         }
     }
 
-    @VisibleForTesting
     void continueUpdateCheckBasedOnStatus(UpdateStatus status, @Nullable UpdateResult result) {
         switch (status) {
             case NEW_UPDATE_AVAILABLE:
@@ -252,6 +251,10 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
      */
     void handleSuccess(@UpdateAvailability int updateAvailability, @Nullable Integer princeVersionCode, int googleUpdateVersionCode,
             boolean isMandatory, @Nullable UpdateResult updateResult) {
+
+        if (flexibleStateListener.isCanceled()) {
+            return;
+        }
         UpdateInfo updateInfo = updateResult != null ? updateResult.getInfo() : null;
 
         if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
@@ -425,6 +428,7 @@ public class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallS
      */
     public void cancel() {
         flexibleStateListener.cancel();
+        googleAppUpdater.cancel();
     }
 
     enum UpdateResolution {

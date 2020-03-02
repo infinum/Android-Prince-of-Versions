@@ -10,9 +10,11 @@ import android.widget.Toast;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
+import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.UpdateInfo;
 import co.infinum.queenofversions.QueenOfVersions;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
 public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersions.Callback {
 
@@ -26,6 +28,8 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
 
     private Loader loader;
 
+    private PrinceOfVersionsCancelable cancelable;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +39,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
 
         princeOfVersions = new PrinceOfVersions.Builder().build(this);
         queenOfVersions = new QueenOfVersions.Builder()
-                .withCallback(this)
+                .withPrinceOfVersions(princeOfVersions)
                 .withRequestCode(REQUEST_CODE)
                 .build(this);
         loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
@@ -52,7 +56,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     }
 
     private void onCheckUpdatesClick() {
-        princeOfVersions.checkForUpdates(loader, queenOfVersions.getPrinceOfVersionsCallback());
+        cancelable = queenOfVersions.checkForUpdates(loader, this);
     }
 
     /**
@@ -84,8 +88,8 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     public void onMandatoryUpdateNotAvailable(
             int requiredVersion,
             int availableVersion,
-            Map<String, String> metadata,
-            UpdateInfo updateInfo
+            @Nonnull Map<String, String> metadata,
+            @Nonnull UpdateInfo updateInfo
     ) {
         Toast.makeText(this, "Mandatory update is not available on Google!", Toast.LENGTH_SHORT).show();
     }
@@ -130,5 +134,13 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     public void onError(Throwable throwable) {
         Toast.makeText(this, "Failed updated! Check log!", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Exception:", throwable.fillInStackTrace());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (cancelable != null) {
+            cancelable.cancel();
+        }
     }
 }

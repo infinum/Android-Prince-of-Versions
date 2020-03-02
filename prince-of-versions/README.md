@@ -1,1 +1,1 @@
-'co.infinum:prince-of-versions:3.0.0'
+'co.infinum:prince-of-versions:4.0.0'
