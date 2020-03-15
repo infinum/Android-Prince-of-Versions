@@ -20,6 +20,7 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallErrorCode;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
+import java.util.HashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -356,7 +357,7 @@ class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpd
             googleAppUpdater.mandatoryUpdateNotAvailable(
                     requiredVersion,
                     inAppUpdateInfo,
-                    updateResult.getMetadata(),
+                    updateResult != null ? updateResult.getMetadata() : new HashMap<String, String>(),
                     updateInfo
             );
         } else {
