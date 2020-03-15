@@ -1,6 +1,6 @@
 package co.infinum.queenofversions;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
@@ -15,17 +15,15 @@ import javax.annotation.Nullable;
 
 public class QueenOfVersions {
 
-    private static final int DEFAULT_REQUEST_CODE = 128;
-
     private final Storage storage;
 
     private final OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess;
 
     private final OnPrinceOfVersionsError onPrinceOfVersionsError;
 
-    private final int requestCode;
+    private final OnUpdateNotAllowed onUpdateNotAllowed;
 
-    private final Activity activity;
+    private final FragmentActivity activity;
 
     private final PrinceOfVersions princeOfVersions;
 
@@ -33,29 +31,29 @@ public class QueenOfVersions {
             Storage storage,
             OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess,
             OnPrinceOfVersionsError onPrinceOfVersionsError,
-            int requestCode,
-            Activity activity,
+            OnUpdateNotAllowed onUpdateNotAllowed,
+            FragmentActivity activity,
             PrinceOfVersions princeOfVersions
     ) {
         this.storage = storage;
         this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
         this.onPrinceOfVersionsError = onPrinceOfVersionsError;
-        this.requestCode = requestCode;
+        this.onUpdateNotAllowed = onUpdateNotAllowed;
         this.activity = activity;
         this.princeOfVersions = princeOfVersions;
     }
 
     public static PrinceOfVersionsCancelable checkForUpdates(
-            Activity activity,
+            FragmentActivity activity,
             QueenOfVersions.Options options,
             QueenOfVersions.Callback callback
     ) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                options.requestCode,
                 activity,
                 callback,
                 QueenOnPrinceOfVersionsSuccess.INSTANCE,
                 QueenOnPrinceOfVersionsError.INSTANCE,
+                options.onUpdateNotAllowed,
                 options.storage != null ? options.storage : new QueenOfVersionsDefaultNamedPreferenceStorage(activity)
         );
         UpdateStatus updateStatus = options.updateStatus;
@@ -84,7 +82,7 @@ public class QueenOfVersions {
      */
     public PrinceOfVersionsCancelable checkForUpdates(String url, QueenOfVersions.Callback callback) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                requestCode, activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, storage
+                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, storage
         );
         PrinceOfVersionsCancelable princeOfVersionsCancelable = princeOfVersions.checkForUpdates(url, updater);
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
@@ -100,7 +98,7 @@ public class QueenOfVersions {
      */
     public PrinceOfVersionsCancelable checkForUpdates(Loader loader, QueenOfVersions.Callback callback) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                requestCode, activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, storage
+                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, storage
         );
         PrinceOfVersionsCancelable princeOfVersionsCancelable = princeOfVersions.checkForUpdates(loader, updater);
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
@@ -117,7 +115,7 @@ public class QueenOfVersions {
      */
     public PrinceOfVersionsCancelable checkForUpdates(Executor executor, String url, QueenOfVersions.Callback callback) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                requestCode, activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, storage
+                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, storage
         );
         PrinceOfVersionsCancelable princeOfVersionsCancelable = princeOfVersions.checkForUpdates(executor, url, updater);
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
@@ -134,87 +132,15 @@ public class QueenOfVersions {
      */
     public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, QueenOfVersions.Callback callback) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                requestCode, activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, storage
+                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, storage
         );
         PrinceOfVersionsCancelable princeOfVersionsCancelable = princeOfVersions.checkForUpdates(executor, loader, updater);
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
     }
 
-    public interface Callback {
-
-        Callback DEFAULT = new Callback() {
-            @Override
-            public void onDownloaded(QueenOfVersions.UpdateHandler handler) {
-                handler.completeUpdate();
-            }
-
-            @Override
-            public void onCanceled() {
-                // no-op
-            }
-
-            @Override
-            public void onInstalled() {
-                // no-op
-            }
-
-            @Override
-            public void onPending() {
-                // no-op
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                // no-op
-            }
-
-            @Override
-            public void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo) {
-                // no-op
-            }
-
-            @Override
-            public void onDownloading() {
-                // no-op
-            }
-
-            @Override
-            public void onInstalling() {
-                // no-op
-            }
-
-            @Override
-            public void onMandatoryUpdateNotAvailable(
-                    int mandatoryVersion,
-                    int availableVersion,
-                    Map<String, String> metadata,
-                    UpdateInfo updateInfo
-            ) {
-                onNoUpdate(metadata, updateInfo);
-            }
-        };
-
-        void onDownloaded(QueenOfVersions.UpdateHandler handler);
-
-        void onCanceled();
-
-        void onInstalled();
-
-        void onPending();
-
-        /**
-         * This method is called if there is an unknown behaviour of the update. This can happen if there was an update available,
-         * but during the updating something was unknown or there was some kind of unreported error.
-         */
-        void onError(Throwable throwable);
-
-        void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo);
-
-        void onDownloading();
-
-        void onInstalling();
-
-        void onMandatoryUpdateNotAvailable(int mandatoryVersion, int availableVersion, Map<String, String> metadata, UpdateInfo updateInfo);
+    public interface Callback extends
+            OnCanceled, OnDownloading, OnDownloaded, OnError, OnInstalled, OnInstalling, OnMandatoryUpdateNotAvailable, OnNoUpdate,
+            OnPending, OnUpdateAccepted, OnUpdateDeclined {
 
         class Builder {
 
@@ -230,17 +156,17 @@ public class QueenOfVersions {
                 return this;
             }
 
-            public QueenOfVersions.Callback.Builder withOnCanceled(Runnable onCanceled) {
+            public QueenOfVersions.Callback.Builder withOnCanceled(OnCanceled onCanceled) {
                 adapter.withOnCanceled(onCanceled);
                 return this;
             }
 
-            public QueenOfVersions.Callback.Builder withOnInstalled(Runnable onInstalled) {
+            public QueenOfVersions.Callback.Builder withOnInstalled(OnInstalled onInstalled) {
                 adapter.withOnInstalled(onInstalled);
                 return this;
             }
 
-            public QueenOfVersions.Callback.Builder withOnPending(Runnable onPending) {
+            public QueenOfVersions.Callback.Builder withOnPending(OnPending onPending) {
                 adapter.withOnPending(onPending);
                 return this;
             }
@@ -255,18 +181,19 @@ public class QueenOfVersions {
                 return this;
             }
 
-            public QueenOfVersions.Callback.Builder withOnDownloading(Runnable onDownloading) {
+            public QueenOfVersions.Callback.Builder withOnDownloading(OnDownloading onDownloading) {
                 adapter.withOnDownloading(onDownloading);
                 return this;
             }
 
-            public QueenOfVersions.Callback.Builder withOnInstalling(Runnable onInstalling) {
+            public QueenOfVersions.Callback.Builder withOnInstalling(OnInstalling onInstalling) {
                 adapter.withOnInstalling(onInstalling);
                 return this;
             }
 
             public QueenOfVersions.Callback.Builder withOnMandatoryUpdateNotAvailable(
-                    OnMandatoryUpdateNotAvailable onMandatoryUpdateNotAvailable) {
+                    OnMandatoryUpdateNotAvailable onMandatoryUpdateNotAvailable
+            ) {
                 adapter.withOnMandatoryUpdateNotAvailable(onMandatoryUpdateNotAvailable);
                 return this;
             }
@@ -275,26 +202,6 @@ public class QueenOfVersions {
                 return adapter.copy();
             }
         }
-    }
-
-    public interface OnDownloaded {
-
-        void onAction(QueenOfVersions.UpdateHandler handler);
-    }
-
-    public interface OnError {
-
-        void onError(Throwable error);
-    }
-
-    public interface OnMandatoryUpdateNotAvailable {
-
-        void onAction(int mandatoryVersion, int availableVersion, Map<String, String> metadata, UpdateInfo updateInfo);
-    }
-
-    public interface OnNoUpdate {
-
-        void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo);
     }
 
     public interface UpdateHandler {
@@ -327,9 +234,20 @@ public class QueenOfVersions {
         }
     }
 
-    public static class Builder {
+    static class OnUpdateNotAllowedReportNoUpdate implements OnUpdateNotAllowed {
 
-        private int requestCode = DEFAULT_REQUEST_CODE;
+        @Override
+        public boolean onImmediateUpdateNotAllowed(QueenOfVersionsInAppUpdateInfo updateInfo, @Nullable UpdateResult updateResult) {
+            return false;
+        }
+
+        @Override
+        public boolean onFlexibleUpdateNotAllowed(QueenOfVersionsInAppUpdateInfo updateInfo, @Nullable UpdateResult updateResult) {
+            return false;
+        }
+    }
+
+    public static class Builder {
 
         @Nullable
         private Storage storage = null;
@@ -341,12 +259,10 @@ public class QueenOfVersions {
         private OnPrinceOfVersionsError onPrinceOfVersionsError;
 
         @Nullable
-        private PrinceOfVersions princeOfVersions;
+        private OnUpdateNotAllowed onUpdateNotAllowed;
 
-        public Builder withRequestCode(int requestCode) {
-            this.requestCode = requestCode;
-            return this;
-        }
+        @Nullable
+        private PrinceOfVersions princeOfVersions;
 
         public Builder withPrinceOfVersionsSuccessHandler(OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess) {
             this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
@@ -368,12 +284,17 @@ public class QueenOfVersions {
             return this;
         }
 
-        public QueenOfVersions build(Activity activity) {
+        public Builder withOnUpateNotAllowedHandler(OnUpdateNotAllowed onUpateNotAllowedHandler) {
+            this.onUpdateNotAllowed = onUpateNotAllowedHandler;
+            return this;
+        }
+
+        public QueenOfVersions build(FragmentActivity activity) {
             return new QueenOfVersions(
                     storage != null ? storage : new QueenOfVersionsDefaultNamedPreferenceStorage(activity),
                     onPrinceOfVersionsSuccess != null ? onPrinceOfVersionsSuccess : new QueenOnPrinceOfVersionsSuccess(),
                     onPrinceOfVersionsError != null ? onPrinceOfVersionsError : new QueenOnPrinceOfVersionsError(),
-                    requestCode,
+                    onUpdateNotAllowed != null ? onUpdateNotAllowed : new OnUpdateNotAllowedReportNoUpdate(),
                     activity,
                     princeOfVersions != null ? princeOfVersions : new PrinceOfVersions(activity)
             );
@@ -381,8 +302,6 @@ public class QueenOfVersions {
     }
 
     public static class Options {
-
-        private int requestCode = DEFAULT_REQUEST_CODE;
 
         @Nullable
         private Storage storage;
@@ -393,49 +312,127 @@ public class QueenOfVersions {
         @Nullable
         private UpdateResult updateResult;
 
+        private OnUpdateNotAllowed onUpdateNotAllowed;
+
         private Options(
-                int requestCode,
                 @Nullable Storage storage,
                 @Nullable UpdateStatus updateStatus,
-                @Nullable UpdateResult updateResult
+                @Nullable UpdateResult updateResult,
+                OnUpdateNotAllowed onUpdateNotAllowed
         ) {
-            this.requestCode = requestCode;
             this.storage = storage;
             this.updateStatus = updateStatus;
             this.updateResult = updateResult;
+            this.onUpdateNotAllowed = onUpdateNotAllowed;
         }
 
-        public Options withRequestCode(int requestCode) {
-            this.requestCode = requestCode;
-            return this;
-        }
+        public static class Builder {
 
-        public Options withStorage(Storage storage) {
-            this.storage = storage;
-            return this;
-        }
+            @Nullable
+            private Storage storage;
 
-        public Options withUpdateStatus(UpdateStatus updateStatus) {
-            this.updateStatus = updateStatus;
-            return this;
-        }
+            @Nullable
+            private UpdateStatus updateStatus;
 
-        public Options withUpdateResult(UpdateResult updateResult) {
-            this.updateResult = updateResult;
-            return this;
-        }
+            @Nullable
+            private UpdateResult updateResult;
 
-        public Options build() {
-            return new Options(
-                    requestCode,
-                    storage,
-                    updateStatus,
-                    updateResult
-            );
+            @Nullable
+            private OnUpdateNotAllowed onUpdateNotAllowed;
+
+            public Options.Builder withStorage(Storage storage) {
+                this.storage = storage;
+                return this;
+            }
+
+            public Options.Builder withUpdateStatus(UpdateStatus updateStatus) {
+                this.updateStatus = updateStatus;
+                return this;
+            }
+
+            public Options.Builder withUpdateResult(UpdateResult updateResult) {
+                this.updateResult = updateResult;
+                return this;
+            }
+
+            public Options.Builder withOnUpdateNotAllowedHandler(OnUpdateNotAllowed onUpdateNotAllowedHandler) {
+                this.onUpdateNotAllowed = onUpdateNotAllowedHandler;
+                return this;
+            }
+
+            public Options build() {
+                return new Options(
+                        storage,
+                        updateStatus,
+                        updateResult,
+                        onUpdateNotAllowed != null ? onUpdateNotAllowed : new OnUpdateNotAllowedReportNoUpdate()
+                );
+            }
+
         }
     }
 
     static class CallbackAdapter implements QueenOfVersions.Callback {
+
+        static final Callback DEFAULT = new Callback() {
+            @Override
+            public void onCanceled() {
+                // no-op
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                // no-op
+            }
+
+            @Override
+            public void onNoUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo) {
+                // no-op
+            }
+
+            @Override
+            public void onDownloaded(QueenOfVersions.UpdateHandler handler, QueenOfVersionsInAppUpdateInfo inAppUpdate) {
+                handler.completeUpdate();
+            }
+
+            @Override
+            public void onDownloading(QueenOfVersionsInAppUpdateInfo inAppUpdate, long bytesDownloadedSoFar, long totalBytesToDownload) {
+                // no-op
+            }
+
+            @Override
+            public void onInstalled(QueenOfVersionsInAppUpdateInfo appUpdateInfo) {
+                // no-op
+            }
+
+            @Override
+            public void onInstalling(QueenOfVersionsInAppUpdateInfo inAppUpdateInfo) {
+                // no-op
+            }
+
+            @Override
+            public void onMandatoryUpdateNotAvailable(int mandatoryVersion, QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+                    Map<String, String> metadata, UpdateInfo updateInfo) {
+                onNoUpdate(metadata, updateInfo);
+            }
+
+            @Override
+            public void onPending(QueenOfVersionsInAppUpdateInfo inAppUpdateInfo) {
+                // no-op
+            }
+
+            @Override
+            public void onUpdateAccepted(QueenOfVersionsInAppUpdateInfo inAppUpdateInfo, UpdateStatus updateStatus,
+                    @Nullable UpdateResult updateResult) {
+                // no-op
+            }
+
+            @Override
+            public void onUpdateDeclined(QueenOfVersionsInAppUpdateInfo inAppUpdateInfo, UpdateStatus updateStatus,
+                    @Nullable UpdateResult updateResult) {
+                // no-op
+            }
+        };
 
         private Callback fallback;
 
@@ -443,13 +440,13 @@ public class QueenOfVersions {
         private OnDownloaded onDownloaded;
 
         @Nullable
-        private Runnable onCanceled;
+        private OnCanceled onCanceled;
 
         @Nullable
-        private Runnable onInstalled;
+        private OnInstalled onInstalled;
 
         @Nullable
-        private Runnable onPending;
+        private OnPending onPending;
 
         @Nullable
         private OnError onError;
@@ -458,20 +455,26 @@ public class QueenOfVersions {
         private OnNoUpdate onNoUpdate;
 
         @Nullable
-        private Runnable onDownloading;
+        private OnDownloading onDownloading;
 
         @Nullable
-        private Runnable onInstalling;
+        private OnInstalling onInstalling;
 
         @Nullable
         private OnMandatoryUpdateNotAvailable onMandatoryUpdateNotAvailable;
+
+        @Nullable
+        private OnUpdateAccepted onUpdateAccepted;
+
+        @Nullable
+        private OnUpdateDeclined onUpdateDeclined;
 
         CallbackAdapter(Callback fallback) {
             this.fallback = fallback;
         }
 
         CallbackAdapter() {
-            this(Callback.DEFAULT);
+            this(DEFAULT);
         }
 
         void withFallback(Callback callback) {
@@ -482,15 +485,15 @@ public class QueenOfVersions {
             this.onDownloaded = action;
         }
 
-        void withOnCanceled(Runnable onCanceled) {
+        void withOnCanceled(OnCanceled onCanceled) {
             this.onCanceled = onCanceled;
         }
 
-        void withOnInstalled(Runnable onInstalled) {
+        void withOnInstalled(OnInstalled onInstalled) {
             this.onInstalled = onInstalled;
         }
 
-        void withOnPending(Runnable onPending) {
+        void withOnPending(OnPending onPending) {
             this.onPending = onPending;
         }
 
@@ -502,11 +505,11 @@ public class QueenOfVersions {
             this.onNoUpdate = onNoUpdate;
         }
 
-        void withOnDownloading(Runnable onDownloading) {
+        void withOnDownloading(OnDownloading onDownloading) {
             this.onDownloading = onDownloading;
         }
 
-        void withOnInstalling(Runnable onInstalling) {
+        void withOnInstalling(OnInstalling onInstalling) {
             this.onInstalling = onInstalling;
         }
 
@@ -514,39 +517,96 @@ public class QueenOfVersions {
             this.onMandatoryUpdateNotAvailable = onMandatoryUpdateNotAvailable;
         }
 
+        void withOnUpdateAccepted(OnUpdateAccepted onUpdateAccepted) {
+            this.onUpdateAccepted = onUpdateAccepted;
+        }
+
+        void withOnUpdateDeclined(OnUpdateDeclined onUpdateDeclined) {
+            this.onUpdateDeclined = onUpdateDeclined;
+        }
+
         @Override
-        public void onDownloaded(QueenOfVersions.UpdateHandler handler) {
+        public void onDownloaded(UpdateHandler handler, QueenOfVersionsInAppUpdateInfo inAppUpdate) {
             if (onDownloaded != null) {
-                onDownloaded.onAction(handler);
+                onDownloaded.onDownloaded(handler, inAppUpdate);
             } else {
-                fallback.onDownloaded(handler);
+                fallback.onDownloaded(handler, inAppUpdate);
             }
         }
 
         @Override
-        public void onCanceled() {
-            if (onCanceled != null) {
-                onCanceled.run();
+        public void onDownloading(QueenOfVersionsInAppUpdateInfo inAppUpdate, long bytesDownloadedSoFar, long totalBytesToDownload) {
+            if (onDownloading != null) {
+                onDownloading.onDownloading(inAppUpdate, bytesDownloadedSoFar, totalBytesToDownload);
             } else {
-                fallback.onCanceled();
+                fallback.onDownloading(inAppUpdate, bytesDownloadedSoFar, totalBytesToDownload);
             }
         }
 
         @Override
-        public void onInstalled() {
+        public void onInstalled(QueenOfVersionsInAppUpdateInfo appUpdateInfo) {
             if (onInstalled != null) {
-                onInstalled.run();
+                onInstalled.onInstalled(appUpdateInfo);
             } else {
-                fallback.onInstalled();
+                fallback.onInstalled(appUpdateInfo);
             }
         }
 
         @Override
-        public void onPending() {
-            if (onPending != null) {
-                onPending.run();
+        public void onInstalling(QueenOfVersionsInAppUpdateInfo inAppUpdateInfo) {
+            if (onInstalling != null) {
+                onInstalling.onInstalling(inAppUpdateInfo);
             } else {
-                fallback.onPending();
+                fallback.onInstalling(inAppUpdateInfo);
+            }
+        }
+
+        @Override
+        public void onMandatoryUpdateNotAvailable(
+                int mandatoryVersion,
+                QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+                Map<String, String> metadata,
+                UpdateInfo updateInfo
+        ) {
+            if (onMandatoryUpdateNotAvailable != null) {
+                onMandatoryUpdateNotAvailable.onMandatoryUpdateNotAvailable(mandatoryVersion, inAppUpdateInfo, metadata, updateInfo);
+            } else {
+                fallback.onMandatoryUpdateNotAvailable(mandatoryVersion, inAppUpdateInfo, metadata, updateInfo);
+            }
+        }
+
+        @Override
+        public void onPending(QueenOfVersionsInAppUpdateInfo inAppUpdateInfo) {
+            if (onPending != null) {
+                onPending.onPending(inAppUpdateInfo);
+            } else {
+                fallback.onPending(inAppUpdateInfo);
+            }
+        }
+
+        @Override
+        public void onUpdateAccepted(
+                QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+                UpdateStatus updateStatus,
+                @Nullable UpdateResult updateResult
+        ) {
+            if (onUpdateAccepted != null) {
+                onUpdateAccepted.onUpdateAccepted(inAppUpdateInfo, updateStatus, updateResult);
+            } else {
+                fallback.onUpdateAccepted(inAppUpdateInfo, updateStatus, updateResult);
+            }
+        }
+
+        @Override
+        public void onUpdateDeclined(
+                QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+                UpdateStatus updateStatus,
+                @Nullable UpdateResult updateResult
+        ) {
+            if (onUpdateDeclined != null) {
+                onUpdateDeclined.onUpdateDeclined(inAppUpdateInfo, updateStatus, updateResult);
+            } else {
+                fallback.onUpdateDeclined(inAppUpdateInfo, updateStatus, updateResult);
             }
         }
 
@@ -569,34 +629,11 @@ public class QueenOfVersions {
         }
 
         @Override
-        public void onDownloading() {
-            if (onDownloading != null) {
-                onDownloading.run();
+        public void onCanceled() {
+            if (onCanceled != null) {
+                onCanceled.onCanceled();
             } else {
-                fallback.onDownloading();
-            }
-        }
-
-        @Override
-        public void onInstalling() {
-            if (onInstalling != null) {
-                onInstalling.run();
-            } else {
-                fallback.onInstalling();
-            }
-        }
-
-        @Override
-        public void onMandatoryUpdateNotAvailable(
-                int mandatoryVersion,
-                int availableVersion,
-                Map<String, String> metadata,
-                UpdateInfo updateInfo
-        ) {
-            if (onMandatoryUpdateNotAvailable != null) {
-                onMandatoryUpdateNotAvailable.onAction(mandatoryVersion, availableVersion, metadata, updateInfo);
-            } else {
-                fallback.onMandatoryUpdateNotAvailable(mandatoryVersion, availableVersion, metadata, updateInfo);
+                fallback.onCanceled();
             }
         }
 
@@ -628,6 +665,12 @@ public class QueenOfVersions {
             }
             if (onNoUpdate != null) {
                 copy.withOnNoUpdate(onNoUpdate);
+            }
+            if (onUpdateAccepted != null) {
+                copy.withOnUpdateAccepted(onUpdateAccepted);
+            }
+            if (onUpdateDeclined != null) {
+                copy.withOnUpdateDeclined(onUpdateDeclined);
             }
             return copy;
         }

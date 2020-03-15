@@ -15,7 +15,7 @@ android {
         minSdkVersion buildVersions.min
         targetSdkVersion buildVersions.target
         versionCode 1
-        versionName versions.prince
+        versionName versions.queen
     }
 
     buildTypes {

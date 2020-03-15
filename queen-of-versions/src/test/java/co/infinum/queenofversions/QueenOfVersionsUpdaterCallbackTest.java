@@ -31,17 +31,20 @@ public class QueenOfVersionsUpdaterCallbackTest {
     OnPrinceOfVersionsError onError;
 
     @Mock
+    OnUpdateNotAllowed onUpdateNotAllowed;
+
+    @Mock
     Storage storage;
 
     @Test
     public void onSuccessCallsAdapter() {
         QueenOfVersionsUpdaterCallback testing = new QueenOfVersionsUpdaterCallback(
-                REQUEST_CODE,
                 googleAppUpdater,
                 callback,
                 10,
                 onSuccess,
                 onError,
+                onUpdateNotAllowed,
                 storage
         );
 
@@ -60,12 +63,12 @@ public class QueenOfVersionsUpdaterCallbackTest {
     @Test
     public void onErrorCallsAdapter() throws Throwable {
         QueenOfVersionsUpdaterCallback testing = new QueenOfVersionsUpdaterCallback(
-                REQUEST_CODE,
                 googleAppUpdater,
                 callback,
                 10,
                 onSuccess,
                 onError,
+                onUpdateNotAllowed,
                 storage
         );
 
@@ -86,12 +89,12 @@ public class QueenOfVersionsUpdaterCallbackTest {
     @Test
     public void onSuccessHandlesError() {
         QueenOfVersionsUpdaterCallback testing = new QueenOfVersionsUpdaterCallback(
-                REQUEST_CODE,
                 googleAppUpdater,
                 callback,
                 10,
                 onSuccess,
                 onError,
+                onUpdateNotAllowed,
                 storage
         );
 
@@ -115,12 +118,12 @@ public class QueenOfVersionsUpdaterCallbackTest {
     @Test
     public void onErrorHandlesError() throws Throwable {
         QueenOfVersionsUpdaterCallback testing = new QueenOfVersionsUpdaterCallback(
-                REQUEST_CODE,
                 googleAppUpdater,
                 callback,
                 10,
                 onSuccess,
                 onError,
+                onUpdateNotAllowed,
                 storage
         );
 
@@ -138,12 +141,12 @@ public class QueenOfVersionsUpdaterCallbackTest {
     @Test
     public void statusNoUpdateWontContinueUpdateCheck() {
         QueenOfVersionsUpdaterCallback testing = new QueenOfVersionsUpdaterCallback(
-                REQUEST_CODE,
                 googleAppUpdater,
                 callback,
                 10,
                 onSuccess,
                 onError,
+                onUpdateNotAllowed,
                 storage
         );
 

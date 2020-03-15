@@ -9,20 +9,18 @@ import android.widget.Button;
 import android.widget.Toast;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
-import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.UpdateInfo;
+import co.infinum.princeofversions.UpdateResult;
+import co.infinum.princeofversions.UpdateStatus;
 import co.infinum.queenofversions.QueenOfVersions;
+import co.infinum.queenofversions.QueenOfVersionsInAppUpdateInfo;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
 public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersions.Callback {
 
     private static final String TAG = "GoogleInAppUpdates";
-
-    private final int REQUEST_CODE = 420;
-
-    private PrinceOfVersions princeOfVersions;
 
     private QueenOfVersions queenOfVersions;
 
@@ -37,11 +35,9 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
 
         initUI();
 
-        princeOfVersions = new PrinceOfVersions.Builder().build(this);
         queenOfVersions = new QueenOfVersions.Builder()
-                .withPrinceOfVersions(princeOfVersions)
-                .withRequestCode(REQUEST_CODE)
                 .build(this);
+
         loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
     }
 
@@ -72,22 +68,26 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
      * This method is called when Google Update is downloading.
      */
     @Override
-    public void onDownloading() {
-        Toast.makeText(this, "Downloading update...", Toast.LENGTH_SHORT).show();
+    public void onDownloading(@Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdate, long bytesDownloadedSoFar, long totalBytesToDownload) {
+        Toast.makeText(
+                this,
+                String.format("Downloading update %s...", 100.0 * bytesDownloadedSoFar / totalBytesToDownload),
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
     /**
      * This method is called when Google update finished with downloading and it have started with installment.
      */
     @Override
-    public void onInstalling() {
-        Toast.makeText(this, "Installing update...", Toast.LENGTH_SHORT).show();
+    public void onInstalling(@Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo) {
+        Toast.makeText(this, String.format("Installing update %s...", inAppUpdateInfo.versionCode()), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onMandatoryUpdateNotAvailable(
-            int requiredVersion,
-            int availableVersion,
+            int mandatoryVersion,
+            @Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
             @Nonnull Map<String, String> metadata,
             @Nonnull UpdateInfo updateInfo
     ) {
@@ -95,7 +95,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     }
 
     @Override
-    public void onDownloaded(QueenOfVersions.UpdateHandler handler) {
+    public void onDownloaded(QueenOfVersions.UpdateHandler handler, QueenOfVersionsInAppUpdateInfo inAppUpdate) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();
     }
@@ -113,7 +113,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
      * this method is rarely useful.
      */
     @Override
-    public void onInstalled() {
+    public void onInstalled(@Nonnull QueenOfVersionsInAppUpdateInfo appUpdateInfo) {
         Toast.makeText(this, "Installed update!", Toast.LENGTH_SHORT).show();
     }
 
@@ -121,7 +121,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
      * This method is called if the update is by whatever reason put on hold and it has to wait before it can be processed.
      */
     @Override
-    public void onPending() {
+    public void onPending(@Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo) {
         Toast.makeText(this, "Update pending...", Toast.LENGTH_SHORT).show();
     }
 
@@ -134,6 +134,24 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     public void onError(Throwable throwable) {
         Toast.makeText(this, "Failed updated! Check log!", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Exception:", throwable.fillInStackTrace());
+    }
+
+    @Override
+    public void onUpdateAccepted(
+            @Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+            @Nonnull UpdateStatus updateStatus,
+            @Nullable UpdateResult updateResult
+    ) {
+        Toast.makeText(this, "Update accepted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onUpdateDeclined(
+            @Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+            @Nonnull UpdateStatus updateStatus,
+            @Nullable UpdateResult updateResult
+    ) {
+        Toast.makeText(this, "Update declined", Toast.LENGTH_SHORT).show();
     }
 
     @Override
