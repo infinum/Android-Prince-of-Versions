@@ -3,7 +3,7 @@ package co.infinum.queenofversions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import javax.annotation.Nullable;
 
-class QueenOfVersionsCancelable implements PrinceOfVersionsCancelable {
+final class QueenOfVersionsCancelable implements PrinceOfVersionsCancelable {
 
     private final QueenOfVersionsUpdaterCallback callback;
 

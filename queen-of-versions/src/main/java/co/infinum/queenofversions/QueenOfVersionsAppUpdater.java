@@ -11,7 +11,7 @@ import com.google.android.play.core.tasks.OnSuccessListener;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
+final class QueenOfVersionsAppUpdater implements GoogleAppUpdater {
 
     private final FragmentActivity activity;
 

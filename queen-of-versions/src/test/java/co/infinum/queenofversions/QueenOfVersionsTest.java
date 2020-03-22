@@ -465,7 +465,7 @@ public class QueenOfVersionsTest {
     @Test
     public void testOnFailureCallInAppUpdateFailureListener() {
         GoogleInAppUpdateFailureListener googleInAppUpdateFailureListener = new GoogleInAppUpdateFailureListener(updaterStateCallback);
-        googleInAppUpdateFailureListener.onFailure(new GoogleInAppUpdateException(new Throwable("Error")));
+        googleInAppUpdateFailureListener.onFailure(new GoogleInAppUpdateException(ERROR_UNKNOWN));
 
         verify(updaterStateCallback, times(1)).onError(any(GoogleInAppUpdateException.class));
     }

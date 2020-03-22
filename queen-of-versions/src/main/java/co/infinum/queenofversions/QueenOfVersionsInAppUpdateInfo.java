@@ -3,7 +3,10 @@ package co.infinum.queenofversions;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import javax.annotation.Nullable;
 
-public class QueenOfVersionsInAppUpdateInfo {
+/**
+ * Information about update received from Google Play.
+ */
+public final class QueenOfVersionsInAppUpdateInfo {
 
     static QueenOfVersionsInAppUpdateInfo from(@Nullable AppUpdateInfo appUpdateInfo) {
         return new QueenOfVersionsInAppUpdateInfo(
@@ -37,14 +40,26 @@ public class QueenOfVersionsInAppUpdateInfo {
         this.updatePriority = updatePriority;
     }
 
+    /**
+     * Version code of available update.
+     * @return version code of available update.
+     */
     public int versionCode() {
         return versionCode;
     }
 
+    /**
+     * Days of staleness of the update.
+     * @return days of staleness.
+     */
     public int clientVersionStalenessDays() {
         return clientVersionStalenessDays;
     }
 
+    /**
+     * Update priority level.
+     * @return update priority.
+     */
     public int updatePriority() {
         return updatePriority;
     }

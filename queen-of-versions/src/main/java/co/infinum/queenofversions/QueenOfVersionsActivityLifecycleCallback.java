@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
-class QueenOfVersionsActivityLifecycleCallback implements Application.ActivityLifecycleCallbacks {
+final class QueenOfVersionsActivityLifecycleCallback implements Application.ActivityLifecycleCallbacks {
 
     private final GoogleAppUpdater googleAppUpdater;
 

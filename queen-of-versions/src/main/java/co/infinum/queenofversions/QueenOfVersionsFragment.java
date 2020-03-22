@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public class QueenOfVersionsFragment extends Fragment {
+public final class QueenOfVersionsFragment extends Fragment {
 
     public static final String TAG = QueenOfVersionsFragment.class.getName();
 

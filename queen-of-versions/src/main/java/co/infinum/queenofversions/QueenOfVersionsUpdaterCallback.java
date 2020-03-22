@@ -70,7 +70,7 @@ import static co.infinum.queenofversions.InAppUpdateError.INVALID_REQUEST;
  * REQUIRED_UPDATE_NEEDED update == IMMEDIATE update
  * FLEXIBLE update == NEW_UPDATE_AVAILABLE update
  */
-class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersions.UpdateHandler {
+final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpdatedListener, QueenOfVersions.UpdateHandler {
 
     private final int appVersionCode;
 
@@ -274,6 +274,34 @@ class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpd
         }
         UpdateInfo updateInfo = updateResult != null ? updateResult.getInfo() : null;
 
+        try {
+            handleUpdateRequest(
+                    appUpdateInfo,
+                    princeVersionCode,
+                    isMandatory,
+                    updateResult,
+                    googleUpdateVersionCode,
+                    updateAvailability,
+                    inAppUpdateInfo,
+                    updateInfo
+            );
+        } catch (Throwable error) {
+            flexibleStateListener.onError(error);
+        }
+    }
+
+    private void handleUpdateRequest(
+            InAppUpdateData appUpdateInfo,
+            @Nullable Integer princeVersionCode,
+            boolean isMandatory,
+            @Nullable UpdateResult updateResult,
+            int googleUpdateVersionCode,
+            int updateAvailability,
+            QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+            @Nullable UpdateInfo updateInfo
+    ) {
+        // TODO: add a possibility to change update type based on priority in inAppUpdateInfo!!!
+
         if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
             if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                 flexibleStateListener.onDownloaded(this, inAppUpdateInfo);
@@ -364,12 +392,6 @@ class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallStateUpd
             notifyNoUpdate(updateResult, updateInfo);
         }
     }
-
-    //This method is called when you leave app during an immediate update, but also it checks if user has left app during flexible update
-    //In case of flexible update we notify user about downloaded update so he can do install it or whatever
-
-    //TODO check this because I'm pretty sure this won't even be called in case of FLEXIBLE update because we are not registering this
-    // flow for FLEXIBLE update!
 
     /**
      * Method is called when user leaves the application during Google's IMMEDIATE update. When user leaves during IMMEDIATE update we

@@ -301,6 +301,9 @@ public class QueenOfVersions {
         }
     }
 
+    /**
+     * Options used to start update check without {@link PrinceOfVersions} check.
+     */
     public static class Options {
 
         @Nullable
@@ -326,6 +329,10 @@ public class QueenOfVersions {
             this.onUpdateNotAllowed = onUpdateNotAllowed;
         }
 
+        /**
+         * Builder used to build {@link Options}.
+         * All configurable parameters are optional.
+         */
         public static class Builder {
 
             @Nullable
@@ -340,26 +347,52 @@ public class QueenOfVersions {
             @Nullable
             private OnUpdateNotAllowed onUpdateNotAllowed;
 
+            /**
+             * Add custom storage used for saving last notified update, for the sake of not notifying same update twice
+             * in case of update with {@link co.infinum.princeofversions.NotificationType} ONCE.
+             * @param storage implementation of the storage.
+             * @return this
+             */
             public Options.Builder withStorage(Storage storage) {
                 this.storage = storage;
                 return this;
             }
 
+            /**
+             * Use {@link UpdateStatus} to specify which type of update to start.
+             * @param updateStatus status.
+             * @return this
+             */
             public Options.Builder withUpdateStatus(UpdateStatus updateStatus) {
                 this.updateStatus = updateStatus;
                 return this;
             }
 
+            /**
+             * Use to set information about update received from {@link PrinceOfVersions}.
+             * @param updateResult information about the update.
+             * @return this
+             */
             public Options.Builder withUpdateResult(UpdateResult updateResult) {
                 this.updateResult = updateResult;
                 return this;
             }
 
+            /**
+             * Use to set handler for not allowed update flow.
+             * @see OnUpdateNotAllowed
+             * @param onUpdateNotAllowedHandler implementation of handler
+             * @return this
+             */
             public Options.Builder withOnUpdateNotAllowedHandler(OnUpdateNotAllowed onUpdateNotAllowedHandler) {
                 this.onUpdateNotAllowed = onUpdateNotAllowedHandler;
                 return this;
             }
 
+            /**
+             * Build the {@link Options} using parameters set in this builder.
+             * @return new instance of the {@link Options}
+             */
             public Options build() {
                 return new Options(
                         storage,
@@ -368,7 +401,6 @@ public class QueenOfVersions {
                         onUpdateNotAllowed != null ? onUpdateNotAllowed : new OnUpdateNotAllowedReportNoUpdate()
                 );
             }
-
         }
     }
 
@@ -676,6 +708,9 @@ public class QueenOfVersions {
         }
     }
 
+    /**
+     * Thrown in case {@link com.google.android.play.core.install.model.InstallStatus} reports UNKNOWN.
+     */
     public static class UnknownVersionException extends Exception {
 
     }

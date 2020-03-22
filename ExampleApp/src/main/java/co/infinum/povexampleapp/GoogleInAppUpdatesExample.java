@@ -1,6 +1,7 @@
 package co.infinum.povexampleapp;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -95,7 +96,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     }
 
     @Override
-    public void onDownloaded(QueenOfVersions.UpdateHandler handler, QueenOfVersionsInAppUpdateInfo inAppUpdate) {
+    public void onDownloaded(@NonNull QueenOfVersions.UpdateHandler handler, @NonNull QueenOfVersionsInAppUpdateInfo inAppUpdate) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();
     }

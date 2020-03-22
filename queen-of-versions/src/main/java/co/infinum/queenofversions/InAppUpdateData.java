@@ -4,7 +4,7 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 
-public interface InAppUpdateData {
+interface InAppUpdateData {
 
     int availableVersionCode();
 

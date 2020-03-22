@@ -6,7 +6,7 @@ import co.infinum.princeofversions.UpdateStatus;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-class QueenOfVersionsCancelableCallback implements QueenOfVersions.Callback {
+final class QueenOfVersionsCancelableCallback implements QueenOfVersions.Callback {
 
     private boolean isCanceled;
 

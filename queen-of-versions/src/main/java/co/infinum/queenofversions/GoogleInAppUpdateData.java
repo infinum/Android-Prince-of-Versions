@@ -2,7 +2,7 @@ package co.infinum.queenofversions;
 
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 
-class GoogleInAppUpdateData implements InAppUpdateData {
+final class GoogleInAppUpdateData implements InAppUpdateData {
 
     private final AppUpdateInfo appUpdateInfo;
 
