@@ -84,6 +84,8 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
 
     private final OnUpdateNotAllowed onUpdateNotAllowed;
 
+    private final OnInAppUpdateAvailable onInAppUpdateAvailable;
+
     private final Storage storage;
 
     /**
@@ -99,6 +101,7 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
             OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess,
             OnPrinceOfVersionsError onPrinceOfVersionsError,
             OnUpdateNotAllowed onUpdateNotAllowed,
+            OnInAppUpdateAvailable onInAppUpdateAvailable,
             Storage storage
     ) {
         this.flexibleStateListener = new QueenOfVersionsCancelableCallback(false, listener);
@@ -116,6 +119,7 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
         this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
         this.onPrinceOfVersionsError = onPrinceOfVersionsError;
         this.onUpdateNotAllowed = onUpdateNotAllowed;
+        this.onInAppUpdateAvailable = onInAppUpdateAvailable;
         this.storage = storage;
     }
 
@@ -127,6 +131,7 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
             OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess,
             OnPrinceOfVersionsError onPrinceOfVersionsError,
             OnUpdateNotAllowed onUpdateNotAllowed,
+            OnInAppUpdateAvailable onInAppUpdateAvailable,
             Storage storage
     ) {
         this.flexibleStateListener = new QueenOfVersionsCancelableCallback(false, flexibleStateListener);
@@ -135,6 +140,7 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
         this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
         this.onPrinceOfVersionsError = onPrinceOfVersionsError;
         this.onUpdateNotAllowed = onUpdateNotAllowed;
+        this.onInAppUpdateAvailable = onInAppUpdateAvailable;
         this.storage = storage;
     }
 
@@ -152,6 +158,7 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
                 new QueenOfVersions.QueenOnPrinceOfVersionsSuccess(),
                 new QueenOfVersions.QueenOnPrinceOfVersionsError(),
                 new QueenOfVersions.OnUpdateNotAllowedReportNoUpdate(),
+                new QueenOfVersions.OnInAppUpdateAvailableResumeWithCurrentResolution(),
                 storage
         );
     }
@@ -265,25 +272,16 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
             @Nullable UpdateResult updateResult
     ) {
 
-        int googleUpdateVersionCode = appUpdateInfo.availableVersionCode();
-        int updateAvailability = appUpdateInfo.updateAvailability();
-        QueenOfVersionsInAppUpdateInfo inAppUpdateInfo = QueenOfVersionsInAppUpdateInfo.from(appUpdateInfo);
-
         if (flexibleStateListener.isCanceled()) {
             return;
         }
-        UpdateInfo updateInfo = updateResult != null ? updateResult.getInfo() : null;
 
         try {
             handleUpdateRequest(
                     appUpdateInfo,
                     princeVersionCode,
                     isMandatory,
-                    updateResult,
-                    googleUpdateVersionCode,
-                    updateAvailability,
-                    inAppUpdateInfo,
-                    updateInfo
+                    updateResult
             );
         } catch (Throwable error) {
             flexibleStateListener.onError(error);
@@ -294,19 +292,39 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
             InAppUpdateData appUpdateInfo,
             @Nullable Integer princeVersionCode,
             boolean isMandatory,
-            @Nullable UpdateResult updateResult,
-            int googleUpdateVersionCode,
-            int updateAvailability,
-            QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
-            @Nullable UpdateInfo updateInfo
+            @Nullable UpdateResult updateResult
     ) {
         // TODO: add a possibility to change update type based on priority in inAppUpdateInfo!!!
+
+        int googleUpdateVersionCode = appUpdateInfo.availableVersionCode();
+        int updateAvailability = appUpdateInfo.updateAvailability();
+        QueenOfVersionsInAppUpdateInfo inAppUpdateInfo = QueenOfVersionsInAppUpdateInfo.from(appUpdateInfo);
+        UpdateInfo updateInfo = updateResult != null ? updateResult.getInfo() : null;
 
         if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
             if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                 flexibleStateListener.onDownloaded(this, inAppUpdateInfo);
                 return;
             }
+
+            // change status based on: inAppUpdateInfo, updateResult?, updateStatus
+            UpdateStatus updateStatus = isMandatory ? UpdateStatus.REQUIRED_UPDATE_NEEDED : UpdateStatus.NEW_UPDATE_AVAILABLE;
+            updateStatus = onInAppUpdateAvailable.handleInAppUpdateAsStatus(updateStatus, inAppUpdateInfo, updateResult);
+            switch (updateStatus) {
+                case REQUIRED_UPDATE_NEEDED:
+                    isMandatory = true;
+                    break;
+                case NEW_UPDATE_AVAILABLE:
+                    isMandatory = false;
+                    break;
+                default:
+                    flexibleStateListener.onNoUpdate(
+                            updateResult != null ? updateResult.getMetadata() : null,
+                            updateResult != null ? updateResult.getInfo() : null
+                    );
+                    return;
+            }
+
             UpdateResolution updateResolution = checkUpdateResolution(princeVersionCode, googleUpdateVersionCode, isMandatory, updateInfo);
             updateResolution = relaxResolution(
                     updateResolution,

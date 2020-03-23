@@ -106,6 +106,7 @@ public class QueenOfVersionsTest {
                 onSuccess,
                 onError,
                 new QueenOfVersions.OnUpdateNotAllowedReportNoUpdate(),
+                new QueenOfVersions.OnInAppUpdateAvailableResumeWithCurrentResolution(),
                 storage
         );
         Throwable error = new Throwable("Error");
@@ -268,7 +269,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onError(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getMessage().equals(API_NOT_AVAILABLE.name());
+                return argument.error().equals(API_NOT_AVAILABLE);
             }
         }));
     }
@@ -283,7 +284,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onError(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getMessage().equals(DOWNLOAD_NOT_PRESENT.name());
+                return argument.error().equals(DOWNLOAD_NOT_PRESENT);
             }
         }));
     }
@@ -298,7 +299,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onError(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getMessage().equals(INSTALL_NOT_ALLOWED.name());
+                return argument.error().equals(INSTALL_NOT_ALLOWED);
             }
         }));
     }
@@ -313,7 +314,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onError(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getMessage().equals(INSTALL_UNAVAILABLE.name());
+                return argument.error().equals(INSTALL_UNAVAILABLE);
             }
         }));
     }
@@ -328,7 +329,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onError(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getMessage().equals(INTERNAL_ERROR.name());
+                return argument.error().equals(INTERNAL_ERROR);
             }
         }));
     }
@@ -343,7 +344,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onError(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getMessage().equals(INVALID_REQUEST.name());
+                return argument.error().equals(INVALID_REQUEST);
             }
         }));
     }
@@ -358,7 +359,7 @@ public class QueenOfVersionsTest {
         verify(updaterStateCallback, times(1)).onError(argThat(new ArgumentMatcher<GoogleInAppUpdateException>() {
             @Override
             public boolean matches(GoogleInAppUpdateException argument) {
-                return argument.getMessage().equals(ERROR_UNKNOWN.name());
+                return argument.error().equals(ERROR_UNKNOWN);
             }
         }));
     }

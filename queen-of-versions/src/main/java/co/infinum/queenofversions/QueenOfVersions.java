@@ -23,6 +23,8 @@ public class QueenOfVersions {
 
     private final OnUpdateNotAllowed onUpdateNotAllowed;
 
+    private final OnInAppUpdateAvailable onInAppUpdateAvailable;
+
     private final FragmentActivity activity;
 
     private final PrinceOfVersions princeOfVersions;
@@ -32,6 +34,7 @@ public class QueenOfVersions {
             OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess,
             OnPrinceOfVersionsError onPrinceOfVersionsError,
             OnUpdateNotAllowed onUpdateNotAllowed,
+            OnInAppUpdateAvailable onInAppUpdateAvailable,
             FragmentActivity activity,
             PrinceOfVersions princeOfVersions
     ) {
@@ -39,6 +42,7 @@ public class QueenOfVersions {
         this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
         this.onPrinceOfVersionsError = onPrinceOfVersionsError;
         this.onUpdateNotAllowed = onUpdateNotAllowed;
+        this.onInAppUpdateAvailable = onInAppUpdateAvailable;
         this.activity = activity;
         this.princeOfVersions = princeOfVersions;
     }
@@ -54,6 +58,7 @@ public class QueenOfVersions {
                 QueenOnPrinceOfVersionsSuccess.INSTANCE,
                 QueenOnPrinceOfVersionsError.INSTANCE,
                 options.onUpdateNotAllowed,
+                options.onInAppUpdateAvailable,
                 options.storage != null ? options.storage : new QueenOfVersionsDefaultNamedPreferenceStorage(activity)
         );
         UpdateStatus updateStatus = options.updateStatus;
@@ -82,7 +87,7 @@ public class QueenOfVersions {
      */
     public PrinceOfVersionsCancelable checkForUpdates(String url, QueenOfVersions.Callback callback) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, storage
+                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, onInAppUpdateAvailable, storage
         );
         PrinceOfVersionsCancelable princeOfVersionsCancelable = princeOfVersions.checkForUpdates(url, updater);
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
@@ -98,7 +103,7 @@ public class QueenOfVersions {
      */
     public PrinceOfVersionsCancelable checkForUpdates(Loader loader, QueenOfVersions.Callback callback) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, storage
+                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, onInAppUpdateAvailable, storage
         );
         PrinceOfVersionsCancelable princeOfVersionsCancelable = princeOfVersions.checkForUpdates(loader, updater);
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
@@ -115,7 +120,7 @@ public class QueenOfVersions {
      */
     public PrinceOfVersionsCancelable checkForUpdates(Executor executor, String url, QueenOfVersions.Callback callback) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, storage
+                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, onInAppUpdateAvailable, storage
         );
         PrinceOfVersionsCancelable princeOfVersionsCancelable = princeOfVersions.checkForUpdates(executor, url, updater);
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
@@ -132,7 +137,7 @@ public class QueenOfVersions {
      */
     public PrinceOfVersionsCancelable checkForUpdates(Executor executor, Loader loader, QueenOfVersions.Callback callback) {
         QueenOfVersionsUpdaterCallback updater = new QueenOfVersionsUpdaterCallback(
-                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, storage
+                activity, callback, onPrinceOfVersionsSuccess, onPrinceOfVersionsError, onUpdateNotAllowed, onInAppUpdateAvailable, storage
         );
         PrinceOfVersionsCancelable princeOfVersionsCancelable = princeOfVersions.checkForUpdates(executor, loader, updater);
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
@@ -247,6 +252,18 @@ public class QueenOfVersions {
         }
     }
 
+    static class OnInAppUpdateAvailableResumeWithCurrentResolution implements OnInAppUpdateAvailable {
+
+        @Override
+        public UpdateStatus handleInAppUpdateAsStatus(
+                UpdateStatus currentStatus,
+                QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+                @Nullable UpdateResult updateResult
+        ) {
+            return currentStatus;
+        }
+    }
+
     public static class Builder {
 
         @Nullable
@@ -260,6 +277,9 @@ public class QueenOfVersions {
 
         @Nullable
         private OnUpdateNotAllowed onUpdateNotAllowed;
+
+        @Nullable
+        private OnInAppUpdateAvailable onInAppUpdateAvailable;
 
         @Nullable
         private PrinceOfVersions princeOfVersions;
@@ -284,8 +304,13 @@ public class QueenOfVersions {
             return this;
         }
 
-        public Builder withOnUpateNotAllowedHandler(OnUpdateNotAllowed onUpateNotAllowedHandler) {
-            this.onUpdateNotAllowed = onUpateNotAllowedHandler;
+        public Builder withOnUpdateNotAllowedHandler(OnUpdateNotAllowed onUpdateNotAllowedHandler) {
+            this.onUpdateNotAllowed = onUpdateNotAllowedHandler;
+            return this;
+        }
+
+        public Builder withOnInAppUpdateAvailable(OnInAppUpdateAvailable onInAppUpdateAvailable) {
+            this.onInAppUpdateAvailable = onInAppUpdateAvailable;
             return this;
         }
 
@@ -295,6 +320,7 @@ public class QueenOfVersions {
                     onPrinceOfVersionsSuccess != null ? onPrinceOfVersionsSuccess : new QueenOnPrinceOfVersionsSuccess(),
                     onPrinceOfVersionsError != null ? onPrinceOfVersionsError : new QueenOnPrinceOfVersionsError(),
                     onUpdateNotAllowed != null ? onUpdateNotAllowed : new OnUpdateNotAllowedReportNoUpdate(),
+                    onInAppUpdateAvailable != null ? onInAppUpdateAvailable : new OnInAppUpdateAvailableResumeWithCurrentResolution(),
                     activity,
                     princeOfVersions != null ? princeOfVersions : new PrinceOfVersions(activity)
             );
@@ -317,16 +343,20 @@ public class QueenOfVersions {
 
         private OnUpdateNotAllowed onUpdateNotAllowed;
 
+        private OnInAppUpdateAvailable onInAppUpdateAvailable;
+
         private Options(
                 @Nullable Storage storage,
                 @Nullable UpdateStatus updateStatus,
                 @Nullable UpdateResult updateResult,
-                OnUpdateNotAllowed onUpdateNotAllowed
+                OnUpdateNotAllowed onUpdateNotAllowed,
+                OnInAppUpdateAvailable onInAppUpdateAvailable
         ) {
             this.storage = storage;
             this.updateStatus = updateStatus;
             this.updateResult = updateResult;
             this.onUpdateNotAllowed = onUpdateNotAllowed;
+            this.onInAppUpdateAvailable = onInAppUpdateAvailable;
         }
 
         /**
@@ -346,6 +376,9 @@ public class QueenOfVersions {
 
             @Nullable
             private OnUpdateNotAllowed onUpdateNotAllowed;
+
+            @Nullable
+            private OnInAppUpdateAvailable onInAppUpdateAvailable;
 
             /**
              * Add custom storage used for saving last notified update, for the sake of not notifying same update twice
@@ -390,6 +423,17 @@ public class QueenOfVersions {
             }
 
             /**
+             * Use to set handler for available In-App update.
+             * @see OnInAppUpdateAvailable
+             * @param onInAppUpdateAvailable implementation of handler
+             * @return this
+             */
+            public Options.Builder withOnInAppUpdateAvailable(OnInAppUpdateAvailable onInAppUpdateAvailable) {
+                this.onInAppUpdateAvailable = onInAppUpdateAvailable;
+                return this;
+            }
+
+            /**
              * Build the {@link Options} using parameters set in this builder.
              * @return new instance of the {@link Options}
              */
@@ -398,7 +442,8 @@ public class QueenOfVersions {
                         storage,
                         updateStatus,
                         updateResult,
-                        onUpdateNotAllowed != null ? onUpdateNotAllowed : new OnUpdateNotAllowedReportNoUpdate()
+                        onUpdateNotAllowed != null ? onUpdateNotAllowed : new OnUpdateNotAllowedReportNoUpdate(),
+                        onInAppUpdateAvailable != null ? onInAppUpdateAvailable : new OnInAppUpdateAvailableResumeWithCurrentResolution()
                 );
             }
         }
@@ -443,8 +488,12 @@ public class QueenOfVersions {
             }
 
             @Override
-            public void onMandatoryUpdateNotAvailable(int mandatoryVersion, QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
-                    Map<String, String> metadata, UpdateInfo updateInfo) {
+            public void onMandatoryUpdateNotAvailable(
+                    int mandatoryVersion,
+                    QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+                    Map<String, String> metadata,
+                    UpdateInfo updateInfo
+            ) {
                 onNoUpdate(metadata, updateInfo);
             }
 
@@ -454,14 +503,20 @@ public class QueenOfVersions {
             }
 
             @Override
-            public void onUpdateAccepted(QueenOfVersionsInAppUpdateInfo inAppUpdateInfo, UpdateStatus updateStatus,
-                    @Nullable UpdateResult updateResult) {
+            public void onUpdateAccepted(
+                    QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+                    UpdateStatus updateStatus,
+                    @Nullable UpdateResult updateResult
+            ) {
                 // no-op
             }
 
             @Override
-            public void onUpdateDeclined(QueenOfVersionsInAppUpdateInfo inAppUpdateInfo, UpdateStatus updateStatus,
-                    @Nullable UpdateResult updateResult) {
+            public void onUpdateDeclined(
+                    QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+                    UpdateStatus updateStatus,
+                    @Nullable UpdateResult updateResult
+            ) {
                 // no-op
             }
         };

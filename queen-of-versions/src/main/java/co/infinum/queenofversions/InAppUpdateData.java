@@ -1,10 +1,12 @@
 package co.infinum.queenofversions;
 
+import android.support.annotation.VisibleForTesting;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 
-interface InAppUpdateData {
+@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+public interface InAppUpdateData {
 
     int availableVersionCode();
 

@@ -34,6 +34,9 @@ public class QueenOfVersionsUpdaterCallbackTest {
     OnUpdateNotAllowed onUpdateNotAllowed;
 
     @Mock
+    OnInAppUpdateAvailable onInAppUpdateAvailable;
+
+    @Mock
     Storage storage;
 
     @Test
@@ -45,6 +48,7 @@ public class QueenOfVersionsUpdaterCallbackTest {
                 onSuccess,
                 onError,
                 onUpdateNotAllowed,
+                onInAppUpdateAvailable,
                 storage
         );
 
@@ -69,14 +73,8 @@ public class QueenOfVersionsUpdaterCallbackTest {
                 onSuccess,
                 onError,
                 onUpdateNotAllowed,
+                onInAppUpdateAvailable,
                 storage
-        );
-
-        UpdateResult result = new UpdateResult(
-                new UpdateInfo(null, null, Collections.<String, String>emptyMap(), 0, NotificationType.ONCE),
-                Collections.<String, String>emptyMap(),
-                UpdateStatus.NEW_UPDATE_AVAILABLE,
-                1
         );
 
         Throwable error = new Throwable();
@@ -95,6 +93,7 @@ public class QueenOfVersionsUpdaterCallbackTest {
                 onSuccess,
                 onError,
                 onUpdateNotAllowed,
+                onInAppUpdateAvailable,
                 storage
         );
 
@@ -124,6 +123,7 @@ public class QueenOfVersionsUpdaterCallbackTest {
                 onSuccess,
                 onError,
                 onUpdateNotAllowed,
+                onInAppUpdateAvailable,
                 storage
         );
 
@@ -147,6 +147,7 @@ public class QueenOfVersionsUpdaterCallbackTest {
                 onSuccess,
                 onError,
                 onUpdateNotAllowed,
+                onInAppUpdateAvailable,
                 storage
         );
 
