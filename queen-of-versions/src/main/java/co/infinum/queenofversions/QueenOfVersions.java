@@ -13,6 +13,32 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import javax.annotation.Nullable;
 
+/**
+ * This class represents main entry point for using library.
+ * <p>
+ * Most common way to create instance of this class should be using {@link QueenOfVersions.Builder}.
+ * </p>
+ * <p>
+ * To check if update exists you can use two different approaches: with or without {@link PrinceOfVersions}.
+ * </p>
+ * <p>
+ * Depending on used approach there are several versions of checkForUpdates method.
+ * If using {@link PrinceOfVersions} there are several {@code checkForUpdates} methods available after creating instance of this class.
+ * Otherwise there is a static {@code checkForUpdates} method used to start an In-App update check without need for {@link
+ * PrinceOfVersions}
+ * behavior.
+ * All methods return {@link PrinceOfVersionsCancelable} object which you can use to cancel request.
+ * </p>
+ * <p>
+ * Here is code for most common usage of this library
+ * <pre>
+ *         {@link QueenOfVersions} updater = new {@link QueenOfVersions.Builder}().build();
+ *         {@link PrinceOfVersionsCancelable} call = updater.checkForUpdates(
+ *                  "http://example.com/some/update.json",
+ *                  callback
+ *         ); // starts checking for update
+ * </pre>
+ */
 public class QueenOfVersions {
 
     private final Storage storage;
@@ -47,6 +73,15 @@ public class QueenOfVersions {
         this.princeOfVersions = princeOfVersions;
     }
 
+    /**
+     * Start asynchronous check for update without {@link PrinceOfVersions} check.
+     * Use {@link Options} to change default behaviors.
+     *
+     * @param activity Activity to host the update check.
+     * @param options  Options for this update check
+     * @param callback Callback to notify result.
+     * @return instance through which is possible to cancel the operation.
+     */
     public static PrinceOfVersionsCancelable checkForUpdates(
             FragmentActivity activity,
             QueenOfVersions.Options options,
@@ -143,59 +178,138 @@ public class QueenOfVersions {
         return new QueenOfVersionsCancelable(updater, princeOfVersionsCancelable);
     }
 
+    /**
+     * All callback methods that can be called during an update check process.
+     * Implement to handle custom behavior.
+     *
+     * @see Callback.Builder to change only some callbacks
+     */
     public interface Callback extends
             OnCanceled, OnDownloading, OnDownloaded, OnError, OnInstalled, OnInstalling, OnMandatoryUpdateNotAvailable, OnNoUpdate,
             OnPending, OnUpdateAccepted, OnUpdateDeclined {
 
+        /**
+         * Use this class to change only some callback behaviors.
+         * All methods are optional.
+         */
         class Builder {
 
             private CallbackAdapter adapter = new CallbackAdapter();
 
+            /**
+             * Set custom fallback callback. In case no method is override specifically using this builder this fallback will be called.
+             *
+             * @param callback fallback
+             * @return this
+             */
             public QueenOfVersions.Callback.Builder withCallback(QueenOfVersions.Callback callback) {
                 adapter.withFallback(callback);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnDownloaded} callback.
+             *
+             * @param action callback.
+             * @return this
+             * @see OnDownloaded
+             */
             public QueenOfVersions.Callback.Builder withOnDownloaded(OnDownloaded action) {
                 adapter.withOnDownloaded(action);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnCanceled} callback.
+             *
+             * @param onCanceled callback.
+             * @return this
+             * @see OnCanceled
+             */
             public QueenOfVersions.Callback.Builder withOnCanceled(OnCanceled onCanceled) {
                 adapter.withOnCanceled(onCanceled);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnInstalled} callback.
+             *
+             * @param onInstalled callback.
+             * @return this
+             * @see OnInstalled
+             */
             public QueenOfVersions.Callback.Builder withOnInstalled(OnInstalled onInstalled) {
                 adapter.withOnInstalled(onInstalled);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnPending} callback.
+             *
+             * @param onPending callback.
+             * @return this
+             * @see OnPending
+             */
             public QueenOfVersions.Callback.Builder withOnPending(OnPending onPending) {
                 adapter.withOnPending(onPending);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnError} callback.
+             *
+             * @param onError callback.
+             * @return this
+             * @see OnError
+             */
             public QueenOfVersions.Callback.Builder withOnError(OnError onError) {
                 adapter.withOnError(onError);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnNoUpdate} callback.
+             *
+             * @param onNoUpdate callback.
+             * @return this
+             * @see OnNoUpdate
+             */
             public QueenOfVersions.Callback.Builder withOnNoUpdate(OnNoUpdate onNoUpdate) {
                 adapter.withOnNoUpdate(onNoUpdate);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnDownloading} callback.
+             *
+             * @param onDownloading callback.
+             * @return this
+             * @see OnDownloading
+             */
             public QueenOfVersions.Callback.Builder withOnDownloading(OnDownloading onDownloading) {
                 adapter.withOnDownloading(onDownloading);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnInstalling} callback.
+             *
+             * @param onInstalling callback.
+             * @return this
+             * @see OnInstalling
+             */
             public QueenOfVersions.Callback.Builder withOnInstalling(OnInstalling onInstalling) {
                 adapter.withOnInstalling(onInstalling);
                 return this;
             }
 
+            /**
+             * Set custom {@link OnMandatoryUpdateNotAvailable} handler.
+             *
+             * @param onMandatoryUpdateNotAvailable handler.
+             * @return this
+             * @see OnMandatoryUpdateNotAvailable
+             */
             public QueenOfVersions.Callback.Builder withOnMandatoryUpdateNotAvailable(
                     OnMandatoryUpdateNotAvailable onMandatoryUpdateNotAvailable
             ) {
@@ -203,14 +317,27 @@ public class QueenOfVersions {
                 return this;
             }
 
+            /**
+             * Builds the {@link Callback} with all custom callbacks set.
+             *
+             * @return instance of callback built using this builder
+             */
             public QueenOfVersions.Callback build() {
                 return adapter.copy();
             }
         }
     }
 
+    /**
+     * Called in case FLEXIBLE update has been downloaded and is ready to be installed.
+     * Use this handler to resume with installation.
+     */
     public interface UpdateHandler {
 
+        /**
+         * Called in case FLEXIBLE update has been downloaded and is ready to be installed.
+         * Call this method to resume with update installation.
+         */
         void completeUpdate();
     }
 
@@ -264,6 +391,9 @@ public class QueenOfVersions {
         }
     }
 
+    /**
+     * Builds {@link QueenOfVersions} instance. All parameters are optional.
+     */
     public static class Builder {
 
         @Nullable
@@ -284,36 +414,83 @@ public class QueenOfVersions {
         @Nullable
         private PrinceOfVersions princeOfVersions;
 
+        /**
+         * Set {@link OnPrinceOfVersionsSuccess} handler.
+         *
+         * @param onPrinceOfVersionsSuccess handler
+         * @return this
+         * @see OnPrinceOfVersionsSuccess
+         */
         public Builder withPrinceOfVersionsSuccessHandler(OnPrinceOfVersionsSuccess onPrinceOfVersionsSuccess) {
             this.onPrinceOfVersionsSuccess = onPrinceOfVersionsSuccess;
             return this;
         }
 
+        /**
+         * Set {@link OnPrinceOfVersionsError} handler.
+         *
+         * @param onPrinceOfVersionsError handler
+         * @return this
+         * @see OnPrinceOfVersionsError
+         */
         public Builder withPrinceOfVersionsErrorHandler(OnPrinceOfVersionsError onPrinceOfVersionsError) {
             this.onPrinceOfVersionsError = onPrinceOfVersionsError;
             return this;
         }
 
+        /**
+         * Set custom storage used for saving last notified update, for the sake of not notifying same update twice
+         * in case of update with {@link co.infinum.princeofversions.NotificationType} ONCE.
+         *
+         * @param storage implementation of the storage.
+         * @return this
+         */
         public Builder withStorage(Storage storage) {
             this.storage = storage;
             return this;
         }
 
+        /**
+         * Set {@link PrinceOfVersions} instance used to make an update check.
+         *
+         * @param princeOfVersions configured instance of {@link PrinceOfVersions}
+         * @return this
+         */
         public Builder withPrinceOfVersions(PrinceOfVersions princeOfVersions) {
             this.princeOfVersions = princeOfVersions;
             return this;
         }
 
+        /**
+         * Use to set handler for not allowed update flow.
+         *
+         * @param onUpdateNotAllowedHandler implementation of handler
+         * @return this
+         * @see OnUpdateNotAllowed
+         */
         public Builder withOnUpdateNotAllowedHandler(OnUpdateNotAllowed onUpdateNotAllowedHandler) {
             this.onUpdateNotAllowed = onUpdateNotAllowedHandler;
             return this;
         }
 
+        /**
+         * Use to set handler for available In-App update.
+         *
+         * @param onInAppUpdateAvailable implementation of handler
+         * @return this
+         * @see OnInAppUpdateAvailable
+         */
         public Builder withOnInAppUpdateAvailable(OnInAppUpdateAvailable onInAppUpdateAvailable) {
             this.onInAppUpdateAvailable = onInAppUpdateAvailable;
             return this;
         }
 
+        /**
+         * Build the {@link QueenOfVersions} using parameters set in this builder.
+         *
+         * @param activity Activity instance used to host an update check
+         * @return new instance of {@link QueenOfVersions}
+         */
         public QueenOfVersions build(FragmentActivity activity) {
             return new QueenOfVersions(
                     storage != null ? storage : new QueenOfVersionsDefaultNamedPreferenceStorage(activity),
@@ -383,6 +560,7 @@ public class QueenOfVersions {
             /**
              * Add custom storage used for saving last notified update, for the sake of not notifying same update twice
              * in case of update with {@link co.infinum.princeofversions.NotificationType} ONCE.
+             *
              * @param storage implementation of the storage.
              * @return this
              */
@@ -393,6 +571,7 @@ public class QueenOfVersions {
 
             /**
              * Use {@link UpdateStatus} to specify which type of update to start.
+             *
              * @param updateStatus status.
              * @return this
              */
@@ -403,6 +582,7 @@ public class QueenOfVersions {
 
             /**
              * Use to set information about update received from {@link PrinceOfVersions}.
+             *
              * @param updateResult information about the update.
              * @return this
              */
@@ -413,9 +593,10 @@ public class QueenOfVersions {
 
             /**
              * Use to set handler for not allowed update flow.
-             * @see OnUpdateNotAllowed
+             *
              * @param onUpdateNotAllowedHandler implementation of handler
              * @return this
+             * @see OnUpdateNotAllowed
              */
             public Options.Builder withOnUpdateNotAllowedHandler(OnUpdateNotAllowed onUpdateNotAllowedHandler) {
                 this.onUpdateNotAllowed = onUpdateNotAllowedHandler;
@@ -424,9 +605,10 @@ public class QueenOfVersions {
 
             /**
              * Use to set handler for available In-App update.
-             * @see OnInAppUpdateAvailable
+             *
              * @param onInAppUpdateAvailable implementation of handler
              * @return this
+             * @see OnInAppUpdateAvailable
              */
             public Options.Builder withOnInAppUpdateAvailable(OnInAppUpdateAvailable onInAppUpdateAvailable) {
                 this.onInAppUpdateAvailable = onInAppUpdateAvailable;
@@ -435,6 +617,7 @@ public class QueenOfVersions {
 
             /**
              * Build the {@link Options} using parameters set in this builder.
+             *
              * @return new instance of the {@link Options}
              */
             public Options build() {

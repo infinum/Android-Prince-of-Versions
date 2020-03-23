@@ -36,7 +36,7 @@ public class UpdateInfo {
      */
     private final NotificationType notificationFrequency;
 
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
     public UpdateInfo(
             @Nullable Integer requiredVersion,
             @Nullable Integer lastVersionAvailable,

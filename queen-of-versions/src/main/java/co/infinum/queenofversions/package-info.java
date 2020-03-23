@@ -1,9 +1,8 @@
 /**
- * Queen of Versions checks for updates using configuration from remote or local resource and Google In-App updates API.
+ * Queen of Versions checks for updates using Google In-App updates API and configuration from remote or local resource.
  * <pre>
- *     PrinceOfVersions updater = new PrinceOfVersions.Builder().build(this);
- *     QueenOfVersions queen = new QueenOfVersions.Builder().build(this);
- *     updater.checkForUpdates("urlToConfigurationFile", queen.getPrinceOfVersionsCallback());
+ *     QueenOfVersions queen = new QueenOfVersions.Builder().build(activity);
+ *     queen.checkForUpdates("urlToConfigurationFile", callback);
  * </pre>
  */
 @NotNullByDefault
