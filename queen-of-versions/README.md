@@ -82,8 +82,8 @@ val queenOfVersions = QueenOfVersions.Builder()
 			// in any other case skip the update
 			UpdateStatus.NO_UPDATE_AVAILABLE
 		}
-	}
-	.build(this)
+    }
+    .build(this)
 ```
 #### If required update isn't available on Google Play
 If using Prince of Versions for checking if update should be threated as required or optional you can end up in the case that Prince of Versions mark a version as required update, but that version isn't available on Google Play yet.
@@ -97,37 +97,37 @@ val callback = QueenOfVersions.Callback.Builder()
 		// requiredVersion is version code of the update Prince of Versions claims is required
 		// inAppUpdateInfo contains information about the update from Google Play
 		// for metadata and updateInfo check Prince of Versions documentation
-	}
-	.build()
+    }
+    .build()
 ```
 #### Use In-App updates without Prince of Versions
 By default, if update is available it will be presented in <code>FLEXIBLE</code> flow.
 ```kotlin
 QueenOfVersions.checkForUpdates(
-		activity,
-		QueenOfVersions.Options.Builder()
-			// use methods in builder to implement specific behavior
-			// there are equivalent methods as in QueenOfVersions builder
-			.build(),
-		callback
+        activity,
+        QueenOfVersions.Options.Builder()
+            // use methods in builder to implement specific behavior
+            // there are equivalent methods as in QueenOfVersions builder
+            .build(),
+        callback
 )
 ```
 
 #### Determine update type by In-App update information
 ```kotlin
 QueenOfVersions.checkForUpdates(
-		activity,
-		QueenOfVersions.Options.Builder()
-			.withOnInAppUpdateAvailable { updateStatus, inAppUpdateInfo, updateResult ->
-				// or any other logic
-				if (inAppUpdateInfo.updatePriority() > 2) {
-					UpdateStatus.REQUIRED_UPDATE_NEEDED
-				} else {
-					UpdateStatus.NEW_UPDATE_AVAILABLE
-				}
-			}
-		.build(),
-		callback
+        activity,
+        QueenOfVersions.Options.Builder()
+            .withOnInAppUpdateAvailable { updateStatus, inAppUpdateInfo, updateResult ->
+                // or any other logic
+                if (inAppUpdateInfo.updatePriority() > 2) {
+                    UpdateStatus.REQUIRED_UPDATE_NEEDED
+                } else {
+                    UpdateStatus.NEW_UPDATE_AVAILABLE
+                }
+            }
+            .build(),
+        callback
 )
 ```
 
