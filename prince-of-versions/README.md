@@ -58,21 +58,22 @@ JSON configuration should follow a structure as follows:
 	}
 }
 ```
-The most important part of the configuration for Android applications is <code>android</code> object. All properties in the object are optional, but at least one of <code>required_version</code> and <code>last_version_available</code> should be provided.
+The most important part of the configuration for Android applications is  `android`  object. All properties in the object are optional, but at least one of `required_version` and `last_version_available`  should be provided.
 
-As it is shown, the <code>android</code> property contains an array of configurations, the library parses them one by one and selects the first acceptable update by validating <code>requirements</code>. If there is no <code>requirements</code> field, first element is selected, otherwise, it just means the first configuration that satisfies all the conditions.
+As it is shown, the  `android` property contains an array of configurations, the library parses them one by one and selects the **first acceptable** configuration by **validating `requirements`**. If there is no `requirements` field, first element is selected, otherwise, it just means the first configuration that satisfies all the conditions.
+If there is only one configuration array can be omitted and `android` can have the value of configuration object.
 
-Property <code>required_version</code> specifies the required version of application, eg. if application has version lower than <code>required_version</code> - required update will be notified. Semantic of required update is that application has to be updated before any further use. Because of that, if required update exists it will be notified on each update check.
+Property `required_version` specifies the **required version of application**, eg. if application has version lower than `required_version` - required update will be notified. Semantic of required update is that application has to be updated before any further use. Because of that, if required update exists it will be notified on each update check.
 
-Property <code>last_version_available</code> defines a version of the latest optional update. If application has version lower that <code>last_version_available</code> - optional update will be notified.
+Property `last_version_available` defines a version of the **latest optional update**. If application has version lower that `last_version_available` - optional update will be notified.
 
-Depending on <code>notify_last_version_frequency</code> property, application can be notified <code>ONCE</code> or <code>ALWAYS</code>. The library handles this for you, and if notification type is set to <code>ONCE</code>, it will notify you only first time for a specific version. In every following check the library would notify <code>onNoUpdate</code> for that specific version. This setting applies only for optional update and has no effect in case of required update. Default value for this property is <code>ONCE</code>.
+Depending on  **`notify_last_version_frequency`**  property, application can be notified `ONCE` or `ALWAYS`. If notification type is set to  `ONCE`, it will notify you only first time for a specific version. In every following check the library would notify `onNoUpdate` for that specific version. This setting applies only for optional update and has no effect in case of required update. Default value for this property is `ONCE`.
 
-<code>requirements</code> propery contains an object of different update requirements. Default requirement supported by the library is <code>required_os_version</code>. <code>required_os_version</code> represents the minimum Android version a device has to support to be able to update to last available version. Eg. If <code>required_os_version</code> is set to <code>18</code>, a device has to have at least Android version 18 or above to be able to receive an update. Apart from default <code>required_os_version</code>, <code>requirements</code> can contain a variety of different and customizable requirements specific for each update, but in that case developer has to take care of that by setting <code>RequirementsChecker</code>.
+`requirements` propery contains an object of different **update requirements**. Default requirement supported by the library is `required_os_version`. `required_os_version`  represents the minimum Android version a device has to support to be able to update to last available version. Eg. If `required_os_version` is set to  `18`, a device has to have at least Android version 18 or above to be able to receive an update. Apart from default `required_os_version`, `requirements` can contain a variety of different and customizable requirements specific for each update, but in that case developer has to take care of that by setting `RequirementsChecker`.
 
-Metadata from the selected configuration has an advantage over the default metadata (in root), and when there is a metadata conflict, its resolved by overriding by value from the selected configuration. E.g. if the first update gets selected then the final metadata will have these keys: <code> key1: value3 </code> and <code> key2: value2 </code>. In case when there is no conflict of keys in metadata, then default metadata will be merged with selected configuration metadata.
+**Metadata** from the selected configuration has an advantage over the default metadata (in root), and when there is a metadata conflict, its resolved by overriding by value from the selected configuration. E.g. if the first update gets selected then the final metadata will have these keys: `key1: value3` and `key2: value2`. In case when there is no conflict of keys in metadata, then default metadata will be merged with selected configuration metadata.
 
-If there is a need to support both old (before Prince of Versions 4.0) and new (Prince of Versions 4.0 and above) configuration for the new configuration <code>android2</code> can be used instead of <code>android</code>.
+If there is a need to **support both old** (before Prince of Versions 4.0) **and new** (Prince of Versions 4.0 and above) **configuration**, for the new configuration  `android2`  name can be used instead of  `android`.
 
 ## Examples
 
@@ -185,4 +186,4 @@ If you are using R8 or ProGuard add the options from
 
 ### Contributing
 
-Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](https://github.com/infinum/Android-prince-of-versions/blob/dev/LICENCE).
+Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](./../LICENCE).

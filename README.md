@@ -19,6 +19,7 @@ implementation 'co.infinum:queen-of-versions:0.1.0'
 
 #### Check out [integration guide](./queen-of-versions/README.md).
 
+
 ## Prince of Versions  [![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg)](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
 
 Library checks for updates using configuration from remote or local resource.

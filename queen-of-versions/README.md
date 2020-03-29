@@ -132,7 +132,7 @@ QueenOfVersions.checkForUpdates(
 ```
 
 ### Multiple flavors
-If your application has multiple product flavors or build type make sure to not use Queen of Versions if flavor is not available on Google Play. Use plain [Prince of Versions](./../README.md) check if that is the case.
+If your application has multiple product flavors or build type make sure to not use Queen of Versions if flavor is not available on Google Play. Use plain [Prince of Versions](./../prince-of-versions/README.md) check if that is the case.
 
 
 ### R8 / ProGuard
@@ -143,4 +143,4 @@ If you are using R8 or ProGuard add the options from
 
 ### Contributing
 
-Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](https://github.com/infinum/Android-prince-of-versions/blob/dev/LICENCE).
+Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](./../LICENCE).
