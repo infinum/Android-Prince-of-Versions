@@ -12,7 +12,11 @@ final class GoogleInAppUpdateData implements InAppUpdateData {
 
     @Override
     public int availableVersionCode() {
-        return appUpdateInfo.availableVersionCode();
+        try {
+            return appUpdateInfo.availableVersionCode();
+        } catch (Throwable error) {
+            return INVALID_VALUE;
+        }
     }
 
     @Override
@@ -32,11 +36,20 @@ final class GoogleInAppUpdateData implements InAppUpdateData {
 
     @Override
     public int priority() {
-        return appUpdateInfo.updatePriority();
+        try {
+            return appUpdateInfo.updatePriority();
+        } catch (Throwable error) {
+            return INVALID_VALUE;
+        }
     }
 
     @Override
     public int clientStalenessDays() {
-        return appUpdateInfo.clientVersionStalenessDays();
+        try {
+            Integer value = appUpdateInfo.clientVersionStalenessDays();
+            return value != null ? value : INVALID_VALUE;
+        } catch (Throwable error) {
+            return INVALID_VALUE;
+        }
     }
 }

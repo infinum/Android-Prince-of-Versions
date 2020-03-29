@@ -3,6 +3,8 @@ package co.infinum.queenofversions;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import javax.annotation.Nullable;
 
+import static co.infinum.queenofversions.InAppUpdateData.INVALID_VALUE;
+
 /**
  * Information about update received from Google Play.
  */
@@ -10,9 +12,9 @@ public final class QueenOfVersionsInAppUpdateInfo {
 
     static QueenOfVersionsInAppUpdateInfo from(@Nullable AppUpdateInfo appUpdateInfo) {
         return new QueenOfVersionsInAppUpdateInfo(
-                appUpdateInfo != null ? appUpdateInfo.availableVersionCode() : 0,
-                appUpdateInfo != null ? appUpdateInfo.clientVersionStalenessDays() : 0,
-                appUpdateInfo != null ? appUpdateInfo.updatePriority() : 0
+                appUpdateInfo != null ? getOrDefault(appUpdateInfo.availableVersionCode(), INVALID_VALUE) : INVALID_VALUE,
+                appUpdateInfo != null ? getOrDefault(appUpdateInfo.clientVersionStalenessDays(), INVALID_VALUE) : INVALID_VALUE,
+                appUpdateInfo != null ? getOrDefault(appUpdateInfo.updatePriority(), INVALID_VALUE) : INVALID_VALUE
         );
     }
 
@@ -22,6 +24,10 @@ public final class QueenOfVersionsInAppUpdateInfo {
                 inAppUpdateData != null ? inAppUpdateData.clientStalenessDays() : 0,
                 inAppUpdateData != null ? inAppUpdateData.priority() : 0
         );
+    }
+
+    private static int getOrDefault(@Nullable Integer value, int defaultValue) {
+        return value != null ? value : defaultValue;
     }
 
     private final int versionCode;
@@ -41,7 +47,7 @@ public final class QueenOfVersionsInAppUpdateInfo {
     }
 
     /**
-     * Version code of available update.
+     * Version code of available update.  If the update is not available returns -1.
      * @return version code of available update.
      */
     public int versionCode() {
@@ -49,7 +55,7 @@ public final class QueenOfVersionsInAppUpdateInfo {
     }
 
     /**
-     * Days of staleness of the update.
+     * Days of staleness of the update. If the update is not available returns -1.
      * @return days of staleness.
      */
     public int clientVersionStalenessDays() {
@@ -57,7 +63,7 @@ public final class QueenOfVersionsInAppUpdateInfo {
     }
 
     /**
-     * Update priority level.
+     * Update priority level. If the update is not available returns -1.
      * @return update priority.
      */
     public int updatePriority() {

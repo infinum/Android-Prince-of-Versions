@@ -8,6 +8,8 @@ import com.google.android.play.core.install.model.UpdateAvailability;
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 public interface InAppUpdateData {
 
+    int INVALID_VALUE = -1;
+
     int availableVersionCode();
 
     @UpdateAvailability
