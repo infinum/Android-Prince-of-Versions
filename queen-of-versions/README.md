@@ -42,28 +42,28 @@ cancelable.cancel()
 #### Use configured Prince of Versions instance
 ```java
 QueenOfVersions queenOfVersions = new QueenOfVersions.Builder()
-		.withPrinceOfVersions(princeOfVersions)
-        .build(activity);
+    .withPrinceOfVersions(princeOfVersions)
+    .build(activity);
 ```
 #### Handle declined update by user
 ```kotlin
 val callback = QueenOfVersions.Callback.Builder()
     .withOnUpdateDeclined { inAppUpdateInfo, updateStatus, updateResult ->
-		// updateStatus is either
-		//	 UpdateStatus.REQUIRED_UPDATE_NEEDED (if IMMEDIATE update flow declined)
-		// or
-		//	 UpdateStatus.NEW_UPDATE_AVAILABLE (if FLEXIBLE update flow declined)
-		// use updateStatus to handle IMMEDIATE and FLEXIBLE flow specifically
+        // updateStatus is either
+        //	 UpdateStatus.REQUIRED_UPDATE_NEEDED (if IMMEDIATE update flow declined)
+        // or
+        //	 UpdateStatus.NEW_UPDATE_AVAILABLE (if FLEXIBLE update flow declined)
+        // use updateStatus to handle IMMEDIATE and FLEXIBLE flow specifically
 
-		// inAppUpdateInfo contains information about the update from Google Play
-		// updateResult is only available if Prince of Versions is used in the check
+        // inAppUpdateInfo contains information about the update from Google Play
+        // updateResult is only available if Prince of Versions is used in the check
 
-		// for example, if required update has to be installed before using the app
-		if (updateStatus == UpdateStatus.REQUIRED_UPDATE_NEEDED) {
-		    // show an explanation that required update needs to be installed and restart the check
-		} else {
-		    // nothing to do here, user canceled optional update
-		}
+        // for example, if required update has to be installed before using the app
+        if (updateStatus == UpdateStatus.REQUIRED_UPDATE_NEEDED) {
+            // show an explanation that required update needs to be installed and restart the check
+        } else {
+            // nothing to do here, user canceled optional update
+        }
     }
     .build()
 ```
@@ -75,13 +75,13 @@ By default, Queen of Versions will check update status on Google Play for any Pr
 ```kotlin
 val queenOfVersions = QueenOfVersions.Builder()
     .withPrinceOfVersionsSuccessHandler { updateResult ->
-		if (updateResult.status == UpdateStatus.REQUIRED_UPDATE_NEEDED) {
-			// if update is required proceed with IMMEDIATE update flow
-			UpdateStatus.REQUIRED_UPDATE_NEEDED
-		} else {
-			// in any other case skip the update
-			UpdateStatus.NO_UPDATE_AVAILABLE
-		}
+        if (updateResult.status == UpdateStatus.REQUIRED_UPDATE_NEEDED) {
+            // if update is required proceed with IMMEDIATE update flow
+            UpdateStatus.REQUIRED_UPDATE_NEEDED
+        } else {
+            // in any other case skip the update
+            UpdateStatus.NO_UPDATE_AVAILABLE
+        }
     }
     .build(this)
 ```
@@ -92,11 +92,11 @@ By default Queen of Versions handles that case by notifying that there is no upd
 ```kotlin
 val callback = QueenOfVersions.Callback.Builder()
     .withOnMandatoryUpdateNotAvailable { requiredVersion, inAppUpdateInfo, metadata, updateInfo ->
-		// for example show a message that update is required for application to work, but isn't available yet.
+        // for example show a message that update is required for application to work, but isn't available yet.
 
-		// requiredVersion is version code of the update Prince of Versions claims is required
-		// inAppUpdateInfo contains information about the update from Google Play
-		// for metadata and updateInfo check Prince of Versions documentation
+        // requiredVersion is version code of the update Prince of Versions claims is required
+        // inAppUpdateInfo contains information about the update from Google Play
+        // for metadata and updateInfo check Prince of Versions documentation
     }
     .build()
 ```
@@ -104,30 +104,30 @@ val callback = QueenOfVersions.Callback.Builder()
 By default, if update is available it will be presented in <code>FLEXIBLE</code> flow.
 ```kotlin
 QueenOfVersions.checkForUpdates(
-        activity,
-        QueenOfVersions.Options.Builder()
-            // use methods in builder to implement specific behavior
-            // there are equivalent methods as in QueenOfVersions builder
-            .build(),
-        callback
+    activity,
+    QueenOfVersions.Options.Builder()
+        // use methods in builder to implement specific behavior
+        // there are equivalent methods as in QueenOfVersions builder
+        .build(),
+    callback
 )
 ```
 
 #### Determine update type by In-App update information
 ```kotlin
 QueenOfVersions.checkForUpdates(
-        activity,
-        QueenOfVersions.Options.Builder()
-            .withOnInAppUpdateAvailable { updateStatus, inAppUpdateInfo, updateResult ->
-                // or any other logic
-                if (inAppUpdateInfo.updatePriority() > 2) {
-                    UpdateStatus.REQUIRED_UPDATE_NEEDED
-                } else {
-                    UpdateStatus.NEW_UPDATE_AVAILABLE
-                }
+    activity,
+    QueenOfVersions.Options.Builder()
+        .withOnInAppUpdateAvailable { updateStatus, inAppUpdateInfo, updateResult ->
+            // or any other logic
+            if (inAppUpdateInfo.updatePriority() > 2) {
+                UpdateStatus.REQUIRED_UPDATE_NEEDED
+            } else {
+                UpdateStatus.NEW_UPDATE_AVAILABLE
             }
-            .build(),
-        callback
+        }
+        .build(),
+    callback
 )
 ```
 
