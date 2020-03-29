@@ -1,6 +1,6 @@
 package co.infinum.princeofversions;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 import java.util.Map;
 import javax.annotation.Nullable;
 

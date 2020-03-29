@@ -1,7 +1,7 @@
 package co.infinum.queenofversions;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import co.infinum.princeofversions.UpdateInfo;
 import co.infinum.princeofversions.UpdateResult;
 import com.google.android.play.core.appupdate.AppUpdateInfo;

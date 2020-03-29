@@ -3,16 +3,10 @@ package co.infinum.povexampleapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import org.json.JSONObject;
-
-import javax.annotation.Nonnull;
-
+import androidx.appcompat.app.AppCompatActivity;
 import co.infinum.princeofversions.ConfigurationParser;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
@@ -21,13 +15,15 @@ import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.PrinceOfVersionsConfig;
 import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdaterCallback;
+import javax.annotation.Nonnull;
+import org.json.JSONObject;
 
 public class CustomParserExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
 
         @Override
-        public void onSuccess(@NonNull UpdateResult result) {
+        public void onSuccess(@Nonnull UpdateResult result) {
             switch (result.getStatus()) {
                 case REQUIRED_UPDATE_NEEDED:
                     toastIt(

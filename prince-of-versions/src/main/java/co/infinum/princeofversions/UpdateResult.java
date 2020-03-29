@@ -1,8 +1,7 @@
 package co.infinum.princeofversions;
 
-import android.support.annotation.Nullable;
-
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * Represents the all information from update check.

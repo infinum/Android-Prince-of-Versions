@@ -2,8 +2,8 @@ package co.infinum.queenofversions;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.support.annotation.VisibleForTesting;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.FragmentActivity;
 import co.infinum.princeofversions.NotificationType;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;

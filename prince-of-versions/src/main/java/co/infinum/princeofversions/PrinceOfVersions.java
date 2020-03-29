@@ -1,7 +1,7 @@
 package co.infinum.princeofversions;
 
 import android.content.Context;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import java.util.HashMap;
 import java.util.Map;

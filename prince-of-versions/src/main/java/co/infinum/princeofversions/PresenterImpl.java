@@ -1,7 +1,6 @@
 package co.infinum.princeofversions;
 
-import android.support.annotation.VisibleForTesting;
-
+import androidx.annotation.VisibleForTesting;
 import java.util.concurrent.Executor;
 
 import static co.infinum.princeofversions.UpdateStatus.NEW_UPDATE_AVAILABLE;

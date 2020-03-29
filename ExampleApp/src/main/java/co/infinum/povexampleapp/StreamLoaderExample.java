@@ -3,26 +3,23 @@ package co.infinum.povexampleapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import javax.annotation.Nonnull;
-
+import androidx.appcompat.app.AppCompatActivity;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.StreamLoader;
 import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdaterCallback;
+import javax.annotation.Nonnull;
 
 public class StreamLoaderExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
         @Override
-        public void onSuccess(@NonNull UpdateResult result) {
+        public void onSuccess(@Nonnull UpdateResult result) {
             switch (result.getStatus()) {
                 case REQUIRED_UPDATE_NEEDED:
                     toastIt(
