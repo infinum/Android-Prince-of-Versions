@@ -3,7 +3,7 @@
 ![Bitrise](https://app.bitrise.io/app/5bc3f35c9c5f5b61/status.svg?token=XGiXvE7Yu6DXdL9wrEqiHQ&branch=dev)
 [![Download](https://api.bintray.com/packages/infinum/android/queen-of-versions/images/download.svg)](https://bintray.com/infinum/android/queen-of-versions/_latestVersion)
 
-Library checks for updates using configuration from remote or local resource.
+Library checks update availability using In-App updates.
 
 ## Getting via jcenter
 
