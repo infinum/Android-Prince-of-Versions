@@ -40,6 +40,8 @@ dependencies {
     testCompileOnly deps.fbannotations
 }
 
+apply from: '../tasks.gradle'
+
 group = publishedGroupId
 version = versions.queen
 
@@ -62,9 +64,8 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives sourcesJar
+    archives javadocsJar
 }
-
-apply from: '../tasks.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
 preBuild.dependsOn ':prince-of-versions:generateReadmeQueen'
