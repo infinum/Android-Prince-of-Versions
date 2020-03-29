@@ -73,7 +73,7 @@ Depending on  **`notify_last_version_frequency`**  property, application can be 
 
 **Metadata** from the selected configuration has an advantage over the default metadata (in root), and when there is a metadata conflict, its resolved by overriding by value from the selected configuration. E.g. if the first update gets selected then the final metadata will have these keys: `key1: value3` and `key2: value2`. In case when there is no conflict of keys in metadata, then default metadata will be merged with selected configuration metadata.
 
-If there is a need to **support both old** (before Prince of Versions 4.0) **and new** (Prince of Versions 4.0 and above) **configuration**, for the new configuration  `android2`  name can be used instead of  `android`.
+If there is a need to **support both old** (before Prince of Versions `4.0.0`) **and new** (Prince of Versions `4.0.0` and above) **configuration**, for the new configuration  `android2`  name can be used instead of  `android`.
 
 ## Examples
 
@@ -111,7 +111,7 @@ PrinceOfVersionsCancelable cancelable = updater.checkForUpdates(loader, callback
 5. To cancel the update check, call <code>cancel</code> method available in <code>PrinceOfVersionsCancelable</code> object.
 
 #### UpdaterCall api
-In version 3.0.0 a new UpdaterCall API has been introduced.
+In version `3.0.0` a new UpdaterCall API has been introduced.
 
 1. Create a new <code>PrinceOfVersionsCall</code> instance.
 ```java
@@ -138,7 +138,7 @@ call.enqueue(new UpdaterCallback() {
 ```java
 try {
     UpdateResult result = call.execute();
-    // result.getStatus() returns MANDATORY, OPTIONAL or NO_UPDATE
+    // result.getStatus() returns REQUIRED_UPDATE_NEEDED, NEW_UPDATE_AVAILABLE or NO_UPDATE_AVAILABLE
 // result.getInfo() returns update info - the information extracted from the configuration and used to check if the update exists
     // result.getMetadata() returns metadata about the update
 } catch (Throwable throwable) {
