@@ -1,7 +1,5 @@
 package co.infinum.princeofversions;
 
-import org.json.JSONException;
-
 /**
  * This class handles requirement checking while JSON parsing
  */
@@ -12,6 +10,7 @@ public interface RequirementChecker {
      *
      * @param value Value of the requirement we are checking
      * @return true or false depending if the data matched requirements
+     * @throws Throwable in case of any error in parsing
      */
-    boolean checkRequirements(String value) throws JSONException;
+    boolean checkRequirements(String value) throws Throwable;
 }

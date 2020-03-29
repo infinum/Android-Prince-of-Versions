@@ -10,6 +10,9 @@ public interface UpdaterCallback {
 
     /**
      * Method is called when there is new update available for current application.
+     *
+     * @param result result of the update check. Read <code>status</code> to find out if there is an update,
+     *              and if there is read <code>updateVersion</code> to find out what is the version of the update
      */
     void onSuccess(UpdateResult result);
 
