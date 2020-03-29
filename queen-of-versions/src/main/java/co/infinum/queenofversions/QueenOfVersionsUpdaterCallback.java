@@ -294,8 +294,6 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
             boolean isMandatory,
             @Nullable UpdateResult updateResult
     ) {
-        // TODO: add a possibility to change update type based on priority in inAppUpdateInfo!!!
-
         int googleUpdateVersionCode = appUpdateInfo.availableVersionCode();
         int updateAvailability = appUpdateInfo.updateAvailability();
         QueenOfVersionsInAppUpdateInfo inAppUpdateInfo = QueenOfVersionsInAppUpdateInfo.from(appUpdateInfo);
