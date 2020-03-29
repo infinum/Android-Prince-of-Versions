@@ -1,24 +1,21 @@
 package co.infinum.queenofversions;
 
 import android.app.Activity;
-
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-
 import co.infinum.princeofversions.UpdateInfo;
+import co.infinum.princeofversions.UpdateResult;
+import java.util.Map;
+import javax.annotation.Nullable;
 
-public interface GoogleAppUpdater {
+interface GoogleAppUpdater {
 
-    void initGoogleUpdate(boolean isMandatory, int version, UpdateInfo updateInfo);
+    @Nullable
+    InAppUpdateData createInAppUpdateData();
 
-    void startUpdate(int updateType);
+    void initGoogleUpdate(boolean isMandatory, @Nullable Integer version, @Nullable UpdateResult updateResult);
 
-    void noUpdate();
+    void startUpdate(int updateType, @Nullable UpdateResult updateResult);
 
-    void startFlexibleFlow(AppUpdateInfo appUpdateInfo);
-
-    void startImmediateFlow(AppUpdateInfo appUpdateInfo);
-
-    void registerImmediateFlow();
+    void noUpdate(@Nullable Map<String, String> metadata, @Nullable UpdateInfo updateInfo);
 
     void completeUpdate();
 
@@ -26,9 +23,14 @@ public interface GoogleAppUpdater {
 
     void restartUpdate();
 
-    void notifyUser();
+    void onUpdateDownloaded();
 
-    void mandatoryUpdateNotAvailable();
+    void mandatoryUpdateNotAvailable(
+            int mandatoryVersion,
+            QueenOfVersionsInAppUpdateInfo appUpdateInfo,
+            Map<String, String> metadata,
+            UpdateInfo updateInfo
+    );
 
     void cancel();
 }

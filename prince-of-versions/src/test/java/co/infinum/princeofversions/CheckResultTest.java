@@ -1,10 +1,8 @@
 package co.infinum.princeofversions;
 
-import org.junit.Test;
-import org.mockito.Mock;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -21,7 +19,7 @@ public class CheckResultTest {
     private static final Map<String, String> DEFAULT_METADATA = new HashMap<>();
 
     private static final UpdateInfo updateInfo = new UpdateInfo(DEFAULT_REQUIRED_VERSION, DEFAULT_LAST_VERSION_AVAILABLE,
-        DEFAULT_REQUIREMENTS, DEFAULT_VERSION);
+        DEFAULT_REQUIREMENTS, DEFAULT_VERSION, NotificationType.ALWAYS);
 
     @Test
     public void checkHasUpdateMandatory() {

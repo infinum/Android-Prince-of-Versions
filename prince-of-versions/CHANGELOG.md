@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 4.0.0
+
+_2020-03-29_
+
+- new configuration syntax
+- update check is done by comparing version codes
+- support for custom requirements
+- merge metadata and collect complex object into it
+
 ## Version 3.0.0
 
 _2018-11-07_

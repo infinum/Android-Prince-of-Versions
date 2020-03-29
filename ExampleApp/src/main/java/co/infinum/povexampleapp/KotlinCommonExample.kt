@@ -32,7 +32,7 @@ class KotlinCommonExample : AppCompatActivity() {
                 UpdateStatus.NEW_UPDATE_AVAILABLE -> {
                     toastIt(getString(R.string.update_available_msg, getString(R.string.not_mandatory), result.info.lastVersionAvailable), Toast.LENGTH_SHORT)
                 }
-                UpdateStatus.NO_UPDATE_AVAILABLE -> toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT)
+                else -> toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT)
             }
         }
 

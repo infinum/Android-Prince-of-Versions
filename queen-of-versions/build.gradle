@@ -15,7 +15,7 @@ android {
         minSdkVersion buildVersions.min
         targetSdkVersion buildVersions.target
         versionCode 1
-        versionName versions.prince
+        versionName versions.queen
     }
 
     buildTypes {
@@ -28,7 +28,7 @@ android {
 
 dependencies {
     api project(path: ':prince-of-versions')
-    implementation 'com.google.android.play:core:1.6.5'
+    implementation 'com.google.android.play:core:1.7.1'
     compileOnly deps.fbannotations
     compileOnly deps.appcompat
 
@@ -49,7 +49,7 @@ publish {
     groupId = publishedGroupId
     artifactId = publishedArtifactName
     publishVersion = versions.queen
-    desc = 'Library checks for application updates using configuration from some resource.'
+    desc = 'Library checks for application updates using In-App updates.'
     website = 'https://github.com/infinum/Android-prince-of-versions'
     licences = ["Apache-2.0"]
     repoName = 'android'

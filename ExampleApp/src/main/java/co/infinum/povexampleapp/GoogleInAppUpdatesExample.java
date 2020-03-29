@@ -1,29 +1,33 @@
 package co.infinum.povexampleapp;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
-import co.infinum.princeofversions.PrinceOfVersions;
-import co.infinum.queenofversions.QueenOfVersionCallbackUpdate;
-import co.infinum.queenofversions.QueenOfVersionFlexibleUpdateHandler;
-import co.infinum.queenofversions.QueenOfVersionsCallback;
+import co.infinum.princeofversions.PrinceOfVersionsCancelable;
+import co.infinum.princeofversions.UpdateInfo;
+import co.infinum.princeofversions.UpdateResult;
+import co.infinum.princeofversions.UpdateStatus;
+import co.infinum.queenofversions.QueenOfVersions;
+import co.infinum.queenofversions.QueenOfVersionsInAppUpdateInfo;
+import java.util.Map;
+import javax.annotation.Nonnull;
 
-public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersionsCallback {
+public class GoogleInAppUpdatesExample extends AppCompatActivity implements QueenOfVersions.Callback {
 
     private static final String TAG = "GoogleInAppUpdates";
-    private final int REQUEST_CODE = 420;
 
-    private QueenOfVersionCallbackUpdate googleInAppUpdateCallback;
-    private PrinceOfVersions princeOfVersions;
+    private QueenOfVersions queenOfVersions;
+
     private Loader loader;
+
+    private PrinceOfVersionsCancelable cancelable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,12 +36,9 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
 
         initUI();
 
-        princeOfVersions = new PrinceOfVersions.Builder().build(this);
-        try {
-            googleInAppUpdateCallback = new QueenOfVersionCallbackUpdate(REQUEST_CODE, this, this);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        queenOfVersions = new QueenOfVersions.Builder()
+                .build(this);
+
         loader = new NetworkLoader("http://pastebin.com/raw/QFGjJrLP");
     }
 
@@ -52,7 +53,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     }
 
     private void onCheckUpdatesClick() {
-        princeOfVersions.checkForUpdates(loader, googleInAppUpdateCallback);
+        cancelable = queenOfVersions.checkForUpdates(loader, this);
     }
 
     /**
@@ -60,7 +61,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
      * is a new update on Google Play store.
      */
     @Override
-    public void onNoUpdate() {
+    public void onNoUpdate(Map<String, String> metadata, UpdateInfo updateInfo) {
         Toast.makeText(this, "No updates!", Toast.LENGTH_SHORT).show();
     }
 
@@ -68,30 +69,34 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
      * This method is called when Google Update is downloading.
      */
     @Override
-    public void onDownloading() {
-        Toast.makeText(this, "Downloading update...", Toast.LENGTH_SHORT).show();
+    public void onDownloading(@Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdate, long bytesDownloadedSoFar, long totalBytesToDownload) {
+        Toast.makeText(
+                this,
+                String.format("Downloading update %s...", 100.0 * bytesDownloadedSoFar / totalBytesToDownload),
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
     /**
      * This method is called when Google update finished with downloading and it have started with installment.
      */
     @Override
-    public void onInstalling() {
-        Toast.makeText(this, "Installing update...", Toast.LENGTH_SHORT).show();
+    public void onInstalling(@Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo) {
+        Toast.makeText(this, String.format("Installing update %s...", inAppUpdateInfo.versionCode()), Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onRequiresUI() {
-        Toast.makeText(this, "Requires UI!", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onMandatoryUpdateNotAvailable() {
+    public void onMandatoryUpdateNotAvailable(
+            int mandatoryVersion,
+            @Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+            @Nonnull Map<String, String> metadata,
+            @Nonnull UpdateInfo updateInfo
+    ) {
         Toast.makeText(this, "Mandatory update is not available on Google!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onDownloaded(QueenOfVersionFlexibleUpdateHandler handler) {
+    public void onDownloaded(@NonNull QueenOfVersions.UpdateHandler handler, @NonNull QueenOfVersionsInAppUpdateInfo inAppUpdate) {
         Toast.makeText(this, "Downloaded!", Toast.LENGTH_SHORT).show();
         handler.completeUpdate();
     }
@@ -109,7 +114,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
      * this method is rarely useful.
      */
     @Override
-    public void onInstalled() {
+    public void onInstalled(@Nonnull QueenOfVersionsInAppUpdateInfo appUpdateInfo) {
         Toast.makeText(this, "Installed update!", Toast.LENGTH_SHORT).show();
     }
 
@@ -117,27 +122,44 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
      * This method is called if the update is by whatever reason put on hold and it has to wait before it can be processed.
      */
     @Override
-    public void onPending() {
+    public void onPending(@Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo) {
         Toast.makeText(this, "Update pending...", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * This method is called if there is an unknown behaviour of the update. This can happen if there where was update available,
-     * but during the updating something was unknown or there was some kind of unreported error.
-     */
-    @Override
-    public void onUnknown() {
-        Toast.makeText(this, "Unknown status!", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * This method is called if something went wrong during an update.
      *
-     * @param exception instance of exception that caused update to fail
+     * @param throwable instance of exception that caused update to fail
      */
     @Override
-    public void onFailed(Exception exception) {
+    public void onError(Throwable throwable) {
         Toast.makeText(this, "Failed updated! Check log!", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Exception:", exception.fillInStackTrace());
+        Log.d(TAG, "Exception:", throwable.fillInStackTrace());
+    }
+
+    @Override
+    public void onUpdateAccepted(
+            @Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+            @Nonnull UpdateStatus updateStatus,
+            @Nullable UpdateResult updateResult
+    ) {
+        Toast.makeText(this, "Update accepted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onUpdateDeclined(
+            @Nonnull QueenOfVersionsInAppUpdateInfo inAppUpdateInfo,
+            @Nonnull UpdateStatus updateStatus,
+            @Nullable UpdateResult updateResult
+    ) {
+        Toast.makeText(this, "Update declined", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (cancelable != null) {
+            cancelable.cancel();
+        }
     }
 }
