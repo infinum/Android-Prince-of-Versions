@@ -318,6 +318,30 @@ public class QueenOfVersions {
             }
 
             /**
+             * Set custom {@link OnUpdateAccepted} handler.
+             *
+             * @param onUpdateAccepted handler.
+             * @return this
+             * @see OnUpdateAccepted
+             */
+            public QueenOfVersions.Callback.Builder withOnUpdateAccepted(OnUpdateAccepted onUpdateAccepted) {
+                adapter.withOnUpdateAccepted(onUpdateAccepted);
+                return this;
+            }
+
+            /**
+             * Set custom {@link OnUpdateDeclined} handler.
+             *
+             * @param onUpdateDeclined handler.
+             * @return this
+             * @see OnUpdateDeclined
+             */
+            public QueenOfVersions.Callback.Builder withOnUpdateDeclined(OnUpdateDeclined onUpdateDeclined) {
+                adapter.withOnUpdateDeclined(onUpdateDeclined);
+                return this;
+            }
+
+            /**
              * Builds the {@link Callback} with all custom callbacks set.
              *
              * @return instance of callback built using this builder
