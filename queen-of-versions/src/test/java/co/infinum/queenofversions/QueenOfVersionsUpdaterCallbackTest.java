@@ -5,6 +5,7 @@ import co.infinum.princeofversions.Storage;
 import co.infinum.princeofversions.UpdateInfo;
 import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdateStatus;
+import co.infinum.queenofversions.mocks.MockAppUpdateData;
 import java.util.Collections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +14,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+
 @RunWith(MockitoJUnitRunner.class)
 public class QueenOfVersionsUpdaterCallbackTest {
-
-    private static final int REQUEST_CODE = 123;
 
     @Mock
     GoogleAppUpdater googleAppUpdater;
@@ -61,7 +63,7 @@ public class QueenOfVersionsUpdaterCallbackTest {
 
         testing.onSuccess(result);
 
-        Mockito.verify(onSuccess).handleUpdateResultAsStatus(result);
+        verify(onSuccess).handleUpdateResultAsStatus(result);
     }
 
     @Test
@@ -81,7 +83,7 @@ public class QueenOfVersionsUpdaterCallbackTest {
 
         testing.onError(error);
 
-        Mockito.verify(onError).continueUpdateCheckAsStatus(error);
+        verify(onError).continueUpdateCheckAsStatus(error);
     }
 
     @Test
@@ -110,8 +112,8 @@ public class QueenOfVersionsUpdaterCallbackTest {
 
         testing.onSuccess(result);
 
-        Mockito.verify(onSuccess).handleUpdateResultAsStatus(result);
-        Mockito.verify(callback).onError(error);
+        verify(onSuccess).handleUpdateResultAsStatus(result);
+        verify(callback).onError(error);
     }
 
     @Test
@@ -134,8 +136,8 @@ public class QueenOfVersionsUpdaterCallbackTest {
 
         testing.onError(error);
 
-        Mockito.verify(onError).continueUpdateCheckAsStatus(error);
-        Mockito.verify(callback).onError(thrown);
+        verify(onError).continueUpdateCheckAsStatus(error);
+        verify(callback).onError(thrown);
     }
 
     @Test
@@ -160,6 +162,33 @@ public class QueenOfVersionsUpdaterCallbackTest {
 
         testing.continueUpdateCheckBasedOnStatus(UpdateStatus.NO_UPDATE_AVAILABLE, result);
 
-        Mockito.verify(callback).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), ArgumentMatchers.any(UpdateInfo.class));
+        verify(callback).onNoUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
+    }
+
+    public void successWithNoUpdateAndMandatoryRequiredNotifiesNoMandatoryUpdate() {
+        QueenOfVersionsUpdaterCallback testing = new QueenOfVersionsUpdaterCallback(
+                googleAppUpdater,
+                callback,
+                10,
+                onSuccess,
+                onError,
+                onUpdateNotAllowed,
+                onInAppUpdateAvailable,
+                storage
+        );
+
+        testing.handleSuccess(
+                MockAppUpdateData.createUnavailable(),
+                11,
+                true,
+                null
+        );
+
+        verify(callback).onMandatoryUpdateNotAvailable(
+                11,
+                any(QueenOfVersionsInAppUpdateInfo.class),
+                ArgumentMatchers.<String, String>anyMap(),
+                any(UpdateInfo.class)
+        );
     }
 }

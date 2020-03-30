@@ -3,8 +3,6 @@ package co.infinum.queenofversions;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import javax.annotation.Nullable;
 
-import static co.infinum.queenofversions.InAppUpdateData.INVALID_VALUE;
-
 /**
  * Information about update received from Google Play.
  */
@@ -12,34 +10,33 @@ public final class QueenOfVersionsInAppUpdateInfo {
 
     static QueenOfVersionsInAppUpdateInfo from(@Nullable AppUpdateInfo appUpdateInfo) {
         return new QueenOfVersionsInAppUpdateInfo(
-                appUpdateInfo != null ? getOrDefault(appUpdateInfo.availableVersionCode(), INVALID_VALUE) : INVALID_VALUE,
-                appUpdateInfo != null ? getOrDefault(appUpdateInfo.clientVersionStalenessDays(), INVALID_VALUE) : INVALID_VALUE,
-                appUpdateInfo != null ? getOrDefault(appUpdateInfo.updatePriority(), INVALID_VALUE) : INVALID_VALUE
+                appUpdateInfo != null ? appUpdateInfo.availableVersionCode() : null,
+                appUpdateInfo != null ? appUpdateInfo.clientVersionStalenessDays() : null,
+                appUpdateInfo != null ? appUpdateInfo.updatePriority() : null
         );
     }
 
     static QueenOfVersionsInAppUpdateInfo from(@Nullable InAppUpdateData inAppUpdateData) {
         return new QueenOfVersionsInAppUpdateInfo(
-                inAppUpdateData != null ? inAppUpdateData.availableVersionCode() : 0,
-                inAppUpdateData != null ? inAppUpdateData.clientStalenessDays() : 0,
-                inAppUpdateData != null ? inAppUpdateData.priority() : 0
+                inAppUpdateData != null ? inAppUpdateData.availableVersionCode() : null,
+                inAppUpdateData != null ? inAppUpdateData.clientStalenessDays() : null,
+                inAppUpdateData != null ? inAppUpdateData.priority() : null
         );
     }
 
-    private static int getOrDefault(@Nullable Integer value, int defaultValue) {
-        return value != null ? value : defaultValue;
-    }
+    @Nullable
+    private final Integer versionCode;
 
-    private final int versionCode;
+    @Nullable
+    private final Integer clientVersionStalenessDays;
 
-    private final int clientVersionStalenessDays;
-
-    private final int updatePriority;
+    @Nullable
+    private final Integer updatePriority;
 
     QueenOfVersionsInAppUpdateInfo(
-            final int versionCode,
-            final int clientVersionStalenessDays,
-            final int updatePriority
+            @Nullable final Integer versionCode,
+            @Nullable final Integer clientVersionStalenessDays,
+            @Nullable final Integer updatePriority
     ) {
         this.versionCode = versionCode;
         this.clientVersionStalenessDays = clientVersionStalenessDays;
@@ -47,26 +44,29 @@ public final class QueenOfVersionsInAppUpdateInfo {
     }
 
     /**
-     * Version code of available update.  If the update is not available returns -1.
-     * @return version code of available update.
+     * Version code of available update.  If the update is not available returns <code>null</code>.
+     * @return version code of available update or <code>null</code> if either update or this property isn't available.
      */
-    public int versionCode() {
+    @Nullable
+    public Integer versionCode() {
         return versionCode;
     }
 
     /**
-     * Days of staleness of the update. If the update is not available returns -1.
-     * @return days of staleness.
+     * Days of staleness of the update. If the update is not available returns <code>null</code>.
+     * @return days of staleness or <code>null</code> if either update or this property isn't available.
      */
-    public int clientVersionStalenessDays() {
+    @Nullable
+    public Integer clientVersionStalenessDays() {
         return clientVersionStalenessDays;
     }
 
     /**
-     * Update priority level. If the update is not available returns -1.
-     * @return update priority.
+     * Update priority level. If the update is not available returns <code>null</code>.
+     * @return update priority or <code>null</code> if either update or this property isn't available.
      */
-    public int updatePriority() {
+    @Nullable
+    public Integer updatePriority() {
         return updatePriority;
     }
 }

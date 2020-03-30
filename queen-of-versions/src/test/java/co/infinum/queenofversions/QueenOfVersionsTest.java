@@ -502,7 +502,7 @@ public class QueenOfVersionsTest {
                 new QueenOfVersionsUpdaterCallback(googleAppUpdater, updaterStateCallback, 11, storage);
 
         UpdateResult result = new UpdateResult(updateInfo, Collections.<String, String>emptyMap(), UpdateStatus.NO_UPDATE_AVAILABLE, 11);
-        googleInAppUpdateCallback.handleSuccess(MockAppUpdateData.createUnavailable(), 11, true, result);
+        googleInAppUpdateCallback.handleSuccess(MockAppUpdateData.createUnavailable(), 11, false, result);
 
         verify(googleAppUpdater, times(1)).noUpdate(ArgumentMatchers.<String, String>anyMap(), any(UpdateInfo.class));
     }

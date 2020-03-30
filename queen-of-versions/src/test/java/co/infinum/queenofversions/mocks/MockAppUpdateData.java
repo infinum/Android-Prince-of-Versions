@@ -4,10 +4,12 @@ import co.infinum.queenofversions.InAppUpdateData;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
+import javax.annotation.Nullable;
 
 public class MockAppUpdateData implements InAppUpdateData {
 
-    private final int versionCode;
+    @Nullable
+    private final Integer versionCode;
 
     @UpdateAvailability
     private final int updateAvailability;
@@ -20,7 +22,7 @@ public class MockAppUpdateData implements InAppUpdateData {
     private final boolean isFlexibleUpdateAllowed;
 
     private MockAppUpdateData(
-            final int versionCode,
+            @Nullable final Integer versionCode,
             @UpdateAvailability final int updateAvailability,
             @InstallStatus final int installStatus,
             final boolean isImmediateUpdateAllowed,
@@ -61,7 +63,7 @@ public class MockAppUpdateData implements InAppUpdateData {
         );
     }
 
-    public static InAppUpdateData createImmediateAvailble(
+    public static InAppUpdateData createImmediateAvailable(
             @InstallStatus int installStatus,
             int versionCode
     ) {
@@ -74,9 +76,9 @@ public class MockAppUpdateData implements InAppUpdateData {
         );
     }
 
-    public static InAppUpdateData createImmediateUnavailble() {
+    public static InAppUpdateData createImmediateUnavailable() {
         return new MockAppUpdateData(
-                0,
+                null,
                 UpdateAvailability.UPDATE_AVAILABLE,
                 InstallStatus.UNKNOWN,
                 true,
@@ -84,7 +86,7 @@ public class MockAppUpdateData implements InAppUpdateData {
         );
     }
 
-    public static InAppUpdateData createImmediateAvailble(
+    public static InAppUpdateData createImmediateAvailable(
             int versionCode
     ) {
         return new MockAppUpdateData(
@@ -96,7 +98,7 @@ public class MockAppUpdateData implements InAppUpdateData {
         );
     }
 
-    public static InAppUpdateData createFlexibleAvailble(
+    public static InAppUpdateData createFlexibleAvailable(
             @InstallStatus int installStatus,
             int versionCode
     ) {
@@ -109,9 +111,9 @@ public class MockAppUpdateData implements InAppUpdateData {
         );
     }
 
-    public static InAppUpdateData createFlexibleUnavailble() {
+    public static InAppUpdateData createFlexibleUnavailable() {
         return new MockAppUpdateData(
-                0,
+                null,
                 UpdateAvailability.UPDATE_AVAILABLE,
                 InstallStatus.UNKNOWN,
                 false,
@@ -119,7 +121,7 @@ public class MockAppUpdateData implements InAppUpdateData {
         );
     }
 
-    public static InAppUpdateData createFlexibleAvailble(
+    public static InAppUpdateData createFlexibleAvailable(
             int versionCode
     ) {
         return new MockAppUpdateData(
@@ -160,7 +162,7 @@ public class MockAppUpdateData implements InAppUpdateData {
 
     public static InAppUpdateData createUnavailable() {
         return new MockAppUpdateData(
-                0,
+                null,
                 UpdateAvailability.UPDATE_NOT_AVAILABLE,
                 InstallStatus.UNKNOWN,
                 true,
@@ -181,7 +183,7 @@ public class MockAppUpdateData implements InAppUpdateData {
     }
 
     @Override
-    public int availableVersionCode() {
+    public Integer availableVersionCode() {
         return versionCode;
     }
 
@@ -205,12 +207,12 @@ public class MockAppUpdateData implements InAppUpdateData {
     }
 
     @Override
-    public int priority() {
-        return 0;
+    public Integer priority() {
+        return null;
     }
 
     @Override
-    public int clientStalenessDays() {
-        return 0;
+    public Integer clientStalenessDays() {
+        return null;
     }
 }

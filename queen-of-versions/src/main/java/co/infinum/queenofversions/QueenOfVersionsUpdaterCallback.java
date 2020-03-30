@@ -294,12 +294,12 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
             boolean isMandatory,
             @Nullable UpdateResult updateResult
     ) {
-        int googleUpdateVersionCode = appUpdateInfo.availableVersionCode();
+        Integer googleUpdateVersionCode = appUpdateInfo.availableVersionCode();
         int updateAvailability = appUpdateInfo.updateAvailability();
         QueenOfVersionsInAppUpdateInfo inAppUpdateInfo = QueenOfVersionsInAppUpdateInfo.from(appUpdateInfo);
         UpdateInfo updateInfo = updateResult != null ? updateResult.getInfo() : null;
 
-        if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE) {
+        if (updateAvailability == UpdateAvailability.UPDATE_AVAILABLE && googleUpdateVersionCode != null) {
             if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                 flexibleStateListener.onDownloaded(this, inAppUpdateInfo);
                 return;
@@ -356,7 +356,7 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
                 // Shouldn't happen if we cover all cases of @VersionCode
                 notifyNoUpdate(updateResult, updateInfo);
             }
-        } else if (UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS == updateAvailability) {
+        } else if (UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS == updateAvailability && googleUpdateVersionCode != null) {
             UpdateResolution updateResolution = checkUpdateResolution(princeVersionCode, googleUpdateVersionCode, isMandatory, updateInfo);
             updateResolution = relaxResolution(
                     updateResolution,
@@ -369,6 +369,8 @@ final class QueenOfVersionsUpdaterCallback implements UpdaterCallback, InstallSt
             } else {
                 notifyNoUpdate(updateResult, updateInfo);
             }
+        } else if (isMandatory) {
+            notifyMandatoryUpdateNotAvailable(updateResult, inAppUpdateInfo, updateInfo);
         } else {
             notifyNoUpdate(updateResult, updateInfo);
         }
