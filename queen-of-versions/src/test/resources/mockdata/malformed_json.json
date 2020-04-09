@@ -1,0 +1,16 @@
+{
+  not_ios: {
+    not_minimum_version: "1.2.3",
+    not_latest_version: {
+      not_version: "2.4.5",
+      not_notification_type: "ALWAYS"
+    }
+  },
+  not_android: {
+    not_minimum_version: "1.2.3",
+    not_latest_version": {
+      not_version: "2.4.5",
+      not_notification_type: "ONCE"
+    }
+  }
+}

@@ -4,20 +4,18 @@ package co.infinum.princeofversions;
  * Represents a status of an update check
  */
 public enum UpdateStatus {
-
     /**
      * Update is available and type of update is mandatory
      */
-    MANDATORY,
+    REQUIRED_UPDATE_NEEDED,
 
     /**
      * Update is available and type of update is optional
      */
-    OPTIONAL,
+    NEW_UPDATE_AVAILABLE,
 
     /**
      * Update is not available
      */
-    NO_UPDATE
-
+    NO_UPDATE_AVAILABLE
 }

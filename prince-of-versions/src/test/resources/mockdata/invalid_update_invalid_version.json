@@ -12,5 +12,10 @@
       "version": "2.4.5",
       "notification_type": "ONCE"
     }
+  },
+  "android2":{
+    "forceUpdate": -1,
+    "lastVersionAvailable": 245,
+    "notifyLastVersion": "ONCE"
   }
 }

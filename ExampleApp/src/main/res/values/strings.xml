@@ -2,7 +2,7 @@
     <string name="app_name">POVExampleApp</string>
     <string name="btn_new_update">Is there any new update?</string>
     <string name="btn_new_update_sync">Is there any new update? (Sync version)</string>
-    <string name="update_available_msg">There is new %1$s update. Version: %2$s</string>
+    <string name="update_available_msg">There is new %1$s update. Version: %2$d</string>
     <string name="mandatory">mandatory</string>
     <string name="not_mandatory"></string>
     <string name="no_update_available">No new update available</string>
@@ -18,8 +18,12 @@
     <string name="pastebin_url">Enter sample URL</string>
     <string name="pastebin_url_part">http://pastebin.com/raw/</string>
     <string name="open_common_usage">Common usage example</string>
+    <string name="open_kotlin_common_usage">Kotlin usage example</string>
     <string name="open_network_with_login">Custom network loader with login</string>
     <string name="open_custom_parser">Custom configuration parser example</string>
     <string name="open_stream_example">Stream loader example</string>
     <string name="open_call_usage">Common usage with Calls example</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="google_in_app_updates">Google in-app updates</string>
+    <string name="custom_requirements_checker_example">Custom requirements checker example</string>
 </resources>

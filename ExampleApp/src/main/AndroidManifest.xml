@@ -20,6 +20,9 @@
         <activity android:name=".CallUsageExample"/>
         <activity android:name=".CustomParserExample"/>
         <activity android:name=".StreamLoaderExample"/>
+        <activity android:name=".GoogleInAppUpdatesExample" />
+        <activity android:name=".CustomRequirementCheckerExample"/>
+        <activity android:name=".KotlinCommonExample" />
     </application>
 
 </manifest>

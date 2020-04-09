@@ -1,7 +1,5 @@
 package co.infinum.princeofversions;
 
-import java.util.Map;
-
 /**
  * Callback for notifying result after version checking computation is done.
  * <p>
@@ -13,17 +11,10 @@ public interface UpdaterCallback {
     /**
      * Method is called when there is new update available for current application.
      *
-     * @param version     Version string of available update.
-     * @param isMandatory Determines if update is mandatory or just optional, true if update is mandatory, false if it is optional.
-     * @param metadata    Metadata accompanying the update
+     * @param result result of the update check. Read <code>status</code> to find out if there is an update,
+     *              and if there is read <code>updateVersion</code> to find out what is the version of the update
      */
-    void onNewUpdate(String version, boolean isMandatory, Map<String, String> metadata);
-
-    /**
-     * Method is called when update check is finished successfully, but there is no new update available.
-     * @param metadata   Metadata accompanying no update message
-     */
-    void onNoUpdate(Map<String, String> metadata);
+    void onSuccess(UpdateResult result);
 
     /**
      * Method is called when there was some error while computing update check.

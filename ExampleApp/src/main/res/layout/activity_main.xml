@@ -17,6 +17,12 @@
         android:text="@string/open_common_usage" />
 
     <Button
+        android:id="@+id/btn_open_kotlin_common_usage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/open_kotlin_common_usage" />
+
+    <Button
         android:id="@+id/btn_open_call_usage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,4 +39,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/open_stream_example" />
+
+    <Button
+        android:id="@+id/btn_open_custom_checker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/custom_requirements_checker_example"/>
+
+    <Button
+        android:id="@+id/btn_open_google_inapp_updates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/google_in_app_updates" />
 </LinearLayout>

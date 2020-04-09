@@ -1,0 +1,18 @@
+{
+  "ios": {
+    "minimum_version": "1.2.3",
+    "latest_version": {
+      "version": "2.4.5",
+      "notification_type": "ALWAYS"
+    }
+  },
+  "android": {
+    "minimum_version": "1.2.3-b12",
+    "minimum_version_min_sdk": 15,
+    "latest_version": {
+      "version": "2.4.5-b45",
+      "notification_type": "ONCE",
+      "min_sdk": 16
+    }
+  }
+}
