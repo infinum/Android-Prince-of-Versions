@@ -10,9 +10,9 @@ import android.os.Build;
 final class ApplicationConfigurationImpl implements ApplicationConfiguration {
 
     /**
-     * Version name
+     * Version code
      */
-    private String version;
+    private int version;
 
     /**
      * SDK version code
@@ -27,14 +27,14 @@ final class ApplicationConfigurationImpl implements ApplicationConfiguration {
     ApplicationConfigurationImpl(Context context) {
         sdkVersionCode = Build.VERSION.SDK_INT;
         try {
-            version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             throw new IllegalStateException("Could not find package name", e);
         }
     }
 
     @Override
-    public String version() {
+    public int version() {
         return version;
     }
 

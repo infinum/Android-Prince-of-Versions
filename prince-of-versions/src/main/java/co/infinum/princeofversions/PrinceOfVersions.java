@@ -1,8 +1,10 @@
 package co.infinum.princeofversions;
 
 import android.content.Context;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Nullable;
@@ -23,7 +25,7 @@ import javax.annotation.Nullable;
  * there you can specify custom {@link Executor}, class which should run process, usually on background thread.
  * With this approach checkForUpdates method returns {@link PrinceOfVersionsCancelable} object which you can use to cancel request.
  * </p>
- *
+ * <p>
  * Here is code for most common usage of this library
  * <pre>
  *         {@link PrinceOfVersions} updater = new {@link PrinceOfVersions}(context);
@@ -44,37 +46,51 @@ public final class PrinceOfVersions {
      * @param context context which will be used for checking application version.
      */
     public PrinceOfVersions(Context context) {
-        this(createDefaultParser(), createDefaultVersionParser(), createDefaultStorage(context), createDefaultCallbackExecutor(),
+        this(createDefaultParser(), createDefaultStorage(context),
+            createDefaultCallbackExecutor(),
             createAppConfig(context));
     }
 
     @VisibleForTesting
     PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig) {
-        this(createDefaultParser(), createDefaultVersionParser(), storage, callbackExecutor, appConfig);
+        this(createDefaultParser(), storage, callbackExecutor, appConfig);
     }
 
-    private PrinceOfVersions(ConfigurationParser configurationParser, VersionParser versionParser, Storage storage,
+    @VisibleForTesting
+    PrinceOfVersions(Storage storage, Executor callbackExecutor, ApplicationConfiguration appConfig,
+        Map<String, RequirementChecker> checkers) {
+        this(createMockedParser(checkers), storage, callbackExecutor, appConfig);
+    }
+
+    private PrinceOfVersions(ConfigurationParser configurationParser, Storage storage,
         Executor callbackExecutor, ApplicationConfiguration appConfig) {
         this.presenter = new PresenterImpl(
-            new InteractorImpl(configurationParser, versionParser),
+            new InteractorImpl(configurationParser),
             storage
         );
         this.callbackExecutor = callbackExecutor;
         this.appConfig = appConfig;
     }
 
+    private static ConfigurationParser createDefaultParser(Map<String, RequirementChecker> requirementCheckers) {
+        requirementCheckers.put(PrinceOfVersionsDefaultRequirementsChecker.KEY, new PrinceOfVersionsDefaultRequirementsChecker());
+        return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor(
+            requirementCheckers
+        ));
+    }
+
     private static ConfigurationParser createDefaultParser() {
-        return new JsonConfigurationParser();
+        return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor());
+    }
+
+    private static ConfigurationParser createMockedParser(Map<String, RequirementChecker> requirementCheckers) {
+        return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor(
+            requirementCheckers
+        ));
     }
 
     private static Storage createDefaultStorage(Context context) {
-        PrinceOfVersionsDefaultStorage oldStorage = new PrinceOfVersionsDefaultStorage(context);
-        PrinceOfVersionsDefaultNamedPreferenceStorage storage = new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
-        return new MigrationStorage(oldStorage, storage);
-    }
-
-    private static VersionParser createDefaultVersionParser() {
-        return new PrinceOfVersionsDefaultVersionParser();
+        return new PrinceOfVersionsDefaultNamedPreferenceStorage(context);
     }
 
     private static ApplicationConfiguration createAppConfig(Context context) {
@@ -147,7 +163,7 @@ public final class PrinceOfVersions {
      * @return result of update check.
      * @throws Throwable if error occurred.
      */
-    public Result checkForUpdates(String url) throws Throwable {
+    public UpdateResult checkForUpdates(String url) throws Throwable {
         return checkForUpdates(new NetworkLoader(url));
     }
 
@@ -158,7 +174,7 @@ public final class PrinceOfVersions {
      * @return result of update check.
      * @throws Throwable if error occurred.
      */
-    public Result checkForUpdates(Loader loader) throws Throwable {
+    public UpdateResult checkForUpdates(Loader loader) throws Throwable {
         return presenter.check(loader, appConfig);
     }
 
@@ -188,18 +204,14 @@ public final class PrinceOfVersions {
      */
     public static class Builder {
 
+        private final Map<String, RequirementChecker> requirementCheckers = new HashMap<>();
+
         @Nullable
         private ConfigurationParser configurationParser;
-
         @Nullable
         private Storage storage;
-
-        @Nullable
-        private VersionParser versionParser;
-
         @Nullable
         private ApplicationConfiguration appConfig;
-
         @Nullable
         private Executor callbackExecutor;
 
@@ -226,17 +238,6 @@ public final class PrinceOfVersions {
         }
 
         /**
-         * Set a new version parser used to parse version strings.
-         *
-         * @param versionParser Version parser
-         * @return this builder
-         */
-        public Builder withVersionParser(VersionParser versionParser) {
-            this.versionParser = versionParser;
-            return this;
-        }
-
-        /**
          * Set a new callback executor which runs callback code on specific thread.
          *
          * @param callbackExecutor Callback executor
@@ -244,6 +245,29 @@ public final class PrinceOfVersions {
          */
         public Builder withCallbackExecutor(@Nullable final Executor callbackExecutor) {
             this.callbackExecutor = callbackExecutor;
+            return this;
+        }
+
+        /**
+         * Add a new custom requirements checker that's used in process of parsing JSON
+         *
+         * @param requirementsChecker Requirements checker
+         * @param key                 Key with which we are going to get a wanted requirement from JSON
+         * @return this builder
+         */
+        public Builder addRequirementsChecker(String key, RequirementChecker requirementsChecker) {
+            this.requirementCheckers.put(key, requirementsChecker);
+            return this;
+        }
+
+        /**
+         * Remove custom requirements checker that's used in process of parsing JSON
+         *
+         * @param key                 Key with which we are going to get a wanted requirement from JSON
+         * @return this builder
+         */
+        public Builder removeRequirementsChecker(String key) {
+            this.requirementCheckers.remove(key);
             return this;
         }
 
@@ -267,8 +291,7 @@ public final class PrinceOfVersions {
          */
         public PrinceOfVersions build(Context context) {
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(),
-                versionParser != null ? versionParser : createDefaultVersionParser(),
+                configurationParser != null ? configurationParser : createDefaultParser(requirementCheckers),
                 storage != null ? storage : createDefaultStorage(context),
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig != null ? appConfig : createAppConfig(context)
@@ -288,8 +311,7 @@ public final class PrinceOfVersions {
                     "You must define storage and application configuration if you don't provide Context.");
             }
             return new PrinceOfVersions(
-                configurationParser != null ? configurationParser : createDefaultParser(),
-                versionParser != null ? versionParser : createDefaultVersionParser(),
+                configurationParser != null ? configurationParser : createDefaultParser(requirementCheckers),
                 storage,
                 callbackExecutor != null ? callbackExecutor : createDefaultCallbackExecutor(),
                 appConfig

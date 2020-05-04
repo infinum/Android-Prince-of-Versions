@@ -4,17 +4,13 @@ final class InteractorImpl implements Interactor {
 
     private ConfigurationParser configurationParser;
 
-    private VersionParser versionParser;
-
     /**
-     * Constructs interactor using provided {@link ConfigurationParser} and {@link VersionParser}.
+     * Constructs interactor using provided {@link ConfigurationParser}.
      *
-     * @param configurationParser        object which will be used for parsing update resource.
-     * @param versionParser object which will be used for parsing specific version strings.
+     * @param configurationParser object which will be used for parsing update resource.
      */
-    InteractorImpl(ConfigurationParser configurationParser, VersionParser versionParser) {
+    InteractorImpl(ConfigurationParser configurationParser) {
         this.configurationParser = configurationParser;
-        this.versionParser = versionParser;
     }
 
     @Override
@@ -22,10 +18,18 @@ final class InteractorImpl implements Interactor {
         String content = loader.load();
         PrinceOfVersionsConfig config = configurationParser.parse(content);
 
-        Version currentVersion = versionParser.parse(appConfig.version());
+        int currentVersion = appConfig.version();
 
-        PrinceOfVersionsConfig.Version mandatoryConfigVersion = config.getMandatoryVersion();
-        PrinceOfVersionsConfig.Version optionalConfigVersion = config.getOptionalVersion();
+        Integer mandatoryConfigVersion = config.getMandatoryVersion();
+        Integer optionalConfigVersion = config.getOptionalVersion();
+
+        UpdateInfo updateInfo = new UpdateInfo(
+                config.getMandatoryVersion(),
+                config.getOptionalVersion(),
+                config.getRequirements(),
+                currentVersion,
+                config.getOptionalNotificationType()
+        );
 
         if (mandatoryConfigVersion == null && optionalConfigVersion == null) {
             // neither mandatory nor optional version is provided
@@ -33,35 +37,34 @@ final class InteractorImpl implements Interactor {
         }
 
         if (mandatoryConfigVersion != null) {
-            Version mandatoryVersion = versionParser.parse(mandatoryConfigVersion.getVersion());
-            int mandatoryMinSdk = mandatoryConfigVersion.getMinSdk();
+            int mandatoryVersion = mandatoryConfigVersion;
 
-            if (currentVersion.isLessThan(mandatoryVersion) && mandatoryMinSdk <= appConfig.sdkVersionCode()) {
+            if (currentVersion < mandatoryVersion) {
                 // if mandatory update exists - notify mandatory update
                 // if there is also optional update available check if its version is greater than mandatory
                 // in that case notify mandatory update with optional version, otherwise notify mandatory update with mandatory version
                 if (optionalConfigVersion != null) {
-                    Version optionalVersion = versionParser.parse(optionalConfigVersion.getVersion());
-                    int optionalMinSdk = optionalConfigVersion.getMinSdk();
-                    if (optionalVersion.isGreaterThan(mandatoryVersion) && optionalMinSdk <= appConfig.sdkVersionCode()) {
+                    int optionalVersion = optionalConfigVersion;
+                    if (optionalVersion > mandatoryVersion) {
                         // optional update also exists and has greater version than mandatory
-                        return CheckResult.mandatoryUpdate(optionalVersion.value(), config.getMetadata());
+
+                        return CheckResult.mandatoryUpdate(optionalVersion, config.getMetadata(), updateInfo);
                     }
                 }
                 // if there is no optional update or it isn't greater than mandatory - notify mandatory version
-                return CheckResult.mandatoryUpdate(mandatoryVersion.value(), config.getMetadata());
+                return CheckResult.mandatoryUpdate(mandatoryVersion, config.getMetadata(), updateInfo);
             }
         }
 
         // if there is no mandatory update check for optional
         if (optionalConfigVersion != null) {
-            Version optionalVersion = versionParser.parse(optionalConfigVersion.getVersion());
-            int optionalMinSdk = optionalConfigVersion.getMinSdk();
-            if (currentVersion.isLessThan(optionalVersion) && optionalMinSdk <= appConfig.sdkVersionCode()) {
-                return CheckResult.optionalUpdate(optionalVersion.value(), config.getOptionalNotificationType(), config.getMetadata());
+            int optionalVersion = optionalConfigVersion;
+            if (currentVersion < optionalVersion) {
+                return CheckResult.optionalUpdate(optionalVersion, config.getOptionalNotificationType(),
+                        config.getMetadata(), updateInfo);
             }
         }
 
-        return CheckResult.noUpdate(currentVersion.value(), config.getMetadata());
+        return CheckResult.noUpdate(currentVersion, config.getMetadata(), updateInfo);
     }
 }

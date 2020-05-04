@@ -4,17 +4,17 @@ import co.infinum.princeofversions.ApplicationConfiguration;
 
 public class MockApplicationConfiguration implements ApplicationConfiguration {
 
-    private String version;
+    private int version;
 
     private int sdkVersionCode;
 
-    public MockApplicationConfiguration(String version, int sdkVersionCode) {
+    public MockApplicationConfiguration(int version, int sdkVersionCode) {
         this.version = version;
         this.sdkVersionCode = sdkVersionCode;
     }
 
     @Override
-    public String version() {
+    public int version() {
         return version;
     }
 

@@ -7,9 +7,11 @@
     }
   },
   "android": {
-    "minimum_version": "1.2.3",
-    "latest_version": {
-      "version": "2.4.5"
-    }
+    "required_version": 123,
+    "last_version_available": 245
+  },
+  "android2": {
+    "required_version": 123,
+    "last_version_available": 245
   }
 }

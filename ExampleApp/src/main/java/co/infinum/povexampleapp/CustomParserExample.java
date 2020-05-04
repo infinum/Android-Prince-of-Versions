@@ -3,45 +3,52 @@ package co.infinum.povexampleapp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import org.json.JSONObject;
-
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import androidx.appcompat.app.AppCompatActivity;
 import co.infinum.princeofversions.ConfigurationParser;
 import co.infinum.princeofversions.Loader;
 import co.infinum.princeofversions.NetworkLoader;
 import co.infinum.princeofversions.PrinceOfVersions;
 import co.infinum.princeofversions.PrinceOfVersionsCancelable;
 import co.infinum.princeofversions.PrinceOfVersionsConfig;
-import co.infinum.princeofversions.Result;
+import co.infinum.princeofversions.UpdateResult;
 import co.infinum.princeofversions.UpdaterCallback;
+import javax.annotation.Nonnull;
+import org.json.JSONObject;
 
 public class CustomParserExample extends AppCompatActivity {
 
     private final UpdaterCallback defaultCallback = new UpdaterCallback() {
-        @Override
-        public void onNewUpdate(@NonNull String version, boolean isMandatory, @NonNull Map<String, String> metadata) {
-            toastIt(
-                    getString(
-                            R.string.update_available_msg,
-                            getString(isMandatory ? R.string.mandatory : R.string.not_mandatory),
-                            version
-                    ),
-                    Toast.LENGTH_SHORT
-            );
-        }
 
         @Override
-        public void onNoUpdate(@NonNull Map<String, String> metadata) {
-            toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
+        public void onSuccess(@Nonnull UpdateResult result) {
+            switch (result.getStatus()) {
+                case REQUIRED_UPDATE_NEEDED:
+                    toastIt(
+                        getString(
+                            R.string.update_available_msg,
+                            getString(R.string.mandatory),
+                            result.getInfo().getLastVersionAvailable()
+                        ),
+                        Toast.LENGTH_SHORT
+                    );
+                    break;
+                case NEW_UPDATE_AVAILABLE:
+                    toastIt(
+                        getString(
+                            R.string.update_available_msg,
+                            getString(R.string.not_mandatory),
+                            result.getInfo().getLastVersionAvailable()
+                        ),
+                        Toast.LENGTH_SHORT
+                    );
+                    break;
+                case NO_UPDATE_AVAILABLE:
+                    toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT);
+                    break;
+            }
         }
 
         @Override
@@ -71,7 +78,7 @@ public class CustomParserExample extends AppCompatActivity {
 
         @Override
         public PrinceOfVersionsConfig parse(@Nonnull String value) throws Throwable {
-            return new PrinceOfVersionsConfig.Builder().withMandatoryVersion(new JSONObject(value).getString(MINIMUM_VERSION)).build();
+            return new PrinceOfVersionsConfig.Builder().withMandatoryVersion(new JSONObject(value).getInt(MINIMUM_VERSION)).build();
         }
     };
 
@@ -84,7 +91,7 @@ public class CustomParserExample extends AppCompatActivity {
         /*  create new instance of updater using custom parser factory   */
         updater = new PrinceOfVersions.Builder().withParser(customParser).build(this);
         /*  create specific loader factory for loading from internet    */
-        loader = new NetworkLoader("http://pastebin.com/raw/c4c4pPyn");
+        loader = new NetworkLoader("https://pastebin.com/raw/c4c4pPyn");
         slowLoader = createSlowLoader(loader);
     }
 
@@ -137,9 +144,9 @@ public class CustomParserExample extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Result result = updater.checkForUpdates(loader);
-                    toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getVersion(),
-                            Toast.LENGTH_LONG);
+                    UpdateResult result = updater.checkForUpdates(loader);
+                    toastItOnMainThread("Update check finished with status " + result.getStatus() + " and version " + result.getInfo().getInstalledVersion(),
+                        Toast.LENGTH_LONG);
                 } catch (Throwable throwable) {
                     toastItOnMainThread("Error occurred " + throwable.getMessage(), Toast.LENGTH_LONG);
                 }

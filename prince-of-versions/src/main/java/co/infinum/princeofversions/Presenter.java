@@ -15,7 +15,7 @@ interface Presenter {
      * @return Update result.
      * @throws Throwable if error happens during check.
      */
-    Result check(Loader loader, ApplicationConfiguration appConfig) throws Throwable;
+    UpdateResult check(Loader loader, ApplicationConfiguration appConfig) throws Throwable;
 
     /**
      * Start asynchronous update check.
