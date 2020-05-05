@@ -48,3 +48,4 @@ implementation 'co.infinum:prince-of-versions:4.0.0'
 ## Contributing
 
 Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](./LICENCE).
+
