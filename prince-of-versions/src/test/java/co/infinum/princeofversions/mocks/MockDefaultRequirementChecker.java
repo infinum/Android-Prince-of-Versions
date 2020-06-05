@@ -1,10 +1,5 @@
 package co.infinum.princeofversions.mocks;
 
-import android.os.Build;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import co.infinum.princeofversions.ApplicationConfiguration;
 import co.infinum.princeofversions.RequirementChecker;
 
@@ -22,8 +17,12 @@ public class MockDefaultRequirementChecker implements RequirementChecker {
         this.sdkVersionCode = appConfig.sdkVersionCode();
     }
 
+    public MockDefaultRequirementChecker(int versionCode) {
+        this.sdkVersionCode = versionCode;
+    }
+
     @Override
-    public boolean checkRequirements(String value) throws JSONException {
+    public boolean checkRequirements(String value) {
         int minSdk = Integer.parseInt(value);
         return minSdk <= this.sdkVersionCode;
     }
