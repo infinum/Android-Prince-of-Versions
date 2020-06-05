@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 0.2.0
+
+_2020-06-05_
+
+- com.google.android.play:core to version 1.7.2
+- PrinceOfVersions to version 4.0.1
+
 ## Version 0.1.1
 
 _2020-03-30_
