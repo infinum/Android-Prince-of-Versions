@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 4.0.1
+
+_2020-06-05_
+
+- fix resolution of missing custom requirements checker
+    Any requirement specified in the configuration is from now on required to be satisfied to be able to use that update.
+    If application doesn't support that requirement, update won't be considered valid for that device and it will be skipped.
+
 ## Version 4.0.0
 
 _2020-03-29_
