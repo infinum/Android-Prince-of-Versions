@@ -1,32 +1,26 @@
 package co.infinum.princeofversions;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.Collections;
-import java.util.Map;
-
 import co.infinum.princeofversions.mocks.MockApplicationConfiguration;
 import co.infinum.princeofversions.mocks.MockDefaultRequirementChecker;
 import co.infinum.princeofversions.mocks.MockStorage;
 import co.infinum.princeofversions.mocks.ResourceFileLoader;
 import co.infinum.princeofversions.mocks.SingleThreadExecutor;
+import java.util.Collections;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import static co.infinum.princeofversions.PrinceOfVersionsDefaultRequirementsChecker.KEY;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PrinceOfVersionsTest {
 
-    private static final String DEFAULT_OS_VERSION = "required_os_version";
+    private static final String DEFAULT_OS_VERSION = KEY;
 
     @Mock
     UpdaterCallback callback;
@@ -35,19 +29,15 @@ public class PrinceOfVersionsTest {
         return any(Throwable.class);
     }
 
-    private static Map<String, String> anyMap() {
-        return ArgumentMatchers.anyMap();
-    }
-
     @Test
     public void testCheckingValidContentNoNotification() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_no_notification.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_no_notification.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -59,7 +49,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentNoNotificationSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_no_notification.json"));
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
         assertThat(result.getUpdateVersion()).isEqualTo(245);
@@ -70,11 +60,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentNotificationAlways() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_notification_always.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_notification_always.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -86,7 +76,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentNotificationAlwaysSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_notification_always.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -98,11 +88,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentNotificationAlwaysAlreadyNotified() {
         Storage storage = new MockStorage(245);
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_notification_always.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_notification_always.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -114,7 +104,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentNotificationAlwaysAlreadyNotifiedSync() throws Throwable {
         Storage storage = new MockStorage(245);
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_notification_always.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -126,11 +116,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentOnlyMinVersion() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_only_min_version.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_only_min_version.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -141,7 +131,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentOnlyMinVersionSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_only_min_version.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
@@ -152,11 +142,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentWithoutCodes() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -168,7 +158,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentWithoutCodesSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -180,11 +170,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndLessThanOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -196,7 +186,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndLessThanOptionalSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -208,11 +198,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsLessThanMinAndLessThanOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(100,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -224,7 +214,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsLessThanMinAndLessThanOptionalSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(100,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
@@ -236,11 +226,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsEqualToMinAndLessThanOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(123,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -252,7 +242,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(123,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -264,11 +254,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalButAlreadyNotified() {
         Storage storage = new MockStorage(245);
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(123,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -280,7 +270,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsEqualToMinAndLessThanOptionalButAlreadyNotifiedSync() throws Throwable {
         Storage storage = new MockStorage(245);
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(123,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
@@ -292,11 +282,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(245,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -307,7 +297,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndEqualToOptionalSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(245,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
@@ -318,11 +308,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptional() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -333,7 +323,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingContentJSONWhenCurrentIsGreaterThanMinAndGreaterThanOptionalSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
@@ -344,7 +334,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingInvalidContentWithInvalidVersionSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         princeOfVersions.checkForUpdates(new ResourceFileLoader("invalid_update_invalid_version.json"));
     }
 
@@ -352,11 +342,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingInvalidContentNoAndroidKey() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(
-            300, 16));
+                300, 16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("invalid_update_no_android.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("invalid_update_no_android.json"),
+                callback
         );
 
         verify(callback, times(0)).onSuccess(any(UpdateResult.class));
@@ -367,7 +357,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingInvalidContentNoAndroidKeySync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         princeOfVersions.checkForUpdates(new ResourceFileLoader("invalid_update_no_android.json"));
     }
 
@@ -375,11 +365,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingInvalidContentNoJSON() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("invalid_update_no_android.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("invalid_update_no_android.json"),
+                callback
         );
 
         verify(callback, times(0)).onSuccess(any(UpdateResult.class));
@@ -390,7 +380,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingInvalidContentNoJSONSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         princeOfVersions.checkForUpdates(new ResourceFileLoader("invalid_update_no_android.json"));
     }
 
@@ -398,11 +388,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentWithAlwaysNotification() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_notification_always.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_notification_always.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -413,7 +403,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentWithAlwaysNotificationSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_notification_always.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
@@ -424,11 +414,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentWithOnlyMinVersion() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_only_min_version.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_only_min_version.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -439,7 +429,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingValidContentWithOnlyMinVersionSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(300,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_only_min_version.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
@@ -450,11 +440,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingWhenVersionIsAlreadyNotified() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(245,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -465,7 +455,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingWhenVersionIsAlreadyNotifiedSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(245,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
@@ -476,11 +466,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingWhenUpdateShouldBeMade() {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_no_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_no_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -492,7 +482,7 @@ public class PrinceOfVersionsTest {
     public void testCheckingWhenUpdateShouldBeMadeSync() throws Throwable {
         Storage storage = new MockStorage();
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            16));
+                16));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_no_sdk_values.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -507,11 +497,11 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(),
-            appConfig, Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                appConfig, Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -525,7 +515,7 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_sdk_values.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
@@ -540,11 +530,11 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_single_sdk_value.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_single_sdk_value.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -559,7 +549,7 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_single_sdk_value.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -574,11 +564,11 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_huge_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_huge_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(0)).onSuccess(any(UpdateResult.class));
@@ -592,7 +582,7 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_huge_sdk_values.json"));
     }
 
@@ -603,11 +593,11 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -622,7 +612,7 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
@@ -637,11 +627,11 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -656,7 +646,7 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_downgrading_sdk_values.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -671,11 +661,11 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_huge_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_huge_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(0)).onSuccess(any(UpdateResult.class));
@@ -689,7 +679,7 @@ public class PrinceOfVersionsTest {
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(appConfig);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), appConfig,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_huge_sdk_values.json"));
     }
 
@@ -697,14 +687,14 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSingleSdkValue() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(241,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_single_sdk_value.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_single_sdk_value.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -716,11 +706,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSingleSdkValueSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(241,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_single_sdk_value.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -732,15 +722,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSingleSdkValueAndHigherInitialVersion() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(241,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_single_sdk_value.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_single_sdk_value.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -752,11 +742,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSingleSdkValueAndHigherInitialVersionSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(241,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_single_sdk_value.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -768,15 +758,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingMandatoryUpdateWithSdkValues() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(140,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_mandatory_update.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_mandatory_update.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -788,11 +778,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingMandatoryUpdateWithSdkValuesSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(140,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_mandatory_update.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
@@ -804,15 +794,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSdkValuesAndTheSameVersions() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(245,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full_b_with_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full_b_with_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -823,11 +813,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSdkValuesAndTheSameVersionsSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(245,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full_b_with_sdk_values.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
@@ -838,15 +828,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSdkValuesAndWithDifferentVersions() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(244,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full_b_with_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full_b_with_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -858,11 +848,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSdkValuesAndWithDifferentVersionsSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(244,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full_b_with_sdk_values.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);
@@ -874,15 +864,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSdkValuesAndIncreaseInMinor() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(230,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_full_with_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_full_with_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(0)).onSuccess(any(UpdateResult.class));
@@ -893,11 +883,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithSdkValuesAndIncreaseInMinorSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(230,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_full_with_sdk_values.json"));
     }
 
@@ -905,15 +895,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithHighSdkValuesAndIncreaseInMinor() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(230,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_big_increase_in_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_big_increase_in_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(0)).onSuccess(any(UpdateResult.class));
@@ -924,11 +914,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithHighSdkValuesAndIncreaseInMinorSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(230,
-            16);
+                16);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_big_increase_in_sdk_values.json"));
     }
 
@@ -936,15 +926,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingMandatoryUpdateWithDeviceThatHasVeryLowMinSdk() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(100,
-            12);
+                12);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_same_sdk_values.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_same_sdk_values.json"),
+                callback
         );
 
         verify(callback, times(0)).onSuccess(any(UpdateResult.class));
@@ -955,11 +945,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingMandatoryUpdateWithDeviceThatHasVeryLowMinSdkSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(100,
-            12);
+                12);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_same_sdk_values.json"));
     }
 
@@ -967,15 +957,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWithBigMinimumVersionMinSdk() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(200,
-            23);
+                23);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -986,10 +976,18 @@ public class PrinceOfVersionsTest {
     @Test
     public void testCheckingOptionalUpdateWithBigMinimumVersionMinSdkSync() throws Throwable {
         Storage storage = new MockStorage();
-        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), new MockApplicationConfiguration(200,
-            23));
+        MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(200, 23);
+        PrinceOfVersions princeOfVersions = new PrinceOfVersions(
+                storage,
+                new SingleThreadExecutor(),
+                applicationConfiguration,
+                Collections.<String, RequirementChecker>singletonMap(
+                        DEFAULT_OS_VERSION,
+                        new MockDefaultRequirementChecker(applicationConfiguration)
+                )
+        );
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk"
-            + ".json"));
+                + ".json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED);
         assertThat(result.getUpdateVersion()).isEqualTo(211);
@@ -1000,15 +998,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWhenUserIsUpToDate() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(211,
-            20);
+                20);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -1019,13 +1017,13 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWhenUserIsUpToDateSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(211,
-            20);
+                20);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_with_big_minimum_version_min_sdk"
-            + ".json"));
+                + ".json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE);
         assertThat(result.getUpdateVersion()).isEqualTo(211);
@@ -1035,15 +1033,15 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWhenUserIsUpToDateAndNoMandatoryUpdateIsNotDefined() {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(211,
-            20);
+                20);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         princeOfVersions.checkForUpdatesInternal(
-            new SingleThreadExecutor(),
-            new ResourceFileLoader("valid_update_no_min_version.json"),
-            callback
+                new SingleThreadExecutor(),
+                new ResourceFileLoader("valid_update_no_min_version.json"),
+                callback
         );
 
         verify(callback, times(1)).onSuccess(any(UpdateResult.class));
@@ -1054,11 +1052,11 @@ public class PrinceOfVersionsTest {
     public void testCheckingOptionalUpdateWhenUserIsUpToDateAndNoMandatoryUpdateIsNotDefinedSync() throws Throwable {
         Storage storage = new MockStorage();
         MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(211,
-            20);
+                20);
         MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
 
         PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
-            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+                Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
         UpdateResult result = princeOfVersions.checkForUpdates(new ResourceFileLoader("valid_update_no_min_version.json"));
 
         assertThat(result.getStatus()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE);

@@ -6,7 +6,7 @@ def build = [
 ]
 
 def versions = [
-        prince   : '4.0.0',
+        prince   : '4.0.1',
         queen    : '0.1.1',
         semver   : '0.9.0',
         appcompat: '1.1.0',

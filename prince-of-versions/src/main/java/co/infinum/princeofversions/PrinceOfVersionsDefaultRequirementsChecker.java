@@ -16,7 +16,6 @@ class PrinceOfVersionsDefaultRequirementsChecker implements RequirementChecker {
      * @param value Json data that contains all requirements for new update
      * @return true or false depending if are required requirements matched
      */
-
     @Override
     public boolean checkRequirements(String value) {
         int minSdk = Integer.parseInt(value);
