@@ -20,7 +20,7 @@ class PrinceOfVersionsRequirementsProcessor {
         try {
             for (Map.Entry<String, String> requirement : requirements.entrySet()) {
                 RequirementChecker checker = installedCheckers.get(requirement.getKey());
-                if (checker == null || checker.checkRequirements(requirement.getValue())) {
+                if (checker != null && checker.checkRequirements(requirement.getValue())) {
                     continue;
                 }
                 return false;

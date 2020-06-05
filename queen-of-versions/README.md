@@ -8,7 +8,7 @@ Library checks update availability using In-App updates.
 ## Getting via jcenter
 
 ```groovy
-implementation 'co.infinum:queen-of-versions:0.1.1'
+implementation 'co.infinum:queen-of-versions:0.2.0'
 ```
 
 ## Features
