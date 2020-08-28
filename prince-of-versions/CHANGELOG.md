@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 4.0.2
+
+_2020-08-28_
+
+- integrate default requirements checker when using constructor
+    Default requirements checkers that PrinceOfVersions supports are from now on integrated even when using constructor
+    to create instance of the PrinceOfVersions class.
+
 ## Version 4.0.1
 
 _2020-06-05_
