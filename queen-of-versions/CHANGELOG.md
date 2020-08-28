@@ -2,6 +2,12 @@
 
 ## Version 0.2.0
 
+_2020-08-28_
+
+- PrinceOfVersions to version 4.0.2
+
+## Version 0.2.0
+
 _2020-06-05_
 
 - com.google.android.play:core to version 1.7.2
