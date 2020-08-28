@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.2.0
+## Version 0.3.0
 
 _2020-08-28_
 
