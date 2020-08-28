@@ -1,13 +1,14 @@
 package co.infinum.princeofversions;
 
 import android.content.Context;
-import androidx.annotation.VisibleForTesting;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
 import javax.annotation.Nullable;
+
+import androidx.annotation.VisibleForTesting;
 
 /**
  * This class represents main entry point for using library.
@@ -80,7 +81,8 @@ public final class PrinceOfVersions {
     }
 
     private static ConfigurationParser createDefaultParser() {
-        return new JsonConfigurationParser(new PrinceOfVersionsRequirementsProcessor());
+        Map<String, RequirementChecker> checkers = new HashMap<>();
+        return createDefaultParser(checkers);
     }
 
     private static ConfigurationParser createMockedParser(Map<String, RequirementChecker> requirementCheckers) {

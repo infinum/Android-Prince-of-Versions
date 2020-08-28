@@ -7,7 +7,7 @@ Library checks update availability using In-App updates.
 #### Getting via jcenter
 
 ```groovy
-implementation 'co.infinum:queen-of-versions:0.2.0'
+implementation 'co.infinum:queen-of-versions:0.3.0'
 ```
 
 #### Features
@@ -27,7 +27,7 @@ Library checks for updates using configuration from remote or local resource.
 #### Getting via jcenter
 
 ```groovy
-implementation 'co.infinum:prince-of-versions:4.0.1'
+implementation 'co.infinum:prince-of-versions:4.0.2'
 ```
 
 #### Features
