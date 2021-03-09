@@ -46,6 +46,19 @@ public class JsonConfigurationParserTest {
     }
 
     @Test
+    public void checkJsonToStringMapWithNull() throws Throwable {
+        Map<String, String> map = new HashMap<>();
+        map.put("key1", null);
+        map.put("key2", "value2");
+
+        assertThat(
+            parser.jsonObjectToMap(new JSONObject(ResourceUtils.readFromFile("json_obj_string_with_null.json")))
+        ).isEqualTo(
+            map
+        );
+    }
+
+    @Test
     public void checkComplexJsonToStringMap() throws Throwable {
         assertThat(
             parser.jsonObjectToMap(new JSONObject(ResourceUtils.readFromFile("json_obj_string_complex.json")))
@@ -148,7 +161,7 @@ public class JsonConfigurationParserTest {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_sdk_values.json"));
         assertThat(
             config
-        ).isEqualTo(
+        ).isEqualToComparingFieldByField(
             new PrinceOfVersionsConfig.Builder()
                 .withMandatoryVersion(123)
                 .withOptionalVersion(240)

@@ -224,8 +224,12 @@ final class JsonConfigurationParser implements ConfigurationParser {
         Iterator<String> it = requirementsJson.keys();
         while (it.hasNext()) {
             String key = it.next();
-            Object value = requirementsJson.get(key);
-            requirements.put(key, String.valueOf(value));
+            Object value = (!requirementsJson.isNull(key)) ? requirementsJson.get(key) : null;
+            if (value == null) {
+                requirements.put(key, null);
+            } else {
+                requirements.put(key, String.valueOf(value));
+            }
         }
         return requirements;
     }
@@ -237,8 +241,12 @@ final class JsonConfigurationParser implements ConfigurationParser {
             Iterator<String> metadataIterator = object.keys();
             while (metadataIterator.hasNext()) {
                 String key = metadataIterator.next();
-                Object value = object.get(key);
-                map.put(key, String.valueOf(value));
+                Object value = (!object.isNull(key)) ? object.get(key) : null;
+                if (value == null) {
+                    map.put(key, null);
+                } else {
+                    map.put(key, String.valueOf(value));
+                }
             }
         }
         return map;

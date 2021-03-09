@@ -56,4 +56,20 @@ public class RequirementsProcessorTest {
 
         assertThat(result).isTrue();
     }
+
+    @Test
+    public void checkRequiredOsVersionWhenRequirementsAreNull() {
+        Map<String, RequirementChecker> checkers = new HashMap<>();
+        checkers.put(
+            PrinceOfVersionsDefaultRequirementsChecker.KEY,
+            new PrinceOfVersionsDefaultRequirementsChecker(new MockApplicationVersionProvider(23))
+        );
+        PrinceOfVersionsRequirementsProcessor processor = new PrinceOfVersionsRequirementsProcessor(checkers);
+
+        Map<String, String> requirements = new HashMap<>();
+        requirements.put(PrinceOfVersionsDefaultRequirementsChecker.KEY, null);
+        boolean result = processor.areRequirementsSatisfied(requirements);
+
+        assertThat(result).isFalse();
+    }
 }
