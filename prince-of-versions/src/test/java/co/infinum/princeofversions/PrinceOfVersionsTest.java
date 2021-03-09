@@ -881,6 +881,25 @@ public class PrinceOfVersionsTest {
         verify(callback, times(1)).onError(anyThrowable());
     }
 
+    @Test
+    public void testCheckingForUpdateWhenRequirementsAreNull() {
+        Storage storage = new MockStorage();
+        MockApplicationConfiguration applicationConfiguration = new MockApplicationConfiguration(230,
+            16);
+        MockDefaultRequirementChecker checker = new MockDefaultRequirementChecker(applicationConfiguration);
+
+        PrinceOfVersions princeOfVersions = new PrinceOfVersions(storage, new SingleThreadExecutor(), applicationConfiguration,
+            Collections.<String, RequirementChecker>singletonMap(DEFAULT_OS_VERSION, checker));
+        princeOfVersions.checkForUpdatesInternal(
+            new SingleThreadExecutor(),
+            new ResourceFileLoader("update_with_requirements_null.json"),
+            callback
+        );
+
+        verify(callback, times(0)).onSuccess(any(UpdateResult.class));
+        verify(callback, times(1)).onError(anyThrowable());
+    }
+
     @Test(expected = Throwable.class)
     public void testCheckingOptionalUpdateWithSdkValuesAndIncreaseInMinorSync() throws Throwable {
         Storage storage = new MockStorage();

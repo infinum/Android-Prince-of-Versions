@@ -1,0 +1,10 @@
+{
+  "android": {
+    "required_version": 123,
+    "last_version_available": 240,
+    "notify_last_version_frequency": "ONCE",
+    "requirements": {
+      "required_os_version": null
+    }
+  }
+}
