@@ -161,7 +161,7 @@ public class JsonConfigurationParserTest {
         PrinceOfVersionsConfig config = parser.parse(ResourceUtils.readFromFile("valid_update_full_with_sdk_values.json"));
         assertThat(
             config
-        ).isEqualToComparingFieldByField(
+        ).isEqualTo(
             new PrinceOfVersionsConfig.Builder()
                 .withMandatoryVersion(123)
                 .withOptionalVersion(240)

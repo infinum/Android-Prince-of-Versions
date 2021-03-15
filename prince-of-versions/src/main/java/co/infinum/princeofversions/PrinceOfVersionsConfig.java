@@ -84,8 +84,8 @@ public final class PrinceOfVersionsConfig {
 
         final PrinceOfVersionsConfig that = (PrinceOfVersionsConfig) o;
 
-        if (getMandatoryVersion() != null ? !getMandatoryVersion().equals(that.getMandatoryVersion())
-            : that.getMandatoryVersion() != null) {
+        if (getMandatoryVersion() != null ? !getMandatoryVersion().equals(that.getMandatoryVersion()) :
+            that.getMandatoryVersion() != null) {
             return false;
         }
         if (getOptionalVersion() != null ? !getOptionalVersion().equals(that.getOptionalVersion()) : that.getOptionalVersion() != null) {
@@ -94,7 +94,10 @@ public final class PrinceOfVersionsConfig {
         if (getOptionalNotificationType() != that.getOptionalNotificationType()) {
             return false;
         }
-        return getMetadata().equals(that.getMetadata());
+        if (!getMetadata().equals(that.getMetadata())) {
+            return false;
+        }
+        return getRequirements().equals(that.getRequirements());
     }
 
     @Override
@@ -103,6 +106,7 @@ public final class PrinceOfVersionsConfig {
         result = 31 * result + (getOptionalVersion() != null ? getOptionalVersion().hashCode() : 0);
         result = 31 * result + getOptionalNotificationType().hashCode();
         result = 31 * result + getMetadata().hashCode();
+        result = 31 * result + getRequirements().hashCode();
         return result;
     }
 
@@ -113,6 +117,7 @@ public final class PrinceOfVersionsConfig {
             + ", optionalVersion=" + optionalVersion
             + ", optionalNotificationType=" + optionalNotificationType
             + ", metadata=" + metadata
+            + ", requirements=" + requirements
             + '}';
     }
 
