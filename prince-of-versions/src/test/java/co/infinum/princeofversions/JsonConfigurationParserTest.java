@@ -201,9 +201,17 @@ public class JsonConfigurationParserTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void mandatoryVersionNullJson() throws Throwable {
-        parser.parse(ResourceUtils.readFromFile("valid_update_null_min_version.json"));
+        PrinceOfVersionsConfig result = parser.parse(ResourceUtils.readFromFile("valid_update_null_min_version.json"));
+        assertThat(
+            result
+        ).isEqualTo(
+            new PrinceOfVersionsConfig.Builder()
+                .withMandatoryVersion(null)
+                .withOptionalVersion(245)
+                .build()
+        );
     }
 
     @Test
