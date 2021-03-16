@@ -225,9 +225,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
         while (it.hasNext()) {
             String key = it.next();
             Object value = (!requirementsJson.isNull(key)) ? requirementsJson.get(key) : null;
-            if (value == null) {
-                requirements.put(key, null);
-            } else {
+            if (value != null) {
                 requirements.put(key, String.valueOf(value));
             }
         }
