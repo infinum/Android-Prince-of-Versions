@@ -309,6 +309,9 @@ public class JsonConfigurationParserTest {
             new PrinceOfVersionsConfig.Builder()
                 .withMandatoryVersion(123)
                 .withOptionalVersion(246)
+                .withRequirements(MapUtil.from(
+                    entry("required_os_version", "13")
+                ))
                 .build());
     }
 
