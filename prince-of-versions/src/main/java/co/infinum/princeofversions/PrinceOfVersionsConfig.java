@@ -84,8 +84,8 @@ public final class PrinceOfVersionsConfig {
 
         final PrinceOfVersionsConfig that = (PrinceOfVersionsConfig) o;
 
-        if (getMandatoryVersion() != null ? !getMandatoryVersion().equals(that.getMandatoryVersion()) :
-            that.getMandatoryVersion() != null) {
+        if (getMandatoryVersion() != null ? !getMandatoryVersion().equals(that.getMandatoryVersion())
+            : that.getMandatoryVersion() != null) {
             return false;
         }
         if (getOptionalVersion() != null ? !getOptionalVersion().equals(that.getOptionalVersion()) : that.getOptionalVersion() != null) {
