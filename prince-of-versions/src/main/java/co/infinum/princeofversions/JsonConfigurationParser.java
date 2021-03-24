@@ -1,7 +1,5 @@
 package co.infinum.princeofversions;
 
-import androidx.annotation.VisibleForTesting;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+
+import androidx.annotation.VisibleForTesting;
 
 /**
  * This class represents parser for parsing loaded update configuration in <a href="http://www.json.org/">JSON</a> format.
@@ -117,9 +117,9 @@ final class JsonConfigurationParser implements ConfigurationParser {
         if (meta != null) {
             builder.withMetadata(jsonObjectToMap(meta));
         }
-        if (data.has(ANDROID_KEY)) {
+        if (!data.isNull(ANDROID_KEY)) {
             handleAndroidJsonUpdate(data, builder, meta, ANDROID_KEY);
-        } else if (data.has(ANDROID_FALLBACK_KEY)) {
+        } else if (!data.isNull(ANDROID_FALLBACK_KEY)) {
             handleAndroidJsonUpdate(data, builder, meta, ANDROID_FALLBACK_KEY);
         } else {
             throw new IllegalStateException("Config resource does not contain android key");
@@ -164,7 +164,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
     }
 
     private void saveFirstAcceptableUpdate(JSONObject update, PrinceOfVersionsConfig.Builder builder) throws JSONException {
-        if (update.has(MINIMUM_VERSION)) {
+        if (!update.isNull(MINIMUM_VERSION)) {
             Object minimumVersionJson = update.get(MINIMUM_VERSION);
             if (minimumVersionJson instanceof Integer) {
                 builder.withMandatoryVersion((Integer) minimumVersionJson);
@@ -174,7 +174,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
                     + update.get(MINIMUM_VERSION).toString());
             }
         }
-        if (update.has(LATEST_VERSION)) {
+        if (!update.isNull(LATEST_VERSION)) {
             Object latestVersionJson = update.get(LATEST_VERSION);
             if (latestVersionJson instanceof Integer) {
                 builder.withOptionalVersion((Integer) latestVersionJson);
@@ -184,7 +184,7 @@ final class JsonConfigurationParser implements ConfigurationParser {
                     + update.get(LATEST_VERSION).toString());
             }
         }
-        if (update.has(NOTIFICATION)) {
+        if (!update.isNull(NOTIFICATION)) {
             Object notificationTypeJson = update.get(NOTIFICATION);
             if (notificationTypeJson instanceof String) {
                 builder.withOptionalNotificationType(
