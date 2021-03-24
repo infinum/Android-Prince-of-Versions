@@ -896,8 +896,8 @@ public class PrinceOfVersionsTest {
             callback
         );
 
-        verify(callback, times(0)).onSuccess(any(UpdateResult.class));
-        verify(callback, times(1)).onError(anyThrowable());
+        verify(callback, times(1)).onSuccess(any(UpdateResult.class));
+        verify(callback, times(0)).onError(anyThrowable());
     }
 
     @Test(expected = Throwable.class)
