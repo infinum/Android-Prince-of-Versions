@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 4.0.3
+
+_2021-04-02_
+
+- fix null value parsing
+    User should receive proper null values when certain fields (ie. version) are null
+
+
 ## Version 4.0.2
 
 _2020-08-28_
