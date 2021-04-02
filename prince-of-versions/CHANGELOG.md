@@ -5,7 +5,7 @@
 _2021-04-02_
 
 - fix null value parsing
-    User should receive proper null values when certain fields (ie. version) are null
+    Metadata values which contained null were passed as "null", which has been fixed
 
 
 ## Version 4.0.2
