@@ -120,5 +120,8 @@ app/mapping.txt
 app/seeds.txt
 app/unused.txt
 
+publish.properties
+*.gpg
+
 qaplug_result.html
 *.hprof

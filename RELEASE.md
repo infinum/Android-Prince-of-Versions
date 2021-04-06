@@ -8,7 +8,7 @@ Bintray API key can be found under Edit Profile -> API Key.
 
 1. Bump `versions.prince` and `versions.queen` in `versions.gradle`
 2. Run tests `./gradlew testDebugUnitTest`
-3. `./gradlew clean build generatePomFileForReleasePublication bintrayUpload -PbintrayUser=<bintray username> -PbintrayKey=<bintray api key> -PdryRun=false`
+3. `./gradlew deployAll`
 4. Add a new entry in [CHANGELOG](https://github.com/infinum/Android-Prince-of-Versions/blob/master/prince-of-versions/CHANGELOG.md) and [CHANGELOG](https://github.com/infinum/Android-Prince-of-Versions/blob/master/queen-of-versions/CHANGELOG.md)
 
 ### Bintray publish

@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: './quality.gradle'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'maven-publish'
 
 ext {
     publishedGroupId = 'co.infinum'
@@ -42,31 +42,6 @@ dependencies {
 }
 
 apply from: '../tasks.gradle'
-
-group = publishedGroupId
-version = versions.prince
-
-// https://github.com/novoda/bintray-release/wiki/Configuration-of-the-publish-closure
-publish {
-    userOrg = 'infinum'
-    groupId = publishedGroupId
-    artifactId = publishedArtifactName
-    publishVersion = versions.prince
-    desc = 'Library checks for application updates using configuration from some resource.'
-    website = 'https://github.com/infinum/Android-prince-of-versions'
-    licences = ["Apache-2.0"]
-    repoName = 'android'
-}
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocsJar
-}
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
 preBuild.dependsOn ':prince-of-versions:generateReadmePrince'

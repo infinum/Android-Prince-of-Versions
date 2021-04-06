@@ -6,6 +6,7 @@ _2021-04-02_
 
 - fix null value parsing
     Metadata values which contained null were passed as "null", which has been fixed
+- migrated to MavenCentral
 
 
 ## Version 4.0.2
