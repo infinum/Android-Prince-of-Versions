@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 4.0.3
+
+_2021-04-02_
+
+- fix null value parsing
+    Metadata values which contained null were passed as "null", which has been fixed
+
+
 ## Version 4.0.2
 
 _2020-08-28_
