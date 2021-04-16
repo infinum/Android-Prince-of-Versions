@@ -2,13 +2,13 @@ apply plugin: "maven-publish"
 apply plugin: "signing"
 
 task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from android.sourceSets.main.kotlin.srcDirs
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
 
-task javadocsJar(type: Jar, dependsOn: "dokkaJavadoc") {
-    archiveClassifier.set("javadoc")
-    from dokkaJavadoc.outputDirectory
+task javadocsJar(type: Jar, dependsOn: javadocs) {
+    classifier = 'javadoc'
+    from javadocs.destinationDir
 }
 
 afterEvaluate {
@@ -25,8 +25,8 @@ afterEvaluate {
         }
         publications {
             release(MavenPublication) {
-                groupId = releaseConfig.group
-                version = releaseConfig.version
+                groupId = publishedGroupId
+                version = versions.queen
 
                 artifactId = publishedArtifactName
 
@@ -35,8 +35,8 @@ afterEvaluate {
                 artifact javadocsJar
 
                 pom {
-                    name = 'Prince of Versions'
-                    description = 'Library that checks for updates using configuration from remote or local resources'
+                    name = 'Queen of Versions'
+                    description = 'Library that checks update availability using In-App updates'
                     url = 'https://github.com/infinum/Android-Prince-of-Versions'
                     licenses {
                         license {
