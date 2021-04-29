@@ -1,6 +1,3 @@
-apply plugin: "maven-publish"
-apply plugin: "signing"
-
 task javadocs(type: Javadoc) {
     source = android.sourceSets.main.java.source
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))

@@ -2,8 +2,8 @@ apply plugin: "maven-publish"
 apply plugin: "signing"
 
 task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
 }
 
 task javadocsJar(type: Jar, dependsOn: javadocs) {
@@ -28,7 +28,7 @@ afterEvaluate {
                 groupId = publishedGroupId
                 version = versions.queen
 
-                artifactId = publishedArtifactName
+                artifactId = publishedArtifactNameQueen
 
                 artifact bundleReleaseAar
                 artifact sourcesJar

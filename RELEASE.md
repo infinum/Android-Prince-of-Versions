@@ -1,9 +1,5 @@
 ## Release guide
 
-You must know **BINTRAY_USER** and **BINTRAY_API_KEY**.
-
-Bintray API key can be found under Edit Profile -> API Key.
-
 ### Deploying a new version
 
 Caution: Make sure you have followed the [preparations](https://infinum.com/handbook/books/android/library-development/preparations) steps in the Android Handbook.

@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 
 ext {
     publishedGroupId = 'co.infinum'
-    publishedArtifactName = 'prince-of-versions'
+    publishedArtifactNamePrince = 'prince-of-versions'
 }
 
 android {
@@ -29,7 +29,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly deps.appcompat
     compileOnly deps.fbannotations
 
