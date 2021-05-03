@@ -10,7 +10,7 @@ _2021-04-29_
 
 _2021-04-02_
 
-- PrinceOfVersions to version 4.0.3 (NOTE: Skip this version & use 0.3.2)
+- PrinceOfVersions to version 4.0.3
 
 ## Version 0.3.0
 
