@@ -3,25 +3,24 @@ apply plugin: "signing"
 
 /*
 variables:
-ext.publishing.maven {
-    group: "co.infinum"
-    version: versions.prince
-    artifact: "prince-of-versions"
-    repository: {
-        url: "..."
-        username: "..."
-        password: "..."
-    }
-    name: "Prince of Versions"
-    description: "Library that checks for updates using configuration from remote or local resources"
-    url: "..."
-    scm: {
-        connection: "..."
-        url: "..."
-    }
-}
+ext.mavenPublishProperties = [
+        group      : "co.infinum",
+        version    : versions.prince,
+        artifact   : "prince-of-versions",
+        repository : [
+                url     : sonatype.url(),
+                username: sonatype.username(),
+                password: sonatype.password()
+        ],
+        name       : "Prince of Versions",
+        description: "Library that checks for updates using configuration from remote or local resources",
+        url        : "https://github.com/infinum/Android-Prince-of-Versions",
+        scm        : [
+                connection: "https://github.com/infinum/Android-Prince-of-Versions.git",
+                url       : "https://github.com/infinum/Android-Prince-of-Versions"
+        ]
+]
  */
-
 afterEvaluate { project ->
     uploadArchives {
         repositories {
