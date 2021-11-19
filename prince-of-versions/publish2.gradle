@@ -1,0 +1,64 @@
+apply plugin: "maven"
+apply plugin: "signing"
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+task javadocsJar(type: Jar, dependsOn: javadocs) {
+    classifier = 'javadoc'
+    from javadocs.destinationDir
+}
+
+println "Url: " + sonatype.url()
+
+afterEvaluate { project ->
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                pom.groupId = publishedGroupId
+                pom.version = versions.prince
+                pom.artifactId = publishedArtifactNamePrince
+
+                repository(url: sonatype.url()) {
+                    authentication(userName: sonatype.username(), password: sonatype.password())
+                }
+
+                pom.project {
+                    name = 'Prince of Versions'
+                    description = 'Library that checks for updates using configuration from remote or local resources'
+                    url = 'https://github.com/infinum/Android-Prince-of-Versions'
+                    packaging = "aar"
+
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'NikoPelicaric'
+                            name = 'Niko Pelicaric'
+                            email = 'niko.pelicaric@infinum.com'
+                        }
+                    }
+                    scm {
+                        connection = 'https://github.com/infinum/Android-Prince-of-Versions.git'
+                        developerConnection = 'https://github.com/infinum/Android-Prince-of-Versions.git'
+                        url = 'https://github.com/infinum/Android-Prince-of-Versions'
+                    }
+                }
+
+            }
+        }
+    }
+
+    signing {
+        required { gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+}

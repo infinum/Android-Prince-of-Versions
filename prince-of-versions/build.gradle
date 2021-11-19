@@ -28,8 +28,11 @@ android {
     resourcePrefix 'prince_of_versions_'
 }
 
+version = versions.prince
+group = "co.infinum"
+
 dependencies {
-    compileOnly deps.appcompat
+    compileOnly deps.annotations
     compileOnly deps.fbannotations
 
     testImplementation deps.junit
@@ -41,7 +44,7 @@ dependencies {
 }
 
 apply from: '../tasks.gradle'
-apply from: 'publish.gradle'
+apply from: 'publish2.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
 preBuild.dependsOn ':prince-of-versions:generateReadmePrince'

@@ -26,8 +26,8 @@ android {
 
 dependencies {
     implementation deps.appcompat
-    implementation "co.infinum:queen-of-versions:0.3.2"
-    implementation "co.infinum:prince-of-versions:4.0.4"
+    implementation "co.infinum:queen-of-versions:0.3.0"
+    implementation "co.infinum:prince-of-versions:4.0.0"
 
 
     compileOnly deps.fbannotations
