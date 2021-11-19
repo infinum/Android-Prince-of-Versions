@@ -39,7 +39,7 @@ task generateReadmeQueen {
 
 task deployPoV(dependsOn: [
     ':prince-of-versions:clean',
-    ':prince-of-versions:publishReleasePublicationToSonatypeRepository'
+    ':prince-of-versions:uploadArchives'
 ]) {
     group = "Deploy"
     description = "Deploy module to repositories"
@@ -47,7 +47,7 @@ task deployPoV(dependsOn: [
 
 task deployQoV(dependsOn: [
     ':queen-of-versions:clean',
-    ':queen-of-versions:publishReleasePublicationToSonatypeRepository'
+    ':queen-of-versions:uploadArchives'
 ]) {
     group = "Deploy"
     description = "Deploy module to repositories"
