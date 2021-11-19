@@ -6,9 +6,9 @@ ext.mavenPublishProperties = [
         version    : versions.queen,
         artifact   : "queen-of-versions",
         repository : [
-                url     : sonatype.url(),
-                username: sonatype.username(),
-                password: sonatype.password()
+                url     : rootProject.ext.sonatype.url,
+                username: sonatype.username,
+                password: sonatype.password
         ],
         name       : "Queen of Versions",
         description: "Library that checks update availability using In-App updates",

@@ -6,9 +6,9 @@ ext.mavenPublishProperties = [
         version    : versions.prince,
         artifact   : "prince-of-versions",
         repository : [
-                url     : sonatype.url(),
-                username: sonatype.username(),
-                password: sonatype.password()
+                url     : sonatype.url,
+                username: sonatype.username,
+                password: sonatype.password
         ],
         name       : "Prince of Versions",
         description: "Library that checks for updates using configuration from remote or local resources",
