@@ -56,8 +56,7 @@ dependencies {
 }
 
 apply from: '../tasks.gradle'
-apply from: '../publish.gradle'
+apply from: '../maven-publish.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
-preBuild.dependsOn ':prince-of-versions:generateReadmePrince'
 

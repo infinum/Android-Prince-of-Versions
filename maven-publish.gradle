@@ -1,0 +1,95 @@
+apply plugin: "maven-publish"
+apply plugin: "signing"
+
+/*
+variables:
+ext.mavenPublishProperties = [
+        group      : "co.infinum",
+        version    : versions.prince,
+        artifact   : "prince-of-versions",
+        repository : [
+                url     : sonatype.url(),
+                username: sonatype.username(),
+                password: sonatype.password()
+        ],
+        name       : "Prince of Versions",
+        description: "Library that checks for updates using configuration from remote or local resources",
+        url        : "https://github.com/infinum/Android-Prince-of-Versions",
+        scm        : [
+                connection: "https://github.com/infinum/Android-Prince-of-Versions.git",
+                url       : "https://github.com/infinum/Android-Prince-of-Versions"
+        ]
+]
+ */
+
+task javadocsJar(type: Jar, dependsOn: javadocs) {
+    getArchiveClassifier().set("javadoc")
+    from javadocs.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    getArchiveClassifier().set("sources")
+    from android.sourceSets.main.java.source
+}
+
+afterEvaluate {
+    publishing {
+        def props = project.ext.mavenPublishProperties
+
+        repositories {
+            maven {
+                name "SonatypeMavenCentral"
+                url props.repository.url
+                credentials {
+                    username props.repository.username
+                    password props.repository.password
+                }
+            }
+        }
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = props.group
+                artifactId = props.artifact
+                version = props.version
+
+                artifact sourcesJar
+                artifact javadocsJar
+
+                pom {
+                    packaging = "aar"
+                    name = props.name
+                    description = props.description
+                    url = props.url
+                    licenses {
+                        license {
+                            name.set("Apache License 2.0")
+                            url.set("https://github.com/infinum/Retromock/blob/master/LICENSE")
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'NikoPelicaric'
+                            name = 'Niko Pelicaric'
+                            email = 'niko.pelicaric@infinum.com'
+                        }
+                        developer {
+                            id = 'antunflas'
+                            name = 'Antun Flaš'
+                            email = 'antun.flas@infinum.com'
+                        }
+                    }
+                    scm {
+                        connection.set(props.scm.connection)
+                        developerConnection.set(props.scm.connection)
+                        url.set(props.scm.url)
+                    }
+                }
+                signing {
+                    sign publishing.publications.release
+                }
+            }
+        }
+    }
+}
