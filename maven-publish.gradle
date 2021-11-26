@@ -65,7 +65,7 @@ afterEvaluate {
                     licenses {
                         license {
                             name.set("Apache License 2.0")
-                            url.set("https://github.com/infinum/Retromock/blob/master/LICENSE")
+                            url.set("https://github.com/infinum/Android-Prince-of-Versions/blob/master/LICENSE")
                         }
                     }
                     developers {
