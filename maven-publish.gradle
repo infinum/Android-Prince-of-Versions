@@ -2,7 +2,9 @@ apply plugin: "maven-publish"
 apply plugin: "signing"
 
 /*
-variables:
+Define properties in the build.gradle file that will be used by this script.
+You can find a list of properties bellow:
+
 ext.mavenPublishProperties = [
         group      : "co.infinum",
         version    : versions.prince,
