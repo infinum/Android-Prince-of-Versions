@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.3.2
+
+_2021-04-29_
+
+- PrinceOfVersions to version 4.0.4
+
 ## Version 0.3.1
 
 _2021-04-02_

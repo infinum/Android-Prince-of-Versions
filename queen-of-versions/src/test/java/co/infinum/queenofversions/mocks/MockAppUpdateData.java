@@ -1,10 +1,12 @@
 package co.infinum.queenofversions.mocks;
 
-import co.infinum.queenofversions.InAppUpdateData;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
+
 import javax.annotation.Nullable;
+
+import co.infinum.queenofversions.InAppUpdateData;
 
 public class MockAppUpdateData implements InAppUpdateData {
 
@@ -206,11 +208,13 @@ public class MockAppUpdateData implements InAppUpdateData {
         }
     }
 
+    @Nullable
     @Override
     public Integer priority() {
         return null;
     }
 
+    @Nullable
     @Override
     public Integer clientStalenessDays() {
         return null;

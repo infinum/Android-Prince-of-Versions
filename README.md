@@ -1,13 +1,13 @@
 # Prince of Versions
 
-## Queen of Versions  [![Download](https://api.bintray.com/packages/infinum/android/queen-of-versions/images/download.svg)](https://bintray.com/infinum/android/queen-of-versions/_latestVersion)
+## Queen of Versions
 
 Library checks update availability using In-App updates.
 
-#### Getting via jcenter
+#### Getting via central
 
 ```groovy
-implementation 'co.infinum:queen-of-versions:0.3.1'
+implementation 'co.infinum:queen-of-versions:0.3.2'
 ```
 
 #### Features
@@ -20,14 +20,14 @@ implementation 'co.infinum:queen-of-versions:0.3.1'
 #### Check out [integration guide](./queen-of-versions/README.md).
 
 
-## Prince of Versions  [![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg)](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
+## Prince of Versions
 
 Library checks for updates using configuration from remote or local resource.
 
-#### Getting via jcenter
+#### Getting via central
 
 ```groovy
-implementation 'co.infinum:prince-of-versions:4.0.3'
+implementation 'co.infinum:prince-of-versions:4.0.4'
 ```
 
 #### Features

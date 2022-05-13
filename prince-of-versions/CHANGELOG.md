@@ -1,11 +1,17 @@
 # Changelog
 
+## Version 4.0.4
+
+_2021-04-29_
+
+- fixed Maven Release
+
 ## Version 4.0.3
 
 _2021-04-02_
 
-- fix null value parsing
-    Metadata values which contained null were passed as "null", which has been fixed
+- fix null value parsing -> Metadata values which contained null were passed as "null", which has been fixed
+- migrated to MavenCentral
 
 
 ## Version 4.0.2
