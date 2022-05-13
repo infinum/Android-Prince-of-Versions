@@ -1,6 +1,7 @@
 task javadocs(type: Javadoc) {
     source = android.sourceSets.main.java.source
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    excludes = ['**/*.kt']
 }
 
 afterEvaluate {
@@ -9,54 +10,24 @@ afterEvaluate {
     })
 }
 
+private void replaceVersionsInFile(File file) {
+    def content = file.text
+    content = content.replaceAll("'co\\.infinum:prince-of-versions:.+?'", "'co.infinum:prince-of-versions:${versions.prince}'")
+    content = content.replaceAll("'co\\.infinum:queen-of-versions:.+?'", "'co.infinum:queen-of-versions:${versions.queen}'")
+    file.setText(content)
+}
+
 task generateReadme {
     doFirst {
-        def readmeFile = new File("${project.rootDir}/README.md")
-        def content = readmeFile.text
-        content = content.replaceAll("'co\\.infinum:prince-of-versions:.+?'", "'co.infinum:prince-of-versions:${versions.prince}'")
-        content = content.replaceAll("'co\\.infinum:queen-of-versions:.+?'", "'co.infinum:queen-of-versions:${versions.queen}'")
-        readmeFile.setText(content)
+        replaceVersionsInFile(new File("${rootDir}/README.md"))
+        replaceVersionsInFile(new File("${projectDir}/README.md"))
     }
 }
 
-task generateReadmePrince {
-    doFirst {
-        def readmeFile = new File("${project.rootDir}/prince-of-versions/README.md")
-        def content = readmeFile.text
-        content = content.replaceAll("'co\\.infinum:prince-of-versions:.+?'", "'co.infinum:prince-of-versions:${versions.prince}'")
-        readmeFile.setText(content)
-    }
-}
-
-task generateReadmeQueen {
-    doFirst {
-        def readmeFile = new File("${project.rootDir}/queen-of-versions/README.md")
-        def content = readmeFile.text
-        content = content.replaceAll("'co\\.infinum:queen-of-versions:.+?'", "'co.infinum:queen-of-versions:${versions.queen}'")
-        readmeFile.setText(content)
-    }
-}
-
-task deployPoV(dependsOn: [
-    ':prince-of-versions:clean',
-    ':prince-of-versions:publishReleasePublicationToSonatypeRepository'
+task deploy(dependsOn: [
+        'clean',
+        'publishReleasePublicationToSonatypeMavenCentralRepository'
 ]) {
     group = "Deploy"
     description = "Deploy module to repositories"
-}
-
-task deployQoV(dependsOn: [
-    ':queen-of-versions:clean',
-    ':queen-of-versions:publishReleasePublicationToSonatypeRepository'
-]) {
-    group = "Deploy"
-    description = "Deploy module to repositories"
-}
-
-task deployAll(dependsOn: [
-    'deployPoV',
-    'deployQoV'
-]) {
-    group = "Deploy"
-    description = "Deploy all modules to repositories"
 }

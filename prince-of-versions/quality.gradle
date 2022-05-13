@@ -5,9 +5,10 @@ apply plugin: 'pmd'
 check.dependsOn 'findbugs', 'checkstyle', 'pmd'
 
 task checkstyle(type: Checkstyle) {
-    configFile file("${project.rootDir}/config/checkstyle.xml")
+    configFile file("${rootProject.rootDir}/config/checkstyle.xml")
     configProperties = [
-            'checkstyle.cache.file': rootProject.file('build/checkstyle.cache'),
+            'checkstyle.cache.file'      : rootProject.file('build/checkstyle.cache'),
+            'checkstyle.suppression.file': file("${rootProject.rootDir}/config/suppressions.xml")
     ]
     source 'src'
     include '**/*.java'
@@ -20,7 +21,7 @@ task findbugs(type: FindBugs) {
     ignoreFailures = false
     effort = "max"
     reportLevel = "high"
-    excludeFilter = file("${project.rootDir}/config/findbugs-filter.xml")
+    excludeFilter = file("${rootProject.rootDir}/config/findbugs-filter.xml")
     classes = files("$project.buildDir/intermediates/javac")
     maxHeapSize = "256m"
 
@@ -40,9 +41,9 @@ task findbugs(type: FindBugs) {
 }
 
 task pmd(type: Pmd) {
-    ruleSetFiles = files("${project.rootDir}/config/pmd-ruleset.xml")
+    ruleSetFiles = files("${rootProject.rootDir}/config/pmd-ruleset.xml")
     ignoreFailures = false
-    ruleSets = ["java-basic", "java-braces",  "java-android"]
+    ruleSets = ["java-basic", "java-braces", "java-android"]
 
     ruleSets = [
             'java-android',

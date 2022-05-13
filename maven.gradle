@@ -1,12 +1,19 @@
-import com.infinum.maven.SonatypeConfiguration
-
-SonatypeConfiguration.metaClass.constructor = { ->
-    def constructor = SonatypeConfiguration.class.getConstructor()
-    def instance = constructor.newInstance()
-    instance.load()
-    instance
+def properties = new Properties()
+def propsFile = file("$rootDir/publish.properties")
+if (propsFile.exists()) {
+    properties.load(propsFile.newInputStream())
 }
 
-ext {
-    sonatype = new SonatypeConfiguration()
-}
+ext.sonatype = [
+
+        url     : properties["sonatype.url"]
+                ?: "https://oss.sonatype.org/service/local/staging/deploy/maven2",
+
+        username: findProperty("sonatypeUsername")?.toString()
+                ?: properties["sonatype.user"]
+                ?: System.getenv("MAVEN_CENTRAL_USER"),
+
+        password: findProperty("sonatypePassword")?.toString()
+                ?: properties["sonatype.password"]
+                ?: System.getenv("MAVEN_CENTRAL_PW")
+]

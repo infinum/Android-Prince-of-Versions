@@ -1,11 +1,23 @@
 apply plugin: 'com.android.library'
 apply from: './quality.gradle'
-apply plugin: 'maven-publish'
 
-ext {
-    publishedGroupId = 'co.infinum'
-    publishedArtifactNamePrince = 'prince-of-versions'
-}
+ext.mavenPublishProperties = [
+        group      : "co.infinum",
+        version    : versions.prince,
+        artifact   : "prince-of-versions",
+        repository : [
+                url     : sonatype.url,
+                username: sonatype.username,
+                password: sonatype.password
+        ],
+        name       : "Prince of Versions",
+        description: "Library that checks for updates using configuration from remote or local resources",
+        url        : "https://github.com/infinum/Android-Prince-of-Versions",
+        scm        : [
+                connection: "https://github.com/infinum/Android-Prince-of-Versions.git",
+                url       : "https://github.com/infinum/Android-Prince-of-Versions"
+        ]
+]
 
 android {
     compileSdkVersion buildVersions.compile
@@ -28,8 +40,11 @@ android {
     resourcePrefix 'prince_of_versions_'
 }
 
+version = ext.mavenPublishProperties.version
+group = ext.mavenPublishProperties.group
+
 dependencies {
-    compileOnly deps.appcompat
+    compileOnly deps.annotations
     compileOnly deps.fbannotations
 
     testImplementation deps.junit
@@ -41,8 +56,7 @@ dependencies {
 }
 
 apply from: '../tasks.gradle'
-apply from: 'publish.gradle'
+apply from: '../maven-publish.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
-preBuild.dependsOn ':prince-of-versions:generateReadmePrince'
 

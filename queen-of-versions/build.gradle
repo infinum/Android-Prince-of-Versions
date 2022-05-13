@@ -1,11 +1,23 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
 apply from: './quality.gradle'
 
-ext {
-    publishedGroupId = 'co.infinum'
-    publishedArtifactNameQueen = 'queen-of-versions'
-}
+ext.mavenPublishProperties = [
+        group      : "co.infinum",
+        version    : versions.queen,
+        artifact   : "queen-of-versions",
+        repository : [
+                url     : rootProject.ext.sonatype.url,
+                username: sonatype.username,
+                password: sonatype.password
+        ],
+        name       : "Queen of Versions",
+        description: "Library that checks update availability using In-App updates",
+        url        : "https://github.com/infinum/Android-Prince-of-Versions",
+        scm        : [
+                connection: "https://github.com/infinum/Android-Prince-of-Versions.git",
+                url       : "https://github.com/infinum/Android-Prince-of-Versions"
+        ]
+]
 
 android {
     compileSdkVersion buildVersions.compile
@@ -26,6 +38,9 @@ android {
     }
 }
 
+version = ext.mavenPublishProperties.version
+group = ext.mavenPublishProperties.group
+
 dependencies {
     api project(path: ':prince-of-versions')
     implementation 'com.google.android.play:core:1.7.2'
@@ -41,7 +56,6 @@ dependencies {
 }
 
 apply from: '../tasks.gradle'
-apply from: 'publish.gradle'
+apply from: '../maven-publish.gradle'
 
 preBuild.dependsOn ':prince-of-versions:generateReadme'
-preBuild.dependsOn ':prince-of-versions:generateReadmeQueen'

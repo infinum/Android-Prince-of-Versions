@@ -2,6 +2,8 @@ package co.infinum.queenofversions;
 
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 
+import javax.annotation.Nullable;
+
 final class GoogleInAppUpdateData implements InAppUpdateData {
 
     private final AppUpdateInfo appUpdateInfo;
@@ -10,6 +12,7 @@ final class GoogleInAppUpdateData implements InAppUpdateData {
         this.appUpdateInfo = appUpdateInfo;
     }
 
+    @Nullable
     @Override
     public Integer availableVersionCode() {
         try {
@@ -34,6 +37,7 @@ final class GoogleInAppUpdateData implements InAppUpdateData {
         return appUpdateInfo.isUpdateTypeAllowed(updateType);
     }
 
+    @Nullable
     @Override
     public Integer priority() {
         try {
@@ -43,6 +47,7 @@ final class GoogleInAppUpdateData implements InAppUpdateData {
         }
     }
 
+    @Nullable
     @Override
     public Integer clientStalenessDays() {
         try {
