@@ -1,7 +1,7 @@
 # Prince of Versions
 
 ![Bitrise](https://app.bitrise.io/app/5bc3f35c9c5f5b61/status.svg?token=XGiXvE7Yu6DXdL9wrEqiHQ&branch=dev)
-[![Download](https://api.bintray.com/packages/infinum/android/prince-of-versions/images/download.svg)](https://bintray.com/infinum/android/prince-of-versions/_latestVersion)
+[![Download](https://maven-badges.herokuapp.com/maven-central/co.infinum/prince-of-versions/badge.png)](https://mvnrepository.com/artifact/co.infinum/prince-of-versions/latest)
 
 Library checks for updates using configuration from remote or local resource.
 
