@@ -133,6 +133,7 @@ public class GoogleInAppUpdatesExample extends AppCompatActivity implements Quee
     @Override
     public void onError(Throwable throwable) {
         Toast.makeText(this, "Failed updated! Check log!", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "Google play calls are known to fail on emulators");
         Log.d(TAG, "Exception:", throwable.fillInStackTrace());
     }
 
