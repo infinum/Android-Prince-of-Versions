@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 
 public class CallUsageExample extends AppCompatActivity {
 
-    private static final String VERSIONS_FILE_URL = "https://pastebin.com/raw/QFGjJrLP";
+    private static final String VERSIONS_FILE_URL = "https://pastebin.com/raw/w4gf8cm1";
 
     private final Handler handler = new Handler(Looper.getMainLooper());
 

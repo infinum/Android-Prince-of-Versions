@@ -30,7 +30,10 @@ class KotlinCommonExample : AppCompatActivity() {
                     )
                 }
                 UpdateStatus.NEW_UPDATE_AVAILABLE -> {
-                    toastIt(getString(R.string.update_available_msg, getString(R.string.not_mandatory), result.info.lastVersionAvailable), Toast.LENGTH_SHORT)
+                    toastIt(
+                        getString(R.string.update_available_msg, getString(R.string.not_mandatory), result.info.lastVersionAvailable),
+                        Toast.LENGTH_SHORT
+                    )
                 }
                 else -> toastIt(getString(R.string.no_update_available), Toast.LENGTH_SHORT)
             }
@@ -38,7 +41,7 @@ class KotlinCommonExample : AppCompatActivity() {
 
         override fun onError(throwable: Throwable) {
             throwable.printStackTrace()
-            toastIt(String.format(getString(R.string.update_exception), throwable.message), Toast.LENGTH_SHORT)
+            toastIt(String.format(getString(R.string.update_exception), throwable.message ?: throwable.toString()), Toast.LENGTH_SHORT)
         }
     }
 
@@ -95,10 +98,12 @@ class KotlinCommonExample : AppCompatActivity() {
         val thread = Thread(Runnable {
             try {
                 val result = updater.checkForUpdates(loader)
-                toastItOnMainThread("Update check finished with status " + result.status + " and version " + result.info.lastVersionAvailable,
-                    Toast.LENGTH_LONG)
+                toastItOnMainThread(
+                    "Update check finished with status " + result.status + " and version " + result.info.lastVersionAvailable,
+                    Toast.LENGTH_LONG
+                )
             } catch (throwable: Throwable) {
-                toastItOnMainThread("Error occurred " + throwable.message, Toast.LENGTH_LONG)
+                toastItOnMainThread("Error occurred ${throwable.message ?: throwable.toString()}", Toast.LENGTH_LONG)
             }
         }, "Example thread")
         thread.start()

@@ -30,7 +30,7 @@ public class CustomParserExample extends AppCompatActivity {
                         getString(
                             R.string.update_available_msg,
                             getString(R.string.mandatory),
-                            result.getInfo().getLastVersionAvailable()
+                            result.getInfo().getRequiredVersion()
                         ),
                         Toast.LENGTH_SHORT
                     );
@@ -91,7 +91,7 @@ public class CustomParserExample extends AppCompatActivity {
         /*  create new instance of updater using custom parser factory   */
         updater = new PrinceOfVersions.Builder().withParser(customParser).build(this);
         /*  create specific loader factory for loading from internet    */
-        loader = new NetworkLoader("https://pastebin.com/raw/c4c4pPyn");
+        loader = new NetworkLoader("https://pastebin.com/raw/9CfSVzz4");
         slowLoader = createSlowLoader(loader);
     }
 
