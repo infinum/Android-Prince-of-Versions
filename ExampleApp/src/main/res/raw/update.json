@@ -7,10 +7,8 @@
     }
   },
   "android": {
-    "minimum_version": "1.2.3",
-    "latest_version": {
-      "version": "2.4.5",
-      "notification_type": "ONCE"
-    }
+    "required_version": 32,
+    "last_version_available": 40,
+    "notify_last_version_frequency": "ONCE"
   }
 }
