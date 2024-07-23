@@ -21,13 +21,10 @@ ext.mavenPublishProperties = [
 
 android {
     compileSdkVersion buildVersions.compile
-    buildToolsVersion buildVersions.tools
 
     defaultConfig {
         minSdkVersion buildVersions.min
         targetSdkVersion buildVersions.target
-        versionCode 1
-        versionName versions.queen
     }
 
     buildTypes {
