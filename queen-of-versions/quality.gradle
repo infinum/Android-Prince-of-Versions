@@ -1,7 +1,7 @@
 apply plugin: 'checkstyle'
 apply plugin: 'pmd'
 
-check.dependsOn 'findbugs', 'checkstyle', 'pmd'
+check.dependsOn 'checkstyle', 'pmd'
 
 task checkstyle(type: Checkstyle) {
     configFile file("${rootProject.rootDir}/config/checkstyle.xml")
