@@ -1,5 +1,4 @@
 apply plugin: 'checkstyle'
-//apply plugin: 'findbugs'
 apply plugin: 'pmd'
 
 check.dependsOn 'findbugs', 'checkstyle', 'pmd'
@@ -16,29 +15,6 @@ task checkstyle(type: Checkstyle) {
 
     classpath = files()
 }
-
-//task findbugs(type: FindBugs) {
-//    ignoreFailures = false
-//    effort = "max"
-//    reportLevel = "high"
-//    excludeFilter = file("${rootProject.rootDir}/config/findbugs-filter.xml")
-//    classes = files("$project.buildDir/intermediates/javac")
-//    maxHeapSize = "256m"
-//
-//    source 'src'
-//    include '**/*.java'
-//    exclude '**/gen/**'
-//
-//    reports {
-//        xml.enabled = false
-//        html.enabled = true
-//        html {
-//            destination = file("${project.buildDir}/reports/findbugs/findbugs.html")
-//        }
-//    }
-//
-//    classpath = files()
-//}
 
 task pmd(type: Pmd) {
     ruleSetFiles = files("${rootProject.rootDir}/config/pmd-ruleset.xml")
