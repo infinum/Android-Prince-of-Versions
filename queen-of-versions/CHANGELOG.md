@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.3.3
+_2024-07-25_
+
+- Migrated to Play Core dependency to new Play In-App Updates
+
 ## Version 0.3.2
 
 _2021-04-29_
