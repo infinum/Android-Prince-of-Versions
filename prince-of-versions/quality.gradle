@@ -1,8 +1,8 @@
 apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
 apply plugin: 'pmd'
+apply plugin: "com.github.spotbugs"
 
-check.dependsOn 'findbugs', 'checkstyle', 'pmd'
+check.dependsOn 'checkstyle', 'pmd'
 
 task checkstyle(type: Checkstyle) {
     configFile file("${rootProject.rootDir}/config/checkstyle.xml")
@@ -17,27 +17,21 @@ task checkstyle(type: Checkstyle) {
     classpath = files()
 }
 
-task findbugs(type: FindBugs) {
+spotbugs {
     ignoreFailures = false
-    effort = "max"
     reportLevel = "high"
-    excludeFilter = file("${rootProject.rootDir}/config/findbugs-filter.xml")
-    classes = files("$project.buildDir/intermediates/javac")
+    effort = "max"
+    excludeFilter = file("${rootProject.rootDir}/config/spotbugs-filter.xml")
     maxHeapSize = "256m"
+    reportsDir = file("$buildDir/reports/spotbugs")
+}
 
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**'
-
+tasks.withType(SpotBugsTask) {
+    classDirs = files("$project.buildDir/intermediates/javac")
     reports {
         xml.enabled = false
         html.enabled = true
-        html {
-            destination = file("${project.buildDir}/reports/findbugs/findbugs.html")
-        }
     }
-
-    classpath = files()
 }
 
 task pmd(type: Pmd) {
