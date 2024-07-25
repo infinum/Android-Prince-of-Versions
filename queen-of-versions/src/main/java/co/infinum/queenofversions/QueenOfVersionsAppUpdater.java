@@ -7,7 +7,7 @@ import co.infinum.princeofversions.UpdateResult;
 import com.google.android.play.core.appupdate.AppUpdateInfo;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.Map;
 import javax.annotation.Nullable;
 

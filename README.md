@@ -7,7 +7,7 @@ Library checks update availability using In-App updates.
 #### Getting via central
 
 ```groovy
-implementation 'co.infinum:queen-of-versions:0.3.2'
+implementation 'co.infinum:queen-of-versions:0.3.3'
 ```
 
 #### Features

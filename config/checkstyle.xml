@@ -4,6 +4,7 @@
         "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 
 <module name="Checker">
+    <property name="cacheFile" value="${checkstyle.cache.file}"/>
     <module name="SuppressionFilter">
         <property name="file" value="${checkstyle.suppression.file}"/>
     </module>
@@ -28,9 +29,13 @@
         <property name="message" value="Space needed around ':' character."/>
     </module>
 
-    <module name="TreeWalker">
-        <property name="cacheFile" value="${checkstyle.cache.file}"/>
+    <!-- Checks for Size Violations.                    -->
+    <!-- See http://checkstyle.sf.net/config_sizes.html -->
+    <module name="LineLength">
+        <property name="max" value="140"/>
+    </module>
 
+    <module name="TreeWalker">
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
         <!--module name="JavadocMethod"/-->
@@ -62,11 +67,6 @@
             <property name="processJavadoc" value="true"/>
         </module>
 
-        <!-- Checks for Size Violations.                    -->
-        <!-- See http://checkstyle.sf.net/config_sizes.html -->
-        <module name="LineLength">
-            <property name="max" value="140"/>
-        </module>
         <module name="MethodLength">
             <property name="max" value="200"/>
         </module>

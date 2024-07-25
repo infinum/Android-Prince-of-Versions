@@ -1,6 +1,6 @@
 package co.infinum.queenofversions;
 
-import com.google.android.play.core.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnFailureListener;
 
 final class GoogleInAppUpdateFailureListener implements OnFailureListener {
 
