@@ -1,5 +1,6 @@
 apply plugin: 'checkstyle'
 apply plugin: 'pmd'
+apply plugin: "com.github.spotbugs"
 
 check.dependsOn 'checkstyle', 'pmd'
 
@@ -14,6 +15,23 @@ task checkstyle(type: Checkstyle) {
     exclude '**/gen/**', '**/test/**', '**/androidTest/**'
 
     classpath = files()
+}
+
+spotbugs {
+    ignoreFailures = false
+    reportLevel = "high"
+    effort = "max"
+    excludeFilter = file("${rootProject.rootDir}/config/spotbugs-filter.xml")
+    maxHeapSize = "256m"
+    reportsDir = file("$buildDir/reports/spotbugs")
+}
+
+tasks.withType(SpotBugsTask) {
+    classDirs = files("$project.buildDir/intermediates/javac")
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
 
 task pmd(type: Pmd) {

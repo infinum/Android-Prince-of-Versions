@@ -47,14 +47,14 @@ group = ext.mavenPublishProperties.group
 
 dependencies {
     compileOnly deps.annotations
-    compileOnly deps.fbannotations
+    compileOnly deps.sbannotations
 
     testImplementation deps.junit
     testImplementation deps.mockito
     testImplementation deps.mockwebserver
     testImplementation deps.assertj
     testImplementation deps.json
-    testCompileOnly deps.fbannotations
+    testCompileOnly deps.sbannotations
 }
 
 apply from: '../tasks.gradle'
