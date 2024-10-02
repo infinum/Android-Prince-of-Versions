@@ -70,16 +70,15 @@ afterEvaluate {
                             url.set("https://github.com/infinum/Android-Prince-of-Versions/blob/master/LICENSE")
                         }
                     }
+                    organization {
+                        name = 'Infinum Inc.'
+                        url = 'https://infinum.com'
+                    }
                     developers {
                         developer {
-                            id = 'NikoPelicaric'
-                            name = 'Niko Pelicaric'
-                            email = 'niko.pelicaric@infinum.com'
-                        }
-                        developer {
-                            id = 'antunflas'
-                            name = 'Antun Flaš'
-                            email = 'antun.flas@infinum.com'
+                            id = 'Infinum'
+                            name = 'Infinum Inc.'
+                            url = 'https://infinum.com'
                         }
                     }
                     scm {
