@@ -1,6 +1,14 @@
 # Prince of Versions
 
-## Queen of Versions
+## Table of contents
+
+* [Queen of Version](#queen-of-versions-library)
+* [Prince of Versions](#prince-of-versions-library)
+* [Contributing](#contributing)
+* [License](#license)
+* [Credits](#credits)
+
+## Queen of Versions library
 
 Library checks update availability using In-App updates.
 
@@ -20,7 +28,7 @@ implementation 'co.infinum:queen-of-versions:0.3.3'
 #### Check out [integration guide](./queen-of-versions/README.md).
 
 
-## Prince of Versions
+## Prince of Versions library
 
 Library checks for updates using configuration from remote or local resource.
 
@@ -47,7 +55,12 @@ implementation 'co.infinum:prince-of-versions:4.0.4'
 
 ## Contributing
 
-Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](./LICENCE).
+We believe that the community can help us improve and build better a product.
+Please refer to our [contributing guide](CONTRIBUTING.md) to learn about the types of contributions we accept and the process for submitting them.
+
+To ensure that our community remains respectful and professional, we defined a [code of conduct](CODE_OF_CONDUCT.md) that we expect all contributors to follow.
+
+We appreciate your interest and look forward to your contributions.
 
 ## License
 

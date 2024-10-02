@@ -3,9 +3,25 @@
 ![Bitrise](https://app.bitrise.io/app/5bc3f35c9c5f5b61/status.svg?token=XGiXvE7Yu6DXdL9wrEqiHQ&branch=dev)
 [![Download](https://maven-badges.herokuapp.com/maven-central/co.infinum/prince-of-versions/badge.png)](https://mvnrepository.com/artifact/co.infinum/prince-of-versions/latest)
 
+## Description
+
 Library checks for updates using configuration from remote or local resource.
 
-## Getting via Maven Central
+## Table of contents
+
+* [Requirements](#requirements)
+* [Getting started](#getting-started)
+* [Features](#features)
+* [Examples](#examples)
+* [Contributing](#contributing)
+
+## Requirements
+
+Minimum required API level to use Prince of Versions is 15
+
+## Getting started
+
+Library can be added from Maven Central with following dependency:
 
 ```groovy
 implementation 'co.infinum:prince-of-versions:4.0.4'
@@ -184,6 +200,11 @@ If you are using R8 or ProGuard add the options from
 [this file](./prince-of-versions.pro).
 
 
-### Contributing
+## Contributing
 
-Feedback and code contributions are very much welcome. Just make a pull request with a short description of your changes. By making contributions to this project you give permission for your code to be used under the same [license](./../LICENCE).
+We believe that the community can help us improve and build better a product.
+Please refer to our [contributing guide](../CONTRIBUTING.md) to learn about the types of contributions we accept and the process for submitting them.
+
+To ensure that our community remains respectful and professional, we defined a [code of conduct](../CODE_OF_CONDUCT.md) that we expect all contributors to follow.
+
+We appreciate your interest and look forward to your contributions.
