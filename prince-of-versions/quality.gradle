@@ -51,7 +51,7 @@ task pmd(type: Pmd) {
     exclude '**/gen/**', '**/test/**', '**/androidTest/**'
 
     reports {
-        xml.enabled = false
-        html.enabled = true
+        xml.required = false
+        html.required = true
     }
 }
