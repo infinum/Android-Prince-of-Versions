@@ -56,7 +56,7 @@ afterEvaluate {
                 artifactId = props.artifact
                 version = props.version
 
-                artifact("${getLayout().getBuildDirectory()}/outputs/aar/${project.getName()}-release.aar")
+                artifact(layout.buildDirectory.file("outputs/aar/${project.name}-release.aar"))
 
                 artifact sourcesJar
                 artifact javadocsJar
