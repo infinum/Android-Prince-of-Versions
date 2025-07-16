@@ -25,10 +25,7 @@ tasks.register('generateReadme') {
 }
 
 tasks.register('deploy') {
-    dependsOn[
-        'clean',
-        'publishReleasePublicationToSonatypeMavenCentralRepository'
-    ]
+    dependsOn 'clean', 'publishReleasePublicationToSonatypeMavenCentralRepository'
     group = "Deploy"
     description = "Deploy module to repositories"
 }
