@@ -1,4 +1,4 @@
-task javadocs(type: Javadoc) {
+tasks.register('javadocs', Javadoc) {
     source = android.sourceSets.main.java.source
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     excludes = ['**/*.kt']
@@ -17,17 +17,15 @@ private void replaceVersionsInFile(File file) {
     file.setText(content)
 }
 
-task generateReadme {
+tasks.register('generateReadme') {
     doFirst {
         replaceVersionsInFile(new File("${rootDir}/README.md"))
         replaceVersionsInFile(new File("${projectDir}/README.md"))
     }
 }
 
-task deploy(dependsOn: [
-        'clean',
-        'publishReleasePublicationToSonatypeMavenCentralRepository'
-]) {
+tasks.register('deploy') {
+    dependsOn 'clean', 'publishReleasePublicationToSonatypeMavenCentralRepository'
     group = "Deploy"
     description = "Deploy module to repositories"
 }

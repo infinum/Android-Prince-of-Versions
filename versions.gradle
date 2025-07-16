@@ -1,8 +1,8 @@
 def build = [
-        compile: 30,
+        compile: 35,
         tools  : '30.0.2',
         min    : 15,
-        target : 30,
+        target : 35,
 ]
 
 def versions = [

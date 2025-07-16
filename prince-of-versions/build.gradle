@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
 apply from: './quality.gradle'
 
 ext.mavenPublishProperties = [
@@ -20,6 +21,7 @@ ext.mavenPublishProperties = [
 ]
 
 android {
+    namespace "${mavenPublishProperties.group}.princeofversions"
     compileSdkVersion buildVersions.compile
 
     defaultConfig {
@@ -35,8 +37,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     resourcePrefix 'prince_of_versions_'
