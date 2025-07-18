@@ -40,32 +40,8 @@ class CheckResultTestRefactored {
     }
 
     @Test
-    fun checkHasUpdateMandatoryWithNulls() {
-        val result = CheckResult.mandatoryUpdate(null, null, updateInfo)
-        assertThat(result.hasUpdate()).isTrue()
-    }
-
-    @Test
-    fun checkHasUpdateOptionalAlwaysWithNulls() {
-        val result = CheckResult.optionalUpdate(null, NotificationType.ALWAYS, null, updateInfo)
-        assertThat(result.hasUpdate()).isTrue()
-    }
-
-    @Test
-    fun checkHasUpdateOptionalOnceWithNulls() {
-        val result = CheckResult.optionalUpdate(null, NotificationType.ONCE, null, updateInfo)
-        assertThat(result.hasUpdate()).isTrue()
-    }
-
-    @Test
     fun checkHasNoUpdate() {
         val result = CheckResult.noUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThat(result.hasUpdate()).isFalse()
-    }
-
-    @Test
-    fun checkHasNoUpdateWithNulls() {
-        val result = CheckResult.noUpdate(null, null, updateInfo)
         assertThat(result.hasUpdate()).isFalse()
     }
 
@@ -78,51 +54,25 @@ class CheckResultTestRefactored {
     @Test
     fun checkIsOptionalMandatory() {
         val result = CheckResult.mandatoryUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThat(result.isOptional).isFalse()
+        assertThat(result.isOptional()).isFalse()
     }
 
     @Test
     fun checkIsOptionalOptionalAlways() {
         val result = CheckResult.optionalUpdate(DEFAULT_VERSION, NotificationType.ALWAYS, DEFAULT_METADATA, updateInfo)
-        assertThat(result.isOptional).isTrue()
+        assertThat(result.isOptional()).isTrue()
     }
 
     @Test
     fun checkIsOptionalOptionalOnce() {
         val result = CheckResult.optionalUpdate(DEFAULT_VERSION, NotificationType.ONCE, DEFAULT_METADATA, updateInfo)
-        assertThat(result.isOptional).isTrue()
-    }
-
-    @Test
-    fun checkIsOptionalMandatoryWithNulls() {
-        val result = CheckResult.mandatoryUpdate(null, null, updateInfo)
-        assertThat(result.isOptional).isFalse()
-    }
-
-    @Test
-    fun checkIsOptionalOptionalAlwaysWithNulls() {
-        val result = CheckResult.optionalUpdate(null, NotificationType.ALWAYS, null, updateInfo)
-        assertThat(result.isOptional).isTrue()
-    }
-
-    @Test
-    fun checkIsOptionalOptionalOnceWithNulls() {
-        val result = CheckResult.optionalUpdate(null, NotificationType.ONCE, null, updateInfo)
-        assertThat(result.isOptional).isTrue()
+        assertThat(result.isOptional()).isTrue()
     }
 
     @Test
     fun checkIsOptionalWhenNoUpdate() {
         val result = CheckResult.noUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThatThrownBy { result.isOptional }
-            .isInstanceOf(UnsupportedOperationException::class.java)
-            .hasMessage("There is no update available.")
-    }
-
-    @Test
-    fun checkIsOptionalWhenNoUpdateWithNulls() {
-        val result = CheckResult.noUpdate(null, null, updateInfo)
-        assertThatThrownBy { result.isOptional }
+        assertThatThrownBy { result.isOptional() }
             .isInstanceOf(UnsupportedOperationException::class.java)
             .hasMessage("There is no update available.")
     }
@@ -130,13 +80,13 @@ class CheckResultTestRefactored {
     @Test
     fun checkNotificationTypeMandatory() {
         val result = CheckResult.mandatoryUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThatThrownBy { result.notificationType }
+        assertThatThrownBy { result.safeNotificationType() }
             .isInstanceOf(UnsupportedOperationException::class.java)
             .hasMessage("There is no optional update available.")
     }
 
     @Test
-    fun checkNotificationTypelOptionalAlways() {
+    fun checkNotificationTypeOptionalAlways() {
         val result = CheckResult.optionalUpdate(DEFAULT_VERSION, NotificationType.ALWAYS, DEFAULT_METADATA, updateInfo)
         assertThat(result.notificationType).isEqualTo(NotificationType.ALWAYS)
     }
@@ -150,15 +100,7 @@ class CheckResultTestRefactored {
     @Test
     fun checkNotificationTypeWhenNoUpdate() {
         val result = CheckResult.noUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThatThrownBy { result.notificationType }
-            .isInstanceOf(UnsupportedOperationException::class.java)
-            .hasMessage("There is no update available.")
-    }
-
-    @Test
-    fun checkNotificationTypeWhenNoUpdateWithNulls() {
-        val result = CheckResult.noUpdate(null, null, updateInfo)
-        assertThatThrownBy { result.notificationType }
+        assertThatThrownBy { result.safeNotificationType() }
             .isInstanceOf(UnsupportedOperationException::class.java)
             .hasMessage("There is no update available.")
     }
@@ -166,37 +108,37 @@ class CheckResultTestRefactored {
     @Test
     fun checkStatusMandatory() {
         val result = CheckResult.mandatoryUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThat(result.status()).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED)
+        assertThat(result.status).isEqualTo(UpdateStatus.REQUIRED_UPDATE_NEEDED)
     }
 
     @Test
     fun checkStatusOptional() {
         val result = CheckResult.optionalUpdate(DEFAULT_VERSION, NotificationType.ALWAYS, DEFAULT_METADATA, updateInfo)
-        assertThat(result.status()).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE)
+        assertThat(result.status).isEqualTo(UpdateStatus.NEW_UPDATE_AVAILABLE)
     }
 
     @Test
     fun checkStatusNoUpdate() {
         val result = CheckResult.noUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThat(result.status()).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE)
+        assertThat(result.status).isEqualTo(UpdateStatus.NO_UPDATE_AVAILABLE)
     }
 
     @Test
     fun checkMetadataMandatory() {
         val result = CheckResult.mandatoryUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThat(result.metadata()).isEqualTo(DEFAULT_METADATA)
+        assertThat(result.metadata).isEqualTo(DEFAULT_METADATA)
     }
 
     @Test
     fun checkMetadataOptional() {
         val result = CheckResult.optionalUpdate(DEFAULT_VERSION, NotificationType.ALWAYS, DEFAULT_METADATA, updateInfo)
-        assertThat(result.metadata()).isEqualTo(DEFAULT_METADATA)
+        assertThat(result.metadata).isEqualTo(DEFAULT_METADATA)
     }
 
     @Test
     fun checkMetadataNoUpdate() {
         val result = CheckResult.noUpdate(DEFAULT_VERSION, DEFAULT_METADATA, updateInfo)
-        assertThat(result.metadata()).isEqualTo(DEFAULT_METADATA)
+        assertThat(result.metadata).isEqualTo(DEFAULT_METADATA)
     }
 
     @Test
@@ -277,14 +219,8 @@ class CheckResultTestRefactored {
         assertThat(mandatoryResult1.equals(null)).isFalse()
 
         // Test hashCode contract
-        // For optional updates, hashcode should be consistent
+        assertThat(mandatoryResult1.hashCode()).isEqualTo(mandatoryResult2.hashCode())
         assertThat(optionalResult1.hashCode()).isEqualTo(optionalResult2.hashCode())
-
-        // For mandatory updates, hashCode throws an exception - this is a bug in the class, but the test should document it
-        // TODO - check whether this bug is of real concern in the actual implementation and context of usage - if so fix it
-        assertThatThrownBy { mandatoryResult1.hashCode() }
-            .isInstanceOf(UnsupportedOperationException::class.java)
-            .hasMessage("There is no optional update available.")
     }
 
     @Test

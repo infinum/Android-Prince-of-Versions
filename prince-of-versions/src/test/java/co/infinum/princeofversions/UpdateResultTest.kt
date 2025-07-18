@@ -44,9 +44,8 @@ class UpdateResultTest {
         // Not equals for different updateVersion
         assertThat(result1).isNotEqualTo(differentVersion)
 
-        // BUG: Test that documents the flaw in the hashCode implementation
-        // Two objects are not equal, but produce the same hash code because 'updateVersion' is missing from hashCode()
-        assertThat(result1.hashCode()).isEqualTo(differentVersion.hashCode())
+        // Different hash code for different version
+        assertThat(result1.hashCode()).isNotEqualTo(differentVersion.hashCode())
 
         // Not equals for different types
         assertThat(result1.equals("a string")).isFalse()

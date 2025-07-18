@@ -32,11 +32,4 @@ class StreamLoaderTest {
         assertThatThrownBy { loader.load() }
             .isInstanceOf(IOException::class.java)
     }
-
-    @Test
-    fun testLoadWithNullStreamThrowsException() {
-        val loader: Loader = StreamLoader(null)
-        assertThatThrownBy { loader.load() }
-            .isInstanceOf(NullPointerException::class.java)
-    }
 }

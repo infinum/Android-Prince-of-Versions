@@ -21,6 +21,7 @@ def deps = [
         junit           : 'junit:junit:4.12',
         mockito         : 'org.mockito:mockito-core:4.1.0',
         mockito_inline  : 'org.mockito:mockito-inline:5.2.0',
+        mockito_kotlin  : 'org.mockito.kotlin:mockito-kotlin:5.4.0',
         mockwebserver   : 'com.squareup.okhttp3:mockwebserver:3.10.0',
         assertj         : 'org.assertj:assertj-core:3.8.0',
         json            : 'org.json:json:20140107'

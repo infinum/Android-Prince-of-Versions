@@ -7,13 +7,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mock
-import org.mockito.Mockito.any
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import java.util.concurrent.Executor
 
 @RunWith(MockitoJUnitRunner::class)
@@ -46,7 +46,7 @@ class PresenterTestRefactored {
     @Test
     fun testMandatoryUpdate() {
         val checkResult = CheckResult.mandatoryUpdate(10, defaultMetadata, updateInfo)
-        `when`(interactor.check(any(Loader::class.java), any(ApplicationConfiguration::class.java))).thenReturn(checkResult)
+        whenever(interactor.check(any(), any())).thenReturn(checkResult)
 
         val result = presenter.run(loader, appConfig)
 
@@ -58,7 +58,7 @@ class PresenterTestRefactored {
     @Test
     fun testNoUpdate() {
         val checkResult = CheckResult.noUpdate(10, defaultMetadata, updateInfo)
-        `when`(interactor.check(any(Loader::class.java), any(ApplicationConfiguration::class.java))).thenReturn(checkResult)
+        whenever(interactor.check(any(), any())).thenReturn(checkResult)
 
         val result = presenter.run(loader, appConfig)
 
@@ -70,8 +70,8 @@ class PresenterTestRefactored {
     @Test
     fun testOptionalUpdateFirstTime() {
         val checkResult = CheckResult.optionalUpdate(12, NotificationType.ONCE, defaultMetadata, updateInfo)
-        `when`(storage.lastNotifiedVersion(null)).thenReturn(null) // First time seeing any update
-        `when`(interactor.check(any(Loader::class.java), any(ApplicationConfiguration::class.java))).thenReturn(checkResult)
+        whenever(storage.lastNotifiedVersion(null)).thenReturn(null) // First time seeing any update
+        whenever(interactor.check(any(), any())).thenReturn(checkResult)
 
         val result = presenter.run(loader, appConfig)
 
@@ -83,8 +83,8 @@ class PresenterTestRefactored {
     @Test
     fun testOptionalUpdateWhenNotNotified() {
         val checkResult = CheckResult.optionalUpdate(12, NotificationType.ONCE, defaultMetadata, updateInfo)
-        `when`(storage.lastNotifiedVersion(null)).thenReturn(11) // Old version notified
-        `when`(interactor.check(any(Loader::class.java), any(ApplicationConfiguration::class.java))).thenReturn(checkResult)
+        whenever(storage.lastNotifiedVersion(null)).thenReturn(11) // Old version notified
+        whenever(interactor.check(any(), any())).thenReturn(checkResult)
 
         val result = presenter.run(loader, appConfig)
 
@@ -96,8 +96,8 @@ class PresenterTestRefactored {
     @Test
     fun testOptionalUpdateNotifiedAlways() {
         val checkResult = CheckResult.optionalUpdate(12, NotificationType.ALWAYS, defaultMetadata, updateInfo)
-        `when`(storage.lastNotifiedVersion(null)).thenReturn(12) // Same version notified
-        `when`(interactor.check(any(Loader::class.java), any(ApplicationConfiguration::class.java))).thenReturn(checkResult)
+        whenever(storage.lastNotifiedVersion(null)).thenReturn(12) // Same version notified
+        whenever(interactor.check(any(), any())).thenReturn(checkResult)
 
         val result = presenter.run(loader, appConfig)
 
@@ -109,8 +109,8 @@ class PresenterTestRefactored {
     @Test
     fun testOptionalUpdateNotifiedOnce() {
         val checkResult = CheckResult.optionalUpdate(12, NotificationType.ONCE, defaultMetadata, updateInfo)
-        `when`(storage.lastNotifiedVersion(null)).thenReturn(12) // Same version notified
-        `when`(interactor.check(any(Loader::class.java), any(ApplicationConfiguration::class.java))).thenReturn(checkResult)
+        whenever(storage.lastNotifiedVersion(null)).thenReturn(12) // Same version notified
+        whenever(interactor.check(any(), any())).thenReturn(checkResult)
 
         val result = presenter.run(loader, appConfig)
 
@@ -121,59 +121,59 @@ class PresenterTestRefactored {
 
     @Test
     fun testSyncCheckError() {
-        `when`(interactor.check(any(Loader::class.java), any(ApplicationConfiguration::class.java))).thenThrow(IllegalStateException())
+        whenever(interactor.check(any(), any())).thenThrow(IllegalStateException())
         assertThatThrownBy { presenter.check(loader, appConfig) }
             .isInstanceOf(IllegalStateException::class.java)
     }
 
     @Test
     fun testAsyncCheckSuccess() {
-        val callback = mock(UpdaterCallback::class.java)
+        val callback: UpdaterCallback = mock()
         val executor = Executor { it.run() }
         val checkResult = CheckResult.mandatoryUpdate(10, defaultMetadata, updateInfo)
         val expected = UpdateResult(updateInfo, defaultMetadata, UpdateStatus.REQUIRED_UPDATE_NEEDED, 10)
-        `when`(interactor.check(loader, appConfig)).thenReturn(checkResult)
+        whenever(interactor.check(loader, appConfig)).thenReturn(checkResult)
 
         presenter.check(loader, executor, callback, appConfig)
 
         verify(callback, times(1)).onSuccess(expected)
-        verify(callback, never()).onError(any(Throwable::class.java))
+        verify(callback, never()).onError(any())
     }
 
     @Test
     fun testAsyncCheckError() {
-        val callback = mock(UpdaterCallback::class.java)
+        val callback: UpdaterCallback = mock()
         val executor = Executor { it.run() }
         val throwable = IllegalStateException()
-        `when`(interactor.check(loader, appConfig)).thenThrow(throwable)
+        whenever(interactor.check(loader, appConfig)).thenThrow(throwable)
 
         presenter.check(loader, executor, callback, appConfig)
 
-        verify(callback, never()).onSuccess(any(UpdateResult::class.java))
+        verify(callback, never()).onSuccess(any())
         verify(callback, times(1)).onError(throwable)
     }
 
     @Test
     fun testAsyncCheckSuccessIsIgnoredWhenCanceled() {
-        val callback = mock(UpdaterCallback::class.java)
+        val callback: UpdaterCallback = mock()
         val executor = Executor { /* Don't run immediately */ }
 
         val cancelable = presenter.check(loader, executor, callback, appConfig)
         cancelable.cancel()
 
-        verify(callback, never()).onSuccess(any(UpdateResult::class.java))
-        verify(callback, never()).onError(any(Throwable::class.java))
+        verify(callback, never()).onSuccess(any())
+        verify(callback, never()).onError(any())
     }
 
     @Test
     fun testAsyncCheckErrorIsIgnoredWhenCanceled() {
-        val callback = mock(UpdaterCallback::class.java)
+        val callback: UpdaterCallback = mock()
         val executor = Executor { /* Don't run immediately */ }
 
         val cancelable = presenter.check(loader, executor, callback, appConfig)
         cancelable.cancel()
 
-        verify(callback, never()).onSuccess(any(UpdateResult::class.java))
-        verify(callback, never()).onError(any(Throwable::class.java))
+        verify(callback, never()).onSuccess(any())
+        verify(callback, never()).onError(any())
     }
 }

@@ -44,7 +44,7 @@ class NetworkLoaderTestRefactored {
 
     @Test
     fun networkTimeoutTest() {
-        val networkLoader: Loader = NetworkLoader(mockWebServer.url("/").toString(), 1)
+        val networkLoader: Loader = NetworkLoader(url=mockWebServer.url("/").toString(), networkTimeoutSeconds = 1)
         assertThatThrownBy { networkLoader.load() }
             .isInstanceOf(SocketTimeoutException::class.java)
     }
