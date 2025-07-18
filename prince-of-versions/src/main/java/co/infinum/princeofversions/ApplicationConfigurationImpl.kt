@@ -13,10 +13,25 @@ internal class ApplicationConfigurationImpl(context: Context) : ApplicationConfi
 
     /**
      * The application's version code, retrieved from the package manager.
-     * @throws IllegalStateException if the application's package name cannot be found.
+     * This implementation is backward-compatible and safely casts the version code to an Int.
+     * @throws IllegalStateException if the application's package name cannot be found,
+     * or if the version code is too large to be represented as an Int.
      */
     override val version: Int = try {
-        context.packageManager.getPackageInfo(context.packageName, 0).versionCode
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        val longVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.longVersionCode
+        } else {
+            @Suppress("DEPRECATION")
+            packageInfo.versionCode.toLong()
+        }
+
+        // TODO: Check if Major version code should be supported as it was not in the past.
+        if (longVersionCode > Int.MAX_VALUE) {
+            throw IllegalStateException("Version code $longVersionCode is too large to be handled by this library.")
+        }
+
+        longVersionCode.toInt()
     } catch (e: PackageManager.NameNotFoundException) {
         throw IllegalStateException("Could not find package name", e)
     }
