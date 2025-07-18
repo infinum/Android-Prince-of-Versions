@@ -48,24 +48,24 @@ class PresenterImpl implements Presenter {
     @VisibleForTesting
     UpdateResult run(Loader loader, ApplicationConfiguration appConfig) throws Throwable {
         CheckResult result = interactor.check(loader, appConfig);
-        switch (result.status()) {
+        switch (result.getStatus()) {
             case REQUIRED_UPDATE_NEEDED:
                 storage.rememberLastNotifiedVersion(result.getUpdateVersion());
-                return new UpdateResult(result.getInfo(), result.metadata(), REQUIRED_UPDATE_NEEDED, result.getUpdateVersion());
+                return new UpdateResult(result.getInfo(), result.getMetadata(), REQUIRED_UPDATE_NEEDED, result.getUpdateVersion());
             case NEW_UPDATE_AVAILABLE:
                 Integer lastNotifiedVersion = storage.lastNotifiedVersion(null);
                 boolean notNotifiedUpdateAvailable = lastNotifiedVersion == null || !lastNotifiedVersion.equals(result.getUpdateVersion());
                 boolean alreadyNotifiedUpdateAvailable =
                     lastNotifiedVersion != null && lastNotifiedVersion.equals(result.getUpdateVersion());
                 if (notNotifiedUpdateAvailable || (
-                    alreadyNotifiedUpdateAvailable && NotificationType.ALWAYS.equals(result.getNotificationType())
+                    alreadyNotifiedUpdateAvailable && NotificationType.ALWAYS.equals(result.safeNotificationType())
                 )) {
                     storage.rememberLastNotifiedVersion(result.getUpdateVersion());
-                    return new UpdateResult(result.getInfo(), result.metadata(), NEW_UPDATE_AVAILABLE, result.getUpdateVersion());
+                    return new UpdateResult(result.getInfo(), result.getMetadata(), NEW_UPDATE_AVAILABLE, result.getUpdateVersion());
                 }
             case NO_UPDATE_AVAILABLE:
             default:
-                return new UpdateResult(result.getInfo(), result.metadata(), NO_UPDATE_AVAILABLE, result.getUpdateVersion());
+                return new UpdateResult(result.getInfo(), result.getMetadata(), NO_UPDATE_AVAILABLE, result.getUpdateVersion());
         }
     }
 

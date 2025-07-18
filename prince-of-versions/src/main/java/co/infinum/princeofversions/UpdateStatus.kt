@@ -1,9 +1,9 @@
-package co.infinum.princeofversions;
+package co.infinum.princeofversions
 
 /**
  * Represents a status of an update check
  */
-public enum UpdateStatus {
+enum class UpdateStatus {
     /**
      * Update is available and type of update is mandatory
      */
