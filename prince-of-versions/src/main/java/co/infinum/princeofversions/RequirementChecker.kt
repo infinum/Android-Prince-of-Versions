@@ -1,10 +1,9 @@
-package co.infinum.princeofversions;
+package co.infinum.princeofversions
 
 /**
  * This class handles requirement checking while JSON parsing
  */
-public interface RequirementChecker {
-
+fun interface RequirementChecker {
     /**
      * This method is used to check if passed data requires specified requirements
      *
@@ -12,5 +11,6 @@ public interface RequirementChecker {
      * @return true or false depending if the data matched requirements
      * @throws Throwable in case of any error in parsing
      */
-    boolean checkRequirements(String value) throws Throwable;
+    @Throws(Throwable::class)
+    fun checkRequirements(value: String): Boolean
 }
