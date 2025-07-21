@@ -15,7 +15,7 @@ data class CheckResult private constructor(
     val status: UpdateStatus,
     val updateVersion: Int,
     val notificationType: NotificationType?,
-    val metadata: Map<String, String>,
+    val metadata: Map<String, String?>,
     val info: UpdateInfo
 ) {
 
@@ -23,7 +23,7 @@ data class CheckResult private constructor(
 
         fun mandatoryUpdate(
             version: Int,
-            metadata: Map<String, String>,
+            metadata: Map<String, String?>,
             updateInfo: UpdateInfo
         ): CheckResult = CheckResult(
             status = UpdateStatus.REQUIRED_UPDATE_NEEDED,
@@ -36,7 +36,7 @@ data class CheckResult private constructor(
         fun optionalUpdate(
             version: Int,
             notificationType: NotificationType,
-            metadata: Map<String, String>,
+            metadata: Map<String, String?>,
             updateInfo: UpdateInfo
         ): CheckResult = CheckResult(
             status = UpdateStatus.NEW_UPDATE_AVAILABLE,
@@ -48,7 +48,7 @@ data class CheckResult private constructor(
 
         fun noUpdate(
             version: Int,
-            metadata: Map<String, String>,
+            metadata: Map<String, String?>,
             updateInfo: UpdateInfo
         ): CheckResult = CheckResult(
             status = UpdateStatus.NO_UPDATE_AVAILABLE,

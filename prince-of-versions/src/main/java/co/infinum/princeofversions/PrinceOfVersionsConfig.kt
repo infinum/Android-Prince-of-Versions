@@ -11,7 +11,7 @@ data class PrinceOfVersionsConfig private constructor(
     val mandatoryVersion: Int?,
     val optionalVersion: Int?,
     val optionalNotificationType: NotificationType,
-    val metadata: Map<String, String>,
+    val metadata: Map<String, String?>,
     val requirements: Map<String, String>
 ) {
 
@@ -24,7 +24,7 @@ data class PrinceOfVersionsConfig private constructor(
         private var optionalVersion: Int? = null
         private var optionalNotificationType: NotificationType? = null
         private var requirements: Map<String, String>? = null
-        private val metadata: MutableMap<String, String> = HashMap()
+        private val metadata: MutableMap<String, String?> = HashMap()
 
         /**
          * Sets a new mandatory version.
@@ -62,7 +62,7 @@ data class PrinceOfVersionsConfig private constructor(
          * @param metadata A map of metadata.
          * @return this builder.
          */
-        fun withMetadata(metadata: Map<String, String>) = apply {
+        fun withMetadata(metadata: Map<String, String?>) = apply {
             this.metadata.putAll(metadata)
         }
 
