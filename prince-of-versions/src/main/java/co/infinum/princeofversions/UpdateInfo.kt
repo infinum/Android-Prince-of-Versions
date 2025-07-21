@@ -1,7 +1,5 @@
 package co.infinum.princeofversions
 
-import androidx.annotation.VisibleForTesting
-
 /**
  * Represents selected update configuration object based on requirements
  */
