@@ -42,7 +42,7 @@ public class NetworkLoaderTest {
 
     @Test(expected = SocketTimeoutException.class)
     public void networkTimeoutTest() throws Throwable {
-        Loader networkLoader = new NetworkLoader(mockWebServer.url("/").toString(), 1);
+        Loader networkLoader = new NetworkLoader(mockWebServer.url("/").toString(), null, null, 1);
 
         networkLoader.load();
     }

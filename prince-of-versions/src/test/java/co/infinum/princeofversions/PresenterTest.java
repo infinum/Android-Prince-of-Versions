@@ -57,7 +57,7 @@ public class PresenterTest {
 
     @Test
     public void testMandatoryUpdate() throws Throwable {
-        CheckResult checkResult = CheckResult.mandatoryUpdate(10, DEFAULT_METADATA, updateInfo);
+        CheckResult checkResult = CheckResult.Companion.mandatoryUpdate(10, DEFAULT_METADATA, updateInfo);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
         UpdateResult result = presenter.run(loader, appConfig);
@@ -74,7 +74,7 @@ public class PresenterTest {
 
     @Test
     public void testNoUpdate() throws Throwable {
-        CheckResult checkResult = CheckResult.noUpdate(10, DEFAULT_METADATA, updateInfo);
+        CheckResult checkResult = CheckResult.Companion.noUpdate(10, DEFAULT_METADATA, updateInfo);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
         UpdateResult result = presenter.run(loader, appConfig);
@@ -91,7 +91,7 @@ public class PresenterTest {
 
     @Test
     public void testOptionalUpdateWhenNotNotifiedUpdate() throws Throwable {
-        CheckResult checkResult = CheckResult.optionalUpdate(12, NotificationType.ONCE, DEFAULT_METADATA, updateInfo);
+        CheckResult checkResult = CheckResult.Companion.optionalUpdate(12, NotificationType.ONCE, DEFAULT_METADATA, updateInfo);
         when(storage.lastNotifiedVersion(null)).thenReturn(11);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
@@ -109,7 +109,7 @@ public class PresenterTest {
 
     @Test
     public void testMandatoryUpdateAlreadyNotifiedUpdateWithAlways() throws Throwable {
-        CheckResult checkResult = CheckResult.optionalUpdate(12, NotificationType.ALWAYS, DEFAULT_METADATA, updateInfo);
+        CheckResult checkResult = CheckResult.Companion.optionalUpdate(12, NotificationType.ALWAYS, DEFAULT_METADATA, updateInfo);
         when(storage.lastNotifiedVersion(null)).thenReturn(12);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
@@ -127,7 +127,7 @@ public class PresenterTest {
 
     @Test
     public void testMandatoryUpdateAlreadyNotifiedUpdateWithOnce() throws Throwable {
-        CheckResult checkResult = CheckResult.optionalUpdate(12, NotificationType.ONCE, DEFAULT_METADATA, updateInfo);
+        CheckResult checkResult = CheckResult.Companion.optionalUpdate(12, NotificationType.ONCE, DEFAULT_METADATA, updateInfo);
         when(storage.lastNotifiedVersion(null)).thenReturn(12);
         when(interactor.check(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(checkResult);
 
@@ -231,17 +231,14 @@ public class PresenterTest {
     @Test
     public void testAsyncCheckNoUpdateCancel() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
+        UpdaterCancelable cancelable = mock(UpdaterCancelable.class);
         PresenterImpl mock = mock(PresenterImpl.class);
         UpdateResult expected = new UpdateResult(updateInfo, DEFAULT_METADATA, UpdateStatus.NO_UPDATE_AVAILABLE, 10);
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
-        when(mock.createCall()).thenReturn(new UpdaterCancelable() {
-            @Override
-            public boolean isCanceled() {
-                return true;
-            }
-        });
+        when(cancelable.isCanceled()).thenReturn(true);
+        when(mock.createCall()).thenReturn(cancelable);
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
 
@@ -252,17 +249,14 @@ public class PresenterTest {
     @Test
     public void testAsyncCheckMandatoryUpdateCancel() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
+        UpdaterCancelable cancelable = mock(UpdaterCancelable.class);
         PresenterImpl mock = mock(PresenterImpl.class);
         UpdateResult expected = new UpdateResult(updateInfo, DEFAULT_METADATA, UpdateStatus.REQUIRED_UPDATE_NEEDED, 10);
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
-        when(mock.createCall()).thenReturn(new UpdaterCancelable() {
-            @Override
-            public boolean isCanceled() {
-                return true;
-            }
-        });
+        when(cancelable.isCanceled()).thenReturn(true);
+        when(mock.createCall()).thenReturn(cancelable);
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
 
@@ -273,17 +267,14 @@ public class PresenterTest {
     @Test
     public void testAsyncCheckOptionalUpdateCancel() throws Throwable {
         UpdaterCallback callback = mock(UpdaterCallback.class);
+        UpdaterCancelable cancelable = mock(UpdaterCancelable.class);
         PresenterImpl mock = mock(PresenterImpl.class);
         UpdateResult expected = new UpdateResult(updateInfo, DEFAULT_METADATA, UpdateStatus.NEW_UPDATE_AVAILABLE, 10);
         when(mock.run(any(Loader.class), any(ApplicationConfiguration.class))).thenReturn(expected);
         when(mock.check(any(Loader.class), any(Executor.class), any(UpdaterCallback.class), any(ApplicationConfiguration.class)))
             .thenCallRealMethod();
-        when(mock.createCall()).thenReturn(new UpdaterCancelable() {
-            @Override
-            public boolean isCanceled() {
-                return true;
-            }
-        });
+        when(cancelable.isCanceled()).thenReturn(true);
+        when(mock.createCall()).thenReturn(cancelable);
 
         mock.check(loader, new SingleThreadExecutor(), callback, appConfig);
 

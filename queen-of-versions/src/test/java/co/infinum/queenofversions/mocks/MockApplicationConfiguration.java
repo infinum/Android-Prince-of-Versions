@@ -14,12 +14,12 @@ public class MockApplicationConfiguration implements ApplicationConfiguration {
     }
 
     @Override
-    public int version() {
+    public int getVersion() {
         return version;
     }
 
     @Override
-    public int sdkVersionCode() {
+    public int getSdkVersionCode() {
         return sdkVersionCode;
     }
 }

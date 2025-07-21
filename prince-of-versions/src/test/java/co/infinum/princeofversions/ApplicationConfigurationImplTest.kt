@@ -26,7 +26,7 @@ class ApplicationConfigurationImplTest {
 
         val appConfig = ApplicationConfigurationImpl(mockContext)
 
-        assertThat(appConfig.version()).isEqualTo(123)
+        assertThat(appConfig.version).isEqualTo(123)
     }
 
     @Test
@@ -42,7 +42,7 @@ class ApplicationConfigurationImplTest {
 
         val appConfig = ApplicationConfigurationImpl(mockContext)
 
-        assertThat(appConfig.sdkVersionCode()).isEqualTo(Build.VERSION.SDK_INT)
+        assertThat(appConfig.sdkVersionCode).isEqualTo(Build.VERSION.SDK_INT)
     }
 
     @Test

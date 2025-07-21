@@ -1,16 +1,15 @@
-package co.infinum.princeofversions;
+package co.infinum.princeofversions
 
 /**
  * This class loads update resource.
  */
-public interface Loader {
-
+interface Loader {
     /**
-     * Loads update resource into {@link String}.
+     * Loads update resource into [String].
      *
      * @return Loaded text.
      * @throws Throwable if error happens during load.
      */
-    String load() throws Throwable;
-
+    @Throws(Throwable::class)
+    fun load(): String
 }

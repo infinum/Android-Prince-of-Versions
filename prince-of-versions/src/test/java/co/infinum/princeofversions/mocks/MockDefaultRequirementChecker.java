@@ -14,7 +14,7 @@ public class MockDefaultRequirementChecker implements RequirementChecker {
     private int sdkVersionCode;
 
     public MockDefaultRequirementChecker(ApplicationConfiguration appConfig) {
-        this.sdkVersionCode = appConfig.sdkVersionCode();
+        this.sdkVersionCode = appConfig.getSdkVersionCode();
     }
 
     public MockDefaultRequirementChecker(int versionCode) {

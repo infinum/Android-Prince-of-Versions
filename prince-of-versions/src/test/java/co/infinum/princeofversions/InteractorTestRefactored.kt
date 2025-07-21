@@ -52,8 +52,8 @@ class InteractorTestRefactored {
 
         verify(loader, times(1)).load()
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT)
-        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion, config.requirements, appConfig.version(), config.optionalNotificationType)
-        assertThat(result).isEqualTo(CheckResult.mandatoryUpdate(config.mandatoryVersion, config.metadata, expectedInfo))
+        val expectedInfo = UpdateInfo(config.mandatoryVersion!!, config.optionalVersion, config.requirements, appConfig.version, config.optionalNotificationType)
+        assertThat(result).isEqualTo(CheckResult.mandatoryUpdate(config.mandatoryVersion!!, config.metadata, expectedInfo))
     }
 
     @Test
@@ -68,8 +68,8 @@ class InteractorTestRefactored {
 
         verify(loader, times(1)).load()
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT)
-        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion, config.requirements, appConfig.version(), config.optionalNotificationType)
-        assertThat(result).isEqualTo(CheckResult.noUpdate(appConfig.version(), config.metadata, expectedInfo))
+        val expectedInfo = UpdateInfo(config.mandatoryVersion!!, config.optionalVersion, config.requirements, appConfig.version, config.optionalNotificationType)
+        assertThat(result).isEqualTo(CheckResult.noUpdate(appConfig.version, config.metadata, expectedInfo))
     }
 
     @Test
@@ -85,8 +85,8 @@ class InteractorTestRefactored {
 
         verify(loader, times(1)).load()
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT)
-        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion, config.requirements, appConfig.version(), config.optionalNotificationType)
-        assertThat(result).isEqualTo(CheckResult.noUpdate(appConfig.version(), config.metadata, expectedInfo))
+        val expectedInfo = UpdateInfo(config.mandatoryVersion!!, config.optionalVersion!!, config.requirements, appConfig.version, config.optionalNotificationType)
+        assertThat(result).isEqualTo(CheckResult.noUpdate(appConfig.version, config.metadata, expectedInfo))
     }
 
     @Test
@@ -102,8 +102,8 @@ class InteractorTestRefactored {
 
         verify(loader, times(1)).load()
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT)
-        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion, config.requirements, appConfig.version(), config.optionalNotificationType)
-        assertThat(result).isEqualTo(CheckResult.mandatoryUpdate(config.optionalVersion, config.metadata, expectedInfo))
+        val expectedInfo = UpdateInfo(config.mandatoryVersion!!, config.optionalVersion!!, config.requirements, appConfig.version, config.optionalNotificationType)
+        assertThat(result).isEqualTo(CheckResult.mandatoryUpdate(config.optionalVersion!!, config.metadata, expectedInfo))
     }
 
     @Test
@@ -119,8 +119,8 @@ class InteractorTestRefactored {
 
         verify(loader, times(1)).load()
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT)
-        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion, config.requirements, appConfig.version(), config.optionalNotificationType)
-        assertThat(result).isEqualTo(CheckResult.mandatoryUpdate(config.mandatoryVersion, config.metadata, expectedInfo))
+        val expectedInfo = UpdateInfo(config.mandatoryVersion!!, config.optionalVersion!!, config.requirements, appConfig.version, config.optionalNotificationType)
+        assertThat(result).isEqualTo(CheckResult.mandatoryUpdate(config.mandatoryVersion!!, config.metadata, expectedInfo))
     }
 
     @Test
@@ -136,8 +136,8 @@ class InteractorTestRefactored {
 
         verify(loader, times(1)).load()
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT)
-        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion, config.requirements, appConfig.version(), config.optionalNotificationType)
-        assertThat(result).isEqualTo(CheckResult.optionalUpdate(config.optionalVersion, NotificationType.ONCE, config.metadata, expectedInfo))
+        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion!!, config.requirements, appConfig.version, config.optionalNotificationType)
+        assertThat(result).isEqualTo(CheckResult.optionalUpdate(config.optionalVersion!!, NotificationType.ONCE, config.metadata, expectedInfo))
     }
 
     @Test
@@ -152,8 +152,8 @@ class InteractorTestRefactored {
 
         verify(loader, times(1)).load()
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT)
-        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion, config.requirements, appConfig.version(), config.optionalNotificationType)
-        assertThat(result).isEqualTo(CheckResult.noUpdate(appConfig.version(), config.metadata, expectedInfo))
+        val expectedInfo = UpdateInfo(config.mandatoryVersion, config.optionalVersion!!, config.requirements, appConfig.version, config.optionalNotificationType)
+        assertThat(result).isEqualTo(CheckResult.noUpdate(appConfig.version, config.metadata, expectedInfo))
     }
 
     @Test

@@ -26,9 +26,6 @@ public class InteractorTest {
     @Mock
     ConfigurationParser configurationParser;
 
-    @Mock
-    UpdateInfo updateInfo;
-
     private Interactor interactor;
 
     @Before
@@ -48,14 +45,23 @@ public class InteractorTest {
             .withMandatoryVersion(2)
             .build();
         when(configurationParser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration(1, 1);
 
-        CheckResult result = interactor.check(loader, new MockApplicationConfiguration(1, 1));
+        CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
+        UpdateInfo expectedUpdateInfo = new UpdateInfo(
+            config.getMandatoryVersion(),
+            config.getOptionalVersion(),
+            config.getRequirements(),
+            appConfig.getVersion(),
+            config.getOptionalNotificationType()
+        );
+
         assertThat(result).isEqualTo(
-            CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata(), updateInfo)
+            CheckResult.Companion.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata(), expectedUpdateInfo)
         );
     }
 
@@ -64,7 +70,6 @@ public class InteractorTest {
         PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
             .withMandatoryVersion(1)
             .build();
-
         when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration(1, 1);
 
@@ -73,8 +78,16 @@ public class InteractorTest {
         verify(loader, times(1)).load();
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
+        UpdateInfo expectedUpdateInfo = new UpdateInfo(
+            config.getMandatoryVersion(),
+            config.getOptionalVersion(),
+            config.getRequirements(),
+            appConfig.getVersion(),
+            config.getOptionalNotificationType()
+        );
+
         assertThat(result).isEqualTo(
-            CheckResult.noUpdate(appConfig.version(), config.getMetadata(), updateInfo)
+            CheckResult.Companion.noUpdate(appConfig.getVersion(), config.getMetadata(), expectedUpdateInfo)
         );
     }
 
@@ -84,7 +97,6 @@ public class InteractorTest {
             .withMandatoryVersion(1)
             .withOptionalVersion(1)
             .build();
-
         when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration(1, 1);
 
@@ -93,8 +105,16 @@ public class InteractorTest {
         verify(loader, times(1)).load();
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
+        UpdateInfo expectedUpdateInfo = new UpdateInfo(
+            config.getMandatoryVersion(),
+            config.getOptionalVersion(),
+            config.getRequirements(),
+            appConfig.getVersion(),
+            config.getOptionalNotificationType()
+        );
+
         assertThat(result).isEqualTo(
-            CheckResult.noUpdate(appConfig.version(), config.getMetadata(), updateInfo)
+            CheckResult.Companion.noUpdate(appConfig.getVersion(), config.getMetadata(), expectedUpdateInfo)
         );
     }
 
@@ -105,14 +125,23 @@ public class InteractorTest {
             .withOptionalVersion(3)
             .build();
         when(configurationParser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration(1, 1);
 
-        CheckResult result = interactor.check(loader, new MockApplicationConfiguration(1, 1));
+        CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
+        UpdateInfo expectedUpdateInfo = new UpdateInfo(
+            config.getMandatoryVersion(),
+            config.getOptionalVersion(),
+            config.getRequirements(),
+            appConfig.getVersion(),
+            config.getOptionalNotificationType()
+        );
+
         assertThat(result).isEqualTo(
-            CheckResult.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata(), updateInfo)
+            CheckResult.Companion.mandatoryUpdate(config.getOptionalVersion(), config.getMetadata(), expectedUpdateInfo)
         );
     }
 
@@ -123,14 +152,23 @@ public class InteractorTest {
             .withOptionalVersion(2)
             .build();
         when(configurationParser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration(1, 1);
 
-        CheckResult result = interactor.check(loader, new MockApplicationConfiguration(1, 1));
+        CheckResult result = interactor.check(loader, appConfig);
 
         verify(loader, times(1)).load();
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
+        UpdateInfo expectedUpdateInfo = new UpdateInfo(
+            config.getMandatoryVersion(),
+            config.getOptionalVersion(),
+            config.getRequirements(),
+            appConfig.getVersion(),
+            config.getOptionalNotificationType()
+        );
+
         assertThat(result).isEqualTo(
-            CheckResult.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata(), updateInfo)
+            CheckResult.Companion.mandatoryUpdate(config.getMandatoryVersion(), config.getMetadata(), expectedUpdateInfo)
         );
     }
 
@@ -138,25 +176,8 @@ public class InteractorTest {
     public void checkOptionalUpdate() throws Throwable {
         PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
             .withOptionalVersion(2)
+            .withOptionalNotificationType(NotificationType.ONCE)
             .build();
-        when(configurationParser.parse(anyString())).thenReturn(config);
-
-        CheckResult result = interactor.check(loader, new MockApplicationConfiguration(1, 1));
-
-        verify(loader, times(1)).load();
-        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
-
-        assertThat(result).isEqualTo(
-            CheckResult.optionalUpdate(config.getOptionalVersion(), NotificationType.ONCE, config.getMetadata(), updateInfo)
-        );
-    }
-
-    @Test
-    public void checkOptionalUpdateWhenNoUpdateAvailable() throws Throwable {
-        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
-            .withOptionalVersion(1)
-            .build();
-
         when(configurationParser.parse(anyString())).thenReturn(config);
         ApplicationConfiguration appConfig = new MockApplicationConfiguration(1, 1);
 
@@ -165,8 +186,42 @@ public class InteractorTest {
         verify(loader, times(1)).load();
         verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
 
+        UpdateInfo expectedUpdateInfo = new UpdateInfo(
+            config.getMandatoryVersion(),
+            config.getOptionalVersion(),
+            config.getRequirements(),
+            appConfig.getVersion(),
+            config.getOptionalNotificationType()
+        );
+
         assertThat(result).isEqualTo(
-            CheckResult.noUpdate(appConfig.version(), config.getMetadata(), updateInfo)
+            CheckResult.Companion.optionalUpdate(config.getOptionalVersion(), NotificationType.ONCE, config.getMetadata(), expectedUpdateInfo)
+        );
+    }
+
+    @Test
+    public void checkOptionalUpdateWhenNoUpdateAvailable() throws Throwable {
+        PrinceOfVersionsConfig config = new PrinceOfVersionsConfig.Builder()
+            .withOptionalVersion(1)
+            .build();
+        when(configurationParser.parse(anyString())).thenReturn(config);
+        ApplicationConfiguration appConfig = new MockApplicationConfiguration(1, 1);
+
+        CheckResult result = interactor.check(loader, appConfig);
+
+        verify(loader, times(1)).load();
+        verify(configurationParser, times(1)).parse(DEFAULT_LOADER_RESULT);
+
+        UpdateInfo expectedUpdateInfo = new UpdateInfo(
+            config.getMandatoryVersion(),
+            config.getOptionalVersion(),
+            config.getRequirements(),
+            appConfig.getVersion(),
+            config.getOptionalNotificationType()
+        );
+
+        assertThat(result).isEqualTo(
+            CheckResult.Companion.noUpdate(appConfig.getVersion(), config.getMetadata(), expectedUpdateInfo)
         );
     }
 }
