@@ -14,7 +14,7 @@ public class RequirementsProcessorTest {
         Map<String, RequirementChecker> checkers = new HashMap<>();
         checkers.put(
             PrinceOfVersionsDefaultRequirementsChecker.KEY,
-            new PrinceOfVersionsDefaultRequirementsChecker(new MockApplicationVersionProvider(23))
+            new PrinceOfVersionsDefaultRequirementsChecker(() -> 23)
         );
         PrinceOfVersionsRequirementsProcessor processor = new PrinceOfVersionsRequirementsProcessor(checkers);
 
@@ -30,7 +30,7 @@ public class RequirementsProcessorTest {
         Map<String, RequirementChecker> checkers = new HashMap<>();
         checkers.put(
             PrinceOfVersionsDefaultRequirementsChecker.KEY,
-            new PrinceOfVersionsDefaultRequirementsChecker(new MockApplicationVersionProvider(25))
+            new PrinceOfVersionsDefaultRequirementsChecker(() -> 25)
         );
         PrinceOfVersionsRequirementsProcessor processor = new PrinceOfVersionsRequirementsProcessor(checkers);
 
@@ -46,7 +46,7 @@ public class RequirementsProcessorTest {
         Map<String, RequirementChecker> checkers = new HashMap<>();
         checkers.put(
             PrinceOfVersionsDefaultRequirementsChecker.KEY,
-            new PrinceOfVersionsDefaultRequirementsChecker(new MockApplicationVersionProvider(23))
+            new PrinceOfVersionsDefaultRequirementsChecker(() -> 23)
         );
         PrinceOfVersionsRequirementsProcessor processor = new PrinceOfVersionsRequirementsProcessor(checkers);
 
@@ -62,7 +62,7 @@ public class RequirementsProcessorTest {
         Map<String, RequirementChecker> checkers = new HashMap<>();
         checkers.put(
             PrinceOfVersionsDefaultRequirementsChecker.KEY,
-            new PrinceOfVersionsDefaultRequirementsChecker(new MockApplicationVersionProvider(23))
+            new PrinceOfVersionsDefaultRequirementsChecker(() -> 23)
         );
         PrinceOfVersionsRequirementsProcessor processor = new PrinceOfVersionsRequirementsProcessor(checkers);
 

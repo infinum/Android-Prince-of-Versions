@@ -10,8 +10,7 @@ class PrinceOfVersionsDefaultRequirementsCheckerTest {
 
     @Test
     fun testCheckRequirementsTrueWhenMinSdkIsLessThanOrEqualToProvided() {
-        val provider = PrinceOfVersionsDefaultRequirementsChecker.ApplicationVersionProvider { 28 }
-        val checker = PrinceOfVersionsDefaultRequirementsChecker(provider)
+        val checker = PrinceOfVersionsDefaultRequirementsChecker { 28 }
 
         assertThat(checker.checkRequirements("27")).isTrue()
         assertThat(checker.checkRequirements("28")).isTrue()
@@ -19,8 +18,7 @@ class PrinceOfVersionsDefaultRequirementsCheckerTest {
 
     @Test
     fun testCheckRequirementsFalseWhenMinSdkIsGreaterThanProvided() {
-        val provider = PrinceOfVersionsDefaultRequirementsChecker.ApplicationVersionProvider { 25 }
-        val checker = PrinceOfVersionsDefaultRequirementsChecker(provider)
+        val checker = PrinceOfVersionsDefaultRequirementsChecker { 25 }
 
         assertThat(checker.checkRequirements("26")).isFalse()
         assertThat(checker.checkRequirements("30")).isFalse()
@@ -28,8 +26,7 @@ class PrinceOfVersionsDefaultRequirementsCheckerTest {
 
     @Test(expected = NumberFormatException::class)
     fun testCheckRequirementsThrowsExceptionForInvalidInput() {
-        val provider = PrinceOfVersionsDefaultRequirementsChecker.ApplicationVersionProvider { 25 }
-        val checker = PrinceOfVersionsDefaultRequirementsChecker(provider)
+        val checker = PrinceOfVersionsDefaultRequirementsChecker { 25 }
 
         checker.checkRequirements("not_a_number")
     }

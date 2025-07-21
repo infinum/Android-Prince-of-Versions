@@ -8,13 +8,9 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class RequirementsProcessorTestRefactored {
 
-    private class MockApplicationVersionProvider(private val version: Int) : PrinceOfVersionsDefaultRequirementsChecker.ApplicationVersionProvider {
-        override fun provide(): Int = version
-    }
-
     @Test
     fun checkRequiredOsVersionWhenGreaterThanDevice() {
-        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker(MockApplicationVersionProvider(23))
+        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker { 23 }
         val processor = PrinceOfVersionsRequirementsProcessor(mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to checker))
         val requirements = mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to "25")
 
@@ -25,7 +21,7 @@ class RequirementsProcessorTestRefactored {
 
     @Test
     fun checkRequiredOsVersionWhenLessThanDevice() {
-        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker(MockApplicationVersionProvider(25))
+        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker { 25 }
         val processor = PrinceOfVersionsRequirementsProcessor(mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to checker))
         val requirements = mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to "23")
 
@@ -36,7 +32,7 @@ class RequirementsProcessorTestRefactored {
 
     @Test
     fun checkRequiredOsVersionWhenEqualToDevice() {
-        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker(MockApplicationVersionProvider(23))
+        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker { 23 }
         val processor = PrinceOfVersionsRequirementsProcessor(mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to checker))
         val requirements = mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to "23")
 
@@ -47,7 +43,7 @@ class RequirementsProcessorTestRefactored {
 
     @Test
     fun checkRequiredOsVersionWhenRequirementValueIsNull() {
-        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker(MockApplicationVersionProvider(23))
+        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker { 23 }
         val processor = PrinceOfVersionsRequirementsProcessor(mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to checker))
         val requirements = mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to null)
 
@@ -79,7 +75,7 @@ class RequirementsProcessorTestRefactored {
 
     @Test
     fun testDefaultCheckerWithInvalidValueReturnsFalse() {
-        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker(MockApplicationVersionProvider(23))
+        val checker: RequirementChecker = PrinceOfVersionsDefaultRequirementsChecker { 23 }
         val processor = PrinceOfVersionsRequirementsProcessor(mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to checker))
         val requirements = mapOf(PrinceOfVersionsDefaultRequirementsChecker.KEY to "not-a-number")
 
