@@ -12,6 +12,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import java.io.IOException
 import java.util.concurrent.Executor
+import org.junit.Before
 
 @RunWith(MockitoJUnitRunner::class)
 class UpdaterCallTest {
@@ -33,6 +34,11 @@ class UpdaterCallTest {
 
     @Mock
     private lateinit var updateResult: UpdateResult
+
+    @Before
+    fun setUp() {
+        `when`(core.checkForUpdates(loader)).thenReturn(updateResult)
+    }
 
     @Test
     fun testExecuteReturnsUpdateResult() {
