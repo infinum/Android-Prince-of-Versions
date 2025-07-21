@@ -2,7 +2,6 @@ package co.infinum.princeofversions
 
 import androidx.annotation.VisibleForTesting
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 
 /**
@@ -29,8 +28,8 @@ internal class JsonConfigurationParser(
     }
 
     @Throws(Throwable::class)
-    override fun parse(content: String): PrinceOfVersionsConfig {
-        val data = JSONObject(content)
+    override fun parse(value: String): PrinceOfVersionsConfig {
+        val data = JSONObject(value)
         val builder = PrinceOfVersionsConfig.Builder()
         parseRoot(data, builder)
         return builder.build()

@@ -1,12 +1,11 @@
-package co.infinum.princeofversions;
+package co.infinum.princeofversions
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.Executor
 
 /**
  * This class handles update checks.
  */
-interface Presenter {
-
+internal interface Presenter {
     /**
      * Start synchronous update check.
      *
@@ -15,7 +14,8 @@ interface Presenter {
      * @return Update result.
      * @throws Throwable if error happens during check.
      */
-    UpdateResult check(Loader loader, ApplicationConfiguration appConfig) throws Throwable;
+    @Throws(Throwable::class)
+    fun check(loader: Loader, appConfig: ApplicationConfiguration): UpdateResult
 
     /**
      * Start asynchronous update check.
@@ -26,6 +26,10 @@ interface Presenter {
      * @param appConfig Application configuration.
      * @return Call object which offers method for cancelling update check.
      */
-    PrinceOfVersionsCancelable check(Loader loader, Executor executor, UpdaterCallback callback, ApplicationConfiguration appConfig);
-
+    fun check(
+        loader: Loader,
+        executor: Executor,
+        callback: UpdaterCallback,
+        appConfig: ApplicationConfiguration
+    ): PrinceOfVersionsCancelable
 }

@@ -10,7 +10,7 @@ package co.infinum.princeofversions
  */
 data class UpdateResult(
     val info: UpdateInfo,
-    val metadata: Map<String, String>,
+    val metadata: Map<String, String?>,
     val status: UpdateStatus,
     val updateVersion: Int
 ) {

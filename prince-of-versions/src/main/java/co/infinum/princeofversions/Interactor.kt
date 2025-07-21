@@ -13,5 +13,5 @@ internal fun interface Interactor {
      * @throws Throwable if some error happens during check
      */
     @Throws(Throwable::class)
-    fun check(loader: Loader, appConfig: ApplicationConfiguration): CheckResult?
+    fun check(loader: Loader, appConfig: ApplicationConfiguration): CheckResult
 }
