@@ -15,7 +15,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class InteractorTestRefactored {
+class InteractorTest {
 
     private companion object Companion {
         private const val DEFAULT_LOADER_RESULT = ""

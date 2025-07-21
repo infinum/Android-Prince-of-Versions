@@ -35,9 +35,9 @@ internal class PresenterImpl(
         return call
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE) // TODO: add internal qualifier after java tests are removed
+    @VisibleForTesting
     @Throws(Throwable::class)
-    fun run(loader: Loader, appConfig: ApplicationConfiguration): UpdateResult {
+    internal fun run(loader: Loader, appConfig: ApplicationConfiguration): UpdateResult {
         val result = interactor.check(loader, appConfig)
 
         when (result.status) {
@@ -65,6 +65,6 @@ internal class PresenterImpl(
         return UpdateResult(result.info, result.metadata, UpdateStatus.NO_UPDATE_AVAILABLE, result.updateVersion)
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE) // TODO: add internal qualifier after java tests are removed
-    fun createCall(): PrinceOfVersionsCancelable = UpdaterCancelable()
+    @VisibleForTesting
+    internal fun createCall(): PrinceOfVersionsCancelable = UpdaterCancelable()
 }

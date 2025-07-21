@@ -46,8 +46,8 @@ class PrinceOfVersions private constructor(
         callbackExecutor = createDefaultCallbackExecutor()
     )
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE) // TODO: add internal qualifier after java tests are removed
-    constructor(storage: Storage, callbackExecutor: Executor, appConfig: ApplicationConfiguration) : this(
+    @VisibleForTesting
+    internal constructor(storage: Storage, callbackExecutor: Executor, appConfig: ApplicationConfiguration) : this(
         presenter = PresenterImpl(
             InteractorImpl(createDefaultParser()),
             storage
@@ -56,8 +56,8 @@ class PrinceOfVersions private constructor(
         callbackExecutor = callbackExecutor
     )
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE) // TODO: add internal qualifier after java tests are removed
-    constructor(
+    @VisibleForTesting
+    internal constructor(
         storage: Storage,
         callbackExecutor: Executor,
         appConfig: ApplicationConfiguration,
@@ -117,8 +117,8 @@ class PrinceOfVersions private constructor(
         return checkForUpdatesInternal(executor, loader, ExecutorUpdaterCallback(callback, callbackExecutor))
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE) // TODO: add internal qualifier after java tests are removed
-    fun checkForUpdatesInternal(executor: Executor, loader: Loader, callback: UpdaterCallback): PrinceOfVersionsCancelable {
+    @VisibleForTesting
+    internal fun checkForUpdatesInternal(executor: Executor, loader: Loader, callback: UpdaterCallback): PrinceOfVersionsCancelable {
         return presenter.check(loader, executor, callback, appConfig)
     }
 
@@ -141,7 +141,7 @@ class PrinceOfVersions private constructor(
      * @return The result of the update check.
      * @throws Throwable if an error occurs.
      */
-    @Throws(Throwable::class) // TODO: add internal qualifier after java tests are removed
+    @Throws(Throwable::class)
     fun checkForUpdates(loader: Loader): UpdateResult {
         return presenter.check(loader, appConfig)
     }
@@ -213,8 +213,8 @@ class PrinceOfVersions private constructor(
             this.requirementCheckers.remove(key)
         }
 
-        @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE) // TODO: add internal qualifier after java tests are removed
-        fun withAppConfig(appConfig: ApplicationConfiguration) = apply {
+        @VisibleForTesting
+        internal fun withAppConfig(appConfig: ApplicationConfiguration) = apply {
             this.appConfig = appConfig
         }
 
@@ -238,8 +238,8 @@ class PrinceOfVersions private constructor(
          * Creates the [PrinceOfVersions] instance using the configured values.
          * Note: Both storage and application configuration must be set to use this method.
          */
-        @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE) // TODO: add internal qualifier after java tests are removed
-        fun build(): PrinceOfVersions {
+        @VisibleForTesting
+        internal fun build(): PrinceOfVersions {
             if (storage == null || appConfig == null) {
                 throw UnsupportedOperationException(
                     "You must define storage and application configuration if you don't provide Context."

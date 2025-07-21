@@ -14,7 +14,7 @@ import java.nio.charset.Charset
  * @param password Optional password for Basic authentication.
  * @param networkTimeoutSeconds The network timeout in seconds.
  */
-class NetworkLoader @JvmOverloads constructor( // TODO: Remove JvmOverloads after every file is refactored
+class NetworkLoader (
     private val url: String,
     private val username: String? = null,
     private val password: String? = null,

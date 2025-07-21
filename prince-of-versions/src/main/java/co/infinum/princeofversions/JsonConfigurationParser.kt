@@ -142,8 +142,8 @@ internal class JsonConfigurationParser(
         return requirements
     }
 
-    @VisibleForTesting // TODO: add internal qualifier after java tests are removed
-    fun jsonObjectToMap(jsonObject: JSONObject?): Map<String, String?> {
+    @VisibleForTesting
+    internal fun jsonObjectToMap(jsonObject: JSONObject?): Map<String, String?> {
         val map = mutableMapOf<String, String?>()
         if (jsonObject == null) return map
         for (key in jsonObject.keys()) {
