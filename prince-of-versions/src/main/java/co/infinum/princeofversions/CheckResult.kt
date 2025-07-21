@@ -73,12 +73,10 @@ class CheckResult private constructor(
         if (this === other) return true
         if (other !is CheckResult) return false
 
-        return status == other.status &&
-            updateVersion == other.updateVersion &&
-            notificationType == other.notificationType &&
-            metadata == other.metadata &&
-            info == other.info
+        return listOf(status, updateVersion, notificationType, metadata, info) ==
+            listOf(other.status, other.updateVersion, other.notificationType, other.metadata, other.info)
     }
+
 
     override fun toString(): String {
         return "$status $info $metadata $notificationType"

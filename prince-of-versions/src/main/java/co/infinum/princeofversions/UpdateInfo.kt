@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 /**
  * Represents selected update configuration object based on requirements
  */
-data class UpdateInfo constructor(
+data class UpdateInfo (
     val requiredVersion: Int?,
     val lastVersionAvailable: Int?,
     val requirements: Map<String, String>,

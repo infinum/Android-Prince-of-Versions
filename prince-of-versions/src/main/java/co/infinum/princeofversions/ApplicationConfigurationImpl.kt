@@ -26,11 +26,6 @@ internal class ApplicationConfigurationImpl(context: Context) : ApplicationConfi
             packageInfo.versionCode.toLong()
         }
 
-        // TODO: Check if Major version code should be supported as it was not in the past.
-        if (longVersionCode > Int.MAX_VALUE) {
-            throw IllegalStateException("Version code $longVersionCode is too large to be handled by this library.")
-        }
-
         longVersionCode.toInt()
     } catch (e: PackageManager.NameNotFoundException) {
         throw IllegalStateException("Could not find package name", e)
