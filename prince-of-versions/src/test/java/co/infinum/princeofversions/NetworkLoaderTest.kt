@@ -14,7 +14,7 @@ import java.io.IOException
 import java.net.SocketTimeoutException
 
 @RunWith(MockitoJUnitRunner::class)
-class NetworkLoaderTestRefactored {
+class NetworkLoaderTest {
 
     private lateinit var mockWebServer: MockWebServer
 

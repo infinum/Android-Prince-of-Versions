@@ -19,7 +19,7 @@ import java.io.IOException
 import java.util.concurrent.Executor
 
 @RunWith(MockitoJUnitRunner::class)
-class PrinceOfVersionsTestRefactored {
+class PrinceOfVersionsTest {
 
     @Mock
     private lateinit var callback: UpdaterCallback

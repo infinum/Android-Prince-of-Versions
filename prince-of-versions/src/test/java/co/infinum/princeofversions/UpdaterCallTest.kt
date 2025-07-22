@@ -2,14 +2,15 @@ package co.infinum.princeofversions
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.any
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
 import java.io.IOException
 import java.util.concurrent.Executor
 
@@ -33,6 +34,11 @@ class UpdaterCallTest {
 
     @Mock
     private lateinit var updateResult: UpdateResult
+
+    @Before
+    fun setUp() {
+        `when`(core.checkForUpdates(loader)).thenReturn(updateResult)
+    }
 
     @Test
     fun testExecuteReturnsUpdateResult() {
@@ -77,17 +83,14 @@ class UpdaterCallTest {
             .hasMessage("Already executed!")
     }
 
-    /*
-    TODO : This test fails because of a bug which stops cancellation. After refactoring the tests address the bugs by adding return
-            statements after detecting cancellation in enqueue methods.
     @Test
     fun testEnqueueWhenCanceledCallsOnError() {
         val call: PrinceOfVersionsCall = UpdaterCall(core, loader)
         call.cancel()
         call.enqueue(callback)
-        verify(callback).onError(any(IOException::class.java))
-        verify(core, never()).checkForUpdates(any(Loader::class.java), any(UpdaterCallback::class.java))
-    }*/
+        verify(callback).onError(any())
+        verify(core, never()).checkForUpdates(any<Loader>(), any<UpdaterCallback>())
+    }
 
     @Test
     fun testEnqueueWithExecutorCallsCore() {
@@ -97,17 +100,14 @@ class UpdaterCallTest {
         verify(core).checkForUpdates(executor, loader, callback)
     }
 
-    /*
-    TODO : This test fails because of a bug which stops cancellation. After refactoring the tests address the bugs by adding return
-            statements after detecting cancellation in enqueue methods.
     @Test
     fun testEnqueueWithExecutorWhenCanceledCallsOnError() {
         val call: PrinceOfVersionsCall = UpdaterCall(core, loader)
         call.cancel()
         call.enqueue(executor, callback)
-        verify(callback).onError(any(IOException::class.java))
-        verify(core, never()).checkForUpdates(any(Executor::class.java), any(Loader::class.java), any(UpdaterCallback::class.java))
-    }*/
+        verify(callback).onError(any())
+        verify(core, never()).checkForUpdates(any<Executor>(), any<Loader>(), any<UpdaterCallback>())
+    }
 
     @Test
     fun testCancelAfterEnqueue() {

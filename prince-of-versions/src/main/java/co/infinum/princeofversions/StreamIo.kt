@@ -21,7 +21,6 @@ internal object StreamIo {
      * @throws IOException if a reading error occurs.
      */
     @JvmStatic
-    @JvmOverloads
     @Throws(IOException::class)
     fun toString(inputStream: InputStream, charset: Charset = DEFAULT_CHARSET): String {
         val reader = inputStream.bufferedReader(charset)

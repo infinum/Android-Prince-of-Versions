@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 
-class CheckResultTestRefactored {
+class CheckResultTest {
 
     private companion object Companion {
         private const val DEFAULT_REQUIRED_VERSION = 1

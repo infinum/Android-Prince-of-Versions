@@ -9,7 +9,7 @@ import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 
-class JsonConfigurationParserTestRefactored {
+class JsonConfigurationParserTest {
 
     private lateinit var parser: JsonConfigurationParser
 

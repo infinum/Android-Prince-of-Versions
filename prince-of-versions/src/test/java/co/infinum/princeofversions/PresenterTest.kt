@@ -17,7 +17,7 @@ import org.mockito.kotlin.whenever
 import java.util.concurrent.Executor
 
 @RunWith(MockitoJUnitRunner::class)
-class PresenterTestRefactored {
+class PresenterTest {
 
     @Mock
     private lateinit var interactor: Interactor
