@@ -45,7 +45,7 @@ internal class JsonConfigurationParser(
             else -> throw IllegalStateException("Config resource does not contain android key")
         }
 
-        when (val androidData = data.get(androidKey)) {
+        when (val androidData = data[androidKey]) {
             is JSONArray -> handleAndroidJsonArray(androidData, builder, meta)
             is JSONObject -> handleAndroidJsonObject(androidData, builder, meta)
         }
@@ -94,9 +94,15 @@ internal class JsonConfigurationParser(
         return true
     }
 
+    /*
+     * Sonar check suppress justification: The type check is necessary because the value comes from a
+     * dynamically-typed JSONObject, and its actual type is only known at runtime.
+     * A test case exists to prove this check is essential for handling malformed JSON.
+     */
+    @Suppress("kotlin:S6531")
     private fun saveUpdateValues(update: JSONObject, builder: PrinceOfVersionsConfig.Builder) {
         if (!update.isNull(MINIMUM_VERSION)) {
-            val value = update.get(MINIMUM_VERSION)
+            val value = update[MINIMUM_VERSION]
             if (value is Int) {
                 builder.withMandatoryVersion(value)
             } else {
@@ -104,7 +110,7 @@ internal class JsonConfigurationParser(
             }
         }
         if (!update.isNull(LATEST_VERSION)) {
-            val value = update.get(LATEST_VERSION)
+            val value = update[LATEST_VERSION]
             if (value is Int) {
                 builder.withOptionalVersion(value)
             } else {
@@ -112,7 +118,7 @@ internal class JsonConfigurationParser(
             }
         }
         if (!update.isNull(NOTIFICATION)) {
-            val value = update.get(NOTIFICATION)
+            val value = update[NOTIFICATION]
             if (value is String) {
                 val notificationType = if (value.equals(NOTIFICATION_ALWAYS, ignoreCase = true)) {
                     NotificationType.ALWAYS
@@ -136,7 +142,7 @@ internal class JsonConfigurationParser(
         val requirements = mutableMapOf<String, String>()
         for (key in requirementsJson.keys()) {
             if (!requirementsJson.isNull(key)) {
-                requirements[key] = requirementsJson.get(key).toString()
+                requirements[key] = requirementsJson[key].toString()
             }
         }
         return requirements
@@ -147,7 +153,7 @@ internal class JsonConfigurationParser(
         val map = mutableMapOf<String, String?>()
         if (jsonObject == null) return map
         for (key in jsonObject.keys()) {
-            map[key] = if (jsonObject.isNull(key)) null else jsonObject.get(key).toString()
+            map[key] = if (jsonObject.isNull(key)) null else jsonObject[key].toString()
         }
         return map
     }
