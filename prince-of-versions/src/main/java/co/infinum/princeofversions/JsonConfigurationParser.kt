@@ -42,7 +42,7 @@ internal class JsonConfigurationParser(
         val androidKey = when {
             data.has(ANDROID_KEY) -> ANDROID_KEY
             data.has(ANDROID_FALLBACK_KEY) -> ANDROID_FALLBACK_KEY
-            else -> throw IllegalStateException("Config resource does not contain android key")
+            else -> error("Config resource does not contain android key")
         }
 
         when (val androidData = data[androidKey]) {
@@ -120,7 +120,7 @@ internal class JsonConfigurationParser(
         if (!update.isNull(NOTIFICATION)) {
             val value = update[NOTIFICATION]
             if (value is String) {
-                val notificationType = if (value.equals(NOTIFICATION_ALWAYS, ignoreCase = true)) {
+                val notificationType = if (value.lowercase() == NOTIFICATION_ALWAYS.lowercase()) {
                     NotificationType.ALWAYS
                 } else {
                     NotificationType.ONCE

@@ -40,9 +40,7 @@ internal class InteractorImpl(
         }
 
         // If neither mandatory nor optional update is available, or if no versions are defined, return no update.
-        if (mandatoryVersion == null && optionalVersion == null) {
-            throw IllegalStateException("Both mandatory and optional version are null.")
-        }
+        check(!(mandatoryVersion == null && optionalVersion == null)) { "Both mandatory and optional version are null." }
 
         return CheckResult.noUpdate(currentVersion, config.metadata, updateInfo)
     }
