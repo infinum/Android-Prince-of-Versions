@@ -3,7 +3,7 @@ apply from: './quality.gradle'
 
 ext.mavenPublishProperties = [
         group      : "co.infinum",
-        version    : versions.queen,
+        version    : libs.versions.queen.get(),
         artifact   : "queen-of-versions",
         repository : [
                 url     : rootProject.ext.sonatype.url,
@@ -20,11 +20,11 @@ ext.mavenPublishProperties = [
 ]
 
 android {
-    compileSdkVersion buildVersions.compile
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdkVersion buildVersions.min
-        targetSdkVersion buildVersions.target
+        minSdkVersion libs.versions.minSdk.get().toInteger()
+        targetSdkVersion libs.versions.targetSdk.get().toInteger()
     }
 
     buildTypes {
@@ -45,16 +45,16 @@ group = ext.mavenPublishProperties.group
 
 dependencies {
     api project(path: ':prince-of-versions')
-    implementation 'com.google.android.play:app-update:2.1.0'
-    implementation deps.appcompat
-    compileOnly deps.sbannotations
+    implementation libs.play.app.update
+    implementation libs.androidx.appcompat
+    compileOnly libs.spotbugs.annotations
 
-    testImplementation deps.junit
-    testImplementation deps.mockito
-    testImplementation deps.mockwebserver
-    testImplementation deps.assertj
-    testImplementation deps.json
-    testCompileOnly deps.sbannotations
+    testImplementation libs.junit
+    testImplementation libs.mockito.core
+    testImplementation libs.okhttp.mockwebserver
+    testImplementation libs.assertj.core
+    testImplementation libs.json
+    testCompileOnly libs.spotbugs.annotations
 }
 
 apply from: '../tasks.gradle'
