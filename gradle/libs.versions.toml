@@ -18,7 +18,7 @@ json = "20140107"
 playAppUpdate = "2.1.0"
 
 # Plugin versions
-agp = "7.4.2"
+agp = "8.13.2"
 spotbugsPlugin = "5.2.5"
 
 [libraries]
