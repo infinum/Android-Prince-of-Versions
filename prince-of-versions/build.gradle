@@ -1,4 +1,7 @@
-apply plugin: 'com.android.library'
+plugins {
+    alias(libs.plugins.android.library)
+}
+
 apply from: './quality.gradle'
 
 ext.mavenPublishProperties = [

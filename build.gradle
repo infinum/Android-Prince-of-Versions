@@ -1,20 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply from: 'maven.gradle'
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:${libs.versions.agp.get()}"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${libs.versions.kotlin.get()}"
-        classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:${libs.versions.spotbugsPlugin.get()}"
-    }
+plugins {
+    // Apply plugins without activating them at the root level
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.spotbugs) apply false
 }
+
+apply from: 'maven.gradle'
 
 ext {
     SpotBugsTask = com.github.spotbugs.snom.SpotBugsTask
