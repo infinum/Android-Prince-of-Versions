@@ -45,7 +45,7 @@ final class StreamIo {
         }
         try {
             reader.close();
-        } catch (Exception ignorable) { // NOPMD
+        } catch (Exception ignorable) {
             // ignorable exception
         }
         return out.toString();

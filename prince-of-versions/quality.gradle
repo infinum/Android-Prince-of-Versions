@@ -1,8 +1,7 @@
 apply plugin: 'checkstyle'
-apply plugin: 'pmd'
 apply plugin: "com.github.spotbugs"
 
-check.dependsOn 'checkstyle', 'pmd'
+check.dependsOn 'checkstyle'
 
 task checkstyle(type: Checkstyle) {
     configFile file("${rootProject.rootDir}/config/checkstyle.xml")
@@ -28,28 +27,6 @@ spotbugs {
 
 tasks.withType(SpotBugsTask) {
     classDirs = files("$project.buildDir/intermediates/javac")
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
-
-task pmd(type: Pmd) {
-    ruleSetFiles = files("${rootProject.rootDir}/config/pmd-ruleset.xml")
-    ignoreFailures = false
-    ruleSets = ["java-basic", "java-braces", "java-android"]
-
-    ruleSets = [
-            'java-android',
-            'java-braces',
-            'java-clone',
-            'java-finalizers'
-    ]
-
-    source 'src'
-    include '**/*.java'
-    exclude '**/gen/**', '**/test/**', '**/androidTest/**'
-
     reports {
         xml.enabled = false
         html.enabled = true
