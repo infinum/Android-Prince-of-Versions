@@ -24,9 +24,6 @@ ext.mavenPublishProperties = [
 ]
  */
 
-// AGP 8+ automatically creates sources and javadoc jars via android.publishing config
-// No need to manually define these tasks anymore
-
 afterEvaluate {
     publishing {
         def props = project.ext.mavenPublishProperties
