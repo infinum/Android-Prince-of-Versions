@@ -7,6 +7,7 @@ targetSdk = "36"
 # Library versions
 prince = "4.0.4"
 queen = "0.3.3"
+annotation = "1.9.1"
 appcompat = "1.7.1"
 spotbugs = "4.9.8"
 kotlin = "2.3.10"
@@ -23,7 +24,7 @@ spotbugsPlugin = "5.2.5"
 
 [libraries]
 # Main dependencies
-androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "appcompat" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 spotbugs-annotations = { module = "com.github.spotbugs:spotbugs-annotations", version.ref = "spotbugs" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin" }
