@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "co.infinum.povexampleapp"
-        minSdkVersion libs.versions.minSdk.get().toInteger()
+        minSdkVersion 24 // this is different from libs due to usage of android x libraries
         targetSdkVersion libs.versions.targetSdk.get().toInteger()
         versionCode 2
         versionName "1.0.0"

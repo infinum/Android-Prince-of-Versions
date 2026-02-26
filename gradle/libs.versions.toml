@@ -1,8 +1,8 @@
 [versions]
 # SDK versions
-compileSdk = "30"
+compileSdk = "36"
 minSdk = "15"
-targetSdk = "30"
+targetSdk = "36"
 
 # Library versions
 prince = "4.0.4"
