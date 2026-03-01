@@ -1,9 +1,12 @@
-apply plugin: 'com.android.library'
+plugins {
+    alias(libs.plugins.android.library)
+}
+
 apply from: './quality.gradle'
 
 ext.mavenPublishProperties = [
         group      : "co.infinum",
-        version    : versions.prince,
+        version    : libs.versions.prince.get(),
         artifact   : "prince-of-versions",
         repository : [
                 url     : sonatype.url,
@@ -20,11 +23,11 @@ ext.mavenPublishProperties = [
 ]
 
 android {
-    compileSdkVersion buildVersions.compile
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdkVersion buildVersions.min
-        targetSdkVersion buildVersions.target
+        minSdkVersion libs.versions.minSdk.get().toInteger()
+        targetSdkVersion libs.versions.targetSdk.get().toInteger()
     }
 
     buildTypes {
@@ -40,21 +43,29 @@ android {
     }
 
     resourcePrefix 'prince_of_versions_'
+    namespace 'co.infinum.princeofversions'
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 version = ext.mavenPublishProperties.version
 group = ext.mavenPublishProperties.group
 
 dependencies {
-    compileOnly deps.annotations
-    compileOnly deps.sbannotations
+    compileOnly libs.androidx.annotation
+    compileOnly libs.spotbugs.annotations
 
-    testImplementation deps.junit
-    testImplementation deps.mockito
-    testImplementation deps.mockwebserver
-    testImplementation deps.assertj
-    testImplementation deps.json
-    testCompileOnly deps.sbannotations
+    testImplementation libs.junit
+    testImplementation libs.mockito.core
+    testImplementation libs.okhttp.mockwebserver
+    testImplementation libs.assertj.core
+    testImplementation libs.json
+    testCompileOnly libs.spotbugs.annotations
 }
 
 apply from: '../tasks.gradle'

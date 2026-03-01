@@ -1,14 +1,15 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+}
 
 android {
-    compileSdkVersion buildVersions.compile
+    compileSdkVersion libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
         applicationId "co.infinum.povexampleapp"
-        minSdkVersion buildVersions.min
-        targetSdkVersion buildVersions.target
+        minSdkVersion 24 // this is different from libs due to usage of android x libraries
+        targetSdkVersion libs.versions.targetSdk.get().toInteger()
         versionCode 2
         versionName "1.0.0"
     }
@@ -18,19 +19,30 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    namespace 'co.infinum.povexampleapp'
+    lint {
         abortOnError false
     }
 }
 
 dependencies {
-    implementation deps.appcompat
-    implementation "co.infinum:queen-of-versions:0.3.2"
-    implementation "co.infinum:prince-of-versions:4.0.4"
+    implementation libs.androidx.appcompat
+    implementation project(":prince-of-versions")
+    implementation project(":queen-of-versions")
+//    implementation "co.infinum:queen-of-versions:0.3.2"
+//    implementation "co.infinum:prince-of-versions:4.0.4"
 
-
-    compileOnly deps.sbannotations
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    compileOnly libs.spotbugs.annotations
+    implementation libs.kotlin.stdlib
 }
 repositories {
     mavenCentral()
