@@ -21,6 +21,18 @@ allprojects {
     }
 }
 
+// Configure Java toolchain for the entire project
+// This allows Gradle tasks (like Checkstyle) to use Java 21 while keeping
+// Android compilation bytecode at Java 8 for compatibility
+subprojects {
+    plugins.withType(JavaBasePlugin) {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(21)
+            }
+        }
+    }
+}
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

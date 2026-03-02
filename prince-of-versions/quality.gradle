@@ -1,6 +1,11 @@
 apply plugin: 'checkstyle'
 apply plugin: "com.github.spotbugs"
 
+// Configure Checkstyle version
+checkstyle {
+    toolVersion = libs.versions.checkstyle.get()
+}
+
 check.dependsOn 'checkstyle'
 
 task checkstyle(type: Checkstyle) {
