@@ -27,13 +27,12 @@ android {
 
     defaultConfig {
         minSdkVersion libs.versions.minSdk.get().toInteger()
-        targetSdkVersion libs.versions.targetSdk.get().toInteger()
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
