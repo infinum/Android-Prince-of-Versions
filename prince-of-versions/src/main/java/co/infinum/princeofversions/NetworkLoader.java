@@ -117,7 +117,7 @@ public class NetworkLoader implements Loader {
         if (conn != null) {
             try {
                 conn.disconnect();
-            } catch (Exception ignorable) { // NOPMD
+            } catch (Exception ignorable) {
                 // ignorable exception
             }
         }

@@ -12,8 +12,8 @@ afterEvaluate {
 
 private void replaceVersionsInFile(File file) {
     def content = file.text
-    content = content.replaceAll("'co\\.infinum:prince-of-versions:.+?'", "'co.infinum:prince-of-versions:${versions.prince}'")
-    content = content.replaceAll("'co\\.infinum:queen-of-versions:.+?'", "'co.infinum:queen-of-versions:${versions.queen}'")
+    content = content.replaceAll("'co\\.infinum:prince-of-versions:.+?'", "'co.infinum:prince-of-versions:${libs.versions.prince.get()}'")
+    content = content.replaceAll("'co\\.infinum:queen-of-versions:.+?'", "'co.infinum:queen-of-versions:${libs.versions.queen.get()}'")
     file.setText(content)
 }
 
