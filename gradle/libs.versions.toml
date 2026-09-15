@@ -21,7 +21,7 @@ playAppUpdate = "2.1.0"
 # Plugin versions
 agp = "9.4.0"
 spotbugsPlugin = "6.5.11"
-checkstyle = "13.11.0"
+checkstyle = "14.1.0"
 
 [libraries]
 # Main dependencies
