@@ -41,8 +41,10 @@
         <!--module name="JavadocMethod"/-->
         <!--module name="JavadocType"/-->
         <!--module name="JavadocVariable"/-->
-        <module name="JavadocStyle">
-            <property name="checkFirstSentence" value="false"/>
+        <!-- Replaces JavadocStyle, removed in Checkstyle 13.9.0. -->
+        <!-- An empty period keeps the first-sentence check off, as checkFirstSentence=false did. -->
+        <module name="SummaryJavadoc">
+            <property name="period" value=""/>
         </module>
 
         <!-- Checks for Naming Conventions.                  -->

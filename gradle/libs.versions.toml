@@ -8,20 +8,20 @@ targetSdk = "36"
 prince = "4.0.4"
 queen = "0.3.3"
 annotation = "1.10.0"
-appcompat = "1.7.1"
-spotbugs = "4.10.3"
-kotlin = "2.4.10"
+appcompat = "1.8.0"
+spotbugs = "4.10.4"
+kotlin = "2.4.20"
 junit = "4.13.2"
 mockito = "5.23.0"
-mockwebserver = "5.4.0"
+mockwebserver = "5.5.0"
 assertj = "3.27.7"
 json = "20251224"
 playAppUpdate = "2.1.0"
 
 # Plugin versions
-agp = "9.3.1"
-spotbugsPlugin = "6.5.10"
-checkstyle = "13.4.0"
+agp = "9.4.0"
+spotbugsPlugin = "6.5.11"
+checkstyle = "14.1.0"
 
 [libraries]
 # Main dependencies
