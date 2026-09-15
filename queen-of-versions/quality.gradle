@@ -30,10 +30,27 @@ spotbugs {
     reportsDir = file("$buildDir/reports/spotbugs")
 }
 
-tasks.withType(SpotBugsTask) {
-    classDirs = files("$project.buildDir/intermediates/javac")
+tasks.withType(SpotBugsTask).configureEach {
+    // Each task analyses only its own variant's classes. Pointing at the shared
+    // "intermediates/javac" parent made every SpotBugs task consume every other compile task's
+    // output - which Gradle 9 rejects as an undeclared dependency - and dragged the unit-test
+    // classes into the analysis.
+    def variant = name - 'spotbugs'
+    classDirs = files(tasks.named("compile${variant}JavaWithJavac", JavaCompile)
+            .map { it.destinationDirectory })
+
     reports {
         xml.enabled = false
         html.enabled = true
+    }
+}
+
+// The SpotBugs plugin builds auxClassPaths from the variant's compile classpath, which leaves out
+// the Android SDK, so android.* and org.json types could not be resolved during analysis. The
+// plugin assigns that property after this script is applied, so append to it once evaluation is
+// done rather than overwriting the entries it sets up.
+afterEvaluate {
+    tasks.withType(SpotBugsTask).configureEach {
+        auxClassPaths.from(android.bootClasspath)
     }
 }
