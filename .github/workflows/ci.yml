@@ -9,8 +9,11 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  # Only supersede PR runs; every master commit should finish so it gets a status and saves the cache.
+  # PR runs share a group per PR so newer pushes supersede older ones. Other runs (master pushes,
+  # manual dispatches) get a unique group: a shared group would still cancel a *pending* run when
+  # another is queued, even with cancel-in-progress off, and every master commit should finish so
+  # it gets a status and saves the cache.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
