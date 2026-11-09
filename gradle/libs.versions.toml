@@ -19,7 +19,7 @@ json = "20251224"
 playAppUpdate = "2.1.0"
 
 # Plugin versions
-agp = "9.5.0"
+agp = "9.5.1"
 spotbugsPlugin = "6.5.13"
 checkstyle = "14.4.0"
 
