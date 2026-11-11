@@ -15,7 +15,7 @@ junit = "4.13.2"
 mockito = "5.24.0"
 mockwebserver = "5.5.1"
 assertj = "3.27.7"
-json = "20251224"
+json = "20260814"
 playAppUpdate = "2.1.0"
 
 # Plugin versions
