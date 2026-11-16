@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+  # Runs on master keep the Gradle cache warm: setup-gradle only writes the cache from the
+  # default branch, so pull requests restore what master builds saved.
+  push:
+    branches: [ 'master' ]
+  workflow_dispatch:
+
+concurrency:
+  # PR runs share a group per PR so newer pushes supersede older ones. Other runs (master pushes,
+  # manual dispatches) get a unique group: a shared group would still cancel a *pending* run when
+  # another is queued, even with cancel-in-progress off, and every master commit should finish so
+  # it gets a status and saves the cache.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle
+        id: setup-gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Android Lint
+        run: ./gradlew lintDebug --console=plain
+
+      # Keep running the remaining checks after one fails, so a single run reports every problem,
+      # but only once setup succeeded (setup-gradle is skipped if checkout or setup-java failed).
+      - name: Checkstyle
+        if: ${{ !cancelled() && steps.setup-gradle.outcome == 'success' }}
+        run: ./gradlew checkstyle --console=plain
+
+      - name: Spotbugs
+        if: ${{ !cancelled() && steps.setup-gradle.outcome == 'success' }}
+        run: ./gradlew spotbugsRelease --console=plain
+
+      - name: Unit tests
+        if: ${{ !cancelled() && steps.setup-gradle.outcome == 'success' }}
+        run: ./gradlew testDebugUnitTest --console=plain
+
+      - name: Upload reports
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: reports
+          path: '**/build/reports/'
+          retention-days: 7
